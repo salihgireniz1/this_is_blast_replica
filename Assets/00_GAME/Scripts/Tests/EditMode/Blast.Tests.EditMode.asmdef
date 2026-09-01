@@ -4,6 +4,7 @@
     "references": [
         "UnityEngine.TestRunner",
         "Blast.Domain",
+        "Blast.Application",
         "Blast.Infrastructure",
         "UnityEditor.TestRunner",
         "Blast.Bootstrap",
