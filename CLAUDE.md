@@ -84,8 +84,17 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   Probe: dropping the `depth == 0` term turned exactly one test red with the right message.
   The depth check exists because a negative depth resolves to an already-taken shooter —
   a valid array slot, so nothing would ever throw without it.
-- Next: the slot row (5 slots, occupy/leave rules), then the firing rule and win/fail
-  detection, then the JSON level format, then presentation.
+- `SlotRow` (Domain) — done, 33/33 green. Occupancy IS the ammo: a slot with shots left
+  is occupied, zero is empty — one array instead of a parallel bool[] that could disagree.
+  `Occupy` seats in the first empty slot (a freed middle slot included), `Spend` frees at
+  the last shot, so a dead shooter can never hold a slot; "ammo left but no target" is
+  simply a slot nobody calls Spend on, which is the pressure `IsFull` reads for the fail
+  condition. Slot count is a ctor param (the case's five is the level file's fact, not a
+  magic number here). Probe: reversing the Occupy scan turned the order test red with the
+  right message ("The first shooter skipped slot 0"), plus two collateral reds.
+- Next: the firing rule (which front cube a slotted shooter may shoot, target-of-my-color
+  resolution against BoardModel) and win/fail detection, then the JSON level format,
+  then presentation.
 
 The phase plan below is the **portfolio** plan. It resumes after the case ships; the case
 overrides it wherever they disagree (no merge feature, their art, 10x10 single layer).
