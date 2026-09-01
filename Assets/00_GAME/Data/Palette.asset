@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Blast.Infrastructure::Blast.Infrastructure.PaletteData
   _entries:
   - Color: 0
-    Tint: {r: 1, g: 0.701, b: 0, a: 1}
-    Material: {fileID: 2100000, guid: b73698fc310760c44b397c6e7f44cb9b, type: 2}
+    Tint: {r: 1, g: 0.8430532, b: 0.13679248, a: 1}
+    Material: {fileID: 2100000, guid: 87db132951455417e8bedf350b2fef12, type: 2}
   - Color: 1
-    Tint: {r: 0.816, g: 0.192576, b: 0.192576, a: 1}
-    Material: {fileID: 2100000, guid: 47378c3b1d3c13942ba0d3df6e157010, type: 2}
+    Tint: {r: 0.9433962, g: 0.24474904, b: 0.27285546, a: 1}
+    Material: {fileID: 2100000, guid: e59e67f03f0b2401cb724f2a69522533, type: 2}
   - Color: 2
-    Tint: {r: 0.078941, g: 0.405471, b: 0.915, a: 1}
-    Material: {fileID: 2100000, guid: 1eed2ffc1aa5cc04997bb8ee61adc98f, type: 2}
+    Tint: {r: 0.09019608, g: 0.5137255, b: 0.99215686, a: 1}
+    Material: {fileID: 2100000, guid: 85e4a7f025523408883d9980456a603d, type: 2}
   - Color: 3
-    Tint: {r: 0.179174, g: 0.686275, b: 0.039118, a: 1}
-    Material: {fileID: 2100000, guid: f7a0331775d6d7d4992d9b27457010a0, type: 2}
+    Tint: {r: 0.18823527, g: 0.81960785, b: 0.19893757, a: 1}
+    Material: {fileID: 2100000, guid: 3b7f60337a482442e817182a01a7d4e3, type: 2}
   - Color: 4
-    Tint: {r: 0.972549, g: 0.505882, b: 0.137255, a: 1}
-    Material: {fileID: 2100000, guid: 42fea8aaca0a031499a0ab40f0625a54, type: 2}
+    Tint: {r: 0.8784314, g: 0.5020607, b: 0.07843139, a: 1}
+    Material: {fileID: 2100000, guid: e863b49a8536f4612b13a7b7421e5bf4, type: 2}
   - Color: 255
-    Tint: {r: 0.436524, g: 0.438699, b: 0.525, a: 1}
-    Material: {fileID: 2100000, guid: 151f7fc99a1e8944aa825b4fa2548641, type: 2}
+    Tint: {r: 1, g: 1, b: 1, a: 1}
+    Material: {fileID: 2100000, guid: 146dd45c5f97e48bdad5f0b851d1f079, type: 2}

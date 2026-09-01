@@ -31,8 +31,9 @@ namespace Blast.Tests
         /// <summary>The shader property holding a cube material's albedo.</summary>
         static readonly int BaseColorProperty = Shader.PropertyToID("_BaseColor");
 
-        /// <summary>Shader every palette material must still be bound to.</summary>
-        const string HybridShaderName = "Toony Colors Pro 2/Hybrid Shader 2";
+        /// <summary>Shader every palette material must still be bound to. This is the
+        /// self-contained generated shader shipped inside AppsAssets, not a store install.</summary>
+        const string HybridShaderName = "Toony Colors Pro 2/CustomShader";
 
         #endregion
 
