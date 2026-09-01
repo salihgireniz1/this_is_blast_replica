@@ -97,7 +97,12 @@ namespace Blast.Domain
                     $"Column {column} has no shooters left to take.");
             }
 
-            return _columns[column][_front[column]++];
+            // Read before stepping: once _front moves, the same index names the next shooter.
+            Shooter[] columnShooters = _columns[column];
+            Shooter frontShooter = columnShooters[_front[column]];
+            _front[column]++;
+
+            return frontShooter;
         }
 
         #endregion
