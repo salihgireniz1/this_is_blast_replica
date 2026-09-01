@@ -1,5 +1,12 @@
 # Code standard
 
+## Commit messages
+
+A commit message is the subject line plus a short body when the change needs one —
+nothing else. **No trailers of any kind**: no attribution lines, no generated-by or
+co-authored-by footers, no session links. The message describes the change; metadata
+belongs nowhere in it.
+
 ## English only
 
 **Everything inside the repository is English** — identifiers, file header blocks, XML
