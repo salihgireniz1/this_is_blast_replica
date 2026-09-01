@@ -46,6 +46,13 @@ namespace Blast.Presentation
             _ammoText.SetText(ConcealedLabel);
         }
 
+        /// <summary>Updates the counter as shots are spent.</summary>
+        /// <param name="ammo">The shots remaining.</param>
+        public void SetAmmo(int ammo)
+        {
+            _ammoText.SetText("{0}", ammo);
+        }
+
         #endregion
 
         #region Private Methods

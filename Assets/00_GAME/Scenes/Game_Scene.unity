@@ -167,6 +167,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7918335002988649766, guid: 3b750ff3692f34f9c88055a7825de7fa, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ee529a52c77f44cc48b9d33e887d25ca, type: 2}
+    - target: {fileID: 882129737928793925, guid: 3b750ff3692f34f9c88055a7825de7fa, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: beb317e6b5cfa4306906a3dbeebfef67, type: 2}
     - target: {fileID: 919132149155446097, guid: 3b750ff3692f34f9c88055a7825de7fa, type: 3}
       propertyPath: m_Name
       value: GameArea
@@ -483,6 +491,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1024472673
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1024472674}
+  - component: {fileID: 1024472675}
+  m_Layer: 0
+  m_Name: GameDirector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1024472674
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024472673}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1024472675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024472673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d3c042ac9fe3f14786886da5fdbe46f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _runDuration: 0.45
+  _stepDuration: 0.25
+  _fireInterval: 0.22
+  _cubeDeathDuration: 0.12
+  _flowDuration: 0.15
+  _leaveDuration: 0.6
+  _leaveDistance: 6
 --- !u!1 &1753832528
 GameObject:
   m_ObjectHideFlags: 0
@@ -535,6 +594,7 @@ MonoBehaviour:
   _juice: {fileID: 11400000, guid: 4dba0608ddd49334cbdfe6935e948ecd, type: 2}
   _level: {fileID: 4900000, guid: 9ee776849efaae549aa0e62fe430680c, type: 3}
   _spawner: {fileID: 1900672655}
+  _director: {fileID: 1024472675}
 --- !u!1 &1900672653
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,6 +646,8 @@ MonoBehaviour:
   _queueOrigin: {x: 0, y: 0, z: -7.5}
   _queueSpacingX: 1.5
   _queueSpacingZ: 1.2
+  _slotZ: -5.9
+  _slotSpacingX: 1.5
 --- !u!1001 &2117716401
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -756,17 +818,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cannon
       objectReference: {fileID: 0}
-    - target: {fileID: 2630179953481358617, guid: 05b06f3019d616041bac456c32ea3a09, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4983181733376537491, guid: 05b06f3019d616041bac456c32ea3a09, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 05b06f3019d616041bac456c32ea3a09, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -781,3 +836,4 @@ SceneRoots:
   - {fileID: 2117716401}
   - {fileID: 8102829219063478186}
   - {fileID: 1900672654}
+  - {fileID: 1024472674}

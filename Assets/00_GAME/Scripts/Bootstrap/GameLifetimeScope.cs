@@ -10,6 +10,7 @@
 // constant: a path is a string nothing verifies, and it resolves at runtime in a build. A
 // serialized reference is checked by Unity, survives a rename, and is visible to a test.
 
+using Blast.Application;
 using Blast.Infrastructure;
 using Blast.Presentation;
 using DG.Tweening;
@@ -44,6 +45,9 @@ namespace Blast.Bootstrap
         /// <summary>The spawner that builds the level on screen. Assigned in the inspector.</summary>
         [SerializeField] LevelSpawner _spawner;
 
+        /// <summary>The director that runs the play session. Assigned in the inspector.</summary>
+        [SerializeField] GameDirector _director;
+
         #endregion
 
         #region Properties
@@ -59,6 +63,9 @@ namespace Blast.Bootstrap
 
         /// <summary>The spawner this scope will construct. Exposed so a test can see the wiring.</summary>
         public LevelSpawner Spawner => _spawner;
+
+        /// <summary>The director this scope will construct. Exposed so a test can see the wiring.</summary>
+        public GameDirector Director => _director;
 
         #endregion
 
@@ -86,9 +93,13 @@ namespace Blast.Bootstrap
             builder.RegisterInstance(level.Shooters);
             builder.RegisterInstance(level.Slots);
 
-            // The spawner is a scene object, so its dependencies are handed over directly;
-            // registering it in the container would only re-route the same handshake.
-            _spawner.Construct(level.Board, level.Shooters, new PaletteColorMaterials(_palette));
+            // The scene objects get their dependencies handed over directly; registering
+            // them in the container would only re-route the same handshake.
+            GameLoop loop = new GameLoop(level.Board, level.Shooters, level.Slots);
+            builder.RegisterInstance(loop);
+
+            _spawner.Construct(level.Board, level.Shooters, level.Slots, new PaletteColorMaterials(_palette));
+            _director.Construct(loop, level.Slots, _spawner);
         }
 
         #endregion

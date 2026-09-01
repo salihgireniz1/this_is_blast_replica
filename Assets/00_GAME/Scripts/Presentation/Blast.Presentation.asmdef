@@ -4,6 +4,9 @@
     "references": [
         "Blast.Domain",
         "Blast.Application",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "UniTask",
+        "Unity.InputSystem",
+        "UniTask.DOTween"
     ]
 }

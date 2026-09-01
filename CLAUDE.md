@@ -144,8 +144,32 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   keeps both template instances deactivated - the Cannon one is the prefab's source.
   `Blast.Presentation.asmdef` gained `Unity.TextMeshPro` (third-party refs are outside
   the architecture test's scope, verified before adding).
-- Next: the Application game loop (select -> run to slot -> fire ticks -> cube flow ->
-  verdicts -> restart), driving the spawned views.
+- `GameLoop` (Application) — done, 57/57 green. The sync use-case core: `TrySelect`
+  (guards double as input rules — decided game / spent column / full row are "nothing
+  happens", never an exception; seats atomically; re-checks fail), `TryShoot` (one ammo
+  for one cube in the same call, reports the hit column; asks IsWon BEFORE IsFailed
+  because an emptied board with a stuck-full slot row satisfies the fail's letter too —
+  there is a test pinning exactly that). No time in this layer: Presentation paces the
+  calls, which is why the whole use case tests without mocks. Probe: swapping the verdict
+  order turned exactly the ordering test red.
+- `GameDirector` + `LevelSpawner` registry (Presentation) — done, verified live in Play:
+  two columns selected, both shooters ran to slots, drained 10 kills each at the fire
+  rhythm, the columns flowed forward, the queue stepped up and revealed, both drained
+  shooters ran off-screen. The spawner became the view registry (mirrors the domain's
+  nothing-moves bookkeeping: views stay in lists, a front index walks), owns all layout
+  numbers including slot positions (z=-5.9, spacing 1.5). The director is the async glue:
+  Input System tap -> raycast -> `TryGetSelectableColumn` (only a column's front view
+  accepts), then UniTask fire loops. **Each fire loop counts its OWN ammo instead of
+  watching the slot** — the slot frees on the last shot and the player may seat a new
+  shooter into it before the next tick; a loop keyed on occupancy would fire the new
+  tenant's ammo with the old tenant's view. ShooterView prefab gained a BoxCollider.
+  Verdict is announced via Debug.Log until the UI chunk. GameArea's planes also got their
+  actual materials (they imported with default Lit).
+  Presentation asmdef gained UniTask, UniTask.DOTween (awaiting a tween needs the
+  extension assembly, not just the define) and Unity.InputSystem; the project is
+  Input System-only (`activeInputHandler: 1`), so input reads `Mouse.current`.
+- Next: win/fail overlay + restart button (UI layer), then juice (gun, shoot/run
+  animations, outline on selectables, splash particle, sound).
 
 The phase plan below is the **portfolio** plan. It resumes after the case ships; the case
 overrides it wherever they disagree (no merge feature, their art, 10x10 single layer).
