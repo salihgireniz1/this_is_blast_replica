@@ -105,6 +105,30 @@ namespace Blast.Domain
             return _frontRow[column];
         }
 
+        /// <summary>Reads the colour of the cube <see cref="Remove"/> would take next.</summary>
+        /// <param name="column">The column to look down.</param>
+        /// <param name="color">The front cube's colour; meaningless when the column is spent.</param>
+        /// <returns>True while the column still holds cubes.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">The column is not on this board.</exception>
+        public bool TryFrontColor(int column, out BlastColor color)
+        {
+            ValidateColumn(column);
+
+            if (_frontRow[column] >= Rows)
+            {
+                color = default;
+                return false;
+            }
+
+            // The top LIVING layer, not the top authored one: once Remove has eaten into the
+            // stack, the authored top no longer stands and reading it would aim at a ghost.
+            int topLivingLayer = _livingLayers[column] - 1;
+            Cell frontCube = new Cell(column, _frontRow[column], topLivingLayer);
+
+            color = Get(frontCube);
+            return true;
+        }
+
         /// <summary>Takes the next cube off the front of a column, topmost layer first.</summary>
         /// <param name="column">The column to take from.</param>
         /// <returns>The address the cube was standing on.</returns>

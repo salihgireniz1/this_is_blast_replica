@@ -137,6 +137,57 @@ namespace Blast.Tests
                 $"The column did not call itself empty after all {cubes} of its cubes were gone.");
         }
 
+        /// <summary>
+        /// Fails when the front colour is read from anywhere but the cube Remove would take
+        /// next. Three stale answers hide here: always row 0, always the top authored layer
+        /// instead of the top living one, and a front that never advances.
+        /// </summary>
+        [Test]
+        public void TryFrontColor_FollowsTheCubeRemoveWouldTakeNext()
+        {
+            var board = new BoardModel(Columns, Rows, Layers);
+            board.Set(new Cell(0, 0, Layers - 1), BlastColor.Red);
+            board.Set(new Cell(0, 0, Layers - 2), BlastColor.Orange);
+            board.Set(new Cell(0, 0, 0), BlastColor.Blue);
+            board.Set(new Cell(0, 1, Layers - 1), BlastColor.Green);
+
+            Assert.IsTrue(board.TryFrontColor(0, out var front), "A full column reported no front.");
+            Assert.AreEqual(BlastColor.Red, front,
+                "The front colour is not the top living layer of the front row.");
+
+            board.Remove(0);
+            board.TryFrontColor(0, out front);
+
+            Assert.AreEqual(BlastColor.Orange, front,
+                "After a removal the front colour still reads the top authored layer.");
+
+            // One cube is already gone from this position, so Layers - 1 more finish it.
+            for (var i = 0; i < Layers - 1; i++)
+            {
+                board.Remove(0);
+            }
+
+            board.TryFrontColor(0, out front);
+
+            Assert.AreEqual(BlastColor.Green, front,
+                "The front colour did not advance to the next row with the front.");
+        }
+
+        /// <summary>Fails when a spent column claims to still have a front colour.</summary>
+        [Test]
+        public void TryFrontColor_SaysNoForASpentColumn()
+        {
+            var board = new BoardModel(Columns, Rows, Layers);
+
+            for (var i = 0; i < Rows * Layers; i++)
+            {
+                board.Remove(0);
+            }
+
+            Assert.IsFalse(board.TryFrontColor(0, out _),
+                "A spent column offered a front colour; target scans would shoot at nothing.");
+        }
+
         /// <summary>Fails when removing from a spent column corrupts it instead of throwing.</summary>
         [Test]
         public void RemovingFromAnEmptyColumn_IsRefused()

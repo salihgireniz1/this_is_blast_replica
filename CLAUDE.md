@@ -92,9 +92,18 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   condition. Slot count is a ctor param (the case's five is the level file's fact, not a
   magic number here). Probe: reversing the Occupy scan turned the order test red with the
   right message ("The first shooter skipped slot 0"), plus two collateral reds.
-- Next: the firing rule (which front cube a slotted shooter may shoot, target-of-my-color
-  resolution against BoardModel) and win/fail detection, then the JSON level format,
-  then presentation.
+- `BoardModel.TryFrontColor` + `GameRules` (Domain) — done, 42/42 green. `TryFrontColor`
+  answers "what colour does Remove take next" (top LIVING layer of the front row, false
+  for a spent column). `GameRules` is a static class of pure readers — no state, nothing
+  to substitute, so no interface: `TryFindTarget` (leftmost matching front; only fronts
+  are shootable, spent columns skipped), `IsWon` (every column spent), `IsFailed` (every
+  slot occupied AND no occupant has a target — a free slot or one working shooter means
+  not stuck). The caller asks IsWon first: an emptied board with a full row satisfies
+  IsFailed's letter too. Probes: reading the top authored layer instead of the living one
+  turned exactly the aimed test red; dropping the IsFull half was caught by SlotRow's own
+  empty-slot guard (and the assert would catch the skip-empties variant).
+- Next: the JSON level format + parser (Infrastructure) and the sample level, then the
+  Application game loop, then presentation.
 
 The phase plan below is the **portfolio** plan. It resumes after the case ships; the case
 overrides it wherever they disagree (no merge feature, their art, 10x10 single layer).
