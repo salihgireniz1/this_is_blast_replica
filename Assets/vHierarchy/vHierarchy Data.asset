@@ -13,7 +13,26 @@ MonoBehaviour:
   m_Name: vHierarchy Data
   m_EditorClassIdentifier: VHierarchy::VHierarchy.VHierarchyData
   sceneDatas_byGuid:
-    keys: []
-    values: []
+    keys:
+    - 99c9720ab356a0642a771bea13969a05
+    values:
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-2-99c9720ab356a0642a771bea13969a05-1396654964-0
+        - globalObjectIdString: GlobalObjectId_V1-2-99c9720ab356a0642a771bea13969a05-247479151-0
+        - globalObjectIdString: GlobalObjectId_V1-2-99c9720ab356a0642a771bea13969a05-666949813-0
+        values:
+        - colorIndex: 1
+          iconNameOrGuid: StandaloneInputModule Icon
+          isIconRecursive: 1
+          isColorRecursive: 1
+        - colorIndex: 1
+          iconNameOrGuid: Camera Icon
+          isIconRecursive: 1
+          isColorRecursive: 1
+        - colorIndex: 7
+          iconNameOrGuid: PreMatCube
+          isIconRecursive: 1
+          isColorRecursive: 1
   bookmarks: []
   bookmarkedScenePaths: []

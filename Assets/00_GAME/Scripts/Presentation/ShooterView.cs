@@ -1,7 +1,8 @@
 // ShooterView - one shooter in the queue or in a slot, as the player sees it.
 // Layer: Presentation (humble: holds references and applies what it is told, decides nothing).
-// Responsibility: wearing its colour's material - or the hidden one while concealed - and
-//   showing its remaining ammo on the counter.
+// Responsibility: wearing its colour's material - or the hidden one while concealed -
+//   showing its remaining ammo on the counter, and driving the animator's three
+//   parameters (isIdle / isRun booleans, Shoot trigger) as it is told to run, stand or fire.
 // NOT its responsibility: deciding whether it is revealed (ShooterQueue's rule), how much
 //   ammo remains (SlotRow's count), or when it runs, fires and leaves (the game loop's
 //   calls, in a later chunk). It renders state; it never computes it.
@@ -21,6 +22,18 @@ namespace Blast.Presentation
 
         /// <summary>The ammo counter above the head. Assigned in the prefab.</summary>
         [SerializeField] TMP_Text _ammoText;
+
+        /// <summary>The WalkingCube animator. Assigned in the prefab.</summary>
+        [SerializeField] Animator _animator;
+
+        /// <summary>Animator parameter: standing still.</summary>
+        static readonly int IsIdle = Animator.StringToHash("isIdle");
+
+        /// <summary>Animator parameter: running.</summary>
+        static readonly int IsRun = Animator.StringToHash("isRun");
+
+        /// <summary>Animator trigger: one shot.</summary>
+        static readonly int Shoot = Animator.StringToHash("Shoot");
 
         /// <summary>What the counter shows while the colour is concealed.</summary>
         const string ConcealedLabel = "?";
@@ -51,6 +64,21 @@ namespace Blast.Presentation
         public void SetAmmo(int ammo)
         {
             _ammoText.SetText("{0}", ammo);
+        }
+
+        /// <summary>Runs or stands: the two booleans are always each other's opposite.</summary>
+        /// <param name="running">True to run, false to stand idle.</param>
+        public void SetRunning(bool running)
+        {
+            _animator.SetBool(IsRun, running);
+            _animator.SetBool(IsIdle, !running);
+        }
+
+        /// <summary>Plays one shot. Drops isIdle so the idle transition cannot cut it short.</summary>
+        public void PlayShoot()
+        {
+            _animator.SetBool(IsIdle, false);
+            _animator.SetTrigger(Shoot);
         }
 
         #endregion

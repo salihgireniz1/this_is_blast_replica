@@ -7,8 +7,10 @@
 //   file ever contains an if about colours, ammo or verdicts beyond relaying them, that
 //   logic has leaked out of the testable layer.
 //
-// Input comes through LeanTouch, not a hand-rolled Update loop: it unifies mouse and
-// touch, which is what a mobile case is actually judged on.
+// Input is LeanTouch's own tap-to-select chain, wired in the scene inspector exactly as
+// its "15 Tap To Select" example does: LeanFingerTap -> LeanSelectByFinger (raycast) ->
+// this file's OnShooterSelected. No event subscription and no raycast live here; the
+// ShooterView prefab carries a LeanSelectableByFinger so the query can find it.
 //
 // Why each fire loop counts its own ammo instead of watching the slot: the slot frees on
 // the last shot and the PLAYER may seat a new shooter into it before this loop's next
@@ -24,7 +26,7 @@ using Blast.Application;
 using Blast.Domain;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Lean.Touch;
+using Lean.Common;
 using UnityEngine;
 
 namespace Blast.Presentation
@@ -34,11 +36,11 @@ namespace Blast.Presentation
     {
         #region Fields
 
-        /// <summary>The visual a bullet is made of; it wears the firing shooter's material.</summary>
+        /// <summary>The bullet visual; its body wears the firing shooter's material.</summary>
         [SerializeField] CubeView _bulletPrefab;
 
-        /// <summary>Uniform scale of a bullet.</summary>
-        [SerializeField] float _bulletScale = 0.3f;
+        /// <summary>The muzzle flash spawned at every shot. Destroys itself when it stops.</summary>
+        [SerializeField] ParticleSystem _splashPrefab;
 
         /// <summary>Height above a shooter's feet a bullet leaves from.</summary>
         [SerializeField] float _bulletMuzzleHeight = 0.7f;
@@ -79,9 +81,6 @@ namespace Blast.Presentation
         /// <summary>The colour table bullets dress from. Handed in by Construct.</summary>
         IColorMaterials _materials;
 
-        /// <summary>The camera taps are raycast from.</summary>
-        Camera _camera;
-
         /// <summary>Whether the verdict has been announced; it only happens once.</summary>
         bool _verdictAnnounced;
 
@@ -100,42 +99,19 @@ namespace Blast.Presentation
             _slots = slots;
             _spawner = spawner;
             _materials = materials;
-            _camera = Camera.main;
         }
 
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>Starts listening for taps.</summary>
-        void OnEnable()
-        {
-            LeanTouch.OnFingerTap += HandleTap;
-        }
-
-        /// <summary>Stops listening for taps.</summary>
-        void OnDisable()
-        {
-            LeanTouch.OnFingerTap -= HandleTap;
-        }
-
-        /// <summary>Turns a tap on a front-row shooter into a selection.</summary>
-        /// <param name="finger">The finger (or mouse) that tapped.</param>
-        void HandleTap(LeanFinger finger)
+        /// <summary>Turns a LeanSelectByFinger selection of a front-row shooter into a play.</summary>
+        /// <param name="selectable">The selectable LeanTouch's raycast landed on.</param>
+        public void OnShooterSelected(LeanSelectable selectable)
         {
             // Construct runs from the scope's Configure; a tap can arrive before it.
-            if (_loop == null || finger.IsOverGui)
+            if (_loop == null)
             {
                 return;
             }
 
-            Ray ray = finger.GetRay(_camera);
-            if (!Physics.Raycast(ray, out RaycastHit hit, 100f))
-            {
-                return;
-            }
-
-            ShooterView tapped = hit.collider.GetComponentInParent<ShooterView>();
+            ShooterView tapped = selectable.GetComponent<ShooterView>();
             if (tapped == null || !_spawner.TryGetSelectableColumn(tapped, out int column))
             {
                 return;
@@ -143,6 +119,10 @@ namespace Blast.Presentation
 
             OnSelected(column).Forget();
         }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>Runs one selection: seat in the domain, then animate the consequences.</summary>
         /// <param name="column">The queue column the player tapped.</param>
@@ -163,7 +143,9 @@ namespace Blast.Presentation
 
             AnnounceIfDecided();
 
+            view.SetRunning(true);
             await view.transform.DOMove(_spawner.SlotWorldPosition(slot), _runDuration).SetEase(Ease.OutQuad);
+            view.SetRunning(false);
 
             FireLoop(slot, view, ammo, bulletMaterial).Forget();
         }
@@ -186,8 +168,14 @@ namespace Blast.Presentation
                 {
                     ammo--;
                     view.SetAmmo(ammo);
+                    view.PlayShoot();
                     ShotVisual(view, bulletMaterial, hitColumn).Forget();
                     AnnounceIfDecided();
+                }
+                else
+                {
+                    // Targetless: stand idle until a matching cube reaches the front.
+                    view.SetRunning(false);
                 }
 
                 // One rhythm for firing and for waiting: a targetless shooter re-checks at
@@ -209,8 +197,13 @@ namespace Blast.Presentation
             CubeView cube = _spawner.PopFrontCube(hitColumn);
 
             Vector3 muzzle = shooter.transform.position + Vector3.up * _bulletMuzzleHeight;
-            CubeView bullet = Instantiate(_bulletPrefab, muzzle, Quaternion.identity, transform);
-            bullet.transform.localScale = Vector3.one * _bulletScale;
+
+            // ponytail: Instantiate/Destroy per shot; pool both in the measured pass.
+            // The splash prefab's Stop Action is Destroy, so nothing here has to time it.
+            Instantiate(_splashPrefab, muzzle, Quaternion.identity, transform);
+
+            Quaternion bulletFacing = _bulletPrefab.transform.rotation;
+            CubeView bullet = Instantiate(_bulletPrefab, muzzle, bulletFacing, transform);
             bullet.Wear(bulletMaterial);
 
             await bullet.transform.DOMove(cube.transform.position, _bulletFlightDuration).SetEase(Ease.Linear);
@@ -229,6 +222,7 @@ namespace Blast.Presentation
         {
             Vector3 offScreen = view.transform.position + new Vector3(0f, 0f, -_leaveDistance);
 
+            view.SetRunning(true);
             await view.transform.DOMove(offScreen, _leaveDuration).SetEase(Ease.InQuad);
 
             Destroy(view.gameObject);

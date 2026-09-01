@@ -72,7 +72,10 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   the AppsAssets materials (`Surprise` → `Cube_Hidden`), tints synced from each
   material's `_BaseColor`. Deleted: `00_GAME/Materials`, `00_GAME/Meshes` (RoundedCube),
   `JMO Assets` (49MB paid TCP2 install — their materials bind the generated shader inside
-  AppsAssets, nothing needed the store install). Scene keeps the camera/light/volume rig,
+  AppsAssets, nothing needed the store install). **Restored 2026-09-01** at Salih's call,
+  for the juice pass (outline, rim, the shader generator itself): `git checkout 7b91b13~1
+  -- "Assets/JMO Assets"`, 740 files, imports with zero errors and no shader-name collision
+  with `CustomShader`. Keeping it is a presentation cost, not a technical one. Scene keeps the camera/light/volume rig,
   the scope, imported `GameArea`+`Floor`, and a `Cannon` object Salih is hand-building
   into the shooter prefab (WalkingCube + ammo TMP text).
 - `Shooter` + `ShooterQueue` (Domain) — done, 28/28 green. `Shooter` is a readonly struct
@@ -181,6 +184,56 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   spawned disabled. Apply runs on ALL overrides, so re-apply with the instance active,
   then deactivate WITHOUT applying; the template's off-state stays an instance-only
   override now.
+- Tap-to-select rewired onto LeanTouch's own chain — done, 57/57 green, verified in Play
+  (a `Select` through `LeanSelectByFinger` popped the front shooter, zero console errors).
+  Salih's call: use the "15 Tap To Select" example's layout instead of a hand-written
+  `OnFingerTap` subscription and raycast. Scene object `Tap To Select` = `LeanFingerTap`
+  (`IgnoreStartedOverGui` + `IgnoreIsOverGui` on, replacing the old `IsOverGui` check)
+  -> `LeanSelectByFinger.SelectScreenPosition` -> `GameDirector.OnShooterSelected`, both
+  hops as inspector-wired persistent listeners; the director no longer owns a camera,
+  an enable/disable pair or a raycast. `ShooterView.prefab` root carries a
+  `LeanSelectableByFinger`; the query is Raycast on default layers, Search
+  `GetComponentInParent` (the collider sits on a child). Selection state means nothing to
+  the game, so it is kept at exactly one entry: `Limit` DeselectFirst, `MaxSelectables` 1,
+  `Reselect` DeselectAndSelect, `DeselectWithNothing` off — every tap raises `OnSelected`
+  and the list never grows. Presentation asmdef gained `LeanCommon` (`LeanSelectable`
+  lives there, not in `LeanTouch`). No dedicated layer: cubes and bullets have no
+  colliders, so the raycast can only ever hit shooters. **Trap:** the editor had the
+  LeanTouch example scene open when the wiring script first ran, so `GameObject.Find`
+  touched the example's object in memory; `EditorSceneManager.OpenScene` to `Game_Scene`
+  first, and `git status Assets/Plugins` afterwards to prove the example was not saved.
+  The `eval` tool also drops `using` directives — fully qualify every type.
+- Bullet prefab + muzzle splash — done, 57/57 green, verified in Play (five fronts seated,
+  cubes 101 -> 66, splashes spawned per shot and all gone eight seconds later, zero errors).
+  Salih authored `00_GAME/Prefabs/Bullet.prefab` (Cube.fbx variant, `Gun.mat` body,
+  `Bullet_Trail` TrailRenderer, rotated -90 on X); it now carries a `CubeView` whose
+  renderer is the body, so the director's `_bulletPrefab` field kept its type and the
+  per-shot `Wear(shooter material)` kept working. `_bulletScale` is gone: the prefab IS the
+  size, and the bullet spawns with the prefab's own rotation, not identity. The splash is
+  `AppsAssets/Prefabs/SplashEffect.prefab` instantiated at the muzzle every shot; its root
+  ParticleSystem's Stop Action was None (it would have leaked one object per shot) and is
+  now Destroy, so the director never times it. `CubeView`'s header now says it dresses a
+  board cube OR a bullet - one humble type, not a `BulletView` twin. Still Instantiate +
+  Destroy per shot, marked `ponytail:` for the measured pass. The splash prefab's
+  AudioSource has Play On Awake but no clip; `Splash.wav` goes in with the sound chunk.
+- Shooter animator wired — done, 57/57 green, verified in Play (isRun flips the frame a
+  front is selected, seated shooters sample as Shoot while firing and Idle while waiting,
+  queue shooters stay Idle, zero errors). Salih added `isIdle` / `isRun` booleans and a
+  `Shoot` trigger to `AppsAssets/Animations/WalkingCube.controller`; the three Any State
+  transitions had **no conditions**, which makes every one of them true every frame, so the
+  animator was restarting itself continuously. Now: Any->Run on `isRun`, Any->Idle on
+  `isIdle` (both with Can Transition To Self OFF, or a held bool would restart the clip
+  each frame), Any->Shoot on the trigger with self-transition ON (each shot restarts the
+  clip) and its blend cut from 0.25 to 0.05 s - the shoot clip is 0.32 s against a 0.22 s
+  fire interval, so a 0.25 s blend would never reach the pose. `ShooterView` gained an
+  `Animator` reference (the WalkingCube child) and two methods: `SetRunning(bool)` writes
+  both booleans as each other's opposite, `PlayShoot` drops `isIdle` before pulling the
+  trigger so the Idle transition cannot cut the shot short. The director calls
+  `SetRunning(true)` before the run to the slot and before the leave, `SetRunning(false)`
+  on arrival and on every targetless tick, `PlayShoot` on every successful `TryShoot`.
+  Parameter names are `Animator.StringToHash` statics, no per-call string hashing. Layout
+  note: Salih moved the queue to origin z=-13 with 2/2 spacing and the slots to z=-9; the
+  older numbers quoted above are superseded by the scene.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

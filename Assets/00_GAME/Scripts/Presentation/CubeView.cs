@@ -1,4 +1,5 @@
-// CubeView - one cube on the board, as the player sees it.
+// CubeView - a cube-shaped visual that wears one colour material: a board cube, or the
+//   bullet a shooter fires (the same mesh at bullet size, plus a trail).
 // Layer: Presentation (humble: holds references and applies what it is told, decides nothing).
 // Responsibility: wearing the material its colour resolves to.
 // NOT its responsibility: knowing its colour's meaning, its cell, or when it dies. The
@@ -9,7 +10,7 @@ using UnityEngine;
 
 namespace Blast.Presentation
 {
-    /// <summary>The visual of a single board cube.</summary>
+    /// <summary>The visual of a single cube: a board cube or a bullet.</summary>
     public sealed class CubeView : MonoBehaviour
     {
         #region Fields
