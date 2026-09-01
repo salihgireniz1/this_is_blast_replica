@@ -1,0 +1,295 @@
+{
+  "projectRoot": "C:/Users/giren/Desktop/Projects/this_is_blast_replica/Assets/Plugins/CW/LeanTouch+",
+  "files": [
+    {
+      "path": "LeanTouchPlus.asmdef",
+      "language": "asmdef",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Documentation.html",
+      "language": "html",
+      "fileCategory": "markup"
+    },
+    {
+      "path": "Required/Scripts/IDropHandler.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanDragColorMesh.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanDragDeformMesh.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanDragLine.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanDragSelect.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanDragTranslateAlong.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanDragTranslateAlongRigidbody.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanDragTranslateRigidbody.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanDragTranslateRigidbody2D.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanDrop.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanDropCount.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanFingerDownCanvas.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanFingerFlick.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanFingerHeld.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanFingerHeldCanvas.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanFingerTapExpired.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanFingerTapQuick.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanFirstDown.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanFirstDownCanvas.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanGestureToggle.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanLastUp.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanLastUpCanvas.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanManualFlick.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanManualSwipe.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanMouseWheel.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanMultiDirection.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanMultiDown.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanMultiHeld.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanMultiPinch.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanMultiPull.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanMultiSwipe.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanMultiTap.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanMultiTwist.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanMultiUp.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanMultiUpdate.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanMultiUpdateCanvas.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanPick.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanPickable.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanPinchCamera.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanReplayFinger.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanSelectSelf.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanSelectableBlock.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanSelectableCenter.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanSelectableDial.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanSelectableDragTorque.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanSelectableDrop.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanSelectablePressureScale.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanSelectableSelected.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanSelectableTime.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanSelectionBox.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanShape.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanShapeDetector.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanSpawnWithFinger.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanSwipeEdge.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "Required/Scripts/LeanTwistCamera.cs",
+      "language": "csharp",
+      "fileCategory": "code"
+    },
+    {
+      "path": "package.json",
+      "language": "json",
+      "fileCategory": "config"
+    }
+  ]
+}

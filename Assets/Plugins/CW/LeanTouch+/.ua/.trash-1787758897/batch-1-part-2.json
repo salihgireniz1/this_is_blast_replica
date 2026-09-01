@@ -1,0 +1,546 @@
+{
+  "nodes": [
+    {
+      "id": "file:Required/Scripts/LeanFingerDownCanvas.cs",
+      "type": "file",
+      "name": "LeanFingerDownCanvas.cs",
+      "filePath": "Required/Scripts/LeanFingerDownCanvas.cs",
+      "summary": "UI variant of the external LeanFingerDown component that only reacts to fingers pressing the Canvas element it is attached to.",
+      "tags": ["component", "ui", "input-handling", "subclass", "editor-only"],
+      "complexity": "simple",
+      "languageNotes": "Requires the UI graphic's RaycastTarget setting; the Canvas suffix convention throughout this package means 'raycast against UI instead of world colliders'."
+    },
+    {
+      "id": "class:Required/Scripts/LeanFingerDownCanvas.cs:LeanFingerDownCanvas",
+      "type": "class",
+      "name": "LeanFingerDownCanvas",
+      "filePath": "Required/Scripts/LeanFingerDownCanvas.cs",
+      "lineRange": [7, 26],
+      "summary": "Subclass of the external LeanFingerDown that overrides HandleFingerDown to ignore fingers whose press did not land on this RectTransform.",
+      "tags": ["component", "ui", "input-handling", "subclass"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanFingerDownCanvas.cs:LeanFingerDownCanvas_Editor",
+      "type": "class",
+      "name": "LeanFingerDownCanvas_Editor",
+      "filePath": "Required/Scripts/LeanFingerDownCanvas.cs",
+      "lineRange": [37, 45],
+      "summary": "Inspector for LeanFingerDownCanvas, extending the external LeanFingerDown_Editor.",
+      "tags": ["editor-only", "inspector", "unity", "ui"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanFingerFlick.cs",
+      "type": "file",
+      "name": "LeanFingerFlick.cs",
+      "filePath": "Required/Scripts/LeanFingerFlick.cs",
+      "summary": "Swipe detector that fires while the finger is still touching the screen, rather than waiting for release, plus its inspector editor.",
+      "tags": ["component", "gesture-detection", "input-handling", "swipe", "editor-only"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanFingerFlick.cs:LeanFingerFlick",
+      "type": "class",
+      "name": "LeanFingerFlick",
+      "filePath": "Required/Scripts/LeanFingerFlick.cs",
+      "lineRange": [8, 148],
+      "summary": "LeanSwipeBase subclass that tracks each finger in a nested FingerData list and, per frame, tests the recorded movement against the Check mode (CheckType enum) to raise a swipe mid-touch.",
+      "tags": ["component", "gesture-detection", "swipe", "state-tracking"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanFingerFlick.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanFingerFlick.cs",
+      "lineRange": [73, 105],
+      "summary": "Walks the tracked fingers each frame, building the from/to screen positions for the configured check mode and testing them for a flick.",
+      "tags": ["per-frame", "gesture-detection", "input-handling"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanFingerFlick.cs:TestFinger",
+      "type": "function",
+      "name": "TestFinger",
+      "filePath": "Required/Scripts/LeanFingerFlick.cs",
+      "lineRange": [124, 147],
+      "summary": "Applies the GUI and required-selectable filters, then delegates to LeanSwipeBase to evaluate and dispatch the swipe between the two screen points.",
+      "tags": ["validation", "gesture-detection", "input-handling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanFingerFlick.cs:LeanFingerFlick_Editor",
+      "type": "class",
+      "name": "LeanFingerFlick_Editor",
+      "filePath": "Required/Scripts/LeanFingerFlick.cs",
+      "lineRange": [159, 172],
+      "summary": "Inspector for LeanFingerFlick extending LeanSwipeBase_Editor with the GUI-ignore and check-mode fields.",
+      "tags": ["editor-only", "inspector", "unity", "tooling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanFingerHeld.cs",
+      "type": "file",
+      "name": "LeanFingerHeld.cs",
+      "filePath": "Required/Scripts/LeanFingerHeld.cs",
+      "summary": "Core hold-detection component: fires down/update/up events once a finger has stayed on the screen for MinimumAge without moving more than MaximumMovement. Base class for the Canvas variant.",
+      "tags": ["component", "gesture-detection", "input-handling", "base-class", "unity-event"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:Required/Scripts/LeanFingerHeld.cs:LeanFingerHeld",
+      "type": "class",
+      "name": "LeanFingerHeld",
+      "filePath": "Required/Scripts/LeanFingerHeld.cs",
+      "lineRange": [10, 212],
+      "summary": "MonoBehaviour that keeps a nested FingerData entry per touching finger, decides when the hold conditions are met, and invokes both finger-space and world-space UnityEvents for the down, update and up phases.",
+      "tags": ["component", "gesture-detection", "state-tracking", "unity-event", "base-class"],
+      "complexity": "complex",
+      "languageNotes": "Exposes parallel OnFinger*/OnWorld* event sets, so designers can consume either the raw finger or a ScreenDepth-projected world position."
+    },
+    {
+      "id": "function:Required/Scripts/LeanFingerHeld.cs:HandleFingerDown",
+      "type": "function",
+      "name": "HandleFingerDown",
+      "filePath": "Required/Scripts/LeanFingerHeld.cs",
+      "lineRange": [95, 113],
+      "summary": "Starts tracking a new finger after the GUI and required-selectable filters pass, allocating its FingerData state.",
+      "tags": ["event-handler", "validation", "state-tracking"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanFingerHeld.cs:HandleFingerUpdate",
+      "type": "function",
+      "name": "HandleFingerUpdate",
+      "filePath": "Required/Scripts/LeanFingerHeld.cs",
+      "lineRange": [115, 151],
+      "summary": "Per-finger state machine: evaluates the hold conditions each update and drives the transitions that invoke the down, update and up events, discarding fingers that moved too far.",
+      "tags": ["state-tracking", "gesture-detection", "event-handler"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanFingerHeld.cs:LeanFingerHeld_Editor",
+      "type": "class",
+      "name": "LeanFingerHeld_Editor",
+      "filePath": "Required/Scripts/LeanFingerHeld.cs",
+      "lineRange": [223, 281],
+      "summary": "Inspector for LeanFingerHeld drawing the age/movement thresholds and conditionally showing the world-space event group; also the base editor for the Canvas variant.",
+      "tags": ["editor-only", "inspector", "unity", "base-class"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:Required/Scripts/LeanFingerHeldCanvas.cs",
+      "type": "file",
+      "name": "LeanFingerHeldCanvas.cs",
+      "filePath": "Required/Scripts/LeanFingerHeldCanvas.cs",
+      "summary": "UI variant of LeanFingerHeld that only detects holds on the Canvas element it is attached to.",
+      "tags": ["component", "ui", "gesture-detection", "subclass", "editor-only"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanFingerHeldCanvas.cs:LeanFingerHeldCanvas",
+      "type": "class",
+      "name": "LeanFingerHeldCanvas",
+      "filePath": "Required/Scripts/LeanFingerHeldCanvas.cs",
+      "lineRange": [6, 24],
+      "summary": "Subclass of LeanFingerHeld overriding HandleFingerDown so only fingers pressing this UI element are tracked.",
+      "tags": ["component", "ui", "subclass", "input-handling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanFingerHeldCanvas.cs:LeanFingerHeldCanvas_Editor",
+      "type": "class",
+      "name": "LeanFingerHeldCanvas_Editor",
+      "filePath": "Required/Scripts/LeanFingerHeldCanvas.cs",
+      "lineRange": [35, 41],
+      "summary": "Inspector for LeanFingerHeldCanvas, reusing LeanFingerHeld_Editor's drawing.",
+      "tags": ["editor-only", "inspector", "unity", "subclass"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanFingerTapExpired.cs",
+      "type": "file",
+      "name": "LeanFingerTapExpired.cs",
+      "filePath": "Required/Scripts/LeanFingerTapExpired.cs",
+      "summary": "Tap component that only fires once the tap counter has expired, which is how single and double taps are told apart without interfering.",
+      "tags": ["component", "gesture-detection", "tap", "subclass", "editor-only"],
+      "complexity": "simple",
+      "languageNotes": "Expiry timing comes from the global LeanTouch.TapThreshold setting rather than a local field."
+    },
+    {
+      "id": "class:Required/Scripts/LeanFingerTapExpired.cs:LeanFingerTapExpired",
+      "type": "class",
+      "name": "LeanFingerTapExpired",
+      "filePath": "Required/Scripts/LeanFingerTapExpired.cs",
+      "lineRange": [6, 24],
+      "summary": "Subclass of the external LeanFingerTap that subscribes to the finger-expired event instead of the tap event, so the final tap count is known before the events fire.",
+      "tags": ["component", "gesture-detection", "tap", "subclass"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanFingerTapExpired.cs:LeanFingerTapExpired_Editor",
+      "type": "class",
+      "name": "LeanFingerTapExpired_Editor",
+      "filePath": "Required/Scripts/LeanFingerTapExpired.cs",
+      "lineRange": [35, 41],
+      "summary": "Inspector for LeanFingerTapExpired, extending the external LeanFingerTap_Editor.",
+      "tags": ["editor-only", "inspector", "unity", "subclass"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanFingerTapQuick.cs",
+      "type": "file",
+      "name": "LeanFingerTapQuick.cs",
+      "filePath": "Required/Scripts/LeanFingerTapQuick.cs",
+      "summary": "Detects the final tap of a multi-tap sequence at the moment the finger touches down, giving instant response for the last tap only.",
+      "tags": ["component", "gesture-detection", "tap", "input-handling", "editor-only"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanFingerTapQuick.cs:LeanFingerTapQuick",
+      "type": "class",
+      "name": "LeanFingerTapQuick",
+      "filePath": "Required/Scripts/LeanFingerTapQuick.cs",
+      "lineRange": [13, 102],
+      "summary": "MonoBehaviour that listens for finger-down and fires its finger, world and screen UnityEvents as soon as the running tap count reaches RequiredTapCount.",
+      "tags": ["component", "gesture-detection", "tap", "unity-event"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanFingerTapQuick.cs:HandleFingerDown",
+      "type": "function",
+      "name": "HandleFingerDown",
+      "filePath": "Required/Scripts/LeanFingerTapQuick.cs",
+      "lineRange": [70, 101],
+      "summary": "Applies the GUI and selectable filters, compares the finger's tap count with RequiredTapCount, and invokes the finger, world and screen events.",
+      "tags": ["event-handler", "validation", "gesture-detection"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanFingerTapQuick.cs:LeanFingerTapQuick_Editor",
+      "type": "class",
+      "name": "LeanFingerTapQuick_Editor",
+      "filePath": "Required/Scripts/LeanFingerTapQuick.cs",
+      "lineRange": [113, 147],
+      "summary": "Inspector for LeanFingerTapQuick drawing the tap-count requirement and the three event groups.",
+      "tags": ["editor-only", "inspector", "unity", "tooling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanFirstDown.cs",
+      "type": "file",
+      "name": "LeanFirstDown.cs",
+      "filePath": "Required/Scripts/LeanFirstDown.cs",
+      "summary": "Fires events only when the first finger begins touching the screen, ignoring additional simultaneous fingers. Base class for the Canvas variant.",
+      "tags": ["component", "input-handling", "unity-event", "base-class", "editor-only"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanFirstDown.cs:LeanFirstDown",
+      "type": "class",
+      "name": "LeanFirstDown",
+      "filePath": "Required/Scripts/LeanFirstDown.cs",
+      "lineRange": [10, 122],
+      "summary": "MonoBehaviour that keeps a list of active fingers and raises its finger, world and screen events only for the transition from zero to one touching finger; UseFinger is the virtual hook the Canvas variant overrides.",
+      "tags": ["component", "input-handling", "state-tracking", "unity-event", "base-class"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanFirstDown.cs:UseFinger",
+      "type": "function",
+      "name": "UseFinger",
+      "filePath": "Required/Scripts/LeanFirstDown.cs",
+      "lineRange": [68, 86],
+      "summary": "Virtual filter deciding whether a finger counts toward the first-down detection; overridden by the Canvas subclass to require a UI hit.",
+      "tags": ["validation", "extension-point", "input-handling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanFirstDown.cs:HandleFingerDown",
+      "type": "function",
+      "name": "HandleFingerDown",
+      "filePath": "Required/Scripts/LeanFirstDown.cs",
+      "lineRange": [88, 116],
+      "summary": "Adds the finger to the tracked list and, when it is the first one, invokes the finger, world and screen UnityEvents.",
+      "tags": ["event-handler", "input-handling", "state-tracking"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanFirstDown.cs:LeanFirstDown_Editor",
+      "type": "class",
+      "name": "LeanFirstDown_Editor",
+      "filePath": "Required/Scripts/LeanFirstDown.cs",
+      "lineRange": [133, 166],
+      "summary": "Inspector for LeanFirstDown and base editor for the Canvas variant, drawing the filters and event groups.",
+      "tags": ["editor-only", "inspector", "unity", "base-class"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanFirstDownCanvas.cs",
+      "type": "file",
+      "name": "LeanFirstDownCanvas.cs",
+      "filePath": "Required/Scripts/LeanFirstDownCanvas.cs",
+      "summary": "UI variant of LeanFirstDown that only counts fingers pressing the Canvas element it is attached to.",
+      "tags": ["component", "ui", "input-handling", "subclass", "editor-only"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanFirstDownCanvas.cs:LeanFirstDownCanvas",
+      "type": "class",
+      "name": "LeanFirstDownCanvas",
+      "filePath": "Required/Scripts/LeanFirstDownCanvas.cs",
+      "lineRange": [7, 22],
+      "summary": "Subclass of LeanFirstDown that overrides UseFinger to require the finger to be over this UI element.",
+      "tags": ["component", "ui", "subclass", "validation"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanFirstDownCanvas.cs:LeanFirstDownCanvas_Editor",
+      "type": "class",
+      "name": "LeanFirstDownCanvas_Editor",
+      "filePath": "Required/Scripts/LeanFirstDownCanvas.cs",
+      "lineRange": [33, 41],
+      "summary": "Inspector for LeanFirstDownCanvas, reusing LeanFirstDown_Editor's drawing.",
+      "tags": ["editor-only", "inspector", "unity", "subclass"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanGestureToggle.cs",
+      "type": "file",
+      "name": "LeanGestureToggle.cs",
+      "filePath": "Required/Scripts/LeanGestureToggle.cs",
+      "summary": "Arbitrates between drag, pinch and twist components by enabling only the one whose gesture exceeded its threshold first, the way mobile map apps isolate gestures.",
+      "tags": ["component", "gesture-detection", "state-machine", "orchestration", "editor-only"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanGestureToggle.cs:LeanGestureToggle",
+      "type": "class",
+      "name": "LeanGestureToggle",
+      "filePath": "Required/Scripts/LeanGestureToggle.cs",
+      "lineRange": [7, 138],
+      "summary": "MonoBehaviour that accumulates the filtered fingers' drag, pinch and twist magnitudes each frame and, once one crosses its threshold, switches the StateType state so only that component stays enabled.",
+      "tags": ["component", "gesture-detection", "state-machine", "orchestration"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanGestureToggle.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanGestureToggle.cs",
+      "lineRange": [88, 137],
+      "summary": "Per-frame arbitration: accumulates delta, scale and twist from the active fingers, picks the winning gesture against its threshold, and enables or disables the target components accordingly.",
+      "tags": ["per-frame", "state-machine", "gesture-detection", "orchestration"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanGestureToggle.cs:LeanGestureToggle_Editor",
+      "type": "class",
+      "name": "LeanGestureToggle_Editor",
+      "filePath": "Required/Scripts/LeanGestureToggle.cs",
+      "lineRange": [149, 174],
+      "summary": "Inspector for LeanGestureToggle exposing the three target components and their thresholds.",
+      "tags": ["editor-only", "inspector", "unity", "tooling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanLastUp.cs",
+      "type": "file",
+      "name": "LeanLastUp.cs",
+      "filePath": "Required/Scripts/LeanLastUp.cs",
+      "summary": "Fires events when the last finger stops touching the screen, the release-side counterpart to LeanFirstDown. Base class for the Canvas variant.",
+      "tags": ["component", "input-handling", "unity-event", "base-class", "editor-only"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanLastUp.cs:LeanLastUp",
+      "type": "class",
+      "name": "LeanLastUp",
+      "filePath": "Required/Scripts/LeanLastUp.cs",
+      "lineRange": [10, 112],
+      "summary": "MonoBehaviour that tracks touching fingers and raises its finger, world and screen events only when the tracked list empties.",
+      "tags": ["component", "input-handling", "state-tracking", "unity-event", "base-class"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanLastUp.cs:HandleFingerDown",
+      "type": "function",
+      "name": "HandleFingerDown",
+      "filePath": "Required/Scripts/LeanLastUp.cs",
+      "lineRange": [68, 86],
+      "summary": "Registers a finger in the tracked list once the GUI and required-selectable filters pass.",
+      "tags": ["event-handler", "validation", "state-tracking"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanLastUp.cs:HandleFingerUp",
+      "type": "function",
+      "name": "HandleFingerUp",
+      "filePath": "Required/Scripts/LeanLastUp.cs",
+      "lineRange": [88, 111],
+      "summary": "Removes the finger and, when none remain, invokes the finger, world and screen UnityEvents for the last-up moment.",
+      "tags": ["event-handler", "input-handling", "unity-event"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanLastUp.cs:LeanLastUp_Editor",
+      "type": "class",
+      "name": "LeanLastUp_Editor",
+      "filePath": "Required/Scripts/LeanLastUp.cs",
+      "lineRange": [123, 156],
+      "summary": "Inspector for LeanLastUp and base editor for the Canvas variant.",
+      "tags": ["editor-only", "inspector", "unity", "base-class"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanLastUpCanvas.cs",
+      "type": "file",
+      "name": "LeanLastUpCanvas.cs",
+      "filePath": "Required/Scripts/LeanLastUpCanvas.cs",
+      "summary": "UI variant of LeanLastUp that only tracks fingers which started on the Canvas element it is attached to.",
+      "tags": ["component", "ui", "input-handling", "subclass", "editor-only"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanLastUpCanvas.cs:LeanLastUpCanvas",
+      "type": "class",
+      "name": "LeanLastUpCanvas",
+      "filePath": "Required/Scripts/LeanLastUpCanvas.cs",
+      "lineRange": [8, 26],
+      "summary": "Subclass of LeanLastUp overriding HandleFingerDown so only fingers over this UI element are counted toward the last-up event.",
+      "tags": ["component", "ui", "subclass", "input-handling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanLastUpCanvas.cs:LeanLastUpCanvas_Editor",
+      "type": "class",
+      "name": "LeanLastUpCanvas_Editor",
+      "filePath": "Required/Scripts/LeanLastUpCanvas.cs",
+      "lineRange": [37, 45],
+      "summary": "Inspector for LeanLastUpCanvas, reusing LeanLastUp_Editor's drawing.",
+      "tags": ["editor-only", "inspector", "unity", "subclass"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanManualFlick.cs",
+      "type": "file",
+      "name": "LeanManualFlick.cs",
+      "filePath": "Required/Scripts/LeanManualFlick.cs",
+      "summary": "Swipe detector whose fingers are fed in manually via AddFinger by components such as LeanFingerDown or LeanFingerDownCanvas, so a flick can be scoped to a specific object or UI element.",
+      "tags": ["component", "gesture-detection", "swipe", "manual-input", "editor-only"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanManualFlick.cs:LeanManualFlick",
+      "type": "class",
+      "name": "LeanManualFlick",
+      "filePath": "Required/Scripts/LeanManualFlick.cs",
+      "lineRange": [8, 137],
+      "summary": "LeanSwipeBase subclass with a public AddFinger/RemoveFinger API and a nested FingerData list; each frame it tests the tracked fingers against the Check mode and dispatches swipe events.",
+      "tags": ["component", "gesture-detection", "swipe", "state-tracking", "manual-input"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanManualFlick.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanManualFlick.cs",
+      "lineRange": [79, 111],
+      "summary": "Iterates the manually added fingers, resolving the from/to screen positions for the configured check mode and testing each for a flick.",
+      "tags": ["per-frame", "gesture-detection", "input-handling"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanManualFlick.cs:TestFinger",
+      "type": "function",
+      "name": "TestFinger",
+      "filePath": "Required/Scripts/LeanManualFlick.cs",
+      "lineRange": [118, 136],
+      "summary": "Applies the GUI and required-selectable filters, then hands the two screen points to LeanSwipeBase for swipe evaluation.",
+      "tags": ["validation", "gesture-detection", "input-handling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanManualFlick.cs:LeanManualFlick_Editor",
+      "type": "class",
+      "name": "LeanManualFlick_Editor",
+      "filePath": "Required/Scripts/LeanManualFlick.cs",
+      "lineRange": [148, 158],
+      "summary": "Inspector for LeanManualFlick extending LeanSwipeBase_Editor.",
+      "tags": ["editor-only", "inspector", "unity", "tooling"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {"source": "file:Required/Scripts/LeanFingerDownCanvas.cs", "target": "class:Required/Scripts/LeanFingerDownCanvas.cs:LeanFingerDownCanvas", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerDownCanvas.cs", "target": "class:Required/Scripts/LeanFingerDownCanvas.cs:LeanFingerDownCanvas_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerDownCanvas.cs", "target": "class:Required/Scripts/LeanFingerDownCanvas.cs:LeanFingerDownCanvas", "type": "exports", "direction": "forward", "weight": 0.8},
+
+    {"source": "file:Required/Scripts/LeanFingerFlick.cs", "target": "class:Required/Scripts/LeanFingerFlick.cs:LeanFingerFlick", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerFlick.cs", "target": "class:Required/Scripts/LeanFingerFlick.cs:LeanFingerFlick_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerFlick.cs", "target": "function:Required/Scripts/LeanFingerFlick.cs:Update", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerFlick.cs", "target": "function:Required/Scripts/LeanFingerFlick.cs:TestFinger", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerFlick.cs", "target": "class:Required/Scripts/LeanFingerFlick.cs:LeanFingerFlick", "type": "exports", "direction": "forward", "weight": 0.8},
+    {"source": "file:Required/Scripts/LeanFingerFlick.cs", "target": "file:Required/Scripts/LeanManualFlick.cs", "type": "related", "direction": "forward", "weight": 0.5},
+
+    {"source": "file:Required/Scripts/LeanFingerHeld.cs", "target": "class:Required/Scripts/LeanFingerHeld.cs:LeanFingerHeld", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerHeld.cs", "target": "class:Required/Scripts/LeanFingerHeld.cs:LeanFingerHeld_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerHeld.cs", "target": "function:Required/Scripts/LeanFingerHeld.cs:HandleFingerDown", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerHeld.cs", "target": "function:Required/Scripts/LeanFingerHeld.cs:HandleFingerUpdate", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerHeld.cs", "target": "class:Required/Scripts/LeanFingerHeld.cs:LeanFingerHeld", "type": "exports", "direction": "forward", "weight": 0.8},
+
+    {"source": "file:Required/Scripts/LeanFingerHeldCanvas.cs", "target": "class:Required/Scripts/LeanFingerHeldCanvas.cs:LeanFingerHeldCanvas", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerHeldCanvas.cs", "target": "class:Required/Scripts/LeanFingerHeldCanvas.cs:LeanFingerHeldCanvas_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerHeldCanvas.cs", "target": "class:Required/Scripts/LeanFingerHeldCanvas.cs:LeanFingerHeldCanvas", "type": "exports", "direction": "forward", "weight": 0.8},
+    {"source": "class:Required/Scripts/LeanFingerHeldCanvas.cs:LeanFingerHeldCanvas", "target": "class:Required/Scripts/LeanFingerHeld.cs:LeanFingerHeld", "type": "inherits", "direction": "forward", "weight": 0.9},
+    {"source": "class:Required/Scripts/LeanFingerHeldCanvas.cs:LeanFingerHeldCanvas_Editor", "target": "class:Required/Scripts/LeanFingerHeld.cs:LeanFingerHeld_Editor", "type": "inherits", "direction": "forward", "weight": 0.9},
+
+    {"source": "file:Required/Scripts/LeanFingerTapExpired.cs", "target": "class:Required/Scripts/LeanFingerTapExpired.cs:LeanFingerTapExpired", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerTapExpired.cs", "target": "class:Required/Scripts/LeanFingerTapExpired.cs:LeanFingerTapExpired_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerTapExpired.cs", "target": "class:Required/Scripts/LeanFingerTapExpired.cs:LeanFingerTapExpired", "type": "exports", "direction": "forward", "weight": 0.8},
+    {"source": "file:Required/Scripts/LeanFingerTapExpired.cs", "target": "file:Required/Scripts/LeanFingerTapQuick.cs", "type": "related", "direction": "forward", "weight": 0.5},
+
+    {"source": "file:Required/Scripts/LeanFingerTapQuick.cs", "target": "class:Required/Scripts/LeanFingerTapQuick.cs:LeanFingerTapQuick", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerTapQuick.cs", "target": "class:Required/Scripts/LeanFingerTapQuick.cs:LeanFingerTapQuick_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerTapQuick.cs", "target": "function:Required/Scripts/LeanFingerTapQuick.cs:HandleFingerDown", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFingerTapQuick.cs", "target": "class:Required/Scripts/LeanFingerTapQuick.cs:LeanFingerTapQuick", "type": "exports", "direction": "forward", "weight": 0.8},
+
+    {"source": "file:Required/Scripts/LeanFirstDown.cs", "target": "class:Required/Scripts/LeanFirstDown.cs:LeanFirstDown", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFirstDown.cs", "target": "class:Required/Scripts/LeanFirstDown.cs:LeanFirstDown_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFirstDown.cs", "target": "function:Required/Scripts/LeanFirstDown.cs:UseFinger", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFirstDown.cs", "target": "function:Required/Scripts/LeanFirstDown.cs:HandleFingerDown", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFirstDown.cs", "target": "class:Required/Scripts/LeanFirstDown.cs:LeanFirstDown", "type": "exports", "direction": "forward", "weight": 0.8},
+    {"source": "file:Required/Scripts/LeanFirstDown.cs", "target": "file:Required/Scripts/LeanLastUp.cs", "type": "related", "direction": "forward", "weight": 0.5},
+
+    {"source": "file:Required/Scripts/LeanFirstDownCanvas.cs", "target": "class:Required/Scripts/LeanFirstDownCanvas.cs:LeanFirstDownCanvas", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFirstDownCanvas.cs", "target": "class:Required/Scripts/LeanFirstDownCanvas.cs:LeanFirstDownCanvas_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanFirstDownCanvas.cs", "target": "class:Required/Scripts/LeanFirstDownCanvas.cs:LeanFirstDownCanvas", "type": "exports", "direction": "forward", "weight": 0.8},
+    {"source": "class:Required/Scripts/LeanFirstDownCanvas.cs:LeanFirstDownCanvas", "target": "class:Required/Scripts/LeanFirstDown.cs:LeanFirstDown", "type": "inherits", "direction": "forward", "weight": 0.9},
+    {"source": "class:Required/Scripts/LeanFirstDownCanvas.cs:LeanFirstDownCanvas_Editor", "target": "class:Required/Scripts/LeanFirstDown.cs:LeanFirstDown_Editor", "type": "inherits", "direction": "forward", "weight": 0.9},
+
+    {"source": "file:Required/Scripts/LeanGestureToggle.cs", "target": "class:Required/Scripts/LeanGestureToggle.cs:LeanGestureToggle", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanGestureToggle.cs", "target": "class:Required/Scripts/LeanGestureToggle.cs:LeanGestureToggle_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanGestureToggle.cs", "target": "function:Required/Scripts/LeanGestureToggle.cs:Update", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanGestureToggle.cs", "target": "class:Required/Scripts/LeanGestureToggle.cs:LeanGestureToggle", "type": "exports", "direction": "forward", "weight": 0.8},
+
+    {"source": "file:Required/Scripts/LeanLastUp.cs", "target": "class:Required/Scripts/LeanLastUp.cs:LeanLastUp", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanLastUp.cs", "target": "class:Required/Scripts/LeanLastUp.cs:LeanLastUp_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanLastUp.cs", "target": "function:Required/Scripts/LeanLastUp.cs:HandleFingerDown", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanLastUp.cs", "target": "function:Required/Scripts/LeanLastUp.cs:HandleFingerUp", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanLastUp.cs", "target": "class:Required/Scripts/LeanLastUp.cs:LeanLastUp", "type": "exports", "direction": "forward", "weight": 0.8},
+
+    {"source": "file:Required/Scripts/LeanLastUpCanvas.cs", "target": "class:Required/Scripts/LeanLastUpCanvas.cs:LeanLastUpCanvas", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanLastUpCanvas.cs", "target": "class:Required/Scripts/LeanLastUpCanvas.cs:LeanLastUpCanvas_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanLastUpCanvas.cs", "target": "class:Required/Scripts/LeanLastUpCanvas.cs:LeanLastUpCanvas", "type": "exports", "direction": "forward", "weight": 0.8},
+    {"source": "class:Required/Scripts/LeanLastUpCanvas.cs:LeanLastUpCanvas", "target": "class:Required/Scripts/LeanLastUp.cs:LeanLastUp", "type": "inherits", "direction": "forward", "weight": 0.9},
+    {"source": "class:Required/Scripts/LeanLastUpCanvas.cs:LeanLastUpCanvas_Editor", "target": "class:Required/Scripts/LeanLastUp.cs:LeanLastUp_Editor", "type": "inherits", "direction": "forward", "weight": 0.9},
+
+    {"source": "file:Required/Scripts/LeanManualFlick.cs", "target": "class:Required/Scripts/LeanManualFlick.cs:LeanManualFlick", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanManualFlick.cs", "target": "class:Required/Scripts/LeanManualFlick.cs:LeanManualFlick_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanManualFlick.cs", "target": "function:Required/Scripts/LeanManualFlick.cs:Update", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanManualFlick.cs", "target": "function:Required/Scripts/LeanManualFlick.cs:TestFinger", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanManualFlick.cs", "target": "class:Required/Scripts/LeanManualFlick.cs:LeanManualFlick", "type": "exports", "direction": "forward", "weight": 0.8},
+    {"source": "file:Required/Scripts/LeanManualFlick.cs", "target": "file:Required/Scripts/LeanFingerDownCanvas.cs", "type": "related", "direction": "forward", "weight": 0.5}
+  ]
+}

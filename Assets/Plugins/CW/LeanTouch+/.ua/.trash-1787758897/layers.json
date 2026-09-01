@@ -1,0 +1,116 @@
+[
+ {
+  "id": "layer:gesture-detection",
+  "name": "Gesture Detection & Recognition",
+  "description": "Single-finger gesture detectors and stroke recognisers - the components a developer drops in to turn raw finger lifecycle (down, up, held, tap, flick, swipe, edge swipe) into UnityEvents, plus the shape-matching, gesture-arbitration and stroke-replay pieces built on top of the same stroke data.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanFingerFlick.cs",
+   "file:Required/Scripts/LeanFingerHeld.cs",
+   "file:Required/Scripts/LeanFingerTapExpired.cs",
+   "file:Required/Scripts/LeanFingerTapQuick.cs",
+   "file:Required/Scripts/LeanFirstDown.cs",
+   "file:Required/Scripts/LeanLastUp.cs",
+   "file:Required/Scripts/LeanManualFlick.cs",
+   "file:Required/Scripts/LeanManualSwipe.cs",
+   "file:Required/Scripts/LeanSwipeEdge.cs",
+   "file:Required/Scripts/LeanShape.cs",
+   "file:Required/Scripts/LeanShapeDetector.cs",
+   "file:Required/Scripts/LeanGestureToggle.cs",
+   "file:Required/Scripts/LeanReplayFinger.cs"
+  ]
+ },
+ {
+  "id": "layer:multi-finger-gestures",
+  "name": "Multi-Finger Gestures",
+  "description": "The LeanMulti* family: components that filter a set of simultaneous fingers and emit a measured value - pinch ratio, twist angle, directional distance, pull offset, per-frame delta - or fire on multi-finger down/up/held/tap/swipe. Grouped because they all share the same finger-filter configuration and float/Vector event contract designers wire in the Inspector.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanMultiDirection.cs",
+   "file:Required/Scripts/LeanMultiDown.cs",
+   "file:Required/Scripts/LeanMultiHeld.cs",
+   "file:Required/Scripts/LeanMultiPinch.cs",
+   "file:Required/Scripts/LeanMultiPull.cs",
+   "file:Required/Scripts/LeanMultiSwipe.cs",
+   "file:Required/Scripts/LeanMultiTap.cs",
+   "file:Required/Scripts/LeanMultiTwist.cs",
+   "file:Required/Scripts/LeanMultiUp.cs",
+   "file:Required/Scripts/LeanMultiUpdate.cs"
+  ]
+ },
+ {
+  "id": "layer:selection",
+  "name": "Selection & Picking",
+  "description": "Everything that answers \"which object did the player choose\": the drag-select and selection-box multi-selection tools, the lightweight LeanPick/LeanPickable raycast pair, and the LeanSelectable companion behaviours (dial, torque, pressure scale, centroid, hold/selected timers, the match-3 grid block reference). LeanSelectSelf.cs lives here too - it is a gutted 26-byte stub with no code and no edges, but its name and its surviving editor class belong to this selection cluster, so this is where a developer would look for it.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanDragSelect.cs",
+   "file:Required/Scripts/LeanPick.cs",
+   "file:Required/Scripts/LeanPickable.cs",
+   "file:Required/Scripts/LeanSelectionBox.cs",
+   "file:Required/Scripts/LeanSelectSelf.cs",
+   "file:Required/Scripts/LeanSelectableBlock.cs",
+   "file:Required/Scripts/LeanSelectableCenter.cs",
+   "file:Required/Scripts/LeanSelectableDial.cs",
+   "file:Required/Scripts/LeanSelectableDragTorque.cs",
+   "file:Required/Scripts/LeanSelectablePressureScale.cs",
+   "file:Required/Scripts/LeanSelectableSelected.cs",
+   "file:Required/Scripts/LeanSelectableTime.cs"
+  ]
+ },
+ {
+  "id": "layer:drag-and-drop",
+  "name": "Drag & Drop",
+  "description": "The only interface-based cluster in the package: IDropHandler defines the drop-target contract, LeanDrop and LeanDropCount implement it (raising dropped/match/unmatch events), and LeanSelectableDrop raycasts under a released selectable to find a handler. These four are genuinely coupled in code rather than only through the Inspector.",
+  "nodeIds": [
+   "file:Required/Scripts/IDropHandler.cs",
+   "file:Required/Scripts/LeanDrop.cs",
+   "file:Required/Scripts/LeanDropCount.cs",
+   "file:Required/Scripts/LeanSelectableDrop.cs"
+  ]
+ },
+ {
+  "id": "layer:manipulation",
+  "name": "Transform, Physics & Mesh Manipulation",
+  "description": "Drag-driven manipulation of scene content: translating Transforms and Rigidbodies (3D, 2D, along a surface or path), deforming and vertex-colouring meshes, rendering a drag as a line, and spawning a prefab under the finger. Grouped by effect - these are the components that actually change the world, as opposed to the ones that only report input.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanDragTranslateAlong.cs",
+   "file:Required/Scripts/LeanDragTranslateAlongRigidbody.cs",
+   "file:Required/Scripts/LeanDragTranslateRigidbody.cs",
+   "file:Required/Scripts/LeanDragTranslateRigidbody2D.cs",
+   "file:Required/Scripts/LeanDragColorMesh.cs",
+   "file:Required/Scripts/LeanDragDeformMesh.cs",
+   "file:Required/Scripts/LeanDragLine.cs",
+   "file:Required/Scripts/LeanSpawnWithFinger.cs"
+  ]
+ },
+ {
+  "id": "layer:ui-canvas",
+  "name": "Canvas / UI Input Variants",
+  "description": "The five *Canvas subclasses, kept together rather than filed with their world-space base classes because they share one distinct concern: restricting finger detection to the RectTransform they are attached to via Unity UI raycasting. They are the only components in the package coupled to the UI system, and a developer choosing between world-space and canvas-space input makes that decision once, here.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanFingerDownCanvas.cs",
+   "file:Required/Scripts/LeanFingerHeldCanvas.cs",
+   "file:Required/Scripts/LeanFirstDownCanvas.cs",
+   "file:Required/Scripts/LeanLastUpCanvas.cs",
+   "file:Required/Scripts/LeanMultiUpdateCanvas.cs"
+  ]
+ },
+ {
+  "id": "layer:camera-control",
+  "name": "Camera & Viewport Control",
+  "description": "Gesture-to-camera components: pinch zoom (orthographic size or field of view, with damping and clamping), two-finger twist rotation, and mouse-wheel input as its desktop equivalent. Separate from the gesture detectors because these consume a gesture and drive the camera themselves instead of exposing an event.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanPinchCamera.cs",
+   "file:Required/Scripts/LeanTwistCamera.cs",
+   "file:Required/Scripts/LeanMouseWheel.cs"
+  ]
+ },
+ {
+  "id": "layer:package",
+  "name": "Package Definition & Documentation",
+  "description": "The asmdef that compiles these scripts into the LeanTouchPlus assembly, the UPM manifest declaring the LeanCommon/LeanTouch dependencies, and the bundled HTML manual cataloguing every demo scene - the non-code shell that makes the component library installable and discoverable.",
+  "nodeIds": [
+   "config:LeanTouchPlus.asmdef",
+   "config:package.json",
+   "document:Required/Documentation.html"
+  ]
+ }
+]

@@ -1,0 +1,17 @@
+const fs=require('fs');
+const nodes=JSON.parse(fs.readFileSync('p5-nodes.json','utf8'));
+const edges=JSON.parse(fs.readFileSync('p5-edges.json','utf8'));
+const N=Array.isArray(nodes)?nodes:nodes.nodes; const E=Array.isArray(edges)?edges:edges.edges;
+const fanIn={},fanOut={},byType={};
+N.forEach(n=>{fanIn[n.id]=0;fanOut[n.id]=0;(byType[n.type]=byType[n.type]||[]).push(n.id)});
+const etypes={};
+E.forEach(e=>{etypes[e.type]=(etypes[e.type]||0)+1; if(fanIn[e.target]!==undefined)fanIn[e.target]++; if(fanOut[e.source]!==undefined)fanOut[e.source]++;});
+const code=E.filter(e=>['imports','calls','extends','implements','uses'].includes(e.type));
+console.log('EDGE TYPES',etypes);
+console.log('NODE TYPES',Object.fromEntries(Object.entries(byType).map(([k,v])=>[k,v.length])));
+console.log('\nCODE-LEVEL EDGES:');
+code.forEach(e=>console.log(' ',e.source,'->',e.target,`(${e.type})`));
+console.log('\nTOP FANIN:');
+Object.entries(fanIn).sort((a,b)=>b[1]-a[1]).slice(0,15).forEach(([k,v])=>console.log(' ',v,k));
+console.log('\nALL NODE IDS:');
+N.forEach(n=>console.log(n.id));

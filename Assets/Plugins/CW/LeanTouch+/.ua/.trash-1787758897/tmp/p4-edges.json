@@ -1,0 +1,873 @@
+[
+ {
+  "source": "file:Required/Scripts/IDropHandler.cs",
+  "target": "class:Required/Scripts/IDropHandler.cs:IDropHandler",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanDragColorMesh.cs",
+  "target": "class:Required/Scripts/LeanDragColorMesh.cs:LeanDragColorMesh",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanDragDeformMesh.cs",
+  "target": "class:Required/Scripts/LeanDragDeformMesh.cs:LeanDragDeformMesh",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanDragLine.cs",
+  "target": "class:Required/Scripts/LeanDragLine.cs:LeanDragLine",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanDragSelect.cs",
+  "target": "class:Required/Scripts/LeanDragSelect.cs:LeanDragSelect",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanDragTranslateAlong.cs",
+  "target": "class:Required/Scripts/LeanDragTranslateAlong.cs:LeanDragTranslateAlong",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanDragTranslateAlongRigidbody.cs",
+  "target": "class:Required/Scripts/LeanDragTranslateAlongRigidbody.cs:LeanDragTranslateAlongRigidbody",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "class:Required/Scripts/LeanDragTranslateAlongRigidbody.cs:LeanDragTranslateAlongRigidbody",
+  "target": "class:Required/Scripts/LeanDragTranslateAlong.cs:LeanDragTranslateAlong",
+  "type": "inherits",
+  "direction": "forward",
+  "weight": 0.9
+ },
+ {
+  "source": "class:Required/Scripts/LeanDragTranslateAlongRigidbody.cs:LeanDragTranslateAlongRigidbody_Editor",
+  "target": "class:Required/Scripts/LeanDragTranslateAlong.cs:LeanDragTranslateAlong_Editor",
+  "type": "inherits",
+  "direction": "forward",
+  "weight": 0.9
+ },
+ {
+  "source": "file:Required/Scripts/LeanDragTranslateRigidbody.cs",
+  "target": "class:Required/Scripts/LeanDragTranslateRigidbody.cs:LeanDragTranslateRigidbody",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanDragTranslateRigidbody2D.cs",
+  "target": "class:Required/Scripts/LeanDragTranslateRigidbody2D.cs:LeanDragTranslateRigidbody2D",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanDragTranslateRigidbody2D.cs",
+  "target": "file:Required/Scripts/LeanDragTranslateRigidbody.cs",
+  "type": "related",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "file:Required/Scripts/LeanDrop.cs",
+  "target": "class:Required/Scripts/LeanDrop.cs:LeanDrop",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "class:Required/Scripts/LeanDrop.cs:LeanDrop",
+  "target": "class:Required/Scripts/IDropHandler.cs:IDropHandler",
+  "type": "implements",
+  "direction": "forward",
+  "weight": 0.9
+ },
+ {
+  "source": "file:Required/Scripts/LeanDropCount.cs",
+  "target": "class:Required/Scripts/LeanDropCount.cs:LeanDropCount",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "class:Required/Scripts/LeanDropCount.cs:LeanDropCount",
+  "target": "class:Required/Scripts/IDropHandler.cs:IDropHandler",
+  "type": "implements",
+  "direction": "forward",
+  "weight": 0.9
+ },
+ {
+  "source": "config:LeanTouchPlus.asmdef",
+  "target": "file:Required/Scripts/IDropHandler.cs",
+  "type": "configures",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "config:LeanTouchPlus.asmdef",
+  "target": "file:Required/Scripts/LeanDragTranslateAlong.cs",
+  "type": "configures",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "config:LeanTouchPlus.asmdef",
+  "target": "file:Required/Scripts/LeanDragLine.cs",
+  "type": "configures",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "config:LeanTouchPlus.asmdef",
+  "target": "file:Required/Scripts/LeanFingerHeld.cs",
+  "type": "configures",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "document:Required/Documentation.html",
+  "target": "file:Required/Scripts/LeanFingerHeld.cs",
+  "type": "documents",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "document:Required/Documentation.html",
+  "target": "file:Required/Scripts/LeanFingerTapExpired.cs",
+  "type": "documents",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "document:Required/Documentation.html",
+  "target": "file:Required/Scripts/LeanDragTranslateRigidbody.cs",
+  "type": "documents",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "document:Required/Documentation.html",
+  "target": "file:Required/Scripts/LeanDragTranslateRigidbody2D.cs",
+  "type": "documents",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "document:Required/Documentation.html",
+  "target": "file:Required/Scripts/LeanDragTranslateAlong.cs",
+  "type": "documents",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "document:Required/Documentation.html",
+  "target": "file:Required/Scripts/LeanDragLine.cs",
+  "type": "documents",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "document:Required/Documentation.html",
+  "target": "file:Required/Scripts/LeanDragSelect.cs",
+  "type": "documents",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "document:Required/Documentation.html",
+  "target": "file:Required/Scripts/LeanDrop.cs",
+  "type": "documents",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "document:Required/Documentation.html",
+  "target": "file:Required/Scripts/LeanFirstDown.cs",
+  "type": "documents",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "document:Required/Documentation.html",
+  "target": "file:Required/Scripts/LeanLastUp.cs",
+  "type": "documents",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "document:Required/Documentation.html",
+  "target": "file:Required/Scripts/LeanFingerDownCanvas.cs",
+  "type": "documents",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "document:Required/Documentation.html",
+  "target": "file:Required/Scripts/LeanGestureToggle.cs",
+  "type": "documents",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "file:Required/Scripts/LeanFingerDownCanvas.cs",
+  "target": "class:Required/Scripts/LeanFingerDownCanvas.cs:LeanFingerDownCanvas",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanFingerFlick.cs",
+  "target": "class:Required/Scripts/LeanFingerFlick.cs:LeanFingerFlick",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanFingerFlick.cs",
+  "target": "file:Required/Scripts/LeanManualFlick.cs",
+  "type": "related",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "file:Required/Scripts/LeanFingerHeld.cs",
+  "target": "class:Required/Scripts/LeanFingerHeld.cs:LeanFingerHeld",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanFingerHeldCanvas.cs",
+  "target": "class:Required/Scripts/LeanFingerHeldCanvas.cs:LeanFingerHeldCanvas",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "class:Required/Scripts/LeanFingerHeldCanvas.cs:LeanFingerHeldCanvas",
+  "target": "class:Required/Scripts/LeanFingerHeld.cs:LeanFingerHeld",
+  "type": "inherits",
+  "direction": "forward",
+  "weight": 0.9
+ },
+ {
+  "source": "class:Required/Scripts/LeanFingerHeldCanvas.cs:LeanFingerHeldCanvas_Editor",
+  "target": "class:Required/Scripts/LeanFingerHeld.cs:LeanFingerHeld_Editor",
+  "type": "inherits",
+  "direction": "forward",
+  "weight": 0.9
+ },
+ {
+  "source": "file:Required/Scripts/LeanFingerTapExpired.cs",
+  "target": "class:Required/Scripts/LeanFingerTapExpired.cs:LeanFingerTapExpired",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanFingerTapExpired.cs",
+  "target": "file:Required/Scripts/LeanFingerTapQuick.cs",
+  "type": "related",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "file:Required/Scripts/LeanFingerTapQuick.cs",
+  "target": "class:Required/Scripts/LeanFingerTapQuick.cs:LeanFingerTapQuick",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanFirstDown.cs",
+  "target": "class:Required/Scripts/LeanFirstDown.cs:LeanFirstDown",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanFirstDown.cs",
+  "target": "file:Required/Scripts/LeanLastUp.cs",
+  "type": "related",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "file:Required/Scripts/LeanFirstDownCanvas.cs",
+  "target": "class:Required/Scripts/LeanFirstDownCanvas.cs:LeanFirstDownCanvas",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "class:Required/Scripts/LeanFirstDownCanvas.cs:LeanFirstDownCanvas",
+  "target": "class:Required/Scripts/LeanFirstDown.cs:LeanFirstDown",
+  "type": "inherits",
+  "direction": "forward",
+  "weight": 0.9
+ },
+ {
+  "source": "class:Required/Scripts/LeanFirstDownCanvas.cs:LeanFirstDownCanvas_Editor",
+  "target": "class:Required/Scripts/LeanFirstDown.cs:LeanFirstDown_Editor",
+  "type": "inherits",
+  "direction": "forward",
+  "weight": 0.9
+ },
+ {
+  "source": "file:Required/Scripts/LeanGestureToggle.cs",
+  "target": "class:Required/Scripts/LeanGestureToggle.cs:LeanGestureToggle",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanLastUp.cs",
+  "target": "class:Required/Scripts/LeanLastUp.cs:LeanLastUp",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanLastUpCanvas.cs",
+  "target": "class:Required/Scripts/LeanLastUpCanvas.cs:LeanLastUpCanvas",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "class:Required/Scripts/LeanLastUpCanvas.cs:LeanLastUpCanvas",
+  "target": "class:Required/Scripts/LeanLastUp.cs:LeanLastUp",
+  "type": "inherits",
+  "direction": "forward",
+  "weight": 0.9
+ },
+ {
+  "source": "class:Required/Scripts/LeanLastUpCanvas.cs:LeanLastUpCanvas_Editor",
+  "target": "class:Required/Scripts/LeanLastUp.cs:LeanLastUp_Editor",
+  "type": "inherits",
+  "direction": "forward",
+  "weight": 0.9
+ },
+ {
+  "source": "file:Required/Scripts/LeanManualFlick.cs",
+  "target": "class:Required/Scripts/LeanManualFlick.cs:LeanManualFlick",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanManualFlick.cs",
+  "target": "file:Required/Scripts/LeanFingerDownCanvas.cs",
+  "type": "related",
+  "direction": "forward",
+  "weight": 0.5
+ },
+ {
+  "source": "file:Required/Scripts/LeanManualSwipe.cs",
+  "target": "class:Required/Scripts/LeanManualSwipe.cs:LeanManualSwipe",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanMouseWheel.cs",
+  "target": "class:Required/Scripts/LeanMouseWheel.cs:LeanMouseWheel",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanMultiDirection.cs",
+  "target": "class:Required/Scripts/LeanMultiDirection.cs:LeanMultiDirection",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanMultiDown.cs",
+  "target": "class:Required/Scripts/LeanMultiDown.cs:LeanMultiDown",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanMultiHeld.cs",
+  "target": "class:Required/Scripts/LeanMultiHeld.cs:LeanMultiHeld",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanMultiPinch.cs",
+  "target": "class:Required/Scripts/LeanMultiPinch.cs:LeanMultiPinch",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanMultiPull.cs",
+  "target": "class:Required/Scripts/LeanMultiPull.cs:LeanMultiPull",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanMultiSwipe.cs",
+  "target": "class:Required/Scripts/LeanMultiSwipe.cs:LeanMultiSwipe",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanMultiTap.cs",
+  "target": "class:Required/Scripts/LeanMultiTap.cs:LeanMultiTap",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanMultiTwist.cs",
+  "target": "class:Required/Scripts/LeanMultiTwist.cs:LeanMultiTwist",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanMultiUp.cs",
+  "target": "class:Required/Scripts/LeanMultiUp.cs:LeanMultiUp",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanMultiUpdate.cs",
+  "target": "class:Required/Scripts/LeanMultiUpdate.cs:LeanMultiUpdate",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanMultiUpdateCanvas.cs",
+  "target": "class:Required/Scripts/LeanMultiUpdateCanvas.cs:LeanMultiUpdateCanvas",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "class:Required/Scripts/LeanMultiUpdateCanvas.cs:LeanMultiUpdateCanvas",
+  "target": "class:Required/Scripts/LeanMultiUpdate.cs:LeanMultiUpdate",
+  "type": "inherits",
+  "direction": "forward",
+  "weight": 0.9
+ },
+ {
+  "source": "class:Required/Scripts/LeanMultiUpdateCanvas.cs:LeanMultiUpdateCanvas_Editor",
+  "target": "class:Required/Scripts/LeanMultiUpdate.cs:LeanMultiUpdate_Editor",
+  "type": "inherits",
+  "direction": "forward",
+  "weight": 0.9
+ },
+ {
+  "source": "file:Required/Scripts/LeanMultiUpdateCanvas.cs",
+  "target": "file:Required/Scripts/LeanMultiUpdate.cs",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "file:Required/Scripts/LeanPick.cs",
+  "target": "class:Required/Scripts/LeanPick.cs:LeanPick",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanPick.cs",
+  "target": "file:Required/Scripts/LeanPickable.cs",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "function:Required/Scripts/LeanPick.cs:SelectScreenPosition",
+  "target": "function:Required/Scripts/LeanPickable.cs:InvokePick",
+  "type": "calls",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanPickable.cs",
+  "target": "class:Required/Scripts/LeanPickable.cs:LeanPickable",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanPinchCamera.cs",
+  "target": "class:Required/Scripts/LeanPinchCamera.cs:LeanPinchCamera",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanReplayFinger.cs",
+  "target": "class:Required/Scripts/LeanReplayFinger.cs:LeanReplayFinger",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanSelectableBlock.cs",
+  "target": "class:Required/Scripts/LeanSelectableBlock.cs:LeanSelectableBlock",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanSelectableCenter.cs",
+  "target": "class:Required/Scripts/LeanSelectableCenter.cs:LeanSelectableCenter",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanSelectableDial.cs",
+  "target": "class:Required/Scripts/LeanSelectableDial.cs:LeanSelectableDial",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanSelectableDragTorque.cs",
+  "target": "class:Required/Scripts/LeanSelectableDragTorque.cs:LeanSelectableDragTorque",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanSelectableDrop.cs",
+  "target": "class:Required/Scripts/LeanSelectableDrop.cs:LeanSelectableDrop",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanSelectableDrop.cs",
+  "target": "file:Required/Scripts/IDropHandler.cs",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "file:Required/Scripts/LeanSelectablePressureScale.cs",
+  "target": "class:Required/Scripts/LeanSelectablePressureScale.cs:LeanSelectablePressureScale",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanSelectableSelected.cs",
+  "target": "class:Required/Scripts/LeanSelectableSelected.cs:LeanSelectableSelected",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanSelectableTime.cs",
+  "target": "class:Required/Scripts/LeanSelectableTime.cs:LeanSelectableTime",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "class:Required/Scripts/LeanSelectableTime.cs:LeanPlane_Editor",
+  "target": "class:Required/Scripts/LeanSelectableTime.cs:LeanSelectableTime",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "file:Required/Scripts/LeanSelectionBox.cs",
+  "target": "class:Required/Scripts/LeanSelectionBox.cs:LeanSelectionBox",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "function:Required/Scripts/LeanSelectionBox.cs:HandleFingerSet",
+  "target": "function:Required/Scripts/LeanSelectionBox.cs:WriteTransform",
+  "type": "calls",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "function:Required/Scripts/LeanSelectionBox.cs:HandleFingerUp",
+  "target": "function:Required/Scripts/LeanSelectionBox.cs:WriteTransform",
+  "type": "calls",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "function:Required/Scripts/LeanSelectionBox.cs:WriteTransform",
+  "target": "function:Required/Scripts/LeanSelectionBox.cs:HasRequiredTag",
+  "type": "calls",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "class:Required/Scripts/LeanSelectionBox.cs:LeanSelectionBox_Editor",
+  "target": "class:Required/Scripts/LeanSelectionBox.cs:LeanSelectionBox",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "file:Required/Scripts/LeanShape.cs",
+  "target": "class:Required/Scripts/LeanShape.cs:LeanShape",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "class:Required/Scripts/LeanShape.cs:LeanShape_Editor",
+  "target": "class:Required/Scripts/LeanShape.cs:LeanShape",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "class:Required/Scripts/LeanShape.cs:LeanShape_Editor",
+  "target": "function:Required/Scripts/LeanShape.cs:UpdateVisual",
+  "type": "calls",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "file:Required/Scripts/LeanShapeDetector.cs",
+  "target": "class:Required/Scripts/LeanShapeDetector.cs:LeanShapeDetector",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "function:Required/Scripts/LeanShapeDetector.cs:HandleFingerUp",
+  "target": "function:Required/Scripts/LeanShapeDetector.cs:AddRange",
+  "type": "calls",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "function:Required/Scripts/LeanShapeDetector.cs:HandleFingerUp",
+  "target": "function:Required/Scripts/LeanShapeDetector.cs:CalculateMatch",
+  "type": "calls",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "function:Required/Scripts/LeanShapeDetector.cs:CalculateMatch",
+  "target": "function:Required/Scripts/LeanShapeDetector.cs:FitShape",
+  "type": "calls",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "function:Required/Scripts/LeanShapeDetector.cs:CalculateMatch",
+  "target": "function:Required/Scripts/LeanShapeDetector.cs:ConvertPoints",
+  "type": "calls",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "function:Required/Scripts/LeanShapeDetector.cs:FitShape",
+  "target": "function:Required/Scripts/LeanShapeDetector.cs:GetRect",
+  "type": "calls",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "class:Required/Scripts/LeanShapeDetector.cs:LeanShapeDetector_Editor",
+  "target": "class:Required/Scripts/LeanShapeDetector.cs:LeanShapeDetector",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "file:Required/Scripts/LeanShapeDetector.cs",
+  "target": "file:Required/Scripts/LeanShape.cs",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "class:Required/Scripts/LeanShapeDetector.cs:LeanShapeDetector",
+  "target": "class:Required/Scripts/LeanShape.cs:LeanShape",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "file:Required/Scripts/LeanSpawnWithFinger.cs",
+  "target": "class:Required/Scripts/LeanSpawnWithFinger.cs:LeanSpawnWithFinger",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "function:Required/Scripts/LeanSpawnWithFinger.cs:Spawn",
+  "target": "function:Required/Scripts/LeanSpawnWithFinger.cs:UpdateSpawnedTransform",
+  "type": "calls",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "function:Required/Scripts/LeanSpawnWithFinger.cs:Update",
+  "target": "function:Required/Scripts/LeanSpawnWithFinger.cs:UpdateSpawnedTransform",
+  "type": "calls",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "class:Required/Scripts/LeanSpawnWithFinger.cs:LeanSpawnWithFinger_Editor",
+  "target": "class:Required/Scripts/LeanSpawnWithFinger.cs:LeanSpawnWithFinger",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "file:Required/Scripts/LeanSwipeEdge.cs",
+  "target": "class:Required/Scripts/LeanSwipeEdge.cs:LeanSwipeEdge",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "function:Required/Scripts/LeanSwipeEdge.cs:Update",
+  "target": "function:Required/Scripts/LeanSwipeEdge.cs:CheckBetween",
+  "type": "calls",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "class:Required/Scripts/LeanSwipeEdge.cs:LeanSwipeEdge_Editor",
+  "target": "class:Required/Scripts/LeanSwipeEdge.cs:LeanSwipeEdge",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "file:Required/Scripts/LeanTwistCamera.cs",
+  "target": "class:Required/Scripts/LeanTwistCamera.cs:LeanTwistCamera",
+  "type": "exports",
+  "direction": "forward",
+  "weight": 0.8
+ },
+ {
+  "source": "class:Required/Scripts/LeanTwistCamera.cs:LeanTwistCamera_Editor",
+  "target": "class:Required/Scripts/LeanTwistCamera.cs:LeanTwistCamera",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "config:package.json",
+  "target": "config:LeanTouchPlus.asmdef",
+  "type": "configures",
+  "direction": "forward",
+  "weight": 0.6
+ },
+ {
+  "source": "file:Required/Scripts/LeanDrop.cs",
+  "target": "file:Required/Scripts/IDropHandler.cs",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.8,
+  "description": "LeanDrop.cs:10 declares `class LeanDrop : MonoBehaviour, IDropHandler`."
+ },
+ {
+  "source": "file:Required/Scripts/LeanDropCount.cs",
+  "target": "file:Required/Scripts/IDropHandler.cs",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.8,
+  "description": "LeanDropCount.cs:10 declares `class LeanDropCount : MonoBehaviour, IDropHandler`."
+ },
+ {
+  "source": "file:Required/Scripts/LeanDragTranslateAlongRigidbody.cs",
+  "target": "file:Required/Scripts/LeanDragTranslateAlong.cs",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.8,
+  "description": "LeanDragTranslateAlongRigidbody.cs:9 subclasses LeanDragTranslateAlong (and :73 subclasses its editor)."
+ },
+ {
+  "source": "file:Required/Scripts/LeanFingerHeldCanvas.cs",
+  "target": "file:Required/Scripts/LeanFingerHeld.cs",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.8,
+  "description": "LeanFingerHeldCanvas.cs:8 subclasses LeanFingerHeld (and :35 subclasses its editor)."
+ },
+ {
+  "source": "file:Required/Scripts/LeanFirstDownCanvas.cs",
+  "target": "file:Required/Scripts/LeanFirstDown.cs",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.8,
+  "description": "LeanFirstDownCanvas.cs:9 subclasses LeanFirstDown (and :33 subclasses its editor)."
+ },
+ {
+  "source": "file:Required/Scripts/LeanLastUpCanvas.cs",
+  "target": "file:Required/Scripts/LeanLastUp.cs",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.8,
+  "description": "LeanLastUpCanvas.cs:10 subclasses LeanLastUp (and :37 subclasses its editor)."
+ },
+ {
+  "source": "class:Required/Scripts/LeanSelectableDrop.cs:LeanSelectableDrop",
+  "target": "class:Required/Scripts/IDropHandler.cs:IDropHandler",
+  "type": "depends_on",
+  "direction": "forward",
+  "weight": 0.8,
+  "description": "LeanSelectableDrop.cs:21 declares UnityEvent<IDropHandler> and :46 resolves an IDropHandler to invoke HandleDrop on."
+ },
+ {
+  "source": "file:Required/Scripts/LeanManualSwipe.cs",
+  "target": "file:Required/Scripts/LeanFingerDownCanvas.cs",
+  "type": "related",
+  "direction": "forward",
+  "weight": 0.4,
+  "description": "LeanManualSwipe.cs:7 documents LeanFingerDownCanvas as a source of manually-added fingers. Inspector-wired, no code reference."
+ },
+ {
+  "source": "file:Required/Scripts/LeanDropCount.cs",
+  "target": "file:Required/Scripts/LeanSelectableDrop.cs",
+  "type": "related",
+  "direction": "forward",
+  "weight": 0.4,
+  "description": "LeanDropCount.cs:7 documents that it counts drops of GameObjects carrying LeanSelectableDrop. Inspector-wired, no code reference."
+ },
+ {
+  "source": "file:Required/Scripts/LeanPinchCamera.cs",
+  "target": "file:Required/Scripts/LeanMouseWheel.cs",
+  "type": "related",
+  "direction": "forward",
+  "weight": 0.4,
+  "description": "LeanPinchCamera.cs:68 documents MultiplyZoom as a target for LeanMouseWheel scrolling. Inspector-wired, no code reference."
+ }
+]

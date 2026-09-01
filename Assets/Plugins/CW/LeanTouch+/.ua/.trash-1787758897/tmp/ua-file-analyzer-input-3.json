@@ -1,0 +1,14 @@
+{
+  "projectRoot": "C:/Users/giren/Desktop/Projects/this_is_blast_replica/Assets/Plugins/CW/LeanTouch+",
+  "batchFiles": [
+    {"path": "Required/Scripts/LeanSelectableTime.cs", "language": "csharp", "sizeLines": 84, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanSelectionBox.cs", "language": "csharp", "sizeLines": 255, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanShape.cs", "language": "csharp", "sizeLines": 293, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanShapeDetector.cs", "language": "csharp", "sizeLines": 403, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanSpawnWithFinger.cs", "language": "csharp", "sizeLines": 305, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanSwipeEdge.cs", "language": "csharp", "sizeLines": 159, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanTwistCamera.cs", "language": "csharp", "sizeLines": 133, "fileCategory": "code"},
+    {"path": "package.json", "language": "json", "sizeLines": 15, "fileCategory": "config"}
+  ],
+  "batchImportData": {}
+}

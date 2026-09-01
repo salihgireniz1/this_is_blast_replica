@@ -1,0 +1,31 @@
+{
+  "projectRoot": "C:/Users/giren/Desktop/Projects/this_is_blast_replica/Assets/Plugins/CW/LeanTouch+",
+  "batchFiles": [
+    {"path": "LeanTouchPlus.asmdef", "language": "asmdef", "sizeLines": 17, "fileCategory": "code"},
+    {"path": "Required/Documentation.html", "language": "html", "sizeLines": 2596, "fileCategory": "markup"},
+    {"path": "Required/Scripts/IDropHandler.cs", "language": "csharp", "sizeLines": 9, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanDragColorMesh.cs", "language": "csharp", "sizeLines": 148, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanDragDeformMesh.cs", "language": "csharp", "sizeLines": 176, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanDragLine.cs", "language": "csharp", "sizeLines": 212, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanDragSelect.cs", "language": "csharp", "sizeLines": 159, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanDragTranslateAlong.cs", "language": "csharp", "sizeLines": 188, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanDragTranslateAlongRigidbody.cs", "language": "csharp", "sizeLines": 82, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanDragTranslateRigidbody.cs", "language": "csharp", "sizeLines": 145, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanDragTranslateRigidbody2D.cs", "language": "csharp", "sizeLines": 145, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanDrop.cs", "language": "csharp", "sizeLines": 47, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanDropCount.cs", "language": "csharp", "sizeLines": 130, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanFingerDownCanvas.cs", "language": "csharp", "sizeLines": 46, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanFingerFlick.cs", "language": "csharp", "sizeLines": 173, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanFingerHeld.cs", "language": "csharp", "sizeLines": 282, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanFingerHeldCanvas.cs", "language": "csharp", "sizeLines": 42, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanFingerTapExpired.cs", "language": "csharp", "sizeLines": 42, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanFingerTapQuick.cs", "language": "csharp", "sizeLines": 148, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanFirstDown.cs", "language": "csharp", "sizeLines": 167, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanFirstDownCanvas.cs", "language": "csharp", "sizeLines": 42, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanGestureToggle.cs", "language": "csharp", "sizeLines": 175, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanLastUp.cs", "language": "csharp", "sizeLines": 157, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanLastUpCanvas.cs", "language": "csharp", "sizeLines": 46, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanManualFlick.cs", "language": "csharp", "sizeLines": 159, "fileCategory": "code"}
+  ],
+  "batchImportData": {}
+}

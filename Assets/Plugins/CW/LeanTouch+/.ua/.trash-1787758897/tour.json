@@ -1,0 +1,142 @@
+[
+ {
+  "order": 1,
+  "title": "Start With The Manual",
+  "description": "There is no README here; the author's own manual is Documentation.html, and it is the single best map of this package. It is a catalog of every demo scene in Touch+/Examples, each introducing one component at a time, and it opens by telling you this asset is an extension to Lean Touch and that you should read the base Lean Touch documentation too. Do not open the raw HTML for reading (most of its 187 KB is base64-embedded fonts) - open it in a browser, or read the stripped text at .ua/intermediate/documentation-text.txt.",
+  "nodeIds": [
+   "document:Required/Documentation.html"
+  ]
+ },
+ {
+  "order": 2,
+  "title": "What The Package Actually Is",
+  "description": "package.json declares com.cwilkes.lean.touch-plus and LeanTouchPlus.asmdef declares what it compiles into and against. The important takeaway is what is NOT here: LeanTouch, LeanGesture, LeanSelectable, LeanFingerData, LeanSwipeBase, LeanFingerFilter and CwEditor all live in the sibling LeanTouch, LeanCommon, LeanCommonPlus and CW.Common packages. Almost every file in this package extends a base class you will have to go read elsewhere.",
+  "nodeIds": [
+   "config:package.json",
+   "config:LeanTouchPlus.asmdef"
+  ],
+  "languageLesson": "A Unity .asmdef turns a folder into its own compiled assembly. Its 'references' list is a hard compile boundary: code in this assembly can only see the assemblies named there, which is why that dependency list is the fastest way to find where the base classes live."
+ },
+ {
+  "order": 3,
+  "title": "Anatomy Of One Component",
+  "description": "LeanFingerHeld is the specimen to learn the house style from, and at 282 lines it is one of the few in-package base classes. Read it once carefully and you can read the other 54 files at a glance: a MonoBehaviour with serialized tuning fields (MinimumAge, MaximumMovement), public UnityEvent hooks it invokes, a private nested FingerData : LeanFingerData class holding per-finger state, and then - in the same file - a #if UNITY_EDITOR block containing a sibling LeanFingerHeld_Editor : CwEditor class under namespace Lean.Touch.Editor. 54 of the 55 scripts follow exactly that shape.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanFingerHeld.cs"
+  ],
+  "languageLesson": "C# lets a single .cs file declare several types in several namespaces, and #if UNITY_EDITOR strips the editor half from player builds. That is why runtime code and its custom Inspector live side by side here instead of in a separate Editor/ folder - one file per feature, zero shipped editor code."
+ },
+ {
+  "order": 4,
+  "title": "The Canvas Suffix Convention",
+  "description": "A *Canvas suffix means: same behaviour as the base component, but raycast against RectTransform UI elements instead of world colliders. LeanFingerHeldCanvas is 42 lines and fits on one screen - it exists only to re-scope its parent. Once you have seen one, the other four need no reading; recognising the suffix saves you opening five files.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanFingerHeldCanvas.cs",
+   "file:Required/Scripts/LeanFingerDownCanvas.cs",
+   "file:Required/Scripts/LeanFirstDownCanvas.cs",
+   "file:Required/Scripts/LeanLastUpCanvas.cs",
+   "file:Required/Scripts/LeanMultiUpdateCanvas.cs"
+  ]
+ },
+ {
+  "order": 5,
+  "title": "Where The Wiring Lives",
+  "description": "This is the most important thing to understand before you go looking for anything: the whole package has roughly ten code-level cross-file relationships. Components are composed by dragging UnityEvent connections in the Unity Inspector, which leaves no trace in source. The manual's own example is here - LeanMouseWheel's OnDelta event is connected to LeanPinchCamera's MultiplyZoom method to add scroll-wheel zoom. Nothing in either file mentions the other. If you expect to find the wiring in code you will waste hours; open the demo scenes instead.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanMouseWheel.cs",
+   "file:Required/Scripts/LeanPinchCamera.cs",
+   "file:Required/Scripts/LeanTwistCamera.cs"
+  ],
+  "languageLesson": "UnityEvent is serialized late-bound invocation: the target object and method name are stored in the scene or prefab asset, not in code. Compile-time tooling - grep, call graphs, rename refactors - cannot see through it, so scene files are part of the source you must read."
+ },
+ {
+  "order": 6,
+  "title": "Single-Finger Gesture Detection",
+  "description": "With the conventions from Steps 3-5 in hand, the rest of the package is a catalog you can browse. This family covers the single-finger lifecycle: LeanFirstDown and LeanLastUp fire only for the first finger down and the last finger up, while the two tap variants separate a quick tap from an expired one so single and double taps stop interfering with each other. LeanFingerFlick detects a fast release. They are siblings, not layers - none of them imports another.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanFirstDown.cs",
+   "file:Required/Scripts/LeanLastUp.cs",
+   "file:Required/Scripts/LeanFingerTapExpired.cs",
+   "file:Required/Scripts/LeanFingerTapQuick.cs",
+   "file:Required/Scripts/LeanFingerFlick.cs"
+  ]
+ },
+ {
+  "order": 7,
+  "title": "The Multi-Finger Family",
+  "description": "LeanMultiUpdate is the workhorse of this group at 354 lines: a general-purpose per-frame multi-finger driver that other components hang off. Around it sit the specific recognisers - pinch, twist, swipe, tap - each exposing its measurement as a UnityEvent payload (LeanMultiTwist.OnTwistDegrees is the one the manual wires into rotation components). LeanMultiPull, LeanMultiDirection, LeanMultiDown, LeanMultiUp and LeanMultiHeld round out the set on the same pattern.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanMultiUpdate.cs",
+   "file:Required/Scripts/LeanMultiPinch.cs",
+   "file:Required/Scripts/LeanMultiTwist.cs",
+   "file:Required/Scripts/LeanMultiSwipe.cs",
+   "file:Required/Scripts/LeanMultiTap.cs"
+  ]
+ },
+ {
+  "order": 8,
+  "title": "Shape Recognition",
+  "description": "The most algorithmically interesting corner of the package, and one of the few genuine in-code dependencies: LeanShape defines a point list describing a drawable shape, and LeanShapeDetector matches finger paths against it through ConvertPoints, FitShape and CalculateMatch. Its DistanceThreshold and ErrorThreshold settings tune how forgiving the match is. LeanReplayFinger records and replays a finger path, which is what makes this pair testable without a touchscreen.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanShape.cs",
+   "file:Required/Scripts/LeanShapeDetector.cs",
+   "file:Required/Scripts/LeanReplayFinger.cs"
+  ]
+ },
+ {
+  "order": 9,
+  "title": "Selection And Picking",
+  "description": "Two distinct routes to answering 'which object did the finger hit'. LeanPick plus LeanPickable is the lightweight one, bypassing the selection system entirely - and it is the package's one verified call edge: LeanPick.SelectScreenPosition invokes LeanPickable.InvokePick. The heavier route builds on the external LeanSelectable base: LeanDragSelect selects by dragging across objects, and LeanSelectionBox spawns a UI rectangle prefab and selects everything inside it.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanPick.cs",
+   "file:Required/Scripts/LeanPickable.cs",
+   "file:Required/Scripts/LeanDragSelect.cs",
+   "file:Required/Scripts/LeanSelectionBox.cs"
+  ]
+ },
+ {
+  "order": 10,
+  "title": "Drag And Drop: The One Interface",
+  "description": "This is the only interface-based cluster in the package, and the only place where classic OO polymorphism shows up. IDropHandler is nine lines; LeanDrop and LeanDropCount implement it as receivers, while LeanSelectableDrop is the draggable side that gets dropped onto them. It is worth reading precisely because it contrasts with everything else: here the contract is in code and greppable, whereas everywhere else it is a UnityEvent buried in a scene file.",
+  "nodeIds": [
+   "file:Required/Scripts/IDropHandler.cs",
+   "file:Required/Scripts/LeanDrop.cs",
+   "file:Required/Scripts/LeanDropCount.cs",
+   "file:Required/Scripts/LeanSelectableDrop.cs"
+  ],
+  "languageLesson": "An interface with two implementors is the honest use of the feature: the drop receiver is looked up at runtime by type, so the caller cannot know the concrete class. Compare it with a UnityEvent achieving the same decoupling with no type safety at all - each trades checking for flexibility in the opposite direction."
+ },
+ {
+  "order": 11,
+  "title": "Making Things Move",
+  "description": "The output end of every gesture: components that actually change an object once something drives them. Translation along a path, Rigidbody and Rigidbody2D movement for physics-driven objects, torque from a drag, and mesh-level effects that deform vertices or paint vertex colours. Each is a UnityEvent target, so any recogniser from Steps 6-8 can drive any of them - which is the composability the manual advertises.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanDragTranslateAlong.cs",
+   "file:Required/Scripts/LeanDragTranslateRigidbody.cs",
+   "file:Required/Scripts/LeanDragTranslateRigidbody2D.cs",
+   "file:Required/Scripts/LeanSelectableDragTorque.cs",
+   "file:Required/Scripts/LeanDragDeformMesh.cs"
+  ]
+ },
+ {
+  "order": 12,
+  "title": "Now Read A Real One",
+  "description": "Three larger, self-contained components to test whether the conventions have stuck. LeanSpawnWithFinger instantiates a prefab under a finger and keeps updating its transform while the finger moves; LeanDragLine draws a line from a finger; LeanSelectableBlock snaps a selected object to a grid. Each has real internal logic (LeanSpawnWithFinger routes both Spawn and Update through UpdateSpawnedTransform) rather than being a thin event wrapper, and none of the three depends on the other two.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanSpawnWithFinger.cs",
+   "file:Required/Scripts/LeanDragLine.cs",
+   "file:Required/Scripts/LeanSelectableBlock.cs"
+  ]
+ },
+ {
+  "order": 13,
+  "title": "Do Not Trust The Filenames",
+  "description": "A short honest closer. Three files declare an editor class copy-pasted from an unrelated component: LeanMultiTwist.cs contains LeanDestroy_Editor, LeanPickable.cs contains LeanSelectSelf_Editor, and LeanSelectableTime.cs contains LeanPlane_Editor. LeanSelectSelf.cs is a 26-byte gutted stub - a byte-order mark and the comment // Remove. None of this breaks at runtime, but it means filename-to-class-name symmetry is not guaranteed here: when you search this package, search for the type you want, not the file you expect it in.",
+  "nodeIds": [
+   "file:Required/Scripts/LeanMultiTwist.cs",
+   "file:Required/Scripts/LeanPickable.cs",
+   "file:Required/Scripts/LeanSelectableTime.cs",
+   "file:Required/Scripts/LeanSelectSelf.cs"
+  ]
+ }
+]

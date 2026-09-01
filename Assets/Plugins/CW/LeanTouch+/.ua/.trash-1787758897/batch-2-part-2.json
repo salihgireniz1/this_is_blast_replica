@@ -1,0 +1,1094 @@
+{
+  "nodes": [
+    {
+      "id": "file:Required/Scripts/LeanMultiTwist.cs",
+      "type": "file",
+      "name": "LeanMultiTwist.cs",
+      "filePath": "Required/Scripts/LeanMultiTwist.cs",
+      "summary": "Reports the twist (rotation) angle of all filtered fingers as a float event, with a configurable fallback for how a single finger is interpreted.",
+      "tags": [
+        "gesture",
+        "multi-finger",
+        "twist",
+        "event-handler",
+        "monobehaviour"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "The editor class in this file is misnamed LeanDestroy_Editor - a copy-paste leftover from another component, recorded here rather than normalized."
+    },
+    {
+      "id": "class:Required/Scripts/LeanMultiTwist.cs:LeanMultiTwist",
+      "type": "class",
+      "name": "LeanMultiTwist",
+      "filePath": "Required/Scripts/LeanMultiTwist.cs",
+      "lineRange": [
+        10,
+        100
+      ],
+      "summary": "Gathers fingers via a LeanFingerFilter and emits the LeanGesture twist degrees each frame, with OneFingerType deciding how a lone finger is treated and an option to skip zero-twist frames.",
+      "tags": [
+        "gesture",
+        "twist",
+        "finger-filter",
+        "event-handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanMultiTwist.cs:LeanDestroy_Editor",
+      "type": "class",
+      "name": "LeanDestroy_Editor",
+      "filePath": "Required/Scripts/LeanMultiTwist.cs",
+      "lineRange": [
+        111,
+        124
+      ],
+      "summary": "Custom Unity inspector for LeanMultiTwist. NOTE: the class is misnamed LeanDestroy_Editor (copy-paste leftover); it targets LeanMultiTwist via the TARGET alias, so behaviour is correct but the name is misleading.",
+      "tags": [
+        "editor-only",
+        "inspector",
+        "unity-editor",
+        "naming-anomaly"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanMultiTwist.cs:OneFingerType",
+      "type": "class",
+      "name": "OneFingerType",
+      "filePath": "Required/Scripts/LeanMultiTwist.cs",
+      "lineRange": [
+        12,
+        18
+      ],
+      "summary": "Decides how a single finger is interpreted for twist (ignored, or twisted around a reference point).",
+      "tags": [
+        "enum",
+        "configuration",
+        "gesture"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanMultiTwist.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanMultiTwist.cs",
+      "lineRange": [
+        65,
+        99
+      ],
+      "summary": "Pulls the filtered fingers, computes the twist degrees from LeanGesture, applies the OneFingerType rule and multiplier, and invokes the float event.",
+      "tags": [
+        "unity-lifecycle",
+        "gesture",
+        "twist"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:Required/Scripts/LeanMultiUp.cs",
+      "type": "file",
+      "name": "LeanMultiUp.cs",
+      "filePath": "Required/Scripts/LeanMultiUp.cs",
+      "summary": "Fires UnityEvents when a specific number of fingers stop touching the screen, reporting the releasing finger plus the screen and world position.",
+      "tags": [
+        "gesture",
+        "multi-finger",
+        "finger-up",
+        "event-handler",
+        "monobehaviour"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanMultiUp.cs:LeanMultiUp",
+      "type": "class",
+      "name": "LeanMultiUp",
+      "filePath": "Required/Scripts/LeanMultiUp.cs",
+      "lineRange": [
+        11,
+        95
+      ],
+      "summary": "Monitors the filtered finger set each frame and, when the required count is released, invokes the finger, screen-position, and converted world-position events.",
+      "tags": [
+        "gesture",
+        "finger-up",
+        "finger-filter",
+        "event-handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanMultiUp.cs:LeanMultiUp_Editor",
+      "type": "class",
+      "name": "LeanMultiUp_Editor",
+      "filePath": "Required/Scripts/LeanMultiUp.cs",
+      "lineRange": [
+        106,
+        137
+      ],
+      "summary": "Custom Unity inspector for LeanMultiUp, drawing its serialized fields and surfacing setup warnings in the Inspector.",
+      "tags": [
+        "editor-only",
+        "inspector",
+        "unity-editor",
+        "custom-inspector"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanMultiUp.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanMultiUp.cs",
+      "lineRange": [
+        67,
+        94
+      ],
+      "summary": "Watches the filtered fingers for the release condition and invokes the finger, screen, and world events once the required number of fingers has lifted.",
+      "tags": [
+        "unity-lifecycle",
+        "gesture",
+        "event-handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:Required/Scripts/LeanMultiUpdate.cs",
+      "type": "file",
+      "name": "LeanMultiUpdate.cs",
+      "filePath": "Required/Scripts/LeanMultiUpdate.cs",
+      "summary": "The general-purpose workhorse of the LeanMulti family: reports the per-frame change in position of all filtered fingers as delta, distance, and world from/to events, with optional axis constraining.",
+      "tags": [
+        "gesture",
+        "multi-finger",
+        "drag",
+        "base-class",
+        "monobehaviour"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Its GetFingers and HandleFingerDown are virtual specifically so LeanMultiUpdateCanvas can narrow the finger set to a UI element."
+    },
+    {
+      "id": "class:Required/Scripts/LeanMultiUpdate.cs:LeanMultiUpdate",
+      "type": "class",
+      "name": "LeanMultiUpdate",
+      "filePath": "Required/Scripts/LeanMultiUpdate.cs",
+      "lineRange": [
+        11,
+        260
+      ],
+      "summary": "Computes the finger-center delta each frame, optionally locks movement to the dominant axis once a cumulative threshold is passed, and emits the finger list, delta, distance, and world from/to/delta events.",
+      "tags": [
+        "gesture",
+        "drag",
+        "base-class",
+        "axis-constraint",
+        "event-handler"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:Required/Scripts/LeanMultiUpdate.cs:LeanMultiUpdate_Editor",
+      "type": "class",
+      "name": "LeanMultiUpdate_Editor",
+      "filePath": "Required/Scripts/LeanMultiUpdate.cs",
+      "lineRange": [
+        271,
+        352
+      ],
+      "summary": "Custom Unity inspector for LeanMultiUpdate, drawing its serialized fields and surfacing setup warnings in the Inspector.",
+      "tags": [
+        "editor-only",
+        "inspector",
+        "unity-editor",
+        "custom-inspector"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanMultiUpdate.cs:CoordinateType",
+      "type": "class",
+      "name": "CoordinateType",
+      "filePath": "Required/Scripts/LeanMultiUpdate.cs",
+      "lineRange": [
+        13,
+        18
+      ],
+      "summary": "Chooses the unit the emitted delta is expressed in (raw pixels, scaled pixels, or screen percentage).",
+      "tags": [
+        "enum",
+        "configuration",
+        "coordinates"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanMultiUpdate.cs:ConstrainType",
+      "type": "class",
+      "name": "ConstrainType",
+      "filePath": "Required/Scripts/LeanMultiUpdate.cs",
+      "lineRange": [
+        20,
+        25
+      ],
+      "summary": "Selects whether movement is free or locked to the dominant horizontal/vertical axis once a threshold is crossed, and how the pre-threshold movement is handled.",
+      "tags": [
+        "enum",
+        "configuration",
+        "axis-constraint"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanMultiUpdate.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanMultiUpdate.cs",
+      "lineRange": [
+        134,
+        244
+      ],
+      "summary": "Core gesture tick: derives the last-to-current finger center delta, applies the ConstrainType axis locking against a cumulative threshold, scales by CoordinateType and multiplier, then invokes the finger, delta, distance, and world from/to/delta events.",
+      "tags": [
+        "unity-lifecycle",
+        "gesture",
+        "drag",
+        "axis-constraint"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:Required/Scripts/LeanMultiUpdate.cs:GetFingers",
+      "type": "function",
+      "name": "GetFingers",
+      "filePath": "Required/Scripts/LeanMultiUpdate.cs",
+      "lineRange": [
+        246,
+        249
+      ],
+      "summary": "Virtual finger-source hook returning the filter's current fingers; overridden by LeanMultiUpdateCanvas to restrict the set to a UI element.",
+      "tags": [
+        "extension-point",
+        "virtual",
+        "finger-filter"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanMultiUpdate.cs:HandleFingerDown",
+      "type": "function",
+      "name": "HandleFingerDown",
+      "filePath": "Required/Scripts/LeanMultiUpdate.cs",
+      "lineRange": [
+        251,
+        259
+      ],
+      "summary": "Virtual finger-down hook that ignores the hover finger and registers the rest with the filter; overridden to add a UI overlap test.",
+      "tags": [
+        "extension-point",
+        "virtual",
+        "event-handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanMultiUpdateCanvas.cs",
+      "type": "file",
+      "name": "LeanMultiUpdateCanvas.cs",
+      "filePath": "Required/Scripts/LeanMultiUpdateCanvas.cs",
+      "summary": "Canvas variant of LeanMultiUpdate that only counts fingers currently overlapping this UI element, so drag-style events fire for the RectTransform rather than the whole screen.",
+      "tags": [
+        "gesture",
+        "ui",
+        "canvas",
+        "subclass",
+        "monobehaviour"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Follows the package-wide *Canvas convention: identical behaviour to the base component, but raycasting against Canvas/UI elements instead of world colliders."
+    },
+    {
+      "id": "class:Required/Scripts/LeanMultiUpdateCanvas.cs:LeanMultiUpdateCanvas",
+      "type": "class",
+      "name": "LeanMultiUpdateCanvas",
+      "filePath": "Required/Scripts/LeanMultiUpdateCanvas.cs",
+      "lineRange": [
+        9,
+        46
+      ],
+      "summary": "Overrides GetFingers to drop fingers not overlapping this UI element and HandleFingerDown to only accept presses that started on it, inheriting all delta/world event logic from LeanMultiUpdate.",
+      "tags": [
+        "gesture",
+        "ui",
+        "canvas",
+        "override"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanMultiUpdateCanvas.cs:LeanMultiUpdateCanvas_Editor",
+      "type": "class",
+      "name": "LeanMultiUpdateCanvas_Editor",
+      "filePath": "Required/Scripts/LeanMultiUpdateCanvas.cs",
+      "lineRange": [
+        57,
+        64
+      ],
+      "summary": "Inspector for LeanMultiUpdateCanvas that extends LeanMultiUpdate_Editor and adds the IgnoreIfOff field.",
+      "tags": [
+        "editor-only",
+        "inspector",
+        "unity-editor",
+        "subclass"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanMultiUpdateCanvas.cs:GetFingers",
+      "type": "function",
+      "name": "GetFingers",
+      "filePath": "Required/Scripts/LeanMultiUpdateCanvas.cs",
+      "lineRange": [
+        14,
+        30
+      ],
+      "summary": "Takes the base finger set and removes any finger whose current screen position is not over this UI element, tested with LeanTouch.ElementOverlapped.",
+      "tags": [
+        "override",
+        "ui",
+        "filtering"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanMultiUpdateCanvas.cs:HandleFingerDown",
+      "type": "function",
+      "name": "HandleFingerDown",
+      "filePath": "Required/Scripts/LeanMultiUpdateCanvas.cs",
+      "lineRange": [
+        32,
+        38
+      ],
+      "summary": "Only forwards finger-down to the base implementation when the press lands on this UI element.",
+      "tags": [
+        "override",
+        "ui",
+        "filtering"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanPick.cs",
+      "type": "file",
+      "name": "LeanPick.cs",
+      "filePath": "Required/Scripts/LeanPick.cs",
+      "summary": "Scene-level picker that raycasts a screen position for a LeanPickable and notifies it, providing a lightweight alternative to the full LeanSelectable selection system.",
+      "tags": [
+        "picking",
+        "screen-query",
+        "event-handler",
+        "monobehaviour",
+        "manual-invoke"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Deliberately requires an external caller (e.g. LeanFingerTap wired in the Inspector) - it subscribes to nothing itself."
+    },
+    {
+      "id": "class:Required/Scripts/LeanPick.cs:LeanPick",
+      "type": "class",
+      "name": "LeanPick",
+      "filePath": "Required/Scripts/LeanPick.cs",
+      "lineRange": [
+        12,
+        60
+      ],
+      "summary": "Queries the screen position via ScreenQuery for a LeanPickable, optionally filtered by a required tag, then invokes OnPickable and calls the target's InvokePick.",
+      "tags": [
+        "picking",
+        "screen-query",
+        "event-handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanPick.cs:LeanPick_Editor",
+      "type": "class",
+      "name": "LeanPick_Editor",
+      "filePath": "Required/Scripts/LeanPick.cs",
+      "lineRange": [
+        71,
+        90
+      ],
+      "summary": "Custom Unity inspector for LeanPick, drawing its serialized fields and surfacing setup warnings in the Inspector.",
+      "tags": [
+        "editor-only",
+        "inspector",
+        "unity-editor",
+        "custom-inspector"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanPick.cs:SelectScreenPosition",
+      "type": "function",
+      "name": "SelectScreenPosition",
+      "filePath": "Required/Scripts/LeanPick.cs",
+      "lineRange": [
+        40,
+        59
+      ],
+      "summary": "Runs a ScreenQuery for a LeanPickable at the given screen position, discards results whose tag does not match RequiredTag, then invokes OnPickable and forwards to LeanPickable.InvokePick.",
+      "tags": [
+        "picking",
+        "screen-query",
+        "public-api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanPickable.cs",
+      "type": "file",
+      "name": "LeanPickable.cs",
+      "filePath": "Required/Scripts/LeanPickable.cs",
+      "summary": "Marker component making a GameObject pickable by LeanPick, exposing finger, screen-position, and world-position events when it is picked.",
+      "tags": [
+        "picking",
+        "event-handler",
+        "monobehaviour",
+        "marker-component"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "The editor class in this file is misnamed LeanSelectSelf_Editor - an orphaned remnant of the now-emptied LeanSelectSelf.cs, recorded here rather than normalized."
+    },
+    {
+      "id": "class:Required/Scripts/LeanPickable.cs:LeanPickable",
+      "type": "class",
+      "name": "LeanPickable",
+      "filePath": "Required/Scripts/LeanPickable.cs",
+      "lineRange": [
+        11,
+        48
+      ],
+      "summary": "Holds the OnFinger/OnWorld/OnScreen UnityEvents that LeanPick fires when this GameObject is picked; contains no input logic of its own.",
+      "tags": [
+        "picking",
+        "event-handler",
+        "marker-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanPickable.cs:LeanSelectSelf_Editor",
+      "type": "class",
+      "name": "LeanSelectSelf_Editor",
+      "filePath": "Required/Scripts/LeanPickable.cs",
+      "lineRange": [
+        59,
+        86
+      ],
+      "summary": "Custom Unity inspector for LeanPickable. NOTE: the class is misnamed LeanSelectSelf_Editor - an orphaned leftover from LeanSelectSelf.cs (now an empty stub); it targets LeanPickable via the TARGET alias.",
+      "tags": [
+        "editor-only",
+        "inspector",
+        "unity-editor",
+        "naming-anomaly"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanPickable.cs:InvokePick",
+      "type": "function",
+      "name": "InvokePick",
+      "filePath": "Required/Scripts/LeanPickable.cs",
+      "lineRange": [
+        29,
+        47
+      ],
+      "summary": "Called by LeanPick to fire the finger event, the screen position event, and the ScreenDepth-converted world position event.",
+      "tags": [
+        "picking",
+        "event-handler",
+        "public-api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanPinchCamera.cs",
+      "type": "file",
+      "name": "LeanPinchCamera.cs",
+      "filePath": "Required/Scripts/LeanPinchCamera.cs",
+      "summary": "Zooms a camera from the pinch gesture, handling both orthographic size and perspective field-of-view, with damping, clamping, and optional zoom-toward-the-pinch-point behaviour.",
+      "tags": [
+        "camera",
+        "pinch",
+        "zoom",
+        "gesture",
+        "monobehaviour"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Zoom writes to orthographicSize or fieldOfView depending on the camera projection, and relative zoom shifts the transform so the pinch point stays put."
+    },
+    {
+      "id": "class:Required/Scripts/LeanPinchCamera.cs:LeanPinchCamera",
+      "type": "class",
+      "name": "LeanPinchCamera",
+      "filePath": "Required/Scripts/LeanPinchCamera.cs",
+      "lineRange": [
+        12,
+        223
+      ],
+      "summary": "Tracks a target zoom plus a damped current zoom, applies the LeanGesture pinch ratio in LateUpdate, optionally translates the camera so the pinch center stays fixed, and writes the result to the camera.",
+      "tags": [
+        "camera",
+        "pinch",
+        "zoom",
+        "damping",
+        "gesture"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:Required/Scripts/LeanPinchCamera.cs:LeanPinchCamera_Editor",
+      "type": "class",
+      "name": "LeanPinchCamera_Editor",
+      "filePath": "Required/Scripts/LeanPinchCamera.cs",
+      "lineRange": [
+        234,
+        263
+      ],
+      "summary": "Custom Unity inspector for LeanPinchCamera, drawing its serialized fields and surfacing setup warnings in the Inspector.",
+      "tags": [
+        "editor-only",
+        "inspector",
+        "unity-editor",
+        "custom-inspector"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanPinchCamera.cs:ContinuouslyZoom",
+      "type": "function",
+      "name": "ContinuouslyZoom",
+      "filePath": "Required/Scripts/LeanPinchCamera.cs",
+      "lineRange": [
+        54,
+        66
+      ],
+      "summary": "Public hook that lerps zoom toward the clamp max or min based on the sign of the supplied direction, for held-button style continuous zooming.",
+      "tags": [
+        "public-api",
+        "zoom",
+        "damping"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanPinchCamera.cs:IncrementZoom",
+      "type": "function",
+      "name": "IncrementZoom",
+      "filePath": "Required/Scripts/LeanPinchCamera.cs",
+      "lineRange": [
+        80,
+        90
+      ],
+      "summary": "Converts a signed delta into a multiplicative factor (0 = no change, -1 halves, 2 doubles) and applies it through MultiplyZoom.",
+      "tags": [
+        "public-api",
+        "zoom",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanPinchCamera.cs:LateUpdate",
+      "type": "function",
+      "name": "LateUpdate",
+      "filePath": "Required/Scripts/LeanPinchCamera.cs",
+      "lineRange": [
+        127,
+        190
+      ],
+      "summary": "Applies the pinch ratio to the clamped zoom, and when Relative is set repositions the transform so the pinch screen center stays anchored, then damps both current zoom and the remaining translation before writing the camera value.",
+      "tags": [
+        "unity-lifecycle",
+        "camera",
+        "pinch",
+        "damping"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:Required/Scripts/LeanPinchCamera.cs:SetZoom",
+      "type": "function",
+      "name": "SetZoom",
+      "filePath": "Required/Scripts/LeanPinchCamera.cs",
+      "lineRange": [
+        192,
+        212
+      ],
+      "summary": "Writes the zoom value to the resolved camera as orthographicSize or fieldOfView depending on projection, logging an error when no camera can be found.",
+      "tags": [
+        "camera",
+        "zoom",
+        "error-handling"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanReplayFinger.cs",
+      "type": "file",
+      "name": "LeanReplayFinger.cs",
+      "filePath": "Required/Scripts/LeanReplayFinger.cs",
+      "summary": "Demonstration component that records the last finger stroke from LeanTouch snapshots and can replay it, moving a cursor Transform along the recorded path.",
+      "tags": [
+        "recording",
+        "replay",
+        "example",
+        "snapshots",
+        "monobehaviour"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanReplayFinger.cs:LeanReplayFinger",
+      "type": "class",
+      "name": "LeanReplayFinger",
+      "filePath": "Required/Scripts/LeanReplayFinger.cs",
+      "lineRange": [
+        10,
+        106
+      ],
+      "summary": "Copies a finger's LeanSnapshot history on finger-up and, when Replay is called, advances a play time and moves the cursor to the interpolated recorded screen position converted through ScreenDepth.",
+      "tags": [
+        "recording",
+        "replay",
+        "snapshots",
+        "leantouch-callbacks"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanReplayFinger.cs:LeanReplayFinger_Editor",
+      "type": "class",
+      "name": "LeanReplayFinger_Editor",
+      "filePath": "Required/Scripts/LeanReplayFinger.cs",
+      "lineRange": [
+        117,
+        129
+      ],
+      "summary": "Custom Unity inspector for LeanReplayFinger, drawing its serialized fields and surfacing setup warnings in the Inspector.",
+      "tags": [
+        "editor-only",
+        "inspector",
+        "unity-editor",
+        "custom-inspector"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanReplayFinger.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanReplayFinger.cs",
+      "lineRange": [
+        50,
+        64
+      ],
+      "summary": "While playing, advances play time and moves the cursor to the snapshot-interpolated screen position converted to world space.",
+      "tags": [
+        "unity-lifecycle",
+        "replay",
+        "playback"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanReplayFinger.cs:HandleFingerUpdate",
+      "type": "function",
+      "name": "HandleFingerUpdate",
+      "filePath": "Required/Scripts/LeanReplayFinger.cs",
+      "lineRange": [
+        66,
+        77
+      ],
+      "summary": "Live finger callback that cancels playback and drives the cursor directly from the current finger position, skipping GUI-started fingers.",
+      "tags": [
+        "event-handler",
+        "recording",
+        "filtering"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanReplayFinger.cs:CopySnapshots",
+      "type": "function",
+      "name": "CopySnapshots",
+      "filePath": "Required/Scripts/LeanReplayFinger.cs",
+      "lineRange": [
+        87,
+        105
+      ],
+      "summary": "Deep-copies the finger's snapshot list (age plus screen position) into a locally owned list, since LeanTouch recycles its snapshots.",
+      "tags": [
+        "recording",
+        "snapshots",
+        "defensive-copy"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanSelectSelf.cs",
+      "type": "file",
+      "name": "LeanSelectSelf.cs",
+      "filePath": "Required/Scripts/LeanSelectSelf.cs",
+      "summary": "Emptied-out placeholder: the file contains only a UTF-8 BOM and a \"// Remove\" comment, with no code at all. Its former editor class survives as the misnamed LeanSelectSelf_Editor inside LeanPickable.cs.",
+      "tags": [
+        "stub",
+        "dead-code",
+        "placeholder",
+        "removed"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:Required/Scripts/LeanMultiTwist.cs",
+      "target": "class:Required/Scripts/LeanMultiTwist.cs:LeanMultiTwist",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanMultiTwist.cs",
+      "target": "class:Required/Scripts/LeanMultiTwist.cs:LeanMultiTwist",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanMultiTwist.cs",
+      "target": "class:Required/Scripts/LeanMultiTwist.cs:LeanDestroy_Editor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanMultiTwist.cs:LeanMultiTwist",
+      "target": "class:Required/Scripts/LeanMultiTwist.cs:OneFingerType",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanMultiTwist.cs:LeanMultiTwist",
+      "target": "function:Required/Scripts/LeanMultiTwist.cs:Update",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanMultiUp.cs",
+      "target": "class:Required/Scripts/LeanMultiUp.cs:LeanMultiUp",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanMultiUp.cs",
+      "target": "class:Required/Scripts/LeanMultiUp.cs:LeanMultiUp",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanMultiUp.cs",
+      "target": "class:Required/Scripts/LeanMultiUp.cs:LeanMultiUp_Editor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanMultiUp.cs:LeanMultiUp",
+      "target": "function:Required/Scripts/LeanMultiUp.cs:Update",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanMultiUpdate.cs",
+      "target": "class:Required/Scripts/LeanMultiUpdate.cs:LeanMultiUpdate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanMultiUpdate.cs",
+      "target": "class:Required/Scripts/LeanMultiUpdate.cs:LeanMultiUpdate",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanMultiUpdate.cs",
+      "target": "class:Required/Scripts/LeanMultiUpdate.cs:LeanMultiUpdate_Editor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanMultiUpdate.cs:LeanMultiUpdate",
+      "target": "class:Required/Scripts/LeanMultiUpdate.cs:CoordinateType",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanMultiUpdate.cs:LeanMultiUpdate",
+      "target": "class:Required/Scripts/LeanMultiUpdate.cs:ConstrainType",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanMultiUpdate.cs:LeanMultiUpdate",
+      "target": "function:Required/Scripts/LeanMultiUpdate.cs:Update",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanMultiUpdate.cs:LeanMultiUpdate",
+      "target": "function:Required/Scripts/LeanMultiUpdate.cs:GetFingers",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanMultiUpdate.cs:LeanMultiUpdate",
+      "target": "function:Required/Scripts/LeanMultiUpdate.cs:HandleFingerDown",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanMultiUpdateCanvas.cs",
+      "target": "class:Required/Scripts/LeanMultiUpdateCanvas.cs:LeanMultiUpdateCanvas",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanMultiUpdateCanvas.cs",
+      "target": "class:Required/Scripts/LeanMultiUpdateCanvas.cs:LeanMultiUpdateCanvas",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanMultiUpdateCanvas.cs",
+      "target": "class:Required/Scripts/LeanMultiUpdateCanvas.cs:LeanMultiUpdateCanvas_Editor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanMultiUpdateCanvas.cs:LeanMultiUpdateCanvas",
+      "target": "function:Required/Scripts/LeanMultiUpdateCanvas.cs:GetFingers",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanMultiUpdateCanvas.cs:LeanMultiUpdateCanvas",
+      "target": "function:Required/Scripts/LeanMultiUpdateCanvas.cs:HandleFingerDown",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanMultiUpdateCanvas.cs:LeanMultiUpdateCanvas",
+      "target": "class:Required/Scripts/LeanMultiUpdate.cs:LeanMultiUpdate",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.9
+    },
+    {
+      "source": "class:Required/Scripts/LeanMultiUpdateCanvas.cs:LeanMultiUpdateCanvas_Editor",
+      "target": "class:Required/Scripts/LeanMultiUpdate.cs:LeanMultiUpdate_Editor",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.9
+    },
+    {
+      "source": "file:Required/Scripts/LeanMultiUpdateCanvas.cs",
+      "target": "file:Required/Scripts/LeanMultiUpdate.cs",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:Required/Scripts/LeanPick.cs",
+      "target": "class:Required/Scripts/LeanPick.cs:LeanPick",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanPick.cs",
+      "target": "class:Required/Scripts/LeanPick.cs:LeanPick",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanPick.cs",
+      "target": "class:Required/Scripts/LeanPick.cs:LeanPick_Editor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanPick.cs:LeanPick",
+      "target": "function:Required/Scripts/LeanPick.cs:SelectScreenPosition",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanPick.cs",
+      "target": "file:Required/Scripts/LeanPickable.cs",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "function:Required/Scripts/LeanPick.cs:SelectScreenPosition",
+      "target": "function:Required/Scripts/LeanPickable.cs:InvokePick",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanPickable.cs",
+      "target": "class:Required/Scripts/LeanPickable.cs:LeanPickable",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanPickable.cs",
+      "target": "class:Required/Scripts/LeanPickable.cs:LeanPickable",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanPickable.cs",
+      "target": "class:Required/Scripts/LeanPickable.cs:LeanSelectSelf_Editor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanPickable.cs:LeanPickable",
+      "target": "function:Required/Scripts/LeanPickable.cs:InvokePick",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanPinchCamera.cs",
+      "target": "class:Required/Scripts/LeanPinchCamera.cs:LeanPinchCamera",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanPinchCamera.cs",
+      "target": "class:Required/Scripts/LeanPinchCamera.cs:LeanPinchCamera",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanPinchCamera.cs",
+      "target": "class:Required/Scripts/LeanPinchCamera.cs:LeanPinchCamera_Editor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanPinchCamera.cs:LeanPinchCamera",
+      "target": "function:Required/Scripts/LeanPinchCamera.cs:ContinuouslyZoom",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanPinchCamera.cs:LeanPinchCamera",
+      "target": "function:Required/Scripts/LeanPinchCamera.cs:IncrementZoom",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanPinchCamera.cs:LeanPinchCamera",
+      "target": "function:Required/Scripts/LeanPinchCamera.cs:LateUpdate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanPinchCamera.cs:LeanPinchCamera",
+      "target": "function:Required/Scripts/LeanPinchCamera.cs:SetZoom",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanReplayFinger.cs",
+      "target": "class:Required/Scripts/LeanReplayFinger.cs:LeanReplayFinger",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanReplayFinger.cs",
+      "target": "class:Required/Scripts/LeanReplayFinger.cs:LeanReplayFinger",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanReplayFinger.cs",
+      "target": "class:Required/Scripts/LeanReplayFinger.cs:LeanReplayFinger_Editor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanReplayFinger.cs:LeanReplayFinger",
+      "target": "function:Required/Scripts/LeanReplayFinger.cs:Update",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanReplayFinger.cs:LeanReplayFinger",
+      "target": "function:Required/Scripts/LeanReplayFinger.cs:HandleFingerUpdate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanReplayFinger.cs:LeanReplayFinger",
+      "target": "function:Required/Scripts/LeanReplayFinger.cs:CopySnapshots",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    }
+  ]
+}

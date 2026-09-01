@@ -1,0 +1,807 @@
+[
+ {
+  "id": "config:LeanTouchPlus.asmdef",
+  "type": "config",
+  "name": "LeanTouchPlus.asmdef",
+  "filePath": "LeanTouchPlus.asmdef",
+  "summary": "Unity assembly definition that compiles every script in this package into the LeanTouchPlus assembly, referencing the external LeanCommon, LeanTouch, LeanCommonPlus and CW.Common assemblies.",
+  "tags": [
+   "configuration",
+   "build-system",
+   "unity",
+   "assembly-definition"
+  ]
+ },
+ {
+  "id": "document:Required/Documentation.html",
+  "type": "document",
+  "name": "Documentation.html",
+  "filePath": "Required/Documentation.html",
+  "summary": "Official Lean Touch+ manual (v3.1.1): explains that the package extends Lean Touch and catalogs every bundled demo scene together with the component and settings each scene demonstrates.",
+  "tags": [
+   "documentation",
+   "entry-point",
+   "overview",
+   "unity"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/IDropHandler.cs",
+  "type": "file",
+  "name": "IDropHandler.cs",
+  "filePath": "Required/Scripts/IDropHandler.cs",
+  "summary": "Declares the single-method IDropHandler interface that marks a component as a valid drop target for LeanSelectableDrop.",
+  "tags": [
+   "type-definition",
+   "interface",
+   "drag-and-drop",
+   "extension-point"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanDragColorMesh.cs",
+  "type": "file",
+  "name": "LeanDragColorMesh.cs",
+  "filePath": "Required/Scripts/LeanDragColorMesh.cs",
+  "summary": "Component that paints the vertex colors of the attached MeshFilter's mesh wherever fingers drag across it, plus its inspector editor.",
+  "tags": [
+   "component",
+   "mesh-manipulation",
+   "input-handling",
+   "unity",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanDragDeformMesh.cs",
+  "type": "file",
+  "name": "LeanDragDeformMesh.cs",
+  "filePath": "Required/Scripts/LeanDragDeformMesh.cs",
+  "summary": "Component that deforms a mesh by dragging its vertices with fingers, optionally pushing the result back into the MeshCollider, plus its inspector editor.",
+  "tags": [
+   "component",
+   "mesh-manipulation",
+   "input-handling",
+   "unity",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanDragLine.cs",
+  "type": "file",
+  "name": "LeanDragLine.cs",
+  "filePath": "Required/Scripts/LeanDragLine.cs",
+  "summary": "Specialisation of the external LeanDragTrail that renders each finger's drag as a straight line and fires from/to/delta events when the finger is released.",
+  "tags": [
+   "component",
+   "line-renderer",
+   "input-handling",
+   "unity",
+   "event-handler"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanDragSelect.cs",
+  "type": "file",
+  "name": "LeanDragSelect.cs",
+  "filePath": "Required/Scripts/LeanDragSelect.cs",
+  "summary": "Component that lets a single finger drag across the screen to select every selectable it passes through, plus its inspector editor.",
+  "tags": [
+   "component",
+   "selection",
+   "input-handling",
+   "unity",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanDragTranslateAlong.cs",
+  "type": "file",
+  "name": "LeanDragTranslateAlong.cs",
+  "filePath": "Required/Scripts/LeanDragTranslateAlong.cs",
+  "summary": "Base component that drags a Transform along a target surface or path by snapping the finger's screen position onto it, plus its inspector editor.",
+  "tags": [
+   "component",
+   "transform-manipulation",
+   "input-handling",
+   "base-class",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanDragTranslateAlongRigidbody.cs",
+  "type": "file",
+  "name": "LeanDragTranslateAlongRigidbody.cs",
+  "filePath": "Required/Scripts/LeanDragTranslateAlongRigidbody.cs",
+  "summary": "Rigidbody flavour of LeanDragTranslateAlong that applies the snapped movement in FixedUpdate via physics instead of writing the Transform directly.",
+  "tags": [
+   "component",
+   "physics",
+   "transform-manipulation",
+   "subclass",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanDragTranslateRigidbody.cs",
+  "type": "file",
+  "name": "LeanDragTranslateRigidbody.cs",
+  "filePath": "Required/Scripts/LeanDragTranslateRigidbody.cs",
+  "summary": "Component that drags a 3D Rigidbody with the fingers, moving it in FixedUpdate toward the finger's screen point with optional damping.",
+  "tags": [
+   "component",
+   "physics",
+   "input-handling",
+   "unity",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanDragTranslateRigidbody2D.cs",
+  "type": "file",
+  "name": "LeanDragTranslateRigidbody2D.cs",
+  "filePath": "Required/Scripts/LeanDragTranslateRigidbody2D.cs",
+  "summary": "2D counterpart of LeanDragTranslateRigidbody: drags a Rigidbody2D with the fingers through the physics step.",
+  "tags": [
+   "component",
+   "physics",
+   "2d",
+   "input-handling",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanDrop.cs",
+  "type": "file",
+  "name": "LeanDrop.cs",
+  "filePath": "Required/Scripts/LeanDrop.cs",
+  "summary": "Drop target component: implements IDropHandler and raises an OnDropped UnityEvent with the dropped GameObject.",
+  "tags": [
+   "component",
+   "drag-and-drop",
+   "unity-event",
+   "event-handler",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanDropCount.cs",
+  "type": "file",
+  "name": "LeanDropCount.cs",
+  "filePath": "Required/Scripts/LeanDropCount.cs",
+  "summary": "Drop target that counts how many objects have been dropped on it and raises match/unmatch events when the count enters or leaves a configured range.",
+  "tags": [
+   "component",
+   "drag-and-drop",
+   "counter",
+   "unity-event",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanFingerDownCanvas.cs",
+  "type": "file",
+  "name": "LeanFingerDownCanvas.cs",
+  "filePath": "Required/Scripts/LeanFingerDownCanvas.cs",
+  "summary": "UI variant of the external LeanFingerDown component that only reacts to fingers pressing the Canvas element it is attached to.",
+  "tags": [
+   "component",
+   "ui",
+   "input-handling",
+   "subclass",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanFingerFlick.cs",
+  "type": "file",
+  "name": "LeanFingerFlick.cs",
+  "filePath": "Required/Scripts/LeanFingerFlick.cs",
+  "summary": "Swipe detector that fires while the finger is still touching the screen, rather than waiting for release, plus its inspector editor.",
+  "tags": [
+   "component",
+   "gesture-detection",
+   "input-handling",
+   "swipe",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanFingerHeld.cs",
+  "type": "file",
+  "name": "LeanFingerHeld.cs",
+  "filePath": "Required/Scripts/LeanFingerHeld.cs",
+  "summary": "Core hold-detection component: fires down/update/up events once a finger has stayed on the screen for MinimumAge without moving more than MaximumMovement. Base class for the Canvas variant.",
+  "tags": [
+   "component",
+   "gesture-detection",
+   "input-handling",
+   "base-class",
+   "unity-event"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanFingerHeldCanvas.cs",
+  "type": "file",
+  "name": "LeanFingerHeldCanvas.cs",
+  "filePath": "Required/Scripts/LeanFingerHeldCanvas.cs",
+  "summary": "UI variant of LeanFingerHeld that only detects holds on the Canvas element it is attached to.",
+  "tags": [
+   "component",
+   "ui",
+   "gesture-detection",
+   "subclass",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanFingerTapExpired.cs",
+  "type": "file",
+  "name": "LeanFingerTapExpired.cs",
+  "filePath": "Required/Scripts/LeanFingerTapExpired.cs",
+  "summary": "Tap component that only fires once the tap counter has expired, which is how single and double taps are told apart without interfering.",
+  "tags": [
+   "component",
+   "gesture-detection",
+   "tap",
+   "subclass",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanFingerTapQuick.cs",
+  "type": "file",
+  "name": "LeanFingerTapQuick.cs",
+  "filePath": "Required/Scripts/LeanFingerTapQuick.cs",
+  "summary": "Detects the final tap of a multi-tap sequence at the moment the finger touches down, giving instant response for the last tap only.",
+  "tags": [
+   "component",
+   "gesture-detection",
+   "tap",
+   "input-handling",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanFirstDown.cs",
+  "type": "file",
+  "name": "LeanFirstDown.cs",
+  "filePath": "Required/Scripts/LeanFirstDown.cs",
+  "summary": "Fires events only when the first finger begins touching the screen, ignoring additional simultaneous fingers. Base class for the Canvas variant.",
+  "tags": [
+   "component",
+   "input-handling",
+   "unity-event",
+   "base-class",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanFirstDownCanvas.cs",
+  "type": "file",
+  "name": "LeanFirstDownCanvas.cs",
+  "filePath": "Required/Scripts/LeanFirstDownCanvas.cs",
+  "summary": "UI variant of LeanFirstDown that only counts fingers pressing the Canvas element it is attached to.",
+  "tags": [
+   "component",
+   "ui",
+   "input-handling",
+   "subclass",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanGestureToggle.cs",
+  "type": "file",
+  "name": "LeanGestureToggle.cs",
+  "filePath": "Required/Scripts/LeanGestureToggle.cs",
+  "summary": "Arbitrates between drag, pinch and twist components by enabling only the one whose gesture exceeded its threshold first, the way mobile map apps isolate gestures.",
+  "tags": [
+   "component",
+   "gesture-detection",
+   "state-machine",
+   "orchestration",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanLastUp.cs",
+  "type": "file",
+  "name": "LeanLastUp.cs",
+  "filePath": "Required/Scripts/LeanLastUp.cs",
+  "summary": "Fires events when the last finger stops touching the screen, the release-side counterpart to LeanFirstDown. Base class for the Canvas variant.",
+  "tags": [
+   "component",
+   "input-handling",
+   "unity-event",
+   "base-class",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanLastUpCanvas.cs",
+  "type": "file",
+  "name": "LeanLastUpCanvas.cs",
+  "filePath": "Required/Scripts/LeanLastUpCanvas.cs",
+  "summary": "UI variant of LeanLastUp that only tracks fingers which started on the Canvas element it is attached to.",
+  "tags": [
+   "component",
+   "ui",
+   "input-handling",
+   "subclass",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanManualFlick.cs",
+  "type": "file",
+  "name": "LeanManualFlick.cs",
+  "filePath": "Required/Scripts/LeanManualFlick.cs",
+  "summary": "Swipe detector whose fingers are fed in manually via AddFinger by components such as LeanFingerDown or LeanFingerDownCanvas, so a flick can be scoped to a specific object or UI element.",
+  "tags": [
+   "component",
+   "gesture-detection",
+   "swipe",
+   "manual-input",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanManualSwipe.cs",
+  "type": "file",
+  "name": "LeanManualSwipe.cs",
+  "filePath": "Required/Scripts/LeanManualSwipe.cs",
+  "summary": "Swipe-detection component that only reacts to fingers explicitly handed to it, so a swipe can be scoped to fingers registered by another component such as LeanFingerDown or LeanFingerDownCanvas.",
+  "tags": [
+   "gesture",
+   "swipe",
+   "event-handler",
+   "manual-fingers",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanMouseWheel.cs",
+  "type": "file",
+  "name": "LeanMouseWheel.cs",
+  "filePath": "Required/Scripts/LeanMouseWheel.cs",
+  "summary": "Turns mouse wheel scrolling into a float UnityEvent so wheel input can drive other components (zoom, scale, dial) without custom code.",
+  "tags": [
+   "input",
+   "mouse-wheel",
+   "event-handler",
+   "monobehaviour",
+   "desktop"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanMultiDirection.cs",
+  "type": "file",
+  "name": "LeanMultiDirection.cs",
+  "filePath": "Required/Scripts/LeanMultiDirection.cs",
+  "summary": "Measures how far one or more filtered fingers have moved along a configured screen direction and emits that distance as a float event.",
+  "tags": [
+   "gesture",
+   "multi-finger",
+   "direction",
+   "event-handler",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanMultiDown.cs",
+  "type": "file",
+  "name": "LeanMultiDown.cs",
+  "filePath": "Required/Scripts/LeanMultiDown.cs",
+  "summary": "Fires UnityEvents the moment a specific number of fingers are simultaneously pressing the screen, reporting the finger list plus the screen and world center.",
+  "tags": [
+   "gesture",
+   "multi-finger",
+   "finger-down",
+   "event-handler",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanMultiHeld.cs",
+  "type": "file",
+  "name": "LeanMultiHeld.cs",
+  "filePath": "Required/Scripts/LeanMultiHeld.cs",
+  "summary": "Detects a sustained multi-finger hold: once the required fingers have stayed down past a minimum age (within a movement tolerance) it fires down/update/up event triples for finger list, screen center, and world position.",
+  "tags": [
+   "gesture",
+   "multi-finger",
+   "hold",
+   "event-handler",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanMultiPinch.cs",
+  "type": "file",
+  "name": "LeanMultiPinch.cs",
+  "filePath": "Required/Scripts/LeanMultiPinch.cs",
+  "summary": "Reports the pinch (scale) ratio of all filtered fingers as a float event, letting designers wire pinch straight into scale or zoom.",
+  "tags": [
+   "gesture",
+   "multi-finger",
+   "pinch",
+   "event-handler",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanMultiPull.cs",
+  "type": "file",
+  "name": "LeanMultiPull.cs",
+  "filePath": "Required/Scripts/LeanMultiPull.cs",
+  "summary": "Continuously reports where the filtered fingers are relative to where they first went down, which is what an invisible on-screen joystick needs.",
+  "tags": [
+   "gesture",
+   "multi-finger",
+   "joystick",
+   "continuous-input",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanMultiSwipe.cs",
+  "type": "file",
+  "name": "LeanMultiSwipe.cs",
+  "filePath": "Required/Scripts/LeanMultiSwipe.cs",
+  "summary": "Detects a simultaneous multi-finger swipe, distinguishing a parallel swipe from a pinch-in or pinch-out swipe, and fires when the first finger leaves the screen.",
+  "tags": [
+   "gesture",
+   "multi-finger",
+   "swipe",
+   "event-handler",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanMultiTap.cs",
+  "type": "file",
+  "name": "LeanMultiTap.cs",
+  "filePath": "Required/Scripts/LeanMultiTap.cs",
+  "summary": "Counts multi-taps - one or more fingers pressed and released together within the tap threshold - and reports the tap count and the highest simultaneous finger count.",
+  "tags": [
+   "gesture",
+   "multi-finger",
+   "tap",
+   "counter",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanMultiTwist.cs",
+  "type": "file",
+  "name": "LeanMultiTwist.cs",
+  "filePath": "Required/Scripts/LeanMultiTwist.cs",
+  "summary": "Reports the twist (rotation) angle of all filtered fingers as a float event, with a configurable fallback for how a single finger is interpreted.",
+  "tags": [
+   "gesture",
+   "multi-finger",
+   "twist",
+   "event-handler",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanMultiUp.cs",
+  "type": "file",
+  "name": "LeanMultiUp.cs",
+  "filePath": "Required/Scripts/LeanMultiUp.cs",
+  "summary": "Fires UnityEvents when a specific number of fingers stop touching the screen, reporting the releasing finger plus the screen and world position.",
+  "tags": [
+   "gesture",
+   "multi-finger",
+   "finger-up",
+   "event-handler",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanMultiUpdate.cs",
+  "type": "file",
+  "name": "LeanMultiUpdate.cs",
+  "filePath": "Required/Scripts/LeanMultiUpdate.cs",
+  "summary": "The general-purpose workhorse of the LeanMulti family: reports the per-frame change in position of all filtered fingers as delta, distance, and world from/to events, with optional axis constraining.",
+  "tags": [
+   "gesture",
+   "multi-finger",
+   "drag",
+   "base-class",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanMultiUpdateCanvas.cs",
+  "type": "file",
+  "name": "LeanMultiUpdateCanvas.cs",
+  "filePath": "Required/Scripts/LeanMultiUpdateCanvas.cs",
+  "summary": "Canvas variant of LeanMultiUpdate that only counts fingers currently overlapping this UI element, so drag-style events fire for the RectTransform rather than the whole screen.",
+  "tags": [
+   "gesture",
+   "ui",
+   "canvas",
+   "subclass",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanPick.cs",
+  "type": "file",
+  "name": "LeanPick.cs",
+  "filePath": "Required/Scripts/LeanPick.cs",
+  "summary": "Scene-level picker that raycasts a screen position for a LeanPickable and notifies it, providing a lightweight alternative to the full LeanSelectable selection system.",
+  "tags": [
+   "picking",
+   "screen-query",
+   "event-handler",
+   "monobehaviour",
+   "manual-invoke"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanPickable.cs",
+  "type": "file",
+  "name": "LeanPickable.cs",
+  "filePath": "Required/Scripts/LeanPickable.cs",
+  "summary": "Marker component making a GameObject pickable by LeanPick, exposing finger, screen-position, and world-position events when it is picked.",
+  "tags": [
+   "picking",
+   "event-handler",
+   "monobehaviour",
+   "marker-component"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanPinchCamera.cs",
+  "type": "file",
+  "name": "LeanPinchCamera.cs",
+  "filePath": "Required/Scripts/LeanPinchCamera.cs",
+  "summary": "Zooms a camera from the pinch gesture, handling both orthographic size and perspective field-of-view, with damping, clamping, and optional zoom-toward-the-pinch-point behaviour.",
+  "tags": [
+   "camera",
+   "pinch",
+   "zoom",
+   "gesture",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanReplayFinger.cs",
+  "type": "file",
+  "name": "LeanReplayFinger.cs",
+  "filePath": "Required/Scripts/LeanReplayFinger.cs",
+  "summary": "Demonstration component that records the last finger stroke from LeanTouch snapshots and can replay it, moving a cursor Transform along the recorded path.",
+  "tags": [
+   "recording",
+   "replay",
+   "example",
+   "snapshots",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanSelectSelf.cs",
+  "type": "file",
+  "name": "LeanSelectSelf.cs",
+  "filePath": "Required/Scripts/LeanSelectSelf.cs",
+  "summary": "Emptied-out placeholder: the file contains only a UTF-8 BOM and a \"// Remove\" comment, with no code at all. Its former editor class survives as the misnamed LeanSelectSelf_Editor inside LeanPickable.cs.",
+  "tags": [
+   "stub",
+   "dead-code",
+   "placeholder",
+   "removed"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanSelectableBlock.cs",
+  "type": "file",
+  "name": "LeanSelectableBlock.cs",
+  "filePath": "Required/Scripts/LeanSelectableBlock.cs",
+  "summary": "Reference implementation of a match-3 style grid block: it holds integer grid coordinates, swaps with the neighbouring block the selecting finger drags toward, and eases into its grid position.",
+  "tags": [
+   "example",
+   "match-3",
+   "grid",
+   "selectable",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanSelectableCenter.cs",
+  "type": "file",
+  "name": "LeanSelectableCenter.cs",
+  "filePath": "Required/Scripts/LeanSelectableCenter.cs",
+  "summary": "On demand, averages the world positions of every currently selected LeanSelectable and emits the centroid as a Vector3 event.",
+  "tags": [
+   "selectable",
+   "centroid",
+   "utility",
+   "monobehaviour",
+   "manual-invoke"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanSelectableDial.cs",
+  "type": "file",
+  "name": "LeanSelectableDial.cs",
+  "filePath": "Required/Scripts/LeanSelectableDial.cs",
+  "summary": "Turns the selected object into a dial or knob: dragging rotates it about a configured axis, with optional angle clamping and a list of angular triggers that fire enter/exit events.",
+  "tags": [
+   "selectable",
+   "dial",
+   "rotation",
+   "ui",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanSelectableDragTorque.cs",
+  "type": "file",
+  "name": "LeanSelectableDragTorque.cs",
+  "filePath": "Required/Scripts/LeanSelectableDragTorque.cs",
+  "summary": "Adds physics torque to the attached Rigidbody based on how the selecting finger spins, so a selected object can be flicked into rotation.",
+  "tags": [
+   "selectable",
+   "physics",
+   "torque",
+   "rigidbody",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanSelectableDrop.cs",
+  "type": "file",
+  "name": "LeanSelectableDrop.cs",
+  "filePath": "Required/Scripts/LeanSelectableDrop.cs",
+  "summary": "On finger release, raycasts under the selected object for an IDropHandler and hands the drop over to it, emitting the receiving GameObject and handler as events.",
+  "tags": [
+   "selectable",
+   "drag-and-drop",
+   "screen-query",
+   "event-handler",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanSelectablePressureScale.cs",
+  "type": "file",
+  "name": "LeanSelectablePressureScale.cs",
+  "filePath": "Required/Scripts/LeanSelectablePressureScale.cs",
+  "summary": "Scales the selected object in proportion to the selecting finger pressure, for force-touch style feedback.",
+  "tags": [
+   "selectable",
+   "pressure",
+   "scaling",
+   "feedback",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanSelectableSelected.cs",
+  "type": "file",
+  "name": "LeanSelectableSelected.cs",
+  "filePath": "Required/Scripts/LeanSelectableSelected.cs",
+  "summary": "Fires down/update/up events once a selectable has been held selected for a threshold number of seconds, with configurable reset timing and an optional require-a-finger gate.",
+  "tags": [
+   "selectable",
+   "timer",
+   "hold",
+   "event-handler",
+   "monobehaviour"
+  ]
+ },
+ {
+  "id": "config:package.json",
+  "type": "config",
+  "name": "package.json",
+  "filePath": "package.json",
+  "summary": "Unity Package Manager manifest for com.cwilkes.lean.touch-plus (v1.0.0, Unity 2019.4+), declaring runtime dependencies on the com.cwilkes.lean.common and com.cwilkes.lean.common-plus packages.",
+  "tags": [
+   "configuration",
+   "package-manifest",
+   "unity",
+   "dependencies"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanSelectableTime.cs",
+  "type": "file",
+  "name": "LeanSelectableTime.cs",
+  "filePath": "Required/Scripts/LeanSelectableTime.cs",
+  "summary": "Defines a LeanSelectable companion component that accumulates how many seconds an object has been selected and broadcasts the running total through a UnityEvent, with a SendType switch controlling whether it fires only while selected, also on deselect, or every frame.",
+  "tags": [
+   "component",
+   "selection",
+   "unity-event",
+   "timer",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanSelectionBox.cs",
+  "type": "file",
+  "name": "LeanSelectionBox.cs",
+  "filePath": "Required/Scripts/LeanSelectionBox.cs",
+  "summary": "Implements drag-rectangle multi-selection: each finger spawns a RectTransform selection box prefab under a screen-filling canvas root, the box is resized as the finger drags, and on release every LeanSelectable inside the rectangle passing the layer and tag filters is handed to a LeanSelectByFinger component.",
+  "tags": [
+   "component",
+   "selection",
+   "ui",
+   "gesture",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanShape.cs",
+  "type": "file",
+  "name": "LeanShape.cs",
+  "filePath": "Required/Scripts/LeanShape.cs",
+  "summary": "Defines a reusable 2D gesture shape as an ordered list of Vector2 points, optionally closed into a loop, with index wrapping/clamping accessors and optional LineRenderer visualisation. This is the reference data that LeanShapeDetector matches finger movement against.",
+  "tags": [
+   "data-model",
+   "gesture",
+   "geometry",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanShapeDetector.cs",
+  "type": "file",
+  "name": "LeanShapeDetector.cs",
+  "filePath": "Required/Scripts/LeanShapeDetector.cs",
+  "summary": "The package's gesture-recognition core: records each finger's stroke as a decimated point list and, on release, matches it against a reference LeanShape using point-to-segment distance with configurable distance/error thresholds, partial-match minimums and forward/backward direction ranges, firing OnDetected on a match.",
+  "tags": [
+   "gesture",
+   "recognition",
+   "algorithm",
+   "geometry",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanSpawnWithFinger.cs",
+  "type": "file",
+  "name": "LeanSpawnWithFinger.cs",
+  "filePath": "Required/Scripts/LeanSpawnWithFinger.cs",
+  "summary": "Spawns a prefab at a finger's world position derived from a LeanScreenDepth conversion, optionally keeping it dragging under the finger, auto-selecting it via LeanSelect, and destroying it on release when dropped over blocked or missing screen-query targets.",
+  "tags": [
+   "component",
+   "instantiation",
+   "gesture",
+   "selection",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanSwipeEdge.cs",
+  "type": "file",
+  "name": "LeanSwipeEdge.cs",
+  "filePath": "Required/Scripts/LeanSwipeEdge.cs",
+  "summary": "Detects swipes that originate at a screen edge, checking the swipe start against a scaled-pixel edge threshold and its direction against an angle tolerance for each enabled side, then firing a UnityEvent.",
+  "tags": [
+   "component",
+   "gesture",
+   "swipe",
+   "unity-event",
+   "editor-only"
+  ]
+ },
+ {
+  "id": "file:Required/Scripts/LeanTwistCamera.cs",
+  "type": "file",
+  "name": "LeanTwistCamera.cs",
+  "filePath": "Required/Scripts/LeanTwistCamera.cs",
+  "summary": "Rotates the attached GameObject (typically a camera) from a two-finger twist gesture, optionally pivoting around the finger centre in world space via LeanScreenDepth, with damped interpolation toward the target rotation.",
+  "tags": [
+   "component",
+   "gesture",
+   "camera",
+   "twist",
+   "editor-only"
+  ]
+ }
+]

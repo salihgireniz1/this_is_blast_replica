@@ -1,0 +1,569 @@
+{
+  "nodes": [
+    {
+      "id": "config:LeanTouchPlus.asmdef",
+      "type": "config",
+      "name": "LeanTouchPlus.asmdef",
+      "filePath": "LeanTouchPlus.asmdef",
+      "summary": "Unity assembly definition that compiles every script in this package into the LeanTouchPlus assembly, referencing the external LeanCommon, LeanTouch, LeanCommonPlus and CW.Common assemblies.",
+      "tags": ["configuration", "build-system", "unity", "assembly-definition"],
+      "complexity": "simple",
+      "languageNotes": "Unity .asmdef files are JSON; the references array is what makes base types like LeanFingerData and CwEditor resolvable at compile time."
+    },
+    {
+      "id": "document:Required/Documentation.html",
+      "type": "document",
+      "name": "Documentation.html",
+      "filePath": "Required/Documentation.html",
+      "summary": "Official Lean Touch+ manual (v3.1.1): explains that the package extends Lean Touch and catalogs every bundled demo scene together with the component and settings each scene demonstrates.",
+      "tags": ["documentation", "entry-point", "overview", "unity"],
+      "complexity": "complex",
+      "languageNotes": "Single self-contained HTML file; roughly half its 187 KB is base64-embedded WOFF fonts inside a <style> block rather than prose."
+    },
+    {
+      "id": "file:Required/Scripts/IDropHandler.cs",
+      "type": "file",
+      "name": "IDropHandler.cs",
+      "filePath": "Required/Scripts/IDropHandler.cs",
+      "summary": "Declares the single-method IDropHandler interface that marks a component as a valid drop target for LeanSelectableDrop.",
+      "tags": ["type-definition", "interface", "drag-and-drop", "extension-point"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/IDropHandler.cs:IDropHandler",
+      "type": "class",
+      "name": "IDropHandler",
+      "filePath": "Required/Scripts/IDropHandler.cs",
+      "lineRange": [6, 9],
+      "summary": "Interface with a single HandleDrop(GameObject, LeanFinger) method; any component implementing it can receive objects dropped by LeanSelectableDrop.",
+      "tags": ["interface", "drag-and-drop", "extension-point", "type-definition"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanDragColorMesh.cs",
+      "type": "file",
+      "name": "LeanDragColorMesh.cs",
+      "filePath": "Required/Scripts/LeanDragColorMesh.cs",
+      "summary": "Component that paints the vertex colors of the attached MeshFilter's mesh wherever fingers drag across it, plus its inspector editor.",
+      "tags": ["component", "mesh-manipulation", "input-handling", "unity", "editor-only"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragColorMesh.cs:LeanDragColorMesh",
+      "type": "class",
+      "name": "LeanDragColorMesh",
+      "filePath": "Required/Scripts/LeanDragColorMesh.cs",
+      "lineRange": [7, 126],
+      "summary": "MonoBehaviour that clones the MeshFilter mesh at Awake and, each Update, raycasts filtered fingers against the mesh to write PaintColor into the touched triangle's vertex colors.",
+      "tags": ["component", "mesh-manipulation", "raycast", "input-handling"],
+      "complexity": "moderate",
+      "languageNotes": "Uses a LeanFingerFilter (Use) field so designers choose which fingers drive the component; AddFinger/RemoveFinger let other components feed fingers in manually."
+    },
+    {
+      "id": "function:Required/Scripts/LeanDragColorMesh.cs:Paint",
+      "type": "function",
+      "name": "Paint",
+      "filePath": "Required/Scripts/LeanDragColorMesh.cs",
+      "lineRange": [74, 125],
+      "summary": "Raycasts a finger's screen position into the mesh collider and rewrites the vertex colors of the hit triangle, rebuilding the modified color array on the cloned mesh.",
+      "tags": ["raycast", "mesh-manipulation", "input-handling"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragColorMesh.cs:LeanDragColorMesh_Editor",
+      "type": "class",
+      "name": "LeanDragColorMesh_Editor",
+      "filePath": "Required/Scripts/LeanDragColorMesh.cs",
+      "lineRange": [137, 147],
+      "summary": "Custom inspector for LeanDragColorMesh, drawing its finger filter and paint settings inside a UNITY_EDITOR-only block.",
+      "tags": ["editor-only", "inspector", "unity", "tooling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanDragDeformMesh.cs",
+      "type": "file",
+      "name": "LeanDragDeformMesh.cs",
+      "filePath": "Required/Scripts/LeanDragDeformMesh.cs",
+      "summary": "Component that deforms a mesh by dragging its vertices with fingers, optionally pushing the result back into the MeshCollider, plus its inspector editor.",
+      "tags": ["component", "mesh-manipulation", "input-handling", "unity", "editor-only"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragDeformMesh.cs:LeanDragDeformMesh",
+      "type": "class",
+      "name": "LeanDragDeformMesh",
+      "filePath": "Required/Scripts/LeanDragDeformMesh.cs",
+      "lineRange": [7, 153],
+      "summary": "MonoBehaviour that clones the MeshFilter mesh and, per frame, moves every vertex within ScaledRadius of a dragging finger, optionally reassigning the deformed mesh to the MeshCollider.",
+      "tags": ["component", "mesh-manipulation", "input-handling", "raycast"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:Required/Scripts/LeanDragDeformMesh.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanDragDeformMesh.cs",
+      "lineRange": [69, 152],
+      "summary": "Per-frame deformation loop: projects each filtered finger's screen delta into mesh space and displaces nearby vertices, then uploads the changed vertex array and optionally refreshes the MeshCollider.",
+      "tags": ["mesh-manipulation", "input-handling", "per-frame"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragDeformMesh.cs:LeanDragDeformMesh_Editor",
+      "type": "class",
+      "name": "LeanDragDeformMesh_Editor",
+      "filePath": "Required/Scripts/LeanDragDeformMesh.cs",
+      "lineRange": [164, 175],
+      "summary": "Custom inspector for LeanDragDeformMesh exposing radius, camera and collider options.",
+      "tags": ["editor-only", "inspector", "unity", "tooling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanDragLine.cs",
+      "type": "file",
+      "name": "LeanDragLine.cs",
+      "filePath": "Required/Scripts/LeanDragLine.cs",
+      "summary": "Specialisation of the external LeanDragTrail that renders each finger's drag as a straight line and fires from/to/delta events when the finger is released.",
+      "tags": ["component", "line-renderer", "input-handling", "unity", "event-handler"],
+      "complexity": "moderate",
+      "languageNotes": "Requires LeanTouch.RecordFingers to be enabled, because it reads recorded finger snapshots to build the line."
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragLine.cs:LeanDragLine",
+      "type": "class",
+      "name": "LeanDragLine",
+      "filePath": "Required/Scripts/LeanDragLine.cs",
+      "lineRange": [9, 155],
+      "summary": "Overrides LeanDragTrail's line building to draw a single straight segment between the finger's start and current position, clamped by LengthMin/LengthMax and optionally inverted or anchored at the origin.",
+      "tags": ["component", "line-renderer", "input-handling", "event-handler"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanDragLine.cs:UpdateLine",
+      "type": "function",
+      "name": "UpdateLine",
+      "filePath": "Required/Scripts/LeanDragLine.cs",
+      "lineRange": [52, 116],
+      "summary": "Computes the clamped, optionally inverted straight line for a finger and writes its two positions and scaled widths into the LineRenderer.",
+      "tags": ["line-renderer", "geometry", "input-handling"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanDragLine.cs:HandleFingerUp",
+      "type": "function",
+      "name": "HandleFingerUp",
+      "filePath": "Required/Scripts/LeanDragLine.cs",
+      "lineRange": [118, 154],
+      "summary": "On finger release, recomputes the final line endpoints and invokes the OnReleasedFrom, OnReleasedTo, OnReleasedDelta and OnReleasedFromTo UnityEvents.",
+      "tags": ["event-handler", "input-handling", "unity-event"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragLine.cs:LeanDragLine_Editor",
+      "type": "class",
+      "name": "LeanDragLine_Editor",
+      "filePath": "Required/Scripts/LeanDragLine.cs",
+      "lineRange": [166, 211],
+      "summary": "Custom inspector extending LeanDragTrail_Editor with the line-specific width, length, invert and release-event fields.",
+      "tags": ["editor-only", "inspector", "unity", "tooling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanDragSelect.cs",
+      "type": "file",
+      "name": "LeanDragSelect.cs",
+      "filePath": "Required/Scripts/LeanDragSelect.cs",
+      "summary": "Component that lets a single finger drag across the screen to select every selectable it passes through, plus its inspector editor.",
+      "tags": ["component", "selection", "input-handling", "unity", "editor-only"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragSelect.cs:LeanDragSelect",
+      "type": "class",
+      "name": "LeanDragSelect",
+      "filePath": "Required/Scripts/LeanDragSelect.cs",
+      "lineRange": [8, 133],
+      "summary": "Hooks LeanSelectByFinger's finger events and repeatedly re-runs selection as the finger moves, using a nested FingerData : LeanFingerData list to remember the last selection point and honour MaximumSeparation.",
+      "tags": ["component", "selection", "input-handling", "state-tracking"],
+      "complexity": "moderate",
+      "languageNotes": "Nested private FingerData : LeanFingerData class is the package's recurring idiom for per-finger state."
+    },
+    {
+      "id": "function:Required/Scripts/LeanDragSelect.cs:HandleFingerDown",
+      "type": "function",
+      "name": "HandleFingerDown",
+      "filePath": "Required/Scripts/LeanDragSelect.cs",
+      "lineRange": [56, 90],
+      "summary": "Starts a drag-select for a finger, optionally deselecting everything first and rejecting the drag when RequireNoSelectables or RequireInitialSelection are not satisfied.",
+      "tags": ["event-handler", "selection", "input-handling", "validation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanDragSelect.cs:HandleAnySelectedFinger",
+      "type": "function",
+      "name": "HandleAnySelectedFinger",
+      "filePath": "Required/Scripts/LeanDragSelect.cs",
+      "lineRange": [110, 132],
+      "summary": "Callback fired whenever the select component selects something with a finger; records the selection screen position so subsequent movement can be measured against MaximumSeparation.",
+      "tags": ["event-handler", "selection", "state-tracking"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragSelect.cs:LeanDragSelect_Editor",
+      "type": "class",
+      "name": "LeanDragSelect_Editor",
+      "filePath": "Required/Scripts/LeanDragSelect.cs",
+      "lineRange": [144, 158],
+      "summary": "Custom inspector for LeanDragSelect that warns when no select component is assigned and draws the selection requirement toggles.",
+      "tags": ["editor-only", "inspector", "unity", "tooling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanDragTranslateAlong.cs",
+      "type": "file",
+      "name": "LeanDragTranslateAlong.cs",
+      "filePath": "Required/Scripts/LeanDragTranslateAlong.cs",
+      "summary": "Base component that drags a Transform along a target surface or path by snapping the finger's screen position onto it, plus its inspector editor.",
+      "tags": ["component", "transform-manipulation", "input-handling", "base-class", "editor-only"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragTranslateAlong.cs:LeanDragTranslateAlong",
+      "type": "class",
+      "name": "LeanDragTranslateAlong",
+      "filePath": "Required/Scripts/LeanDragTranslateAlong.cs",
+      "lineRange": [7, 165],
+      "summary": "MonoBehaviour that converts filtered finger drags into a screen-space target point, snaps that point onto the specified surface and moves the Transform there with optional damping. Serves as the base class for the Rigidbody variant.",
+      "tags": ["component", "transform-manipulation", "input-handling", "base-class", "damping"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanDragTranslateAlong.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanDragTranslateAlong.cs",
+      "lineRange": [78, 106],
+      "summary": "Per-frame driver: accumulates the filtered fingers' screen delta into the target screen point and applies the damped remaining movement to the Transform.",
+      "tags": ["per-frame", "transform-manipulation", "input-handling"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanDragTranslateAlong.cs:TryGetSnappedWorldPosition",
+      "type": "function",
+      "name": "TryGetSnappedWorldPosition",
+      "filePath": "Required/Scripts/LeanDragTranslateAlong.cs",
+      "lineRange": [108, 136],
+      "summary": "Projects a candidate world position onto the configured target surface, returning false when no valid snap point exists.",
+      "tags": ["geometry", "utility", "validation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanDragTranslateAlong.cs:UpdateTarget",
+      "type": "function",
+      "name": "UpdateTarget",
+      "filePath": "Required/Scripts/LeanDragTranslateAlong.cs",
+      "lineRange": [138, 164],
+      "summary": "Resolves the current screen target into a snapped world position and stores the remaining delta consumed by the damping in Update.",
+      "tags": ["geometry", "transform-manipulation", "damping"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragTranslateAlong.cs:LeanDragTranslateAlong_Editor",
+      "type": "class",
+      "name": "LeanDragTranslateAlong_Editor",
+      "filePath": "Required/Scripts/LeanDragTranslateAlong.cs",
+      "lineRange": [176, 187],
+      "summary": "Custom inspector for LeanDragTranslateAlong and the base editor its Rigidbody variant extends.",
+      "tags": ["editor-only", "inspector", "unity", "base-class"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanDragTranslateAlongRigidbody.cs",
+      "type": "file",
+      "name": "LeanDragTranslateAlongRigidbody.cs",
+      "filePath": "Required/Scripts/LeanDragTranslateAlongRigidbody.cs",
+      "summary": "Rigidbody flavour of LeanDragTranslateAlong that applies the snapped movement in FixedUpdate via physics instead of writing the Transform directly.",
+      "tags": ["component", "physics", "transform-manipulation", "subclass", "editor-only"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragTranslateAlongRigidbody.cs:LeanDragTranslateAlongRigidbody",
+      "type": "class",
+      "name": "LeanDragTranslateAlongRigidbody",
+      "filePath": "Required/Scripts/LeanDragTranslateAlongRigidbody.cs",
+      "lineRange": [7, 62],
+      "summary": "Subclass of LeanDragTranslateAlong that overrides SnapPosition, moves the body inside FixedUpdate so physics stays consistent, and leaves Update to input accumulation only.",
+      "tags": ["component", "physics", "subclass", "input-handling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanDragTranslateAlongRigidbody.cs:FixedUpdate",
+      "type": "function",
+      "name": "FixedUpdate",
+      "filePath": "Required/Scripts/LeanDragTranslateAlongRigidbody.cs",
+      "lineRange": [27, 56],
+      "summary": "Physics-step movement: converts the pending snapped target into a Rigidbody position or velocity change so collisions are respected.",
+      "tags": ["physics", "per-frame", "transform-manipulation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragTranslateAlongRigidbody.cs:LeanDragTranslateAlongRigidbody_Editor",
+      "type": "class",
+      "name": "LeanDragTranslateAlongRigidbody_Editor",
+      "filePath": "Required/Scripts/LeanDragTranslateAlongRigidbody.cs",
+      "lineRange": [73, 81],
+      "summary": "Inspector for the Rigidbody variant, extending LeanDragTranslateAlong_Editor so the shared fields are drawn once.",
+      "tags": ["editor-only", "inspector", "unity", "subclass"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanDragTranslateRigidbody.cs",
+      "type": "file",
+      "name": "LeanDragTranslateRigidbody.cs",
+      "filePath": "Required/Scripts/LeanDragTranslateRigidbody.cs",
+      "summary": "Component that drags a 3D Rigidbody with the fingers, moving it in FixedUpdate toward the finger's screen point with optional damping.",
+      "tags": ["component", "physics", "input-handling", "unity", "editor-only"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragTranslateRigidbody.cs:LeanDragTranslateRigidbody",
+      "type": "class",
+      "name": "LeanDragTranslateRigidbody",
+      "filePath": "Required/Scripts/LeanDragTranslateRigidbody.cs",
+      "lineRange": [7, 123],
+      "summary": "MonoBehaviour requiring a Rigidbody; tracks a target screen point from the filtered fingers in Update and drives the body toward the corresponding world point in FixedUpdate.",
+      "tags": ["component", "physics", "input-handling", "damping"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanDragTranslateRigidbody.cs:FixedUpdate",
+      "type": "function",
+      "name": "FixedUpdate",
+      "filePath": "Required/Scripts/LeanDragTranslateRigidbody.cs",
+      "lineRange": [69, 87],
+      "summary": "Applies the pending drag to the Rigidbody on the physics step, converting the screen target into a world velocity or position change.",
+      "tags": ["physics", "per-frame", "input-handling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanDragTranslateRigidbody.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanDragTranslateRigidbody.cs",
+      "lineRange": [89, 122],
+      "summary": "Accumulates the filtered fingers' screen movement into the target screen point, resetting the target when no fingers remain.",
+      "tags": ["per-frame", "input-handling", "state-tracking"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragTranslateRigidbody.cs:LeanDragTranslateRigidbody_Editor",
+      "type": "class",
+      "name": "LeanDragTranslateRigidbody_Editor",
+      "filePath": "Required/Scripts/LeanDragTranslateRigidbody.cs",
+      "lineRange": [134, 144],
+      "summary": "Custom inspector for LeanDragTranslateRigidbody drawing the finger filter, camera and damping fields.",
+      "tags": ["editor-only", "inspector", "unity", "tooling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanDragTranslateRigidbody2D.cs",
+      "type": "file",
+      "name": "LeanDragTranslateRigidbody2D.cs",
+      "filePath": "Required/Scripts/LeanDragTranslateRigidbody2D.cs",
+      "summary": "2D counterpart of LeanDragTranslateRigidbody: drags a Rigidbody2D with the fingers through the physics step.",
+      "tags": ["component", "physics", "2d", "input-handling", "editor-only"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragTranslateRigidbody2D.cs:LeanDragTranslateRigidbody2D",
+      "type": "class",
+      "name": "LeanDragTranslateRigidbody2D",
+      "filePath": "Required/Scripts/LeanDragTranslateRigidbody2D.cs",
+      "lineRange": [7, 123],
+      "summary": "MonoBehaviour requiring a Rigidbody2D that mirrors the 3D drag component's Update/FixedUpdate split using 2D physics APIs.",
+      "tags": ["component", "physics", "2d", "input-handling"],
+      "complexity": "moderate",
+      "languageNotes": "Near-duplicate of the 3D version; Unity's separate 2D physics API is why the two exist side by side rather than sharing a base class."
+    },
+    {
+      "id": "function:Required/Scripts/LeanDragTranslateRigidbody2D.cs:FixedUpdate",
+      "type": "function",
+      "name": "FixedUpdate",
+      "filePath": "Required/Scripts/LeanDragTranslateRigidbody2D.cs",
+      "lineRange": [69, 88],
+      "summary": "Moves the Rigidbody2D toward the tracked screen target on the physics step.",
+      "tags": ["physics", "2d", "per-frame"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanDragTranslateRigidbody2D.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanDragTranslateRigidbody2D.cs",
+      "lineRange": [90, 122],
+      "summary": "Accumulates filtered finger movement into the target screen point each frame and clears it when the drag ends.",
+      "tags": ["per-frame", "input-handling", "state-tracking"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDragTranslateRigidbody2D.cs:LeanDragTranslateRigidbody2D_Editor",
+      "type": "class",
+      "name": "LeanDragTranslateRigidbody2D_Editor",
+      "filePath": "Required/Scripts/LeanDragTranslateRigidbody2D.cs",
+      "lineRange": [134, 144],
+      "summary": "Custom inspector for the 2D Rigidbody drag component.",
+      "tags": ["editor-only", "inspector", "unity", "2d"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanDrop.cs",
+      "type": "file",
+      "name": "LeanDrop.cs",
+      "filePath": "Required/Scripts/LeanDrop.cs",
+      "summary": "Drop target component: implements IDropHandler and raises an OnDropped UnityEvent with the dropped GameObject.",
+      "tags": ["component", "drag-and-drop", "unity-event", "event-handler", "editor-only"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDrop.cs:LeanDrop",
+      "type": "class",
+      "name": "LeanDrop",
+      "filePath": "Required/Scripts/LeanDrop.cs",
+      "lineRange": [8, 27],
+      "summary": "MonoBehaviour implementing IDropHandler.HandleDrop, forwarding each dropped GameObject to the inspector-wired OnDropped event.",
+      "tags": ["component", "drag-and-drop", "unity-event", "event-handler"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDrop.cs:LeanDrop_Editor",
+      "type": "class",
+      "name": "LeanDrop_Editor",
+      "filePath": "Required/Scripts/LeanDrop.cs",
+      "lineRange": [38, 46],
+      "summary": "Custom inspector for LeanDrop drawing the OnDropped event.",
+      "tags": ["editor-only", "inspector", "unity", "tooling"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanDropCount.cs",
+      "type": "file",
+      "name": "LeanDropCount.cs",
+      "filePath": "Required/Scripts/LeanDropCount.cs",
+      "summary": "Drop target that counts how many objects have been dropped on it and raises match/unmatch events when the count enters or leaves a configured range.",
+      "tags": ["component", "drag-and-drop", "counter", "unity-event", "editor-only"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDropCount.cs:LeanDropCount",
+      "type": "class",
+      "name": "LeanDropCount",
+      "filePath": "Required/Scripts/LeanDropCount.cs",
+      "lineRange": [8, 78],
+      "summary": "MonoBehaviour implementing IDropHandler that increments Count on each drop and invokes OnCount, OnMatch and OnUnmatch depending on whether Count sits inside MatchMin..MatchMax.",
+      "tags": ["component", "drag-and-drop", "counter", "state-tracking", "unity-event"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanDropCount.cs:UpdateState",
+      "type": "function",
+      "name": "UpdateState",
+      "filePath": "Required/Scripts/LeanDropCount.cs",
+      "lineRange": [43, 77],
+      "summary": "Recomputes whether the current count is inside the match range and fires the count, match and unmatch events on transitions.",
+      "tags": ["state-tracking", "event-handler", "validation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanDropCount.cs:LeanDropCount_Editor",
+      "type": "class",
+      "name": "LeanDropCount_Editor",
+      "filePath": "Required/Scripts/LeanDropCount.cs",
+      "lineRange": [89, 129],
+      "summary": "Custom inspector for LeanDropCount exposing the count, match range and the three event groups.",
+      "tags": ["editor-only", "inspector", "unity", "tooling"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {"source": "file:Required/Scripts/IDropHandler.cs", "target": "class:Required/Scripts/IDropHandler.cs:IDropHandler", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/IDropHandler.cs", "target": "class:Required/Scripts/IDropHandler.cs:IDropHandler", "type": "exports", "direction": "forward", "weight": 0.8},
+
+    {"source": "file:Required/Scripts/LeanDragColorMesh.cs", "target": "class:Required/Scripts/LeanDragColorMesh.cs:LeanDragColorMesh", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragColorMesh.cs", "target": "class:Required/Scripts/LeanDragColorMesh.cs:LeanDragColorMesh_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragColorMesh.cs", "target": "function:Required/Scripts/LeanDragColorMesh.cs:Paint", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragColorMesh.cs", "target": "class:Required/Scripts/LeanDragColorMesh.cs:LeanDragColorMesh", "type": "exports", "direction": "forward", "weight": 0.8},
+
+    {"source": "file:Required/Scripts/LeanDragDeformMesh.cs", "target": "class:Required/Scripts/LeanDragDeformMesh.cs:LeanDragDeformMesh", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragDeformMesh.cs", "target": "class:Required/Scripts/LeanDragDeformMesh.cs:LeanDragDeformMesh_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragDeformMesh.cs", "target": "function:Required/Scripts/LeanDragDeformMesh.cs:Update", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragDeformMesh.cs", "target": "class:Required/Scripts/LeanDragDeformMesh.cs:LeanDragDeformMesh", "type": "exports", "direction": "forward", "weight": 0.8},
+
+    {"source": "file:Required/Scripts/LeanDragLine.cs", "target": "class:Required/Scripts/LeanDragLine.cs:LeanDragLine", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragLine.cs", "target": "class:Required/Scripts/LeanDragLine.cs:LeanDragLine_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragLine.cs", "target": "function:Required/Scripts/LeanDragLine.cs:UpdateLine", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragLine.cs", "target": "function:Required/Scripts/LeanDragLine.cs:HandleFingerUp", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragLine.cs", "target": "class:Required/Scripts/LeanDragLine.cs:LeanDragLine", "type": "exports", "direction": "forward", "weight": 0.8},
+
+    {"source": "file:Required/Scripts/LeanDragSelect.cs", "target": "class:Required/Scripts/LeanDragSelect.cs:LeanDragSelect", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragSelect.cs", "target": "class:Required/Scripts/LeanDragSelect.cs:LeanDragSelect_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragSelect.cs", "target": "function:Required/Scripts/LeanDragSelect.cs:HandleFingerDown", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragSelect.cs", "target": "function:Required/Scripts/LeanDragSelect.cs:HandleAnySelectedFinger", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragSelect.cs", "target": "class:Required/Scripts/LeanDragSelect.cs:LeanDragSelect", "type": "exports", "direction": "forward", "weight": 0.8},
+
+    {"source": "file:Required/Scripts/LeanDragTranslateAlong.cs", "target": "class:Required/Scripts/LeanDragTranslateAlong.cs:LeanDragTranslateAlong", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateAlong.cs", "target": "class:Required/Scripts/LeanDragTranslateAlong.cs:LeanDragTranslateAlong_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateAlong.cs", "target": "function:Required/Scripts/LeanDragTranslateAlong.cs:Update", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateAlong.cs", "target": "function:Required/Scripts/LeanDragTranslateAlong.cs:TryGetSnappedWorldPosition", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateAlong.cs", "target": "function:Required/Scripts/LeanDragTranslateAlong.cs:UpdateTarget", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateAlong.cs", "target": "class:Required/Scripts/LeanDragTranslateAlong.cs:LeanDragTranslateAlong", "type": "exports", "direction": "forward", "weight": 0.8},
+
+    {"source": "file:Required/Scripts/LeanDragTranslateAlongRigidbody.cs", "target": "class:Required/Scripts/LeanDragTranslateAlongRigidbody.cs:LeanDragTranslateAlongRigidbody", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateAlongRigidbody.cs", "target": "class:Required/Scripts/LeanDragTranslateAlongRigidbody.cs:LeanDragTranslateAlongRigidbody_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateAlongRigidbody.cs", "target": "function:Required/Scripts/LeanDragTranslateAlongRigidbody.cs:FixedUpdate", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateAlongRigidbody.cs", "target": "class:Required/Scripts/LeanDragTranslateAlongRigidbody.cs:LeanDragTranslateAlongRigidbody", "type": "exports", "direction": "forward", "weight": 0.8},
+    {"source": "class:Required/Scripts/LeanDragTranslateAlongRigidbody.cs:LeanDragTranslateAlongRigidbody", "target": "class:Required/Scripts/LeanDragTranslateAlong.cs:LeanDragTranslateAlong", "type": "inherits", "direction": "forward", "weight": 0.9},
+    {"source": "class:Required/Scripts/LeanDragTranslateAlongRigidbody.cs:LeanDragTranslateAlongRigidbody_Editor", "target": "class:Required/Scripts/LeanDragTranslateAlong.cs:LeanDragTranslateAlong_Editor", "type": "inherits", "direction": "forward", "weight": 0.9},
+
+    {"source": "file:Required/Scripts/LeanDragTranslateRigidbody.cs", "target": "class:Required/Scripts/LeanDragTranslateRigidbody.cs:LeanDragTranslateRigidbody", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateRigidbody.cs", "target": "class:Required/Scripts/LeanDragTranslateRigidbody.cs:LeanDragTranslateRigidbody_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateRigidbody.cs", "target": "function:Required/Scripts/LeanDragTranslateRigidbody.cs:FixedUpdate", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateRigidbody.cs", "target": "function:Required/Scripts/LeanDragTranslateRigidbody.cs:Update", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateRigidbody.cs", "target": "class:Required/Scripts/LeanDragTranslateRigidbody.cs:LeanDragTranslateRigidbody", "type": "exports", "direction": "forward", "weight": 0.8},
+
+    {"source": "file:Required/Scripts/LeanDragTranslateRigidbody2D.cs", "target": "class:Required/Scripts/LeanDragTranslateRigidbody2D.cs:LeanDragTranslateRigidbody2D", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateRigidbody2D.cs", "target": "class:Required/Scripts/LeanDragTranslateRigidbody2D.cs:LeanDragTranslateRigidbody2D_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateRigidbody2D.cs", "target": "function:Required/Scripts/LeanDragTranslateRigidbody2D.cs:FixedUpdate", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateRigidbody2D.cs", "target": "function:Required/Scripts/LeanDragTranslateRigidbody2D.cs:Update", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDragTranslateRigidbody2D.cs", "target": "class:Required/Scripts/LeanDragTranslateRigidbody2D.cs:LeanDragTranslateRigidbody2D", "type": "exports", "direction": "forward", "weight": 0.8},
+    {"source": "file:Required/Scripts/LeanDragTranslateRigidbody2D.cs", "target": "file:Required/Scripts/LeanDragTranslateRigidbody.cs", "type": "related", "direction": "forward", "weight": 0.5},
+
+    {"source": "file:Required/Scripts/LeanDrop.cs", "target": "class:Required/Scripts/LeanDrop.cs:LeanDrop", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDrop.cs", "target": "class:Required/Scripts/LeanDrop.cs:LeanDrop_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDrop.cs", "target": "class:Required/Scripts/LeanDrop.cs:LeanDrop", "type": "exports", "direction": "forward", "weight": 0.8},
+    {"source": "class:Required/Scripts/LeanDrop.cs:LeanDrop", "target": "class:Required/Scripts/IDropHandler.cs:IDropHandler", "type": "implements", "direction": "forward", "weight": 0.9},
+
+    {"source": "file:Required/Scripts/LeanDropCount.cs", "target": "class:Required/Scripts/LeanDropCount.cs:LeanDropCount", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDropCount.cs", "target": "class:Required/Scripts/LeanDropCount.cs:LeanDropCount_Editor", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDropCount.cs", "target": "function:Required/Scripts/LeanDropCount.cs:UpdateState", "type": "contains", "direction": "forward", "weight": 1.0},
+    {"source": "file:Required/Scripts/LeanDropCount.cs", "target": "class:Required/Scripts/LeanDropCount.cs:LeanDropCount", "type": "exports", "direction": "forward", "weight": 0.8},
+    {"source": "class:Required/Scripts/LeanDropCount.cs:LeanDropCount", "target": "class:Required/Scripts/IDropHandler.cs:IDropHandler", "type": "implements", "direction": "forward", "weight": 0.9},
+
+    {"source": "config:LeanTouchPlus.asmdef", "target": "file:Required/Scripts/IDropHandler.cs", "type": "configures", "direction": "forward", "weight": 0.6},
+    {"source": "config:LeanTouchPlus.asmdef", "target": "file:Required/Scripts/LeanDragTranslateAlong.cs", "type": "configures", "direction": "forward", "weight": 0.6},
+    {"source": "config:LeanTouchPlus.asmdef", "target": "file:Required/Scripts/LeanDragLine.cs", "type": "configures", "direction": "forward", "weight": 0.6},
+    {"source": "config:LeanTouchPlus.asmdef", "target": "file:Required/Scripts/LeanFingerHeld.cs", "type": "configures", "direction": "forward", "weight": 0.6},
+
+    {"source": "document:Required/Documentation.html", "target": "file:Required/Scripts/LeanFingerHeld.cs", "type": "documents", "direction": "forward", "weight": 0.5},
+    {"source": "document:Required/Documentation.html", "target": "file:Required/Scripts/LeanFingerTapExpired.cs", "type": "documents", "direction": "forward", "weight": 0.5},
+    {"source": "document:Required/Documentation.html", "target": "file:Required/Scripts/LeanDragTranslateRigidbody.cs", "type": "documents", "direction": "forward", "weight": 0.5},
+    {"source": "document:Required/Documentation.html", "target": "file:Required/Scripts/LeanDragTranslateRigidbody2D.cs", "type": "documents", "direction": "forward", "weight": 0.5},
+    {"source": "document:Required/Documentation.html", "target": "file:Required/Scripts/LeanDragTranslateAlong.cs", "type": "documents", "direction": "forward", "weight": 0.5},
+    {"source": "document:Required/Documentation.html", "target": "file:Required/Scripts/LeanDragLine.cs", "type": "documents", "direction": "forward", "weight": 0.5},
+    {"source": "document:Required/Documentation.html", "target": "file:Required/Scripts/LeanDragSelect.cs", "type": "documents", "direction": "forward", "weight": 0.5},
+    {"source": "document:Required/Documentation.html", "target": "file:Required/Scripts/LeanDrop.cs", "type": "documents", "direction": "forward", "weight": 0.5},
+    {"source": "document:Required/Documentation.html", "target": "file:Required/Scripts/LeanFirstDown.cs", "type": "documents", "direction": "forward", "weight": 0.5},
+    {"source": "document:Required/Documentation.html", "target": "file:Required/Scripts/LeanLastUp.cs", "type": "documents", "direction": "forward", "weight": 0.5},
+    {"source": "document:Required/Documentation.html", "target": "file:Required/Scripts/LeanFingerDownCanvas.cs", "type": "documents", "direction": "forward", "weight": 0.5},
+    {"source": "document:Required/Documentation.html", "target": "file:Required/Scripts/LeanGestureToggle.cs", "type": "documents", "direction": "forward", "weight": 0.5}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+    "name": "Blast.Bootstrap",
+    "rootNamespace": "Blast.Bootstrap",
+    "references": [
+        "Blast.Domain",
+        "Blast.Application",
+        "Blast.Presentation",
+        "Blast.UI",
+        "Blast.Infrastructure",
+        "VContainer"
+    ]
+}

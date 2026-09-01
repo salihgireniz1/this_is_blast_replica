@@ -1,0 +1,30 @@
+{
+  "issues": [],
+  "warnings": [
+    "Node 'file:Required/Scripts/LeanSelectSelf.cs' has no edges (orphan)"
+  ],
+  "stats": {
+    "totalNodes": 270,
+    "totalEdges": 358,
+    "totalLayers": 8,
+    "tourSteps": 13,
+    "nodeTypes": {
+      "config": 2,
+      "document": 1,
+      "file": 55,
+      "class": 119,
+      "function": 93
+    },
+    "edgeTypes": {
+      "contains": 235,
+      "exports": 54,
+      "inherits": 10,
+      "related": 8,
+      "implements": 2,
+      "configures": 5,
+      "documents": 12,
+      "depends_on": 19,
+      "calls": 13
+    }
+  }
+}

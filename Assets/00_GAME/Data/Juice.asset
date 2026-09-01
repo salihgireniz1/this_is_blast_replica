@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64035204dbcb9b946913c0490999794b, type: 3}
+  m_Name: Juice
+  m_EditorClassIdentifier: Blast.Infrastructure::Blast.Infrastructure.JuiceConfig
+  _cube:
+    Appear:
+      Duration: 0.1
+      Ease: 6
+    Death:
+      Duration: 0.15
+      Ease: 6
+    Slide:
+      Duration: 0.15
+      Ease: 3
+    Settle:
+      Timing:
+        Duration: 0.15
+        Ease: 30
+      Strength: 0.1
+      Vibrato: 2
+      Elasticity: 0.5
+    Hit:
+      Timing:
+        Duration: 0.15
+        Ease: 6
+      Strength: 0.05
+      Vibrato: 1
+      Elasticity: 0.4

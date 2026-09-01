@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f82d504cc563776418ca3b36d8214387, type: 3}
+  m_Name: Palette
+  m_EditorClassIdentifier: Blast.Infrastructure::Blast.Infrastructure.PaletteData
+  _entries:
+  - Color: 0
+    Tint: {r: 1, g: 0.701, b: 0, a: 1}
+    Material: {fileID: 2100000, guid: b73698fc310760c44b397c6e7f44cb9b, type: 2}
+  - Color: 1
+    Tint: {r: 0.816, g: 0.192576, b: 0.192576, a: 1}
+    Material: {fileID: 2100000, guid: 47378c3b1d3c13942ba0d3df6e157010, type: 2}
+  - Color: 2
+    Tint: {r: 0.078941, g: 0.405471, b: 0.915, a: 1}
+    Material: {fileID: 2100000, guid: 1eed2ffc1aa5cc04997bb8ee61adc98f, type: 2}
+  - Color: 3
+    Tint: {r: 0.179174, g: 0.686275, b: 0.039118, a: 1}
+    Material: {fileID: 2100000, guid: f7a0331775d6d7d4992d9b27457010a0, type: 2}
+  - Color: 4
+    Tint: {r: 0.972549, g: 0.505882, b: 0.137255, a: 1}
+    Material: {fileID: 2100000, guid: 42fea8aaca0a031499a0ab40f0625a54, type: 2}
+  - Color: 255
+    Tint: {r: 0.436524, g: 0.438699, b: 0.525, a: 1}
+    Material: {fileID: 2100000, guid: 151f7fc99a1e8944aa825b4fa2548641, type: 2}

@@ -1,0 +1,5834 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 25,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 25,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "results": [
+    {
+      "path": "Required/Scripts/LeanManualSwipe.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 112,
+      "nonEmptyLines": 95,
+      "functions": [
+        {
+          "name": "AddFinger",
+          "startLine": 22,
+          "endLine": 38,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveFinger",
+          "startLine": 41,
+          "endLine": 44,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "Start",
+          "startLine": 52,
+          "endLine": 58,
+          "params": []
+        },
+        {
+          "name": "OnEnable",
+          "startLine": 60,
+          "endLine": 63,
+          "params": []
+        },
+        {
+          "name": "OnDisable",
+          "startLine": 65,
+          "endLine": 68,
+          "params": []
+        },
+        {
+          "name": "HandleFingerSwipe",
+          "startLine": 70,
+          "endLine": 87,
+          "params": [
+            "finger"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanManualSwipe",
+          "startLine": 8,
+          "endLine": 88,
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "Start",
+            "OnEnable",
+            "OnDisable",
+            "HandleFingerSwipe"
+          ],
+          "properties": [
+            "IgnoreIsOverGui",
+            "ignoreIsOverGui",
+            "RequiredSelectable",
+            "requiredSelectable",
+            "fingers"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "IgnoreIsOverGui",
+          "line": 13,
+          "isDefault": false
+        },
+        {
+          "name": "RequiredSelectable",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "AddFinger",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveFinger",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "LeanManualSwipe",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "AddFinger",
+          "callee": "new List<LeanFinger>",
+          "lineNumber": 26
+        },
+        {
+          "caller": "AddFinger",
+          "callee": "fingers.Add",
+          "lineNumber": 37
+        },
+        {
+          "caller": "RemoveFinger",
+          "callee": "fingers.Remove",
+          "lineNumber": 43
+        },
+        {
+          "caller": "Reset",
+          "callee": "GetComponentInParent<LeanSelectable>",
+          "lineNumber": 49
+        },
+        {
+          "caller": "Start",
+          "callee": "GetComponentInParent<LeanSelectable>",
+          "lineNumber": 56
+        },
+        {
+          "caller": "HandleFingerSwipe",
+          "callee": "fingers.Remove",
+          "lineNumber": 73
+        },
+        {
+          "caller": "HandleFingerSwipe",
+          "callee": "HandleFingerSwipe",
+          "lineNumber": 85
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 103
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 105
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 106
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "base.OnInspector",
+          "lineNumber": 108
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 6,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanMouseWheel.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 141,
+      "nonEmptyLines": 117,
+      "functions": [
+        {
+          "name": "Awake",
+          "startLine": 60,
+          "endLine": 66,
+          "params": []
+        },
+        {
+          "name": "Update",
+          "startLine": 68,
+          "endLine": 111,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMouseWheel",
+          "startLine": 9,
+          "endLine": 112,
+          "methods": [
+            "Awake",
+            "Update"
+          ],
+          "properties": [
+            "RequiredSelectable",
+            "requiredSelectable",
+            "RequiredMouseButton",
+            "requiredMouseButton",
+            "Modify",
+            "modify",
+            "Multiplier",
+            "multiplier",
+            "Coordinate",
+            "coordinate",
+            "OnDelta",
+            "onDelta"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "RequiredSelectable",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "RequiredMouseButton",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "Modify",
+          "line": 39,
+          "isDefault": false
+        },
+        {
+          "name": "Multiplier",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "Coordinate",
+          "line": 47,
+          "isDefault": false
+        },
+        {
+          "name": "OnDelta",
+          "line": 51,
+          "isDefault": false
+        },
+        {
+          "name": "LeanMouseWheel",
+          "line": 9,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Reset",
+          "callee": "GetComponentInParent<LeanSelectable>",
+          "lineNumber": 56
+        },
+        {
+          "caller": "Awake",
+          "callee": "GetComponentInParent<LeanSelectable>",
+          "lineNumber": 64
+        },
+        {
+          "caller": "Update",
+          "callee": "CwInput.GetMouseIsHeld",
+          "lineNumber": 75
+        },
+        {
+          "caller": "Update",
+          "callee": "CwInput.GetMouseWheelDelta",
+          "lineNumber": 80
+        },
+        {
+          "caller": "Update",
+          "callee": "Mathf.Sign",
+          "lineNumber": 91
+        },
+        {
+          "caller": "Update",
+          "callee": "onDelta.Invoke",
+          "lineNumber": 109
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 127
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 129
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 130
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 131
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 132
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 133
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 135
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 137
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 7,
+        "functionCount": 2,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanMultiDirection.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 135,
+      "nonEmptyLines": 108,
+      "functions": [
+        {
+          "name": "AddFinger",
+          "startLine": 48,
+          "endLine": 51,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveFinger",
+          "startLine": 54,
+          "endLine": 57,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveAllFingers",
+          "startLine": 60,
+          "endLine": 63,
+          "params": []
+        },
+        {
+          "name": "Awake",
+          "startLine": 72,
+          "endLine": 75,
+          "params": []
+        },
+        {
+          "name": "Update",
+          "startLine": 77,
+          "endLine": 101,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiDirection",
+          "startLine": 8,
+          "endLine": 102,
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update"
+          ],
+          "properties": [
+            "Use",
+            "IgnoreIfStatic",
+            "ignoreIfStatic",
+            "Angle",
+            "angle",
+            "OneWay",
+            "oneWay",
+            "Coordinate",
+            "coordinate",
+            "Multiplier",
+            "multiplier",
+            "OnDelta",
+            "onDelta"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Use",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "IgnoreIfStatic",
+          "line": 25,
+          "isDefault": false
+        },
+        {
+          "name": "Angle",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "OneWay",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "Coordinate",
+          "line": 38,
+          "isDefault": false
+        },
+        {
+          "name": "Multiplier",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "OnDelta",
+          "line": 45,
+          "isDefault": false
+        },
+        {
+          "name": "AddFinger",
+          "line": 48,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveFinger",
+          "line": 54,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveAllFingers",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "LeanMultiDirection",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "AddFinger",
+          "callee": "Use.AddFinger",
+          "lineNumber": 50
+        },
+        {
+          "caller": "RemoveFinger",
+          "callee": "Use.RemoveFinger",
+          "lineNumber": 56
+        },
+        {
+          "caller": "RemoveAllFingers",
+          "callee": "Use.RemoveAllFingers",
+          "lineNumber": 62
+        },
+        {
+          "caller": "Reset",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 68
+        },
+        {
+          "caller": "Awake",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 74
+        },
+        {
+          "caller": "Update",
+          "callee": "Use.UpdateAndGetFingers",
+          "lineNumber": 80
+        },
+        {
+          "caller": "Update",
+          "callee": "Quaternion.Euler",
+          "lineNumber": 84
+        },
+        {
+          "caller": "Update",
+          "callee": "LeanGesture.GetScreenDelta",
+          "lineNumber": 84
+        },
+        {
+          "caller": "Update",
+          "callee": "onDelta.Invoke",
+          "lineNumber": 99
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 117
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 119
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 120
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 121
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 122
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 124
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 126
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 127
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 129
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 131
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 11,
+        "functionCount": 5,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanMultiDown.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 164,
+      "nonEmptyLines": 132,
+      "functions": [
+        {
+          "name": "Awake",
+          "startLine": 51,
+          "endLine": 57,
+          "params": []
+        },
+        {
+          "name": "OnEnable",
+          "startLine": 59,
+          "endLine": 63,
+          "params": []
+        },
+        {
+          "name": "OnDisable",
+          "startLine": 65,
+          "endLine": 69,
+          "params": []
+        },
+        {
+          "name": "HandleFingerDown",
+          "startLine": 71,
+          "endLine": 111,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "HandleFingerUp",
+          "startLine": 113,
+          "endLine": 116,
+          "params": [
+            "finger"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiDown",
+          "startLine": 10,
+          "endLine": 117,
+          "methods": [
+            "Awake",
+            "OnEnable",
+            "OnDisable",
+            "HandleFingerDown",
+            "HandleFingerUp"
+          ],
+          "properties": [
+            "IgnoreStartedOverGui",
+            "ignoreStartedOverGui",
+            "RequiredSelectable",
+            "requiredSelectable",
+            "RequiredCount",
+            "requiredCount",
+            "OnFingers",
+            "onFingers",
+            "ScreenDepth",
+            "OnWorld",
+            "onWorld",
+            "OnScreen",
+            "onScreen",
+            "fingers"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "IgnoreStartedOverGui",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "RequiredSelectable",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "RequiredCount",
+          "line": 25,
+          "isDefault": false
+        },
+        {
+          "name": "OnFingers",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "ScreenDepth",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "OnWorld",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "OnScreen",
+          "line": 39,
+          "isDefault": false
+        },
+        {
+          "name": "LeanMultiDown",
+          "line": 10,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Reset",
+          "callee": "GetComponentInParent<LeanSelectable>",
+          "lineNumber": 47
+        },
+        {
+          "caller": "Awake",
+          "callee": "GetComponentInParent<LeanSelectable>",
+          "lineNumber": 55
+        },
+        {
+          "caller": "HandleFingerDown",
+          "callee": "fingers.Add",
+          "lineNumber": 88
+        },
+        {
+          "caller": "HandleFingerDown",
+          "callee": "onFingers.Invoke",
+          "lineNumber": 94
+        },
+        {
+          "caller": "HandleFingerDown",
+          "callee": "LeanGesture.GetScreenCenter",
+          "lineNumber": 97
+        },
+        {
+          "caller": "HandleFingerDown",
+          "callee": "ScreenDepth.Convert",
+          "lineNumber": 101
+        },
+        {
+          "caller": "HandleFingerDown",
+          "callee": "onWorld.Invoke",
+          "lineNumber": 103
+        },
+        {
+          "caller": "HandleFingerDown",
+          "callee": "onScreen.Invoke",
+          "lineNumber": 108
+        },
+        {
+          "caller": "HandleFingerUp",
+          "callee": "fingers.Remove",
+          "lineNumber": 115
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 132
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 134
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 135
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 136
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 138
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 140
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnFingers.GetPersistentEventCount",
+          "lineNumber": 140
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 141
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnWorld.GetPersistentEventCount",
+          "lineNumber": 141
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 142
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnScreen.GetPersistentEventCount",
+          "lineNumber": 142
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "DrawFoldout",
+          "lineNumber": 144
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 148
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 153
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 154
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 159
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 8,
+        "functionCount": 5,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanMultiHeld.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 365,
+      "nonEmptyLines": 291,
+      "functions": [
+        {
+          "name": "Awake",
+          "startLine": 99,
+          "endLine": 105,
+          "params": []
+        },
+        {
+          "name": "OnEnable",
+          "startLine": 107,
+          "endLine": 111,
+          "params": []
+        },
+        {
+          "name": "OnDisable",
+          "startLine": 113,
+          "endLine": 117,
+          "params": []
+        },
+        {
+          "name": "HandleFingerDown",
+          "startLine": 119,
+          "endLine": 137,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "HandleGesture",
+          "startLine": 139,
+          "endLine": 182,
+          "params": [
+            "tempFingers"
+          ]
+        },
+        {
+          "name": "InvokeDown",
+          "startLine": 210,
+          "endLine": 230,
+          "params": []
+        },
+        {
+          "name": "InvokeUpdate",
+          "startLine": 232,
+          "endLine": 252,
+          "params": []
+        },
+        {
+          "name": "InvokeUp",
+          "startLine": 254,
+          "endLine": 274,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiHeld",
+          "startLine": 10,
+          "endLine": 275,
+          "methods": [
+            "Awake",
+            "OnEnable",
+            "OnDisable",
+            "HandleFingerDown",
+            "HandleGesture",
+            "InvokeDown",
+            "InvokeUpdate",
+            "InvokeUp"
+          ],
+          "properties": [
+            "IgnoreStartedOverGui",
+            "ignoreStartedOverGui",
+            "IgnoreIsOverGui",
+            "ignoreIsOverGui",
+            "RequiredSelectable",
+            "requiredSelectable",
+            "RequiredCount",
+            "requiredCount",
+            "MinimumAge",
+            "minimumAge",
+            "MaximumMovement",
+            "maximumMovement",
+            "OnFingersDown",
+            "onFingersDown",
+            "OnFingersUpdate",
+            "onFingersUpdate",
+            "OnFingersUp",
+            "onFingersUp",
+            "ScreenDepth",
+            "OnWorldDown",
+            "onWorldDown",
+            "OnWorldUpdate",
+            "onWorldUpdate",
+            "OnWorldUp",
+            "onWorldUp",
+            "OnScreenDown",
+            "onScreenDown",
+            "OnScreenUpdate",
+            "onScreenUpdate",
+            "OnScreenUp",
+            "onScreenUp",
+            "fingers",
+            "fingerDatas",
+            "held",
+            "duration",
+            "IsHeld"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "IgnoreStartedOverGui",
+          "line": 25,
+          "isDefault": false
+        },
+        {
+          "name": "IgnoreIsOverGui",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "RequiredSelectable",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "RequiredCount",
+          "line": 34,
+          "isDefault": false
+        },
+        {
+          "name": "MinimumAge",
+          "line": 37,
+          "isDefault": false
+        },
+        {
+          "name": "MaximumMovement",
+          "line": 40,
+          "isDefault": false
+        },
+        {
+          "name": "OnFingersDown",
+          "line": 43,
+          "isDefault": false
+        },
+        {
+          "name": "OnFingersUpdate",
+          "line": 46,
+          "isDefault": false
+        },
+        {
+          "name": "OnFingersUp",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "ScreenDepth",
+          "line": 52,
+          "isDefault": false
+        },
+        {
+          "name": "OnWorldDown",
+          "line": 56,
+          "isDefault": false
+        },
+        {
+          "name": "OnWorldUpdate",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "OnWorldUp",
+          "line": 64,
+          "isDefault": false
+        },
+        {
+          "name": "OnScreenDown",
+          "line": 68,
+          "isDefault": false
+        },
+        {
+          "name": "OnScreenUpdate",
+          "line": 72,
+          "isDefault": false
+        },
+        {
+          "name": "OnScreenUp",
+          "line": 76,
+          "isDefault": false
+        },
+        {
+          "name": "LeanMultiHeld",
+          "line": 10,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Reset",
+          "callee": "GetComponentInParent<LeanSelectable>",
+          "lineNumber": 95
+        },
+        {
+          "caller": "Awake",
+          "callee": "GetComponentInParent<LeanSelectable>",
+          "lineNumber": 103
+        },
+        {
+          "caller": "HandleFingerDown",
+          "callee": "LeanFingerData.FindOrCreate",
+          "lineNumber": 132
+        },
+        {
+          "caller": "HandleFingerDown",
+          "callee": "fingers.Add",
+          "lineNumber": 136
+        },
+        {
+          "caller": "HandleGesture",
+          "callee": "fingers.RemoveAt",
+          "lineNumber": 153
+        },
+        {
+          "caller": "HandleGesture",
+          "callee": "fingerDatas.RemoveAt",
+          "lineNumber": 154
+        },
+        {
+          "caller": "HandleGesture",
+          "callee": "InvokeDown",
+          "lineNumber": 166
+        },
+        {
+          "caller": "HandleGesture",
+          "callee": "InvokeUpdate",
+          "lineNumber": 169
+        },
+        {
+          "caller": "HandleGesture",
+          "callee": "InvokeUp",
+          "lineNumber": 179
+        },
+        {
+          "caller": "InvokeDown",
+          "callee": "onFingersDown.Invoke",
+          "lineNumber": 214
+        },
+        {
+          "caller": "InvokeDown",
+          "callee": "LeanGesture.GetScreenCenter",
+          "lineNumber": 217
+        },
+        {
+          "caller": "InvokeDown",
+          "callee": "ScreenDepth.Convert",
+          "lineNumber": 221
+        },
+        {
+          "caller": "InvokeDown",
+          "callee": "onWorldDown.Invoke",
+          "lineNumber": 223
+        },
+        {
+          "caller": "InvokeDown",
+          "callee": "onScreenDown.Invoke",
+          "lineNumber": 228
+        },
+        {
+          "caller": "InvokeUpdate",
+          "callee": "onFingersUpdate.Invoke",
+          "lineNumber": 236
+        },
+        {
+          "caller": "InvokeUpdate",
+          "callee": "LeanGesture.GetScreenCenter",
+          "lineNumber": 239
+        },
+        {
+          "caller": "InvokeUpdate",
+          "callee": "ScreenDepth.Convert",
+          "lineNumber": 243
+        },
+        {
+          "caller": "InvokeUpdate",
+          "callee": "onWorldUpdate.Invoke",
+          "lineNumber": 245
+        },
+        {
+          "caller": "InvokeUpdate",
+          "callee": "onScreenUpdate.Invoke",
+          "lineNumber": 250
+        },
+        {
+          "caller": "InvokeUp",
+          "callee": "onFingersUp.Invoke",
+          "lineNumber": 258
+        },
+        {
+          "caller": "InvokeUp",
+          "callee": "LeanGesture.GetScreenCenter",
+          "lineNumber": 261
+        },
+        {
+          "caller": "InvokeUp",
+          "callee": "ScreenDepth.Convert",
+          "lineNumber": 265
+        },
+        {
+          "caller": "InvokeUp",
+          "callee": "onWorldUp.Invoke",
+          "lineNumber": 267
+        },
+        {
+          "caller": "InvokeUp",
+          "callee": "onScreenUp.Invoke",
+          "lineNumber": 272
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 290
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 292
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 293
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 294
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 295
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 296
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 297
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 299
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 301
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnFingersDown.GetPersistentEventCount",
+          "lineNumber": 301
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 302
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnFingersUpdate.GetPersistentEventCount",
+          "lineNumber": 302
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 303
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnFingersUp.GetPersistentEventCount",
+          "lineNumber": 303
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 304
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnWorldDown.GetPersistentEventCount",
+          "lineNumber": 304
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 305
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnWorldUpdate.GetPersistentEventCount",
+          "lineNumber": 305
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 306
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnWorldUp.GetPersistentEventCount",
+          "lineNumber": 306
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 307
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnScreenDown.GetPersistentEventCount",
+          "lineNumber": 307
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 308
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnScreenUpdate.GetPersistentEventCount",
+          "lineNumber": 308
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 309
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnScreenUp.GetPersistentEventCount",
+          "lineNumber": 309
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "DrawFoldout",
+          "lineNumber": 311
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 315
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 320
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 325
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 330
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 335
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 340
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 345
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 350
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 355
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 360
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 17,
+        "functionCount": 8,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanMultiPinch.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 165,
+      "nonEmptyLines": 131,
+      "functions": [
+        {
+          "name": "AddFinger",
+          "startLine": 44,
+          "endLine": 47,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveFinger",
+          "startLine": 50,
+          "endLine": 53,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveAllFingers",
+          "startLine": 56,
+          "endLine": 59,
+          "params": []
+        },
+        {
+          "name": "Awake",
+          "startLine": 68,
+          "endLine": 71,
+          "params": []
+        },
+        {
+          "name": "Update",
+          "startLine": 73,
+          "endLine": 133,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiPinch",
+          "startLine": 8,
+          "endLine": 134,
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update"
+          ],
+          "properties": [
+            "Use",
+            "IgnoreIfStatic",
+            "ignoreIfStatic",
+            "Coordinate",
+            "coordinate",
+            "Multiplier",
+            "multiplier",
+            "OnPinch",
+            "onPinch"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Use",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "IgnoreIfStatic",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "Coordinate",
+          "line": 34,
+          "isDefault": false
+        },
+        {
+          "name": "Multiplier",
+          "line": 37,
+          "isDefault": false
+        },
+        {
+          "name": "OnPinch",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "AddFinger",
+          "line": 44,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveFinger",
+          "line": 50,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveAllFingers",
+          "line": 56,
+          "isDefault": false
+        },
+        {
+          "name": "LeanMultiPinch",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "AddFinger",
+          "callee": "Use.AddFinger",
+          "lineNumber": 46
+        },
+        {
+          "caller": "RemoveFinger",
+          "callee": "Use.RemoveFinger",
+          "lineNumber": 52
+        },
+        {
+          "caller": "RemoveAllFingers",
+          "callee": "Use.RemoveAllFingers",
+          "lineNumber": 58
+        },
+        {
+          "caller": "Reset",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 64
+        },
+        {
+          "caller": "Awake",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 70
+        },
+        {
+          "caller": "Update",
+          "callee": "Use.UpdateAndGetFingers",
+          "lineNumber": 76
+        },
+        {
+          "caller": "Update",
+          "callee": "LeanGesture.GetPinchScale",
+          "lineNumber": 84
+        },
+        {
+          "caller": "Update",
+          "callee": "Mathf.Pow",
+          "lineNumber": 86
+        },
+        {
+          "caller": "Update",
+          "callee": "onPinch.Invoke",
+          "lineNumber": 88
+        },
+        {
+          "caller": "Update",
+          "callee": "LeanGesture.GetPinchRatio",
+          "lineNumber": 94
+        },
+        {
+          "caller": "Update",
+          "callee": "Mathf.Pow",
+          "lineNumber": 96
+        },
+        {
+          "caller": "Update",
+          "callee": "onPinch.Invoke",
+          "lineNumber": 98
+        },
+        {
+          "caller": "Update",
+          "callee": "LeanGesture.GetPinchScale",
+          "lineNumber": 104
+        },
+        {
+          "caller": "Update",
+          "callee": "onPinch.Invoke",
+          "lineNumber": 108
+        },
+        {
+          "caller": "Update",
+          "callee": "LeanGesture.GetPinchRatio",
+          "lineNumber": 114
+        },
+        {
+          "caller": "Update",
+          "callee": "onPinch.Invoke",
+          "lineNumber": 118
+        },
+        {
+          "caller": "Update",
+          "callee": "LeanGesture.GetLastScaledDistance",
+          "lineNumber": 124
+        },
+        {
+          "caller": "Update",
+          "callee": "LeanGesture.GetLastScreenCenter",
+          "lineNumber": 124
+        },
+        {
+          "caller": "Update",
+          "callee": "LeanGesture.GetScaledDistance",
+          "lineNumber": 125
+        },
+        {
+          "caller": "Update",
+          "callee": "LeanGesture.GetScreenCenter",
+          "lineNumber": 125
+        },
+        {
+          "caller": "Update",
+          "callee": "onPinch.Invoke",
+          "lineNumber": 128
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 149
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 151
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 153
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 155
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 156
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 157
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 159
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 161
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 9,
+        "functionCount": 5,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanMultiPull.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 232,
+      "nonEmptyLines": 187,
+      "functions": [
+        {
+          "name": "AddFinger",
+          "startLine": 66,
+          "endLine": 69,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveFinger",
+          "startLine": 72,
+          "endLine": 75,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveAllFingers",
+          "startLine": 78,
+          "endLine": 81,
+          "params": []
+        },
+        {
+          "name": "Awake",
+          "startLine": 90,
+          "endLine": 93,
+          "params": []
+        },
+        {
+          "name": "Update",
+          "startLine": 95,
+          "endLine": 153,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiPull",
+          "startLine": 9,
+          "endLine": 154,
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update"
+          ],
+          "properties": [
+            "Use",
+            "Coordinate",
+            "coordinate",
+            "Multiplier",
+            "multiplier",
+            "ScaleByTime",
+            "scaleByTime",
+            "OnVector",
+            "onVector",
+            "OnDistance",
+            "onDistance",
+            "ScreenDepth",
+            "OnWorldFrom",
+            "onWorldFrom",
+            "OnWorldTo",
+            "onWorldTo",
+            "OnWorldDelta",
+            "onWorldDelta",
+            "OnWorldFromTo",
+            "onWorldFromTo"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Use",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "Coordinate",
+          "line": 29,
+          "isDefault": false
+        },
+        {
+          "name": "Multiplier",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "ScaleByTime",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "OnVector",
+          "line": 39,
+          "isDefault": false
+        },
+        {
+          "name": "OnDistance",
+          "line": 43,
+          "isDefault": false
+        },
+        {
+          "name": "ScreenDepth",
+          "line": 46,
+          "isDefault": false
+        },
+        {
+          "name": "OnWorldFrom",
+          "line": 50,
+          "isDefault": false
+        },
+        {
+          "name": "OnWorldTo",
+          "line": 54,
+          "isDefault": false
+        },
+        {
+          "name": "OnWorldDelta",
+          "line": 58,
+          "isDefault": false
+        },
+        {
+          "name": "OnWorldFromTo",
+          "line": 63,
+          "isDefault": false
+        },
+        {
+          "name": "AddFinger",
+          "line": 66,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveFinger",
+          "line": 72,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveAllFingers",
+          "line": 78,
+          "isDefault": false
+        },
+        {
+          "name": "LeanMultiPull",
+          "line": 9,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "AddFinger",
+          "callee": "Use.AddFinger",
+          "lineNumber": 68
+        },
+        {
+          "caller": "RemoveFinger",
+          "callee": "Use.RemoveFinger",
+          "lineNumber": 74
+        },
+        {
+          "caller": "RemoveAllFingers",
+          "callee": "Use.RemoveAllFingers",
+          "lineNumber": 80
+        },
+        {
+          "caller": "Reset",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 86
+        },
+        {
+          "caller": "Awake",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 92
+        },
+        {
+          "caller": "Update",
+          "callee": "Use.UpdateAndGetFingers",
+          "lineNumber": 98
+        },
+        {
+          "caller": "Update",
+          "callee": "LeanGesture.GetStartScreenCenter",
+          "lineNumber": 102
+        },
+        {
+          "caller": "Update",
+          "callee": "LeanGesture.GetScreenCenter",
+          "lineNumber": 103
+        },
+        {
+          "caller": "Update",
+          "callee": "onVector.Invoke",
+          "lineNumber": 122
+        },
+        {
+          "caller": "Update",
+          "callee": "onDistance.Invoke",
+          "lineNumber": 127
+        },
+        {
+          "caller": "Update",
+          "callee": "ScreenDepth.Convert",
+          "lineNumber": 130
+        },
+        {
+          "caller": "Update",
+          "callee": "ScreenDepth.Convert",
+          "lineNumber": 131
+        },
+        {
+          "caller": "Update",
+          "callee": "onWorldFrom.Invoke",
+          "lineNumber": 135
+        },
+        {
+          "caller": "Update",
+          "callee": "onWorldTo.Invoke",
+          "lineNumber": 140
+        },
+        {
+          "caller": "Update",
+          "callee": "onWorldDelta.Invoke",
+          "lineNumber": 145
+        },
+        {
+          "caller": "Update",
+          "callee": "onWorldFromTo.Invoke",
+          "lineNumber": 150
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 169
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 171
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 173
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 175
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnVector.GetPersistentEventCount",
+          "lineNumber": 175
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 176
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnDistance.GetPersistentEventCount",
+          "lineNumber": 176
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 177
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnWorldFrom.GetPersistentEventCount",
+          "lineNumber": 177
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 178
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnWorldTo.GetPersistentEventCount",
+          "lineNumber": 178
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 179
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnWorldDelta.GetPersistentEventCount",
+          "lineNumber": 179
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 180
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnWorldFromTo.GetPersistentEventCount",
+          "lineNumber": 180
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "DrawFoldout",
+          "lineNumber": 182
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 186
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 187
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 192
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 197
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 202
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 207
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 212
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 217
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 222
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 227
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 15,
+        "functionCount": 5,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanMultiSwipe.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 227,
+      "nonEmptyLines": 183,
+      "functions": [
+        {
+          "name": "AddFinger",
+          "startLine": 46,
+          "endLine": 49,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveFinger",
+          "startLine": 52,
+          "endLine": 55,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveAllFingers",
+          "startLine": 58,
+          "endLine": 61,
+          "params": []
+        },
+        {
+          "name": "Awake",
+          "startLine": 70,
+          "endLine": 73,
+          "params": []
+        },
+        {
+          "name": "Update",
+          "startLine": 75,
+          "endLine": 101,
+          "params": []
+        },
+        {
+          "name": "FingerSwipe",
+          "startLine": 103,
+          "endLine": 170,
+          "params": [
+            "fingers",
+            "swipedFinger"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiSwipe",
+          "startLine": 10,
+          "endLine": 171,
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update",
+            "FingerSwipe"
+          ],
+          "properties": [
+            "Use",
+            "ScaledDistanceThreshold",
+            "scaledDistanceThreshold",
+            "ParallelAngleThreshold",
+            "parallelAngleThreshold",
+            "PinchScaledDistanceThreshold",
+            "pinchScaledDistanceThreshold",
+            "OnFingers",
+            "onFingers",
+            "OnSwipeParallel",
+            "onSwipeParallel",
+            "OnSwipeIn",
+            "onSwipeIn",
+            "OnSwipeOut",
+            "onSwipeOut",
+            "swiped"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Use",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "ScaledDistanceThreshold",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "ParallelAngleThreshold",
+          "line": 25,
+          "isDefault": false
+        },
+        {
+          "name": "PinchScaledDistanceThreshold",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "OnFingers",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "OnSwipeParallel",
+          "line": 34,
+          "isDefault": false
+        },
+        {
+          "name": "OnSwipeIn",
+          "line": 37,
+          "isDefault": false
+        },
+        {
+          "name": "OnSwipeOut",
+          "line": 40,
+          "isDefault": false
+        },
+        {
+          "name": "AddFinger",
+          "line": 46,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveFinger",
+          "line": 52,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveAllFingers",
+          "line": 58,
+          "isDefault": false
+        },
+        {
+          "name": "LeanMultiSwipe",
+          "line": 10,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "AddFinger",
+          "callee": "Use.AddFinger",
+          "lineNumber": 48
+        },
+        {
+          "caller": "RemoveFinger",
+          "callee": "Use.RemoveFinger",
+          "lineNumber": 54
+        },
+        {
+          "caller": "RemoveAllFingers",
+          "callee": "Use.RemoveAllFingers",
+          "lineNumber": 60
+        },
+        {
+          "caller": "Reset",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 66
+        },
+        {
+          "caller": "Awake",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 72
+        },
+        {
+          "caller": "Update",
+          "callee": "Use.UpdateAndGetFingers",
+          "lineNumber": 78
+        },
+        {
+          "caller": "Update",
+          "callee": "FingerSwipe",
+          "lineNumber": 90
+        },
+        {
+          "caller": "FingerSwipe",
+          "callee": "Vector2.Angle",
+          "lineNumber": 130
+        },
+        {
+          "caller": "FingerSwipe",
+          "callee": "onFingers.Invoke",
+          "lineNumber": 141
+        },
+        {
+          "caller": "FingerSwipe",
+          "callee": "LeanGesture.GetStartScreenCenter",
+          "lineNumber": 146
+        },
+        {
+          "caller": "FingerSwipe",
+          "callee": "LeanGesture.GetScreenCenter",
+          "lineNumber": 147
+        },
+        {
+          "caller": "FingerSwipe",
+          "callee": "onSwipeParallel.Invoke",
+          "lineNumber": 153
+        },
+        {
+          "caller": "FingerSwipe",
+          "callee": "LeanGesture.GetScaledDistance",
+          "lineNumber": 157
+        },
+        {
+          "caller": "FingerSwipe",
+          "callee": "LeanGesture.GetStartScaledDistance",
+          "lineNumber": 157
+        },
+        {
+          "caller": "FingerSwipe",
+          "callee": "onSwipeIn.Invoke",
+          "lineNumber": 161
+        },
+        {
+          "caller": "FingerSwipe",
+          "callee": "onSwipeOut.Invoke",
+          "lineNumber": 166
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 186
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 188
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 190
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 192
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 193
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 194
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 196
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 198
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnFingers.GetPersistentEventCount",
+          "lineNumber": 198
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 199
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnSwipeParallel.GetPersistentEventCount",
+          "lineNumber": 199
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 200
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnSwipeIn.GetPersistentEventCount",
+          "lineNumber": 200
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 201
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnSwipeOut.GetPersistentEventCount",
+          "lineNumber": 201
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "DrawFoldout",
+          "lineNumber": 203
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 207
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 212
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 217
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 222
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 12,
+        "functionCount": 6,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanMultiTap.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 204,
+      "nonEmptyLines": 167,
+      "functions": [
+        {
+          "name": "AddFinger",
+          "startLine": 49,
+          "endLine": 52,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveFinger",
+          "startLine": 55,
+          "endLine": 58,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveAllFingers",
+          "startLine": 61,
+          "endLine": 64,
+          "params": []
+        },
+        {
+          "name": "Awake",
+          "startLine": 73,
+          "endLine": 76,
+          "params": []
+        },
+        {
+          "name": "Update",
+          "startLine": 78,
+          "endLine": 138,
+          "params": []
+        },
+        {
+          "name": "GetFingerCount",
+          "startLine": 140,
+          "endLine": 153,
+          "params": [
+            "fingers"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiTap",
+          "startLine": 10,
+          "endLine": 154,
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update",
+            "GetFingerCount"
+          ],
+          "properties": [
+            "Use",
+            "OnTap",
+            "onTap",
+            "OnCount",
+            "onCount",
+            "OnHighest",
+            "onHighest",
+            "OnCountHighest",
+            "onCountHighest",
+            "age",
+            "lastFingerCount",
+            "multiTapCount",
+            "highestFingerCount"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Use",
+          "line": 18,
+          "isDefault": false
+        },
+        {
+          "name": "OnTap",
+          "line": 21,
+          "isDefault": false
+        },
+        {
+          "name": "OnCount",
+          "line": 25,
+          "isDefault": false
+        },
+        {
+          "name": "OnHighest",
+          "line": 29,
+          "isDefault": false
+        },
+        {
+          "name": "OnCountHighest",
+          "line": 34,
+          "isDefault": false
+        },
+        {
+          "name": "AddFinger",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveFinger",
+          "line": 55,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveAllFingers",
+          "line": 61,
+          "isDefault": false
+        },
+        {
+          "name": "LeanMultiTap",
+          "line": 10,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "AddFinger",
+          "callee": "Use.AddFinger",
+          "lineNumber": 51
+        },
+        {
+          "caller": "RemoveFinger",
+          "callee": "Use.RemoveFinger",
+          "lineNumber": 57
+        },
+        {
+          "caller": "RemoveAllFingers",
+          "callee": "Use.RemoveAllFingers",
+          "lineNumber": 63
+        },
+        {
+          "caller": "Reset",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 69
+        },
+        {
+          "caller": "Awake",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 75
+        },
+        {
+          "caller": "Update",
+          "callee": "Use.UpdateAndGetFingers",
+          "lineNumber": 81
+        },
+        {
+          "caller": "Update",
+          "callee": "GetFingerCount",
+          "lineNumber": 82
+        },
+        {
+          "caller": "Update",
+          "callee": "onTap.Invoke",
+          "lineNumber": 111
+        },
+        {
+          "caller": "Update",
+          "callee": "onCount.Invoke",
+          "lineNumber": 116
+        },
+        {
+          "caller": "Update",
+          "callee": "onHighest.Invoke",
+          "lineNumber": 121
+        },
+        {
+          "caller": "Update",
+          "callee": "onCountHighest.Invoke",
+          "lineNumber": 126
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 169
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 171
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 173
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 175
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnTap.GetPersistentEventCount",
+          "lineNumber": 175
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 176
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnCount.GetPersistentEventCount",
+          "lineNumber": 176
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 177
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnHighest.GetPersistentEventCount",
+          "lineNumber": 177
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 178
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnCountHighest.GetPersistentEventCount",
+          "lineNumber": 178
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "DrawFoldout",
+          "lineNumber": 180
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 184
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 189
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 194
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 199
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 9,
+        "functionCount": 6,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanMultiTwist.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 127,
+      "nonEmptyLines": 105,
+      "functions": [
+        {
+          "name": "AddFinger",
+          "startLine": 36,
+          "endLine": 39,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveFinger",
+          "startLine": 42,
+          "endLine": 45,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveAllFingers",
+          "startLine": 48,
+          "endLine": 51,
+          "params": []
+        },
+        {
+          "name": "Awake",
+          "startLine": 60,
+          "endLine": 63,
+          "params": []
+        },
+        {
+          "name": "Update",
+          "startLine": 65,
+          "endLine": 99,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiTwist",
+          "startLine": 8,
+          "endLine": 100,
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update"
+          ],
+          "properties": [
+            "Use",
+            "IgnoreIfStatic",
+            "ignoreIfStatic",
+            "OneFinger",
+            "oneFinger",
+            "OnTwistDegrees",
+            "onTwistDegrees"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Use",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "IgnoreIfStatic",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "OneFinger",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "OnTwistDegrees",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "AddFinger",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveFinger",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveAllFingers",
+          "line": 48,
+          "isDefault": false
+        },
+        {
+          "name": "LeanMultiTwist",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "AddFinger",
+          "callee": "Use.AddFinger",
+          "lineNumber": 38
+        },
+        {
+          "caller": "RemoveFinger",
+          "callee": "Use.RemoveFinger",
+          "lineNumber": 44
+        },
+        {
+          "caller": "RemoveAllFingers",
+          "callee": "Use.RemoveAllFingers",
+          "lineNumber": 50
+        },
+        {
+          "caller": "Reset",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 56
+        },
+        {
+          "caller": "Awake",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 62
+        },
+        {
+          "caller": "Update",
+          "callee": "Use.UpdateAndGetFingers",
+          "lineNumber": 68
+        },
+        {
+          "caller": "Update",
+          "callee": "LeanGesture.GetTwistDegrees",
+          "lineNumber": 77
+        },
+        {
+          "caller": "Update",
+          "callee": "new Vector2",
+          "lineNumber": 82
+        },
+        {
+          "caller": "Update",
+          "callee": "firstFinger.GetDeltaDegrees",
+          "lineNumber": 84
+        },
+        {
+          "caller": "Update",
+          "callee": "onTwistDegrees.Invoke",
+          "lineNumber": 96
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 115
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 117
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 118
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 119
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 121
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 123
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 8,
+        "functionCount": 5,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanMultiUp.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 140,
+      "nonEmptyLines": 114,
+      "functions": [
+        {
+          "name": "AddFinger",
+          "startLine": 38,
+          "endLine": 41,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveFinger",
+          "startLine": 44,
+          "endLine": 47,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveAllFingers",
+          "startLine": 50,
+          "endLine": 53,
+          "params": []
+        },
+        {
+          "name": "Awake",
+          "startLine": 62,
+          "endLine": 65,
+          "params": []
+        },
+        {
+          "name": "Update",
+          "startLine": 67,
+          "endLine": 94,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiUp",
+          "startLine": 9,
+          "endLine": 95,
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update"
+          ],
+          "properties": [
+            "Use",
+            "OnFinger",
+            "onFinger",
+            "ScreenDepth",
+            "OnWorld",
+            "onWorld",
+            "OnScreen",
+            "onScreen",
+            "fingers"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Use",
+          "line": 18,
+          "isDefault": false
+        },
+        {
+          "name": "OnFinger",
+          "line": 21,
+          "isDefault": false
+        },
+        {
+          "name": "ScreenDepth",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "OnWorld",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "OnScreen",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "AddFinger",
+          "line": 38,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveFinger",
+          "line": 44,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveAllFingers",
+          "line": 50,
+          "isDefault": false
+        },
+        {
+          "name": "LeanMultiUp",
+          "line": 9,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "AddFinger",
+          "callee": "Use.AddFinger",
+          "lineNumber": 40
+        },
+        {
+          "caller": "RemoveFinger",
+          "callee": "Use.RemoveFinger",
+          "lineNumber": 46
+        },
+        {
+          "caller": "RemoveAllFingers",
+          "callee": "Use.RemoveAllFingers",
+          "lineNumber": 52
+        },
+        {
+          "caller": "Reset",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 58
+        },
+        {
+          "caller": "Awake",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 64
+        },
+        {
+          "caller": "Update",
+          "callee": "Use.UpdateAndGetFingers",
+          "lineNumber": 70
+        },
+        {
+          "caller": "Update",
+          "callee": "onFinger.Invoke",
+          "lineNumber": 78
+        },
+        {
+          "caller": "Update",
+          "callee": "ScreenDepth.Convert",
+          "lineNumber": 83
+        },
+        {
+          "caller": "Update",
+          "callee": "onWorld.Invoke",
+          "lineNumber": 85
+        },
+        {
+          "caller": "Update",
+          "callee": "onScreen.Invoke",
+          "lineNumber": 90
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 110
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 112
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 114
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 116
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnFinger.GetPersistentEventCount",
+          "lineNumber": 116
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 117
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnWorld.GetPersistentEventCount",
+          "lineNumber": 117
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 118
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnScreen.GetPersistentEventCount",
+          "lineNumber": 118
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "DrawFoldout",
+          "lineNumber": 120
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 124
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 129
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 130
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 135
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 9,
+        "functionCount": 5,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanMultiUpdate.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 355,
+      "nonEmptyLines": 288,
+      "functions": [
+        {
+          "name": "AddFinger",
+          "startLine": 92,
+          "endLine": 95,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveFinger",
+          "startLine": 98,
+          "endLine": 101,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveAllFingers",
+          "startLine": 104,
+          "endLine": 107,
+          "params": []
+        },
+        {
+          "name": "Awake",
+          "startLine": 116,
+          "endLine": 119,
+          "params": []
+        },
+        {
+          "name": "OnEnable",
+          "startLine": 121,
+          "endLine": 124,
+          "params": []
+        },
+        {
+          "name": "OnDisable",
+          "startLine": 126,
+          "endLine": 132,
+          "params": []
+        },
+        {
+          "name": "Update",
+          "startLine": 134,
+          "endLine": 244,
+          "params": []
+        },
+        {
+          "name": "GetFingers",
+          "startLine": 246,
+          "endLine": 249,
+          "params": []
+        },
+        {
+          "name": "HandleFingerDown",
+          "startLine": 251,
+          "endLine": 259,
+          "params": [
+            "finger"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiUpdate",
+          "startLine": 9,
+          "endLine": 260,
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "OnEnable",
+            "OnDisable",
+            "Update",
+            "GetFingers",
+            "HandleFingerDown"
+          ],
+          "properties": [
+            "Use",
+            "IgnoreIfStatic",
+            "ignoreIfStatic",
+            "OnFingers",
+            "onFingers",
+            "Coordinate",
+            "coordinate",
+            "Constrain",
+            "constrain",
+            "ConstrainThreshold",
+            "constrainThreshold",
+            "Multiplier",
+            "multiplier",
+            "OnDelta",
+            "onDelta",
+            "OnDistance",
+            "onDistance",
+            "ScreenDepth",
+            "OnWorldFrom",
+            "onWorldFrom",
+            "OnWorldTo",
+            "onWorldTo",
+            "OnWorldDelta",
+            "onWorldDelta",
+            "OnWorldFromTo",
+            "onWorldFromTo",
+            "constrained",
+            "cumilativeDelta"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Use",
+          "line": 34,
+          "isDefault": false
+        },
+        {
+          "name": "IgnoreIfStatic",
+          "line": 37,
+          "isDefault": false
+        },
+        {
+          "name": "OnFingers",
+          "line": 41,
+          "isDefault": false
+        },
+        {
+          "name": "Coordinate",
+          "line": 44,
+          "isDefault": false
+        },
+        {
+          "name": "Constrain",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "ConstrainThreshold",
+          "line": 52,
+          "isDefault": false
+        },
+        {
+          "name": "Multiplier",
+          "line": 55,
+          "isDefault": false
+        },
+        {
+          "name": "OnDelta",
+          "line": 59,
+          "isDefault": false
+        },
+        {
+          "name": "OnDistance",
+          "line": 63,
+          "isDefault": false
+        },
+        {
+          "name": "ScreenDepth",
+          "line": 66,
+          "isDefault": false
+        },
+        {
+          "name": "OnWorldFrom",
+          "line": 70,
+          "isDefault": false
+        },
+        {
+          "name": "OnWorldTo",
+          "line": 74,
+          "isDefault": false
+        },
+        {
+          "name": "OnWorldDelta",
+          "line": 78,
+          "isDefault": false
+        },
+        {
+          "name": "OnWorldFromTo",
+          "line": 83,
+          "isDefault": false
+        },
+        {
+          "name": "AddFinger",
+          "line": 92,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveFinger",
+          "line": 98,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveAllFingers",
+          "line": 104,
+          "isDefault": false
+        },
+        {
+          "name": "LeanMultiUpdate",
+          "line": 9,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "AddFinger",
+          "callee": "Use.AddFinger",
+          "lineNumber": 94
+        },
+        {
+          "caller": "RemoveFinger",
+          "callee": "Use.RemoveFinger",
+          "lineNumber": 100
+        },
+        {
+          "caller": "RemoveAllFingers",
+          "callee": "Use.RemoveAllFingers",
+          "lineNumber": 106
+        },
+        {
+          "caller": "Reset",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 112
+        },
+        {
+          "caller": "Awake",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 118
+        },
+        {
+          "caller": "Update",
+          "callee": "GetFingers",
+          "lineNumber": 136
+        },
+        {
+          "caller": "Update",
+          "callee": "LeanGesture.GetLastScreenCenter",
+          "lineNumber": 141
+        },
+        {
+          "caller": "Update",
+          "callee": "LeanGesture.GetScreenCenter",
+          "lineNumber": 142
+        },
+        {
+          "caller": "Update",
+          "callee": "Mathf.Abs",
+          "lineNumber": 176
+        },
+        {
+          "caller": "Update",
+          "callee": "Mathf.Abs",
+          "lineNumber": 176
+        },
+        {
+          "caller": "Update",
+          "callee": "onFingers.Invoke",
+          "lineNumber": 195
+        },
+        {
+          "caller": "Update",
+          "callee": "onDelta.Invoke",
+          "lineNumber": 208
+        },
+        {
+          "caller": "Update",
+          "callee": "onDistance.Invoke",
+          "lineNumber": 213
+        },
+        {
+          "caller": "Update",
+          "callee": "ScreenDepth.Convert",
+          "lineNumber": 216
+        },
+        {
+          "caller": "Update",
+          "callee": "ScreenDepth.Convert",
+          "lineNumber": 217
+        },
+        {
+          "caller": "Update",
+          "callee": "onWorldFrom.Invoke",
+          "lineNumber": 221
+        },
+        {
+          "caller": "Update",
+          "callee": "onWorldTo.Invoke",
+          "lineNumber": 226
+        },
+        {
+          "caller": "Update",
+          "callee": "onWorldDelta.Invoke",
+          "lineNumber": 231
+        },
+        {
+          "caller": "Update",
+          "callee": "onWorldFromTo.Invoke",
+          "lineNumber": 236
+        },
+        {
+          "caller": "GetFingers",
+          "callee": "Use.UpdateAndGetFingers",
+          "lineNumber": 248
+        },
+        {
+          "caller": "HandleFingerDown",
+          "callee": "Use.AddFinger",
+          "lineNumber": 258
+        },
+        {
+          "caller": "DrawIgnore",
+          "callee": "Draw",
+          "lineNumber": 275
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 280
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 282
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "DrawIgnore",
+          "lineNumber": 283
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 285
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 287
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 288
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "BeginIndent",
+          "lineNumber": 290
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 291
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "EndIndent",
+          "lineNumber": 292
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 295
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 297
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnFingers.GetPersistentEventCount",
+          "lineNumber": 297
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 298
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnDelta.GetPersistentEventCount",
+          "lineNumber": 298
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 299
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnDistance.GetPersistentEventCount",
+          "lineNumber": 299
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 300
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnWorldFrom.GetPersistentEventCount",
+          "lineNumber": 300
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 301
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnWorldTo.GetPersistentEventCount",
+          "lineNumber": 301
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 302
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnWorldDelta.GetPersistentEventCount",
+          "lineNumber": 302
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 303
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnWorldFromTo.GetPersistentEventCount",
+          "lineNumber": 303
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "DrawFoldout",
+          "lineNumber": 305
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 309
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 314
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 315
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 320
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 325
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 330
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 335
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 340
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 345
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 350
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 18,
+        "functionCount": 9,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanMultiUpdateCanvas.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 67,
+      "nonEmptyLines": 57,
+      "functions": [
+        {
+          "name": "GetFingers",
+          "startLine": 14,
+          "endLine": 30,
+          "params": []
+        },
+        {
+          "name": "HandleFingerDown",
+          "startLine": 32,
+          "endLine": 38,
+          "params": [
+            "finger"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiUpdateCanvas",
+          "startLine": 7,
+          "endLine": 46,
+          "methods": [
+            "GetFingers",
+            "HandleFingerDown"
+          ],
+          "properties": [
+            "IgnoreIfOff",
+            "ignoreIfOff"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "IgnoreIfOff",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "LeanMultiUpdateCanvas",
+          "line": 7,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "GetFingers",
+          "callee": "base.GetFingers",
+          "lineNumber": 16
+        },
+        {
+          "caller": "GetFingers",
+          "callee": "LeanTouch.ElementOverlapped",
+          "lineNumber": 23
+        },
+        {
+          "caller": "GetFingers",
+          "callee": "fingers.RemoveAt",
+          "lineNumber": 25
+        },
+        {
+          "caller": "HandleFingerDown",
+          "callee": "LeanTouch.ElementOverlapped",
+          "lineNumber": 34
+        },
+        {
+          "caller": "HandleFingerDown",
+          "callee": "base.HandleFingerDown",
+          "lineNumber": 36
+        },
+        {
+          "caller": "DrawIgnore",
+          "callee": "base.DrawIgnore",
+          "lineNumber": 61
+        },
+        {
+          "caller": "DrawIgnore",
+          "callee": "Draw",
+          "lineNumber": 63
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanPick.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 93,
+      "nonEmptyLines": 76,
+      "functions": [
+        {
+          "name": "PickStartScreenPosition",
+          "startLine": 26,
+          "endLine": 29,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "PickScreenPosition",
+          "startLine": 33,
+          "endLine": 36,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "SelectScreenPosition",
+          "startLine": 40,
+          "endLine": 59,
+          "params": [
+            "finger",
+            "screenPosition"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanPick",
+          "startLine": 10,
+          "endLine": 60,
+          "methods": [
+            "PickStartScreenPosition",
+            "PickScreenPosition",
+            "SelectScreenPosition"
+          ],
+          "properties": [
+            "ScreenQuery",
+            "RequiredTag",
+            "requiredTag",
+            "OnPickable",
+            "onPickable"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ScreenQuery",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "RequiredTag",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "OnPickable",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "PickStartScreenPosition",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "PickScreenPosition",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "SelectScreenPosition",
+          "line": 40,
+          "isDefault": false
+        },
+        {
+          "name": "LeanPick",
+          "line": 10,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "PickStartScreenPosition",
+          "callee": "SelectScreenPosition",
+          "lineNumber": 28
+        },
+        {
+          "caller": "PickScreenPosition",
+          "callee": "SelectScreenPosition",
+          "lineNumber": 35
+        },
+        {
+          "caller": "SelectScreenPosition",
+          "callee": "ScreenQuery.Query<LeanPickable>",
+          "lineNumber": 42
+        },
+        {
+          "caller": "SelectScreenPosition",
+          "callee": "string.IsNullOrEmpty",
+          "lineNumber": 45
+        },
+        {
+          "caller": "SelectScreenPosition",
+          "callee": "onPickable.Invoke",
+          "lineNumber": 54
+        },
+        {
+          "caller": "SelectScreenPosition",
+          "callee": "result.InvokePick",
+          "lineNumber": 57
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 75
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "base.OnInspector",
+          "lineNumber": 77
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 79
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 80
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 82
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "DrawFoldout",
+          "lineNumber": 84
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 86
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnPickable.GetPersistentEventCount",
+          "lineNumber": 86
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 88
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 7,
+        "functionCount": 3,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanPickable.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 89,
+      "nonEmptyLines": 73,
+      "functions": [
+        {
+          "name": "InvokePick",
+          "startLine": 29,
+          "endLine": 47,
+          "params": [
+            "finger",
+            "screenPosition"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanPickable",
+          "startLine": 9,
+          "endLine": 48,
+          "methods": [
+            "InvokePick"
+          ],
+          "properties": [
+            "OnFinger",
+            "onFinger",
+            "ScreenDepth",
+            "OnWorld",
+            "onWorld",
+            "OnScreen",
+            "onScreen"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "OnFinger",
+          "line": 18,
+          "isDefault": false
+        },
+        {
+          "name": "ScreenDepth",
+          "line": 21,
+          "isDefault": false
+        },
+        {
+          "name": "OnWorld",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "OnScreen",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "InvokePick",
+          "line": 29,
+          "isDefault": false
+        },
+        {
+          "name": "LeanPickable",
+          "line": 9,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "InvokePick",
+          "callee": "onFinger.Invoke",
+          "lineNumber": 33
+        },
+        {
+          "caller": "InvokePick",
+          "callee": "ScreenDepth.Convert",
+          "lineNumber": 36
+        },
+        {
+          "caller": "InvokePick",
+          "callee": "onWorld.Invoke",
+          "lineNumber": 40
+        },
+        {
+          "caller": "InvokePick",
+          "callee": "onScreen.Invoke",
+          "lineNumber": 45
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 63
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "DrawFoldout",
+          "lineNumber": 65
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 67
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnFinger.GetPersistentEventCount",
+          "lineNumber": 67
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 68
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnWorld.GetPersistentEventCount",
+          "lineNumber": 68
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 69
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnScreen.GetPersistentEventCount",
+          "lineNumber": 69
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 73
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 78
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 79
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 84
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 6,
+        "functionCount": 1,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanPinchCamera.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 266,
+      "nonEmptyLines": 213,
+      "functions": [
+        {
+          "name": "ContinuouslyZoom",
+          "startLine": 54,
+          "endLine": 66,
+          "params": [
+            "direction"
+          ]
+        },
+        {
+          "name": "MultiplyZoom",
+          "startLine": 69,
+          "endLine": 77,
+          "params": [
+            "scale"
+          ]
+        },
+        {
+          "name": "IncrementZoom",
+          "startLine": 80,
+          "endLine": 90,
+          "params": [
+            "delta"
+          ]
+        },
+        {
+          "name": "AddFinger",
+          "startLine": 93,
+          "endLine": 96,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveFinger",
+          "startLine": 99,
+          "endLine": 102,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "RemoveAllFingers",
+          "startLine": 105,
+          "endLine": 108,
+          "params": []
+        },
+        {
+          "name": "Awake",
+          "startLine": 117,
+          "endLine": 120,
+          "params": []
+        },
+        {
+          "name": "Start",
+          "startLine": 122,
+          "endLine": 125,
+          "params": []
+        },
+        {
+          "name": "LateUpdate",
+          "startLine": 127,
+          "endLine": 190,
+          "params": []
+        },
+        {
+          "name": "SetZoom",
+          "startLine": 192,
+          "endLine": 212,
+          "params": [
+            "current"
+          ]
+        },
+        {
+          "name": "TryClamp",
+          "startLine": 214,
+          "endLine": 222,
+          "params": [
+            "z"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanPinchCamera",
+          "startLine": 9,
+          "endLine": 223,
+          "methods": [
+            "ContinuouslyZoom",
+            "MultiplyZoom",
+            "IncrementZoom",
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Start",
+            "LateUpdate",
+            "SetZoom",
+            "TryClamp"
+          ],
+          "properties": [
+            "Use",
+            "Camera",
+            "_camera",
+            "Zoom",
+            "zoom",
+            "Damping",
+            "damping",
+            "Clamp",
+            "clamp",
+            "ClampMin",
+            "clampMin",
+            "ClampMax",
+            "clampMax",
+            "Relative",
+            "relative",
+            "IgnoreZ",
+            "ignoreZ",
+            "ScreenDepth",
+            "currentZoom",
+            "remainingTranslation"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Use",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "Camera",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "Zoom",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "Damping",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "Clamp",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "ClampMin",
+          "line": 34,
+          "isDefault": false
+        },
+        {
+          "name": "ClampMax",
+          "line": 37,
+          "isDefault": false
+        },
+        {
+          "name": "Relative",
+          "line": 40,
+          "isDefault": false
+        },
+        {
+          "name": "IgnoreZ",
+          "line": 43,
+          "isDefault": false
+        },
+        {
+          "name": "ScreenDepth",
+          "line": 46,
+          "isDefault": false
+        },
+        {
+          "name": "ContinuouslyZoom",
+          "line": 54,
+          "isDefault": false
+        },
+        {
+          "name": "MultiplyZoom",
+          "line": 69,
+          "isDefault": false
+        },
+        {
+          "name": "IncrementZoom",
+          "line": 80,
+          "isDefault": false
+        },
+        {
+          "name": "AddFinger",
+          "line": 93,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveFinger",
+          "line": 99,
+          "isDefault": false
+        },
+        {
+          "name": "RemoveAllFingers",
+          "line": 105,
+          "isDefault": false
+        },
+        {
+          "name": "LeanPinchCamera",
+          "line": 9,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ContinuouslyZoom",
+          "callee": "CwHelper.DampenFactor",
+          "lineNumber": 56
+        },
+        {
+          "caller": "ContinuouslyZoom",
+          "callee": "Mathf.Abs",
+          "lineNumber": 56
+        },
+        {
+          "caller": "ContinuouslyZoom",
+          "callee": "Mathf.Lerp",
+          "lineNumber": 60
+        },
+        {
+          "caller": "ContinuouslyZoom",
+          "callee": "Mathf.Lerp",
+          "lineNumber": 64
+        },
+        {
+          "caller": "MultiplyZoom",
+          "callee": "Mathf.Clamp",
+          "lineNumber": 75
+        },
+        {
+          "caller": "IncrementZoom",
+          "callee": "Mathf.Abs",
+          "lineNumber": 82
+        },
+        {
+          "caller": "IncrementZoom",
+          "callee": "MultiplyZoom",
+          "lineNumber": 89
+        },
+        {
+          "caller": "AddFinger",
+          "callee": "Use.AddFinger",
+          "lineNumber": 95
+        },
+        {
+          "caller": "RemoveFinger",
+          "callee": "Use.RemoveFinger",
+          "lineNumber": 101
+        },
+        {
+          "caller": "RemoveAllFingers",
+          "callee": "Use.RemoveAllFingers",
+          "lineNumber": 107
+        },
+        {
+          "caller": "Reset",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 113
+        },
+        {
+          "caller": "Awake",
+          "callee": "Use.UpdateRequiredSelectable",
+          "lineNumber": 119
+        },
+        {
+          "caller": "LateUpdate",
+          "callee": "Use.UpdateAndGetFingers",
+          "lineNumber": 130
+        },
+        {
+          "caller": "LateUpdate",
+          "callee": "LeanGesture.GetPinchRatio",
+          "lineNumber": 133
+        },
+        {
+          "caller": "LateUpdate",
+          "callee": "TryClamp",
+          "lineNumber": 139
+        },
+        {
+          "caller": "LateUpdate",
+          "callee": "TryClamp",
+          "lineNumber": 146
+        },
+        {
+          "caller": "LateUpdate",
+          "callee": "LeanGesture.TryGetScreenCenter",
+          "lineNumber": 153
+        },
+        {
+          "caller": "LateUpdate",
+          "callee": "ScreenDepth.Convert",
+          "lineNumber": 158
+        },
+        {
+          "caller": "LateUpdate",
+          "callee": "CwHelper.DampenFactor",
+          "lineNumber": 174
+        },
+        {
+          "caller": "LateUpdate",
+          "callee": "Mathf.Lerp",
+          "lineNumber": 177
+        },
+        {
+          "caller": "LateUpdate",
+          "callee": "SetZoom",
+          "lineNumber": 180
+        },
+        {
+          "caller": "LateUpdate",
+          "callee": "Vector3.Lerp",
+          "lineNumber": 183
+        },
+        {
+          "caller": "SetZoom",
+          "callee": "CwHelper.GetCamera",
+          "lineNumber": 195
+        },
+        {
+          "caller": "SetZoom",
+          "callee": "Debug.LogError",
+          "lineNumber": 210
+        },
+        {
+          "caller": "TryClamp",
+          "callee": "Mathf.Clamp",
+          "lineNumber": 218
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 238
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 240
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 241
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 242
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 243
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 244
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 246
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "BeginIndent",
+          "lineNumber": 248
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 249
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 250
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "EndIndent",
+          "lineNumber": 251
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 254
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 256
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "BeginIndent",
+          "lineNumber": 258
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 259
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 260
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "EndIndent",
+          "lineNumber": 261
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 17,
+        "functionCount": 11,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanReplayFinger.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 132,
+      "nonEmptyLines": 110,
+      "functions": [
+        {
+          "name": "Replay",
+          "startLine": 27,
+          "endLine": 31,
+          "params": []
+        },
+        {
+          "name": "StopReplay",
+          "startLine": 33,
+          "endLine": 36,
+          "params": []
+        },
+        {
+          "name": "OnEnable",
+          "startLine": 38,
+          "endLine": 42,
+          "params": []
+        },
+        {
+          "name": "OnDisable",
+          "startLine": 44,
+          "endLine": 48,
+          "params": []
+        },
+        {
+          "name": "Update",
+          "startLine": 50,
+          "endLine": 64,
+          "params": []
+        },
+        {
+          "name": "HandleFingerUpdate",
+          "startLine": 66,
+          "endLine": 77,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "HandleFingerUp",
+          "startLine": 79,
+          "endLine": 85,
+          "params": [
+            "finger"
+          ]
+        },
+        {
+          "name": "CopySnapshots",
+          "startLine": 87,
+          "endLine": 105,
+          "params": [
+            "finger"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanReplayFinger",
+          "startLine": 8,
+          "endLine": 106,
+          "methods": [
+            "Replay",
+            "StopReplay",
+            "OnEnable",
+            "OnDisable",
+            "Update",
+            "HandleFingerUpdate",
+            "HandleFingerUp",
+            "CopySnapshots"
+          ],
+          "properties": [
+            "Cursor",
+            "cursor",
+            "ScreenDepth",
+            "Playing",
+            "playing",
+            "PlayTime",
+            "playTime",
+            "snapshots"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Cursor",
+          "line": 13,
+          "isDefault": false
+        },
+        {
+          "name": "ScreenDepth",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "Playing",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "PlayTime",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "Replay",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "StopReplay",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "LeanReplayFinger",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Update",
+          "callee": "LeanSnapshot.TryGetScreenPosition",
+          "lineNumber": 59
+        },
+        {
+          "caller": "Update",
+          "callee": "ScreenDepth.Convert",
+          "lineNumber": 61
+        },
+        {
+          "caller": "HandleFingerUpdate",
+          "callee": "ScreenDepth.Convert",
+          "lineNumber": 74
+        },
+        {
+          "caller": "HandleFingerUp",
+          "callee": "CopySnapshots",
+          "lineNumber": 83
+        },
+        {
+          "caller": "CopySnapshots",
+          "callee": "snapshots.Clear",
+          "lineNumber": 90
+        },
+        {
+          "caller": "CopySnapshots",
+          "callee": "new LeanSnapshot",
+          "lineNumber": 97
+        },
+        {
+          "caller": "CopySnapshots",
+          "callee": "snapshots.Add",
+          "lineNumber": 103
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 121
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "BeginError",
+          "lineNumber": 123
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 123
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 124
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "EndError",
+          "lineNumber": 125
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 126
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 127
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 128
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 7,
+        "functionCount": 8,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanSelectSelf.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanSelectableBlock.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 156,
+      "nonEmptyLines": 125,
+      "functions": [
+        {
+          "name": "FindBlock",
+          "startLine": 34,
+          "endLine": 47,
+          "params": [
+            "x",
+            "y"
+          ]
+        },
+        {
+          "name": "OnEnable",
+          "startLine": 49,
+          "endLine": 54,
+          "params": []
+        },
+        {
+          "name": "OnDisable",
+          "startLine": 56,
+          "endLine": 61,
+          "params": []
+        },
+        {
+          "name": "Swap",
+          "startLine": 63,
+          "endLine": 73,
+          "params": [
+            "a",
+            "b"
+          ]
+        },
+        {
+          "name": "Update",
+          "startLine": 75,
+          "endLine": 130,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectableBlock",
+          "startLine": 8,
+          "endLine": 131,
+          "methods": [
+            "FindBlock",
+            "OnEnable",
+            "OnDisable",
+            "Swap",
+            "Update"
+          ],
+          "properties": [
+            "Instances",
+            "X",
+            "x",
+            "Y",
+            "y",
+            "BlockSize",
+            "blockSize",
+            "DeselectOnSwap",
+            "deselectOnSwap",
+            "Damping",
+            "damping"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Instances",
+          "line": 14,
+          "isDefault": false
+        },
+        {
+          "name": "X",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "Y",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "BlockSize",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "DeselectOnSwap",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "Damping",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "FindBlock",
+          "line": 34,
+          "isDefault": false
+        },
+        {
+          "name": "Swap",
+          "line": 63,
+          "isDefault": false
+        },
+        {
+          "name": "LeanSelectableBlock",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "OnEnable",
+          "callee": "base.OnEnable",
+          "lineNumber": 51
+        },
+        {
+          "caller": "OnEnable",
+          "callee": "Instances.Add",
+          "lineNumber": 53
+        },
+        {
+          "caller": "OnDisable",
+          "callee": "base.OnDisable",
+          "lineNumber": 58
+        },
+        {
+          "caller": "OnDisable",
+          "callee": "Instances.Remove",
+          "lineNumber": 60
+        },
+        {
+          "caller": "Update",
+          "callee": "CwHelper.GetCamera",
+          "lineNumber": 85
+        },
+        {
+          "caller": "Update",
+          "callee": "new Vector3",
+          "lineNumber": 90
+        },
+        {
+          "caller": "Update",
+          "callee": "camera.WorldToScreenPoint",
+          "lineNumber": 90
+        },
+        {
+          "caller": "Update",
+          "callee": "camera.ScreenToWorldPoint",
+          "lineNumber": 93
+        },
+        {
+          "caller": "Update",
+          "callee": "Mathf.RoundToInt",
+          "lineNumber": 96
+        },
+        {
+          "caller": "Update",
+          "callee": "Mathf.RoundToInt",
+          "lineNumber": 97
+        },
+        {
+          "caller": "Update",
+          "callee": "Mathf.Abs",
+          "lineNumber": 100
+        },
+        {
+          "caller": "Update",
+          "callee": "Mathf.Abs",
+          "lineNumber": 101
+        },
+        {
+          "caller": "Update",
+          "callee": "FindBlock",
+          "lineNumber": 106
+        },
+        {
+          "caller": "Update",
+          "callee": "Swap",
+          "lineNumber": 110
+        },
+        {
+          "caller": "Update",
+          "callee": "Selectable.Deselect",
+          "lineNumber": 114
+        },
+        {
+          "caller": "Update",
+          "callee": "CwHelper.DampenFactor",
+          "lineNumber": 124
+        },
+        {
+          "caller": "Update",
+          "callee": "Vector3.Lerp",
+          "lineNumber": 129
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 146
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 148
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 149
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 150
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 151
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 152
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 9,
+        "functionCount": 5,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanSelectableCenter.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 66,
+      "nonEmptyLines": 57,
+      "functions": [
+        {
+          "name": "Calculate",
+          "startLine": 20,
+          "endLine": 44,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectableCenter",
+          "startLine": 10,
+          "endLine": 45,
+          "methods": [
+            "Calculate"
+          ],
+          "properties": [
+            "OnPosition",
+            "onPosition"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "OnPosition",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "Calculate",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "LeanSelectableCenter",
+          "line": 10,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Calculate",
+          "callee": "onPosition.Invoke",
+          "lineNumber": 41
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 60
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 62
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 3,
+        "functionCount": 1,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanSelectableDial.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 259,
+      "nonEmptyLines": 206,
+      "functions": [
+        {
+          "name": "IncrementAngle",
+          "startLine": 84,
+          "endLine": 87,
+          "params": [
+            "delta"
+          ]
+        },
+        {
+          "name": "Update",
+          "startLine": 96,
+          "endLine": 162,
+          "params": []
+        },
+        {
+          "name": "GetPoint",
+          "startLine": 164,
+          "endLine": 218,
+          "params": [
+            "screenPoint"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectableDial",
+          "startLine": 9,
+          "endLine": 219,
+          "methods": [
+            "IncrementAngle",
+            "Update",
+            "GetPoint"
+          ],
+          "properties": [
+            "Camera",
+            "_camera",
+            "Tilt",
+            "tilt",
+            "Axis",
+            "axis",
+            "Angle",
+            "angle",
+            "Clamp",
+            "clamp",
+            "ClampMin",
+            "clampMin",
+            "ClampMax",
+            "clampMax",
+            "Triggers",
+            "triggers",
+            "OnAngleChanged",
+            "onAngleChanged",
+            "oldPoint",
+            "oldPointSet",
+            "cachedCanvas"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Camera",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "Tilt",
+          "line": 52,
+          "isDefault": false
+        },
+        {
+          "name": "Axis",
+          "line": 55,
+          "isDefault": false
+        },
+        {
+          "name": "Angle",
+          "line": 58,
+          "isDefault": false
+        },
+        {
+          "name": "Clamp",
+          "line": 61,
+          "isDefault": false
+        },
+        {
+          "name": "ClampMin",
+          "line": 64,
+          "isDefault": false
+        },
+        {
+          "name": "ClampMax",
+          "line": 67,
+          "isDefault": false
+        },
+        {
+          "name": "Triggers",
+          "line": 70,
+          "isDefault": false
+        },
+        {
+          "name": "OnAngleChanged",
+          "line": 74,
+          "isDefault": false
+        },
+        {
+          "name": "IncrementAngle",
+          "line": 84,
+          "isDefault": false
+        },
+        {
+          "name": "LeanSelectableDial",
+          "line": 9,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "IsInside",
+          "callee": "Mathf.Abs",
+          "lineNumber": 36
+        },
+        {
+          "caller": "IsInside",
+          "callee": "Mathf.DeltaAngle",
+          "lineNumber": 36
+        },
+        {
+          "caller": "OnDrawGizmosSelected",
+          "callee": "Gizmos.DrawLine",
+          "lineNumber": 92
+        },
+        {
+          "caller": "OnDrawGizmosSelected",
+          "callee": "transform.TransformPoint",
+          "lineNumber": 92
+        },
+        {
+          "caller": "Update",
+          "callee": "GetPoint",
+          "lineNumber": 111
+        },
+        {
+          "caller": "Update",
+          "callee": "Vector2.SignedAngle",
+          "lineNumber": 115
+        },
+        {
+          "caller": "Update",
+          "callee": "Mathf.Clamp",
+          "lineNumber": 129
+        },
+        {
+          "caller": "Update",
+          "callee": "transform.Rotate",
+          "lineNumber": 132
+        },
+        {
+          "caller": "Update",
+          "callee": "trigger.IsInside",
+          "lineNumber": 140
+        },
+        {
+          "caller": "Update",
+          "callee": "trigger.OnEnter.Invoke",
+          "lineNumber": 146
+        },
+        {
+          "caller": "Update",
+          "callee": "trigger.OnExit.Invoke",
+          "lineNumber": 155
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "GetComponentInParent<Canvas>",
+          "lineNumber": 174
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "RectTransformUtility.ScreenPointToWorldPointInRectangle",
+          "lineNumber": 181
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "Quaternion.LookRotation",
+          "lineNumber": 183
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "transform.InverseTransformPoint",
+          "lineNumber": 183
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "RectTransformUtility.ScreenPointToWorldPointInRectangle",
+          "lineNumber": 188
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "Quaternion.LookRotation",
+          "lineNumber": 190
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "transform.InverseTransformPoint",
+          "lineNumber": 190
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "CwHelper.GetCamera",
+          "lineNumber": 198
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "camera.ScreenPointToRay",
+          "lineNumber": 202
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "new Plane",
+          "lineNumber": 203
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "transform.TransformDirection",
+          "lineNumber": 203
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "plane.Raycast",
+          "lineNumber": 206
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "Quaternion.Inverse",
+          "lineNumber": 208
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "Quaternion.LookRotation",
+          "lineNumber": 208
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "transform.InverseTransformPoint",
+          "lineNumber": 208
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "ray.GetPoint",
+          "lineNumber": 208
+        },
+        {
+          "caller": "GetPoint",
+          "callee": "Debug.LogError",
+          "lineNumber": 213
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 234
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 236
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 237
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 238
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 239
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 241
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 243
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "BeginIndent",
+          "lineNumber": 244
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 245
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 246
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "EndIndent",
+          "lineNumber": 247
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 249
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 251
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 253
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 255
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 11,
+        "functionCount": 3,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanSelectableDragTorque.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 92,
+      "nonEmptyLines": 77,
+      "functions": [
+        {
+          "name": "OnSelected",
+          "startLine": 28,
+          "endLine": 31,
+          "params": [
+            "select"
+          ]
+        },
+        {
+          "name": "Update",
+          "startLine": 33,
+          "endLine": 69,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectableDragTorque",
+          "startLine": 8,
+          "endLine": 70,
+          "methods": [
+            "OnSelected",
+            "Update"
+          ],
+          "properties": [
+            "Camera",
+            "_camera",
+            "Force",
+            "force",
+            "oldScaledDelta",
+            "cachedRigidbody"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Camera",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "Force",
+          "line": 18,
+          "isDefault": false
+        },
+        {
+          "name": "LeanSelectableDragTorque",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Update",
+          "callee": "CwHelper.GetCamera",
+          "lineNumber": 44
+        },
+        {
+          "caller": "Update",
+          "callee": "Mathf.Atan2",
+          "lineNumber": 52
+        },
+        {
+          "caller": "Update",
+          "callee": "Mathf.Atan2",
+          "lineNumber": 53
+        },
+        {
+          "caller": "Update",
+          "callee": "Mathf.DeltaAngle",
+          "lineNumber": 54
+        },
+        {
+          "caller": "Update",
+          "callee": "GetComponent<Rigidbody>",
+          "lineNumber": 56
+        },
+        {
+          "caller": "Update",
+          "callee": "cachedRigidbody.AddTorque",
+          "lineNumber": 58
+        },
+        {
+          "caller": "Update",
+          "callee": "Debug.LogError",
+          "lineNumber": 65
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 85
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 87
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 88
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 3,
+        "functionCount": 2,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanSelectableDrop.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 109,
+      "nonEmptyLines": 87,
+      "functions": [
+        {
+          "name": "OnSelectedSelectFingerUp",
+          "startLine": 39,
+          "endLine": 67,
+          "params": [
+            "select",
+            "finger"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectableDrop",
+          "startLine": 9,
+          "endLine": 70,
+          "methods": [
+            "OnSelectedSelectFingerUp"
+          ],
+          "properties": [
+            "Ignore",
+            "ignore",
+            "ScreenQuery",
+            "OnGameObject",
+            "onGameObject",
+            "OnDropHandler",
+            "onDropHandler"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Ignore",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "ScreenQuery",
+          "line": 29,
+          "isDefault": false
+        },
+        {
+          "name": "OnGameObject",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "OnDropHandler",
+          "line": 37,
+          "isDefault": false
+        },
+        {
+          "name": "LeanSelectableDrop",
+          "line": 9,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "OnSelectedSelectFingerUp",
+          "callee": "LeanScreenQuery.ChangeLayers",
+          "lineNumber": 43
+        },
+        {
+          "caller": "OnSelectedSelectFingerUp",
+          "callee": "ScreenQuery.TryQuery",
+          "lineNumber": 49
+        },
+        {
+          "caller": "OnSelectedSelectFingerUp",
+          "callee": "LeanScreenQuery.RevertLayers",
+          "lineNumber": 51
+        },
+        {
+          "caller": "OnSelectedSelectFingerUp",
+          "callee": "dropHandler.HandleDrop",
+          "lineNumber": 55
+        },
+        {
+          "caller": "OnSelectedSelectFingerUp",
+          "callee": "onGameObject.Invoke",
+          "lineNumber": 59
+        },
+        {
+          "caller": "OnSelectedSelectFingerUp",
+          "callee": "onDropHandler.Invoke",
+          "lineNumber": 64
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 85
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 87
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 88
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 90
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 92
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnGameObject.GetPersistentEventCount",
+          "lineNumber": 92
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 93
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnDropHandler.GetPersistentEventCount",
+          "lineNumber": 93
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "DrawFoldout",
+          "lineNumber": 95
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 99
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 104
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 1,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanSelectablePressureScale.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 61,
+      "nonEmptyLines": 51,
+      "functions": [
+        {
+          "name": "Update",
+          "startLine": 20,
+          "endLine": 37,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectablePressureScale",
+          "startLine": 7,
+          "endLine": 38,
+          "methods": [
+            "Update"
+          ],
+          "properties": [
+            "BaseScale",
+            "baseScale",
+            "PressureMultiplier",
+            "pressureMultiplier",
+            "PressureClamp",
+            "pressureClamp"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "BaseScale",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "PressureMultiplier",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "PressureClamp",
+          "line": 18,
+          "isDefault": false
+        },
+        {
+          "name": "LeanSelectablePressureScale",
+          "line": 7,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Update",
+          "callee": "Mathf.Clamp01",
+          "lineNumber": 33
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 53
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 55
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 56
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 57
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 1,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "Required/Scripts/LeanSelectableSelected.cs",
+      "language": "csharp",
+      "fileCategory": "code",
+      "totalLines": 165,
+      "nonEmptyLines": 134,
+      "functions": [
+        {
+          "name": "Update",
+          "startLine": 50,
+          "endLine": 90,
+          "params": []
+        },
+        {
+          "name": "OnSelected",
+          "startLine": 92,
+          "endLine": 101,
+          "params": [
+            "select"
+          ]
+        },
+        {
+          "name": "OnDeselected",
+          "startLine": 103,
+          "endLine": 117,
+          "params": [
+            "select"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectableSelected",
+          "startLine": 9,
+          "endLine": 118,
+          "methods": [
+            "Update",
+            "OnSelected",
+            "OnDeselected"
+          ],
+          "properties": [
+            "Threshold",
+            "threshold",
+            "Reset",
+            "reset",
+            "RawSelection",
+            "rawSelection",
+            "RequireFinger",
+            "requireFinger",
+            "OnSelectableDown",
+            "onSelectableDown",
+            "OnSelectableUpdate",
+            "onSelectableUpdate",
+            "OnSelectableUp",
+            "onSelectableUp",
+            "lastSet",
+            "seconds"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Threshold",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "Reset",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "RawSelection",
+          "line": 30,
+          "isDefault": false
+        },
+        {
+          "name": "RequireFinger",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "OnSelectableDown",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "OnSelectableUpdate",
+          "line": 39,
+          "isDefault": false
+        },
+        {
+          "name": "OnSelectableUp",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "LeanSelectableSelected",
+          "line": 9,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Update",
+          "callee": "onSelectableDown.Invoke",
+          "lineNumber": 75
+        },
+        {
+          "caller": "Update",
+          "callee": "onSelectableUpdate.Invoke",
+          "lineNumber": 84
+        },
+        {
+          "caller": "OnDeselected",
+          "callee": "onSelectableUp.Invoke",
+          "lineNumber": 114
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "GetTargets",
+          "lineNumber": 133
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 135
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 136
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 137
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 138
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Separator",
+          "lineNumber": 140
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 142
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnSelectableDown.GetPersistentEventCount",
+          "lineNumber": 142
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 143
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnSelectableUpdate.GetPersistentEventCount",
+          "lineNumber": 143
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Any",
+          "lineNumber": 144
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "t.OnSelectableUp.GetPersistentEventCount",
+          "lineNumber": 144
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "DrawFoldout",
+          "lineNumber": 146
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 150
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 155
+        },
+        {
+          "caller": "OnInspector",
+          "callee": "Draw",
+          "lineNumber": 160
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 8,
+        "functionCount": 3,
+        "classCount": 1
+      }
+    }
+  ]
+}

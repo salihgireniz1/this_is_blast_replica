@@ -1,0 +1,6 @@
+{
+    "name": "Blast.Domain",
+    "rootNamespace": "Blast.Domain",
+    "references": [],
+    "noEngineReferences": true
+}

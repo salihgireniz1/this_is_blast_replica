@@ -1,0 +1,7 @@
+{
+    "name": "Blast.Application",
+    "rootNamespace": "Blast.Application",
+    "references": [
+        "Blast.Domain"
+    ]
+}

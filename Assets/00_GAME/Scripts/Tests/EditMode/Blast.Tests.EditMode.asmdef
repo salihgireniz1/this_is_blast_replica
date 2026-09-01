@@ -1,0 +1,28 @@
+{
+    "name": "Blast.Tests.EditMode",
+    "rootNamespace": "Blast.Tests",
+    "references": [
+        "UnityEngine.TestRunner",
+        "Blast.Domain",
+        "Blast.Infrastructure",
+        "UnityEditor.TestRunner",
+        "Blast.Bootstrap",
+        "VContainer"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "DOTween.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

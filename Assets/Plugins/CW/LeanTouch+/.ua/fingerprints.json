@@ -1,0 +1,5557 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "",
+  "generatedAt": "2026-08-26T15:41:23.305Z",
+  "files": {
+    "LeanTouchPlus.asmdef": {
+      "filePath": "LeanTouchPlus.asmdef",
+      "contentHash": "2e5d142233e0e7210a900c445c4bfe2b8212898ed21ace6e79f4aba5625c0483",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": false
+    },
+    "Required/Documentation.html": {
+      "filePath": "Required/Documentation.html",
+      "contentHash": "d8224309072c35c2cde692c73212bc1f896f273d4b508396fde76c639063a88c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2597,
+      "hasStructuralAnalysis": false
+    },
+    "Required/Scripts/IDropHandler.cs": {
+      "filePath": "Required/Scripts/IDropHandler.cs",
+      "contentHash": "2d966ac56f0d7a3da9b61090049343d7836c04fffa110b467c2f82819c7988d1",
+      "functions": [],
+      "classes": [
+        {
+          "name": "IDropHandler",
+          "methods": [
+            "HandleDrop"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 4
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        }
+      ],
+      "exports": [
+        "IDropHandler"
+      ],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanDragColorMesh.cs": {
+      "filePath": "Required/Scripts/LeanDragColorMesh.cs",
+      "contentHash": "dd6d48adf8e7a280b850f85f20c20b62bfec20659440b579fb16d86b8d1c0108",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "Paint",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 52
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanDragColorMesh",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update",
+            "Paint"
+          ],
+          "properties": [
+            "Use",
+            "PaintColor",
+            "paintColor",
+            "Camera",
+            "_camera",
+            "cachedMeshFilter",
+            "modifiedMesh",
+            "modifiedIndices",
+            "modifiedColors"
+          ],
+          "exported": true,
+          "lineCount": 120
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "PaintColor",
+        "Camera",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanDragColorMesh"
+      ],
+      "totalLines": 149,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanDragDeformMesh.cs": {
+      "filePath": "Required/Scripts/LeanDragDeformMesh.cs",
+      "contentHash": "d52c5bf4d9e49d8a94ec1f15ae85f2609d7064b33c7dc04f0c946235d2a61b8f",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 84
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanDragDeformMesh",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update"
+          ],
+          "properties": [
+            "Use",
+            "ScaledRadius",
+            "scaledRadius",
+            "ApplyToMeshCollider",
+            "applyToMeshCollider",
+            "Camera",
+            "_camera",
+            "cachedMeshFilter",
+            "cachedMeshCollider",
+            "deformedMesh",
+            "deformedVertices"
+          ],
+          "exported": true,
+          "lineCount": 147
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "ScaledRadius",
+        "ApplyToMeshCollider",
+        "Camera",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanDragDeformMesh"
+      ],
+      "totalLines": 177,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanDragLine.cs": {
+      "filePath": "Required/Scripts/LeanDragLine.cs",
+      "contentHash": "80626f43cf4318c7328b2ced8116f0ec979e5c1dcb21fa0e46e2fdb7ecf6ad57",
+      "functions": [
+        {
+          "name": "UpdateLine",
+          "params": [
+            "fingerData",
+            "finger",
+            "line"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 65
+        },
+        {
+          "name": "HandleFingerUp",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 37
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanDragLine",
+          "methods": [
+            "UpdateLine",
+            "HandleFingerUp"
+          ],
+          "properties": [
+            "WidthScale",
+            "widthScale",
+            "LengthMin",
+            "lengthMin",
+            "LengthMax",
+            "lengthMax",
+            "StartAtOrigin",
+            "startAtOrigin",
+            "Invert",
+            "invert",
+            "OnReleasedFrom",
+            "onReleasedFrom",
+            "OnReleasedTo",
+            "onReleasedTo",
+            "OnReleasedDelta",
+            "onReleasedDelta",
+            "OnReleasedFromTo",
+            "onReleasedFromTo"
+          ],
+          "exported": true,
+          "lineCount": 147
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "WidthScale",
+        "LengthMin",
+        "LengthMax",
+        "StartAtOrigin",
+        "Invert",
+        "OnReleasedFrom",
+        "OnReleasedTo",
+        "OnReleasedDelta",
+        "OnReleasedFromTo",
+        "LeanDragLine"
+      ],
+      "totalLines": 213,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanDragSelect.cs": {
+      "filePath": "Required/Scripts/LeanDragSelect.cs",
+      "contentHash": "6bead69ac6c3efffd120311bf3cbb6ffc9c6ade0ed94c69f447fdc90c0a2351e",
+      "functions": [
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "HandleFingerDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 35
+        },
+        {
+          "name": "HandleFingerUpdate",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "HandleFingerUp",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "HandleAnySelectedFinger",
+          "params": [
+            "select",
+            "selectable",
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 23
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanDragSelect",
+          "methods": [
+            "OnEnable",
+            "OnDisable",
+            "HandleFingerDown",
+            "HandleFingerUpdate",
+            "HandleFingerUp",
+            "HandleAnySelectedFinger"
+          ],
+          "properties": [
+            "Select",
+            "select",
+            "RequireNoSelectables",
+            "requireNoSelectables",
+            "RequireInitialSelection",
+            "requireInitialSelection",
+            "DeselectAllAtStart",
+            "deselectAllAtStart",
+            "MaximumSeparation",
+            "maximumSeparation",
+            "fingerDatas",
+            "waitingForSelection"
+          ],
+          "exported": true,
+          "lineCount": 126
+        }
+      ],
+      "imports": [
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Select",
+        "RequireNoSelectables",
+        "RequireInitialSelection",
+        "DeselectAllAtStart",
+        "MaximumSeparation",
+        "LeanDragSelect"
+      ],
+      "totalLines": 160,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanDragTranslateAlong.cs": {
+      "filePath": "Required/Scripts/LeanDragTranslateAlong.cs",
+      "contentHash": "21f7d787c409ff20753dc765e587a6c8cd31c03e341050d31e12c9da619bddd8",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "SnapPosition",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 29
+        },
+        {
+          "name": "TryGetSnappedWorldPosition",
+          "params": [
+            "worldPosition"
+          ],
+          "returnType": "bool",
+          "exported": false,
+          "lineCount": 29
+        },
+        {
+          "name": "UpdateTarget",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 27
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanDragTranslateAlong",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "SnapPosition",
+            "Awake",
+            "Update",
+            "TryGetSnappedWorldPosition",
+            "UpdateTarget"
+          ],
+          "properties": [
+            "Target",
+            "target",
+            "Use",
+            "ScreenDepth",
+            "Damping",
+            "damping",
+            "targetSet",
+            "targetScreenPoint",
+            "remainingDelta"
+          ],
+          "exported": true,
+          "lineCount": 159
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Target",
+        "Use",
+        "ScreenDepth",
+        "Damping",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanDragTranslateAlong"
+      ],
+      "totalLines": 189,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanDragTranslateAlongRigidbody.cs": {
+      "filePath": "Required/Scripts/LeanDragTranslateAlongRigidbody.cs",
+      "contentHash": "bb3adce692946c6629aa0a5010bf72323c56a34c4c49524ede053140a46fa377",
+      "functions": [
+        {
+          "name": "SnapPosition",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "FixedUpdate",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 30
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanDragTranslateAlongRigidbody",
+          "methods": [
+            "SnapPosition",
+            "FixedUpdate",
+            "Update"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 56
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "LeanDragTranslateAlongRigidbody"
+      ],
+      "totalLines": 83,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanDragTranslateRigidbody.cs": {
+      "filePath": "Required/Scripts/LeanDragTranslateRigidbody.cs",
+      "contentHash": "724da77c16fa177a0b1a19ba1109de5703031e39160096757e729af5ab1cb14b",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "FixedUpdate",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 34
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanDragTranslateRigidbody",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "OnEnable",
+            "FixedUpdate",
+            "Update"
+          ],
+          "properties": [
+            "Use",
+            "Camera",
+            "_camera",
+            "Damping",
+            "damping",
+            "cachedRigidbody",
+            "cachedCamera",
+            "targetSet",
+            "targetScreenPoint"
+          ],
+          "exported": true,
+          "lineCount": 117
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "Camera",
+        "Damping",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanDragTranslateRigidbody"
+      ],
+      "totalLines": 146,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanDragTranslateRigidbody2D.cs": {
+      "filePath": "Required/Scripts/LeanDragTranslateRigidbody2D.cs",
+      "contentHash": "0bf82071443be2f66cc9d85136ea8a41f9980090c678517d63faa0d05c47c1ba",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "FixedUpdate",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 33
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanDragTranslateRigidbody2D",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "OnEnable",
+            "FixedUpdate",
+            "Update"
+          ],
+          "properties": [
+            "Use",
+            "Camera",
+            "_camera",
+            "Damping",
+            "damping",
+            "cachedRigidbody",
+            "cachedCamera",
+            "targetSet",
+            "targetScreenPoint"
+          ],
+          "exported": true,
+          "lineCount": 117
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "Camera",
+        "Damping",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanDragTranslateRigidbody2D"
+      ],
+      "totalLines": 146,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanDrop.cs": {
+      "filePath": "Required/Scripts/LeanDrop.cs",
+      "contentHash": "2f4e06e3eedaff0ae196d561f5b6ea79054490d3366c37952c4a9fe53f9a7687",
+      "functions": [
+        {
+          "name": "HandleDrop",
+          "params": [
+            "droppedGameObject",
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanDrop",
+          "methods": [
+            "HandleDrop"
+          ],
+          "properties": [
+            "OnDropped",
+            "onDropped"
+          ],
+          "exported": true,
+          "lineCount": 20
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "OnDropped",
+        "HandleDrop",
+        "LeanDrop"
+      ],
+      "totalLines": 48,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanDropCount.cs": {
+      "filePath": "Required/Scripts/LeanDropCount.cs",
+      "contentHash": "1a806936e7ae8aeba6bd77671932e4505f71693849fe08a2dea15a25dbf1aac8",
+      "functions": [
+        {
+          "name": "HandleDrop",
+          "params": [
+            "droppedGameObject",
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "UpdateState",
+          "params": [
+            "changed"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 35
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanDropCount",
+          "methods": [
+            "HandleDrop",
+            "UpdateState"
+          ],
+          "properties": [
+            "Count",
+            "count",
+            "OnCount",
+            "onCount",
+            "MatchMin",
+            "matchMin",
+            "MatchMax",
+            "matchMax",
+            "OnMatch",
+            "onMatch",
+            "OnUnmatch",
+            "onUnmatch",
+            "inside"
+          ],
+          "exported": true,
+          "lineCount": 71
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Count",
+        "OnCount",
+        "MatchMin",
+        "MatchMax",
+        "OnMatch",
+        "OnUnmatch",
+        "HandleDrop",
+        "LeanDropCount"
+      ],
+      "totalLines": 131,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanFingerDownCanvas.cs": {
+      "filePath": "Required/Scripts/LeanFingerDownCanvas.cs",
+      "contentHash": "29ad1e5e288599632129f436a824af558e522d85bd9c348c62d5ea21ea6dfead",
+      "functions": [
+        {
+          "name": "HandleFingerDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanFingerDownCanvas",
+          "methods": [
+            "HandleFingerDown"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 20
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        }
+      ],
+      "exports": [
+        "LeanFingerDownCanvas"
+      ],
+      "totalLines": 47,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanFingerFlick.cs": {
+      "filePath": "Required/Scripts/LeanFingerFlick.cs",
+      "contentHash": "b51ec6aec244ae118d896f416e90a39ef37bf29eea0eadb99b6bf8273e9bee0a",
+      "functions": [
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "HandleFingerDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "HandleFingerUp",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "TestFinger",
+          "params": [
+            "finger",
+            "screenFrom",
+            "screenTo"
+          ],
+          "returnType": "bool",
+          "exported": false,
+          "lineCount": 24
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanFingerFlick",
+          "methods": [
+            "Awake",
+            "OnEnable",
+            "OnDisable",
+            "Update",
+            "HandleFingerDown",
+            "HandleFingerUp",
+            "TestFinger"
+          ],
+          "properties": [
+            "IgnoreStartedOverGui",
+            "ignoreStartedOverGui",
+            "IgnoreIsOverGui",
+            "ignoreIsOverGui",
+            "RequiredSelectable",
+            "requiredSelectable",
+            "Check",
+            "check",
+            "fingerDatas"
+          ],
+          "exported": true,
+          "lineCount": 141
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "IgnoreStartedOverGui",
+        "IgnoreIsOverGui",
+        "RequiredSelectable",
+        "Check",
+        "LeanFingerFlick"
+      ],
+      "totalLines": 174,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanFingerHeld.cs": {
+      "filePath": "Required/Scripts/LeanFingerHeld.cs",
+      "contentHash": "e5bb756c88f29299a242837a55c5fa13031646131a61bb720b9346826f29450b",
+      "functions": [
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "HandleFingerDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "HandleFingerUpdate",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 37
+        },
+        {
+          "name": "IsHeld",
+          "params": [
+            "finger",
+            "fingerData"
+          ],
+          "returnType": "bool",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "InvokeDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "InvokeUpdate",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "InvokeUp",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 14
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanFingerHeld",
+          "methods": [
+            "Awake",
+            "OnEnable",
+            "OnDisable",
+            "HandleFingerDown",
+            "HandleFingerUpdate",
+            "IsHeld",
+            "InvokeDown",
+            "InvokeUpdate",
+            "InvokeUp"
+          ],
+          "properties": [
+            "IgnoreStartedOverGui",
+            "ignoreStartedOverGui",
+            "IgnoreIsOverGui",
+            "ignoreIsOverGui",
+            "RequiredSelectable",
+            "requiredSelectable",
+            "MinimumAge",
+            "minimumAge",
+            "MaximumMovement",
+            "maximumMovement",
+            "OnFingerDown",
+            "onFingerDown",
+            "OnFingerUpdate",
+            "onFingerUpdate",
+            "OnFingerUp",
+            "onFingerUp",
+            "ScreenDepth",
+            "OnWorldDown",
+            "onWorldDown",
+            "OnWorldUpdate",
+            "onWorldUpdate",
+            "OnWorldUp",
+            "onWorldUp",
+            "fingerDatas"
+          ],
+          "exported": true,
+          "lineCount": 203
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "IgnoreStartedOverGui",
+        "IgnoreIsOverGui",
+        "RequiredSelectable",
+        "MinimumAge",
+        "MaximumMovement",
+        "OnFingerDown",
+        "OnFingerUpdate",
+        "OnFingerUp",
+        "ScreenDepth",
+        "OnWorldDown",
+        "OnWorldUpdate",
+        "OnWorldUp",
+        "LeanFingerHeld"
+      ],
+      "totalLines": 283,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanFingerHeldCanvas.cs": {
+      "filePath": "Required/Scripts/LeanFingerHeldCanvas.cs",
+      "contentHash": "fa2e566357c9820d8fddc1f16eda91adc8330ce8df704042e1697b0b7831ad95",
+      "functions": [
+        {
+          "name": "HandleFingerDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanFingerHeldCanvas",
+          "methods": [
+            "HandleFingerDown"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        }
+      ],
+      "exports": [
+        "LeanFingerHeldCanvas"
+      ],
+      "totalLines": 43,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanFingerTapExpired.cs": {
+      "filePath": "Required/Scripts/LeanFingerTapExpired.cs",
+      "contentHash": "edbd320a3e5693ec0836fd2c85d4650a846c562ac7ff59acba6849034d659c8d",
+      "functions": [
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "HandleFingerExpired",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanFingerTapExpired",
+          "methods": [
+            "OnEnable",
+            "OnDisable",
+            "HandleFingerExpired"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        }
+      ],
+      "exports": [
+        "LeanFingerTapExpired"
+      ],
+      "totalLines": 43,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanFingerTapQuick.cs": {
+      "filePath": "Required/Scripts/LeanFingerTapQuick.cs",
+      "contentHash": "53b6a5905c199270daf9b25f3d6c36de9e3abe1c4c0ec1e99b9582246e31855f",
+      "functions": [
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "HandleFingerDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 32
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanFingerTapQuick",
+          "methods": [
+            "Awake",
+            "OnEnable",
+            "OnDisable",
+            "HandleFingerDown"
+          ],
+          "properties": [
+            "IgnoreStartedOverGui",
+            "ignoreStartedOverGui",
+            "RequiredSelectable",
+            "requiredSelectable",
+            "RequiredTapCount",
+            "requiredTapCount",
+            "OnFinger",
+            "onFinger",
+            "ScreenDepth",
+            "OnWorld",
+            "onWorld",
+            "OnScreen",
+            "onScreen"
+          ],
+          "exported": true,
+          "lineCount": 90
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "IgnoreStartedOverGui",
+        "RequiredSelectable",
+        "RequiredTapCount",
+        "OnFinger",
+        "ScreenDepth",
+        "OnWorld",
+        "OnScreen",
+        "LeanFingerTapQuick"
+      ],
+      "totalLines": 149,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanFirstDown.cs": {
+      "filePath": "Required/Scripts/LeanFirstDown.cs",
+      "contentHash": "c56fffbb1e860bb29cee494833ddbc075af52f194e2b75a686ce7d7b9f64577b",
+      "functions": [
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "UseFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "bool",
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "HandleFingerDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 29
+        },
+        {
+          "name": "HandleFingerUp",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanFirstDown",
+          "methods": [
+            "Awake",
+            "OnEnable",
+            "OnDisable",
+            "UseFinger",
+            "HandleFingerDown",
+            "HandleFingerUp"
+          ],
+          "properties": [
+            "IgnoreStartedOverGui",
+            "ignoreStartedOverGui",
+            "RequiredSelectable",
+            "requiredSelectable",
+            "OnFinger",
+            "onFinger",
+            "ScreenDepth",
+            "OnWorld",
+            "onWorld",
+            "OnScreen",
+            "onScreen",
+            "fingers"
+          ],
+          "exported": true,
+          "lineCount": 113
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "IgnoreStartedOverGui",
+        "RequiredSelectable",
+        "OnFinger",
+        "ScreenDepth",
+        "OnWorld",
+        "OnScreen",
+        "LeanFirstDown"
+      ],
+      "totalLines": 168,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanFirstDownCanvas.cs": {
+      "filePath": "Required/Scripts/LeanFirstDownCanvas.cs",
+      "contentHash": "727b0395cfdc08fd469b976d3bbd884adb827e5b1231fe95bd0edb13c5ec1ad2",
+      "functions": [
+        {
+          "name": "UseFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "bool",
+          "exported": false,
+          "lineCount": 4
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanFirstDownCanvas",
+          "methods": [
+            "UseFinger"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 16
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        }
+      ],
+      "exports": [
+        "LeanFirstDownCanvas"
+      ],
+      "totalLines": 43,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanGestureToggle.cs": {
+      "filePath": "Required/Scripts/LeanGestureToggle.cs",
+      "contentHash": "ff38eaabb2286ddd88f787d995c8b2327e16accdd41b7c5c0c5c073903c19a49",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 50
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanGestureToggle",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update"
+          ],
+          "properties": [
+            "Use",
+            "EnableWithoutIsolation",
+            "enableWithoutIsolation",
+            "DragComponent",
+            "dragComponent",
+            "DragThreshold",
+            "dragThreshold",
+            "PinchComponent",
+            "pinchComponent",
+            "PinchThreshold",
+            "pinchThreshold",
+            "TwistComponent",
+            "twistComponent",
+            "TwistThreshold",
+            "twistThreshold",
+            "TwistWithPinch",
+            "twistWithPinch",
+            "state",
+            "delta",
+            "scale",
+            "twist"
+          ],
+          "exported": true,
+          "lineCount": 132
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "EnableWithoutIsolation",
+        "DragComponent",
+        "DragThreshold",
+        "PinchComponent",
+        "PinchThreshold",
+        "TwistComponent",
+        "TwistThreshold",
+        "TwistWithPinch",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanGestureToggle"
+      ],
+      "totalLines": 176,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanLastUp.cs": {
+      "filePath": "Required/Scripts/LeanLastUp.cs",
+      "contentHash": "b3e36c678c4d58be1aa60f8c41099b056cf30d74c2f4985fa7cd398b05bd94c1",
+      "functions": [
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "HandleFingerDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "HandleFingerUp",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 24
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanLastUp",
+          "methods": [
+            "Awake",
+            "OnEnable",
+            "OnDisable",
+            "HandleFingerDown",
+            "HandleFingerUp"
+          ],
+          "properties": [
+            "IgnoreStartedOverGui",
+            "ignoreStartedOverGui",
+            "RequiredSelectable",
+            "requiredSelectable",
+            "OnFinger",
+            "onFinger",
+            "ScreenDepth",
+            "OnWorld",
+            "onWorld",
+            "OnScreen",
+            "onScreen",
+            "fingers"
+          ],
+          "exported": true,
+          "lineCount": 103
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "IgnoreStartedOverGui",
+        "RequiredSelectable",
+        "OnFinger",
+        "ScreenDepth",
+        "OnWorld",
+        "OnScreen",
+        "LeanLastUp"
+      ],
+      "totalLines": 158,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanLastUpCanvas.cs": {
+      "filePath": "Required/Scripts/LeanLastUpCanvas.cs",
+      "contentHash": "6eea383b9ada000da136a262578ba51a64a4bc0abc8b085bf01a2d21d26950a6",
+      "functions": [
+        {
+          "name": "HandleFingerDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanLastUpCanvas",
+          "methods": [
+            "HandleFingerDown"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "LeanLastUpCanvas"
+      ],
+      "totalLines": 47,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanManualFlick.cs": {
+      "filePath": "Required/Scripts/LeanManualFlick.cs",
+      "contentHash": "4c3b3a3a84d631f46dc712c233e2d514471bf25d82c17a8ca804478104b86cf3",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Start",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "HandleFingerUp",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "TestFinger",
+          "params": [
+            "finger",
+            "screenFrom",
+            "screenTo"
+          ],
+          "returnType": "bool",
+          "exported": false,
+          "lineCount": 19
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanManualFlick",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "Start",
+            "OnEnable",
+            "OnDisable",
+            "Update",
+            "HandleFingerUp",
+            "TestFinger"
+          ],
+          "properties": [
+            "IgnoreIsOverGui",
+            "ignoreIsOverGui",
+            "RequiredSelectable",
+            "requiredSelectable",
+            "Check",
+            "check",
+            "fingerDatas"
+          ],
+          "exported": true,
+          "lineCount": 130
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "IgnoreIsOverGui",
+        "RequiredSelectable",
+        "Check",
+        "AddFinger",
+        "RemoveFinger",
+        "LeanManualFlick"
+      ],
+      "totalLines": 160,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanManualSwipe.cs": {
+      "filePath": "Required/Scripts/LeanManualSwipe.cs",
+      "contentHash": "2aa0b8a6f5e42c512141b68aed0119a55760620c233637530ede42d5bbcd58a2",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Start",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "HandleFingerSwipe",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 18
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanManualSwipe",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "Start",
+            "OnEnable",
+            "OnDisable",
+            "HandleFingerSwipe"
+          ],
+          "properties": [
+            "IgnoreIsOverGui",
+            "ignoreIsOverGui",
+            "RequiredSelectable",
+            "requiredSelectable",
+            "fingers"
+          ],
+          "exported": true,
+          "lineCount": 81
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "IgnoreIsOverGui",
+        "RequiredSelectable",
+        "AddFinger",
+        "RemoveFinger",
+        "LeanManualSwipe"
+      ],
+      "totalLines": 112,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanMouseWheel.cs": {
+      "filePath": "Required/Scripts/LeanMouseWheel.cs",
+      "contentHash": "9d642fbab908771d6fcc78c6888d58735d6bf9bf4cb60eb880615ae8df79424c",
+      "functions": [
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 44
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMouseWheel",
+          "methods": [
+            "Awake",
+            "Update"
+          ],
+          "properties": [
+            "RequiredSelectable",
+            "requiredSelectable",
+            "RequiredMouseButton",
+            "requiredMouseButton",
+            "Modify",
+            "modify",
+            "Multiplier",
+            "multiplier",
+            "Coordinate",
+            "coordinate",
+            "OnDelta",
+            "onDelta"
+          ],
+          "exported": true,
+          "lineCount": 104
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "RequiredSelectable",
+        "RequiredMouseButton",
+        "Modify",
+        "Multiplier",
+        "Coordinate",
+        "OnDelta",
+        "LeanMouseWheel"
+      ],
+      "totalLines": 141,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanMultiDirection.cs": {
+      "filePath": "Required/Scripts/LeanMultiDirection.cs",
+      "contentHash": "4af6003d9652c9d6ac3d9d7feab3d8f8c49b04c476182e33703d8cfb6b234252",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 25
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiDirection",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update"
+          ],
+          "properties": [
+            "Use",
+            "IgnoreIfStatic",
+            "ignoreIfStatic",
+            "Angle",
+            "angle",
+            "OneWay",
+            "oneWay",
+            "Coordinate",
+            "coordinate",
+            "Multiplier",
+            "multiplier",
+            "OnDelta",
+            "onDelta"
+          ],
+          "exported": true,
+          "lineCount": 95
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "IgnoreIfStatic",
+        "Angle",
+        "OneWay",
+        "Coordinate",
+        "Multiplier",
+        "OnDelta",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanMultiDirection"
+      ],
+      "totalLines": 135,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanMultiDown.cs": {
+      "filePath": "Required/Scripts/LeanMultiDown.cs",
+      "contentHash": "93ae8dfb4fbdf867edf1a9b31b8f176fdcfe3f01a952ead1f32b6f66f61e2828",
+      "functions": [
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "HandleFingerDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 41
+        },
+        {
+          "name": "HandleFingerUp",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiDown",
+          "methods": [
+            "Awake",
+            "OnEnable",
+            "OnDisable",
+            "HandleFingerDown",
+            "HandleFingerUp"
+          ],
+          "properties": [
+            "IgnoreStartedOverGui",
+            "ignoreStartedOverGui",
+            "RequiredSelectable",
+            "requiredSelectable",
+            "RequiredCount",
+            "requiredCount",
+            "OnFingers",
+            "onFingers",
+            "ScreenDepth",
+            "OnWorld",
+            "onWorld",
+            "OnScreen",
+            "onScreen",
+            "fingers"
+          ],
+          "exported": true,
+          "lineCount": 108
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "IgnoreStartedOverGui",
+        "RequiredSelectable",
+        "RequiredCount",
+        "OnFingers",
+        "ScreenDepth",
+        "OnWorld",
+        "OnScreen",
+        "LeanMultiDown"
+      ],
+      "totalLines": 164,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanMultiHeld.cs": {
+      "filePath": "Required/Scripts/LeanMultiHeld.cs",
+      "contentHash": "55f21cc0f531d8f3460f47fc4eb8a4f3a49e6522ff4c11ae1246e355e108db0f",
+      "functions": [
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "HandleFingerDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "HandleGesture",
+          "params": [
+            "tempFingers"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 44
+        },
+        {
+          "name": "InvokeDown",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "InvokeUpdate",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "InvokeUp",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 21
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiHeld",
+          "methods": [
+            "Awake",
+            "OnEnable",
+            "OnDisable",
+            "HandleFingerDown",
+            "HandleGesture",
+            "InvokeDown",
+            "InvokeUpdate",
+            "InvokeUp"
+          ],
+          "properties": [
+            "IgnoreStartedOverGui",
+            "ignoreStartedOverGui",
+            "IgnoreIsOverGui",
+            "ignoreIsOverGui",
+            "RequiredSelectable",
+            "requiredSelectable",
+            "RequiredCount",
+            "requiredCount",
+            "MinimumAge",
+            "minimumAge",
+            "MaximumMovement",
+            "maximumMovement",
+            "OnFingersDown",
+            "onFingersDown",
+            "OnFingersUpdate",
+            "onFingersUpdate",
+            "OnFingersUp",
+            "onFingersUp",
+            "ScreenDepth",
+            "OnWorldDown",
+            "onWorldDown",
+            "OnWorldUpdate",
+            "onWorldUpdate",
+            "OnWorldUp",
+            "onWorldUp",
+            "OnScreenDown",
+            "onScreenDown",
+            "OnScreenUpdate",
+            "onScreenUpdate",
+            "OnScreenUp",
+            "onScreenUp",
+            "fingers",
+            "fingerDatas",
+            "held",
+            "duration",
+            "IsHeld"
+          ],
+          "exported": true,
+          "lineCount": 266
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "IgnoreStartedOverGui",
+        "IgnoreIsOverGui",
+        "RequiredSelectable",
+        "RequiredCount",
+        "MinimumAge",
+        "MaximumMovement",
+        "OnFingersDown",
+        "OnFingersUpdate",
+        "OnFingersUp",
+        "ScreenDepth",
+        "OnWorldDown",
+        "OnWorldUpdate",
+        "OnWorldUp",
+        "OnScreenDown",
+        "OnScreenUpdate",
+        "OnScreenUp",
+        "LeanMultiHeld"
+      ],
+      "totalLines": 365,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanMultiPinch.cs": {
+      "filePath": "Required/Scripts/LeanMultiPinch.cs",
+      "contentHash": "a71da6cf050500e6ab0b21b602c9541764fd7de4e9deebf332a73b653050fcaa",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 61
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiPinch",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update"
+          ],
+          "properties": [
+            "Use",
+            "IgnoreIfStatic",
+            "ignoreIfStatic",
+            "Coordinate",
+            "coordinate",
+            "Multiplier",
+            "multiplier",
+            "OnPinch",
+            "onPinch"
+          ],
+          "exported": true,
+          "lineCount": 127
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "IgnoreIfStatic",
+        "Coordinate",
+        "Multiplier",
+        "OnPinch",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanMultiPinch"
+      ],
+      "totalLines": 165,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanMultiPull.cs": {
+      "filePath": "Required/Scripts/LeanMultiPull.cs",
+      "contentHash": "e96d6b6b7e69dd4880c7ca445130fc275fb49432e3a8dfb36da4ebab9f65ef1f",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 59
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiPull",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update"
+          ],
+          "properties": [
+            "Use",
+            "Coordinate",
+            "coordinate",
+            "Multiplier",
+            "multiplier",
+            "ScaleByTime",
+            "scaleByTime",
+            "OnVector",
+            "onVector",
+            "OnDistance",
+            "onDistance",
+            "ScreenDepth",
+            "OnWorldFrom",
+            "onWorldFrom",
+            "OnWorldTo",
+            "onWorldTo",
+            "OnWorldDelta",
+            "onWorldDelta",
+            "OnWorldFromTo",
+            "onWorldFromTo"
+          ],
+          "exported": true,
+          "lineCount": 146
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "Coordinate",
+        "Multiplier",
+        "ScaleByTime",
+        "OnVector",
+        "OnDistance",
+        "ScreenDepth",
+        "OnWorldFrom",
+        "OnWorldTo",
+        "OnWorldDelta",
+        "OnWorldFromTo",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanMultiPull"
+      ],
+      "totalLines": 232,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanMultiSwipe.cs": {
+      "filePath": "Required/Scripts/LeanMultiSwipe.cs",
+      "contentHash": "56dd691800c4d54fb506478d4dc7b88cb450147a136028c405f09b49905b04bc",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 27
+        },
+        {
+          "name": "FingerSwipe",
+          "params": [
+            "fingers",
+            "swipedFinger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 68
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiSwipe",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update",
+            "FingerSwipe"
+          ],
+          "properties": [
+            "Use",
+            "ScaledDistanceThreshold",
+            "scaledDistanceThreshold",
+            "ParallelAngleThreshold",
+            "parallelAngleThreshold",
+            "PinchScaledDistanceThreshold",
+            "pinchScaledDistanceThreshold",
+            "OnFingers",
+            "onFingers",
+            "OnSwipeParallel",
+            "onSwipeParallel",
+            "OnSwipeIn",
+            "onSwipeIn",
+            "OnSwipeOut",
+            "onSwipeOut",
+            "swiped"
+          ],
+          "exported": true,
+          "lineCount": 162
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "ScaledDistanceThreshold",
+        "ParallelAngleThreshold",
+        "PinchScaledDistanceThreshold",
+        "OnFingers",
+        "OnSwipeParallel",
+        "OnSwipeIn",
+        "OnSwipeOut",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanMultiSwipe"
+      ],
+      "totalLines": 227,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanMultiTap.cs": {
+      "filePath": "Required/Scripts/LeanMultiTap.cs",
+      "contentHash": "d7f0276db2b6890fe8a8b4e66e922f82a8836b7f8e97c6fcb01f782f6c6e421e",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 61
+        },
+        {
+          "name": "GetFingerCount",
+          "params": [
+            "fingers"
+          ],
+          "returnType": "int",
+          "exported": false,
+          "lineCount": 14
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiTap",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update",
+            "GetFingerCount"
+          ],
+          "properties": [
+            "Use",
+            "OnTap",
+            "onTap",
+            "OnCount",
+            "onCount",
+            "OnHighest",
+            "onHighest",
+            "OnCountHighest",
+            "onCountHighest",
+            "age",
+            "lastFingerCount",
+            "multiTapCount",
+            "highestFingerCount"
+          ],
+          "exported": true,
+          "lineCount": 145
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "OnTap",
+        "OnCount",
+        "OnHighest",
+        "OnCountHighest",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanMultiTap"
+      ],
+      "totalLines": 204,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanMultiTwist.cs": {
+      "filePath": "Required/Scripts/LeanMultiTwist.cs",
+      "contentHash": "095ccf0fa1514297ce8d570f8f4cbda2ed6fb963d388020f3a0dd1e7319046f5",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 35
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiTwist",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update"
+          ],
+          "properties": [
+            "Use",
+            "IgnoreIfStatic",
+            "ignoreIfStatic",
+            "OneFinger",
+            "oneFinger",
+            "OnTwistDegrees",
+            "onTwistDegrees"
+          ],
+          "exported": true,
+          "lineCount": 93
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "IgnoreIfStatic",
+        "OneFinger",
+        "OnTwistDegrees",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanMultiTwist"
+      ],
+      "totalLines": 127,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanMultiUp.cs": {
+      "filePath": "Required/Scripts/LeanMultiUp.cs",
+      "contentHash": "892637ae99ac1513710856880778dda7c044e06d02a63ddf0f4ed0c48c5776a1",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 28
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiUp",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update"
+          ],
+          "properties": [
+            "Use",
+            "OnFinger",
+            "onFinger",
+            "ScreenDepth",
+            "OnWorld",
+            "onWorld",
+            "OnScreen",
+            "onScreen",
+            "fingers"
+          ],
+          "exported": true,
+          "lineCount": 87
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "OnFinger",
+        "ScreenDepth",
+        "OnWorld",
+        "OnScreen",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanMultiUp"
+      ],
+      "totalLines": 140,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanMultiUpdate.cs": {
+      "filePath": "Required/Scripts/LeanMultiUpdate.cs",
+      "contentHash": "02ebcb7107d0341734b51c9dea34c36c470516c149823336d8aecf1f4966f658",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 111
+        },
+        {
+          "name": "GetFingers",
+          "params": [],
+          "returnType": "List<LeanFinger>",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "HandleFingerDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 9
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiUpdate",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "OnEnable",
+            "OnDisable",
+            "Update",
+            "GetFingers",
+            "HandleFingerDown"
+          ],
+          "properties": [
+            "Use",
+            "IgnoreIfStatic",
+            "ignoreIfStatic",
+            "OnFingers",
+            "onFingers",
+            "Coordinate",
+            "coordinate",
+            "Constrain",
+            "constrain",
+            "ConstrainThreshold",
+            "constrainThreshold",
+            "Multiplier",
+            "multiplier",
+            "OnDelta",
+            "onDelta",
+            "OnDistance",
+            "onDistance",
+            "ScreenDepth",
+            "OnWorldFrom",
+            "onWorldFrom",
+            "OnWorldTo",
+            "onWorldTo",
+            "OnWorldDelta",
+            "onWorldDelta",
+            "OnWorldFromTo",
+            "onWorldFromTo",
+            "constrained",
+            "cumilativeDelta"
+          ],
+          "exported": true,
+          "lineCount": 252
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "IgnoreIfStatic",
+        "OnFingers",
+        "Coordinate",
+        "Constrain",
+        "ConstrainThreshold",
+        "Multiplier",
+        "OnDelta",
+        "OnDistance",
+        "ScreenDepth",
+        "OnWorldFrom",
+        "OnWorldTo",
+        "OnWorldDelta",
+        "OnWorldFromTo",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanMultiUpdate"
+      ],
+      "totalLines": 355,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanMultiUpdateCanvas.cs": {
+      "filePath": "Required/Scripts/LeanMultiUpdateCanvas.cs",
+      "contentHash": "31433c11b7eb9555c1fe707c3957fb2135fdcc628b69323a5b684cece1c3916e",
+      "functions": [
+        {
+          "name": "GetFingers",
+          "params": [],
+          "returnType": "List<LeanFinger>",
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "HandleFingerDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanMultiUpdateCanvas",
+          "methods": [
+            "GetFingers",
+            "HandleFingerDown"
+          ],
+          "properties": [
+            "IgnoreIfOff",
+            "ignoreIfOff"
+          ],
+          "exported": true,
+          "lineCount": 40
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        }
+      ],
+      "exports": [
+        "IgnoreIfOff",
+        "LeanMultiUpdateCanvas"
+      ],
+      "totalLines": 67,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanPick.cs": {
+      "filePath": "Required/Scripts/LeanPick.cs",
+      "contentHash": "5af29468ac4e3b1acad434dd9866b634b010df468378368326672e19ce3baaef",
+      "functions": [
+        {
+          "name": "PickStartScreenPosition",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "PickScreenPosition",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "SelectScreenPosition",
+          "params": [
+            "finger",
+            "screenPosition"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 20
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanPick",
+          "methods": [
+            "PickStartScreenPosition",
+            "PickScreenPosition",
+            "SelectScreenPosition"
+          ],
+          "properties": [
+            "ScreenQuery",
+            "RequiredTag",
+            "requiredTag",
+            "OnPickable",
+            "onPickable"
+          ],
+          "exported": true,
+          "lineCount": 51
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "ScreenQuery",
+        "RequiredTag",
+        "OnPickable",
+        "PickStartScreenPosition",
+        "PickScreenPosition",
+        "SelectScreenPosition",
+        "LeanPick"
+      ],
+      "totalLines": 93,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanPickable.cs": {
+      "filePath": "Required/Scripts/LeanPickable.cs",
+      "contentHash": "001875cd0120d6fdadde5eaf579c13bb0161bee5e70031e7b60c3789870e9a21",
+      "functions": [
+        {
+          "name": "InvokePick",
+          "params": [
+            "finger",
+            "screenPosition"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanPickable",
+          "methods": [
+            "InvokePick"
+          ],
+          "properties": [
+            "OnFinger",
+            "onFinger",
+            "ScreenDepth",
+            "OnWorld",
+            "onWorld",
+            "OnScreen",
+            "onScreen"
+          ],
+          "exported": true,
+          "lineCount": 40
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "OnFinger",
+        "ScreenDepth",
+        "OnWorld",
+        "OnScreen",
+        "InvokePick",
+        "LeanPickable"
+      ],
+      "totalLines": 89,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanPinchCamera.cs": {
+      "filePath": "Required/Scripts/LeanPinchCamera.cs",
+      "contentHash": "57d08fec9605a1b5130347d0db0ff81b988a234a58b031accea715c1e08cd919",
+      "functions": [
+        {
+          "name": "ContinuouslyZoom",
+          "params": [
+            "direction"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "MultiplyZoom",
+          "params": [
+            "scale"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "IncrementZoom",
+          "params": [
+            "delta"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Start",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "LateUpdate",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 64
+        },
+        {
+          "name": "SetZoom",
+          "params": [
+            "current"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "TryClamp",
+          "params": [
+            "z"
+          ],
+          "returnType": "float",
+          "exported": false,
+          "lineCount": 9
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanPinchCamera",
+          "methods": [
+            "ContinuouslyZoom",
+            "MultiplyZoom",
+            "IncrementZoom",
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Start",
+            "LateUpdate",
+            "SetZoom",
+            "TryClamp"
+          ],
+          "properties": [
+            "Use",
+            "Camera",
+            "_camera",
+            "Zoom",
+            "zoom",
+            "Damping",
+            "damping",
+            "Clamp",
+            "clamp",
+            "ClampMin",
+            "clampMin",
+            "ClampMax",
+            "clampMax",
+            "Relative",
+            "relative",
+            "IgnoreZ",
+            "ignoreZ",
+            "ScreenDepth",
+            "currentZoom",
+            "remainingTranslation"
+          ],
+          "exported": true,
+          "lineCount": 215
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "Camera",
+        "Zoom",
+        "Damping",
+        "Clamp",
+        "ClampMin",
+        "ClampMax",
+        "Relative",
+        "IgnoreZ",
+        "ScreenDepth",
+        "ContinuouslyZoom",
+        "MultiplyZoom",
+        "IncrementZoom",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanPinchCamera"
+      ],
+      "totalLines": 266,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanReplayFinger.cs": {
+      "filePath": "Required/Scripts/LeanReplayFinger.cs",
+      "contentHash": "a1e24d34aa5f417d9ac406aabc8b1fe8b49e7f50430da9a95c7da463be327a14",
+      "functions": [
+        {
+          "name": "Replay",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "StopReplay",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "HandleFingerUpdate",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "HandleFingerUp",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "CopySnapshots",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 19
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanReplayFinger",
+          "methods": [
+            "Replay",
+            "StopReplay",
+            "OnEnable",
+            "OnDisable",
+            "Update",
+            "HandleFingerUpdate",
+            "HandleFingerUp",
+            "CopySnapshots"
+          ],
+          "properties": [
+            "Cursor",
+            "cursor",
+            "ScreenDepth",
+            "Playing",
+            "playing",
+            "PlayTime",
+            "playTime",
+            "snapshots"
+          ],
+          "exported": true,
+          "lineCount": 99
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Cursor",
+        "ScreenDepth",
+        "Playing",
+        "PlayTime",
+        "Replay",
+        "StopReplay",
+        "LeanReplayFinger"
+      ],
+      "totalLines": 132,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanSelectSelf.cs": {
+      "filePath": "Required/Scripts/LeanSelectSelf.cs",
+      "contentHash": "a21c7b5d41d9945143b03805dee1c6e04922ce0f919250fb115ae7fb37914ad4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanSelectableBlock.cs": {
+      "filePath": "Required/Scripts/LeanSelectableBlock.cs",
+      "contentHash": "b326ce8bec955f7cc93982b13396f4b473376c0761efffb62b67cadd4e6163ac",
+      "functions": [
+        {
+          "name": "FindBlock",
+          "params": [
+            "x",
+            "y"
+          ],
+          "returnType": "LeanSelectableBlock",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "Swap",
+          "params": [
+            "a",
+            "b"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 56
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectableBlock",
+          "methods": [
+            "FindBlock",
+            "OnEnable",
+            "OnDisable",
+            "Swap",
+            "Update"
+          ],
+          "properties": [
+            "Instances",
+            "X",
+            "x",
+            "Y",
+            "y",
+            "BlockSize",
+            "blockSize",
+            "DeselectOnSwap",
+            "deselectOnSwap",
+            "Damping",
+            "damping"
+          ],
+          "exported": true,
+          "lineCount": 124
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Instances",
+        "X",
+        "Y",
+        "BlockSize",
+        "DeselectOnSwap",
+        "Damping",
+        "FindBlock",
+        "Swap",
+        "LeanSelectableBlock"
+      ],
+      "totalLines": 156,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanSelectableCenter.cs": {
+      "filePath": "Required/Scripts/LeanSelectableCenter.cs",
+      "contentHash": "a3f0e22f23b435a67f0f21d85b9c8597f8eef7a37cf1da3e17b1543458299e18",
+      "functions": [
+        {
+          "name": "Calculate",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 25
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectableCenter",
+          "methods": [
+            "Calculate"
+          ],
+          "properties": [
+            "OnPosition",
+            "onPosition"
+          ],
+          "exported": true,
+          "lineCount": 36
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "OnPosition",
+        "Calculate",
+        "LeanSelectableCenter"
+      ],
+      "totalLines": 66,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanSelectableDial.cs": {
+      "filePath": "Required/Scripts/LeanSelectableDial.cs",
+      "contentHash": "de8dc250a87a40600929117f671d4bf83f82da4be7fa3cf6b92203f77fb93efe",
+      "functions": [
+        {
+          "name": "IncrementAngle",
+          "params": [
+            "delta"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 67
+        },
+        {
+          "name": "GetPoint",
+          "params": [
+            "screenPoint"
+          ],
+          "returnType": "Vector2",
+          "exported": false,
+          "lineCount": 55
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectableDial",
+          "methods": [
+            "IncrementAngle",
+            "Update",
+            "GetPoint"
+          ],
+          "properties": [
+            "Camera",
+            "_camera",
+            "Tilt",
+            "tilt",
+            "Axis",
+            "axis",
+            "Angle",
+            "angle",
+            "Clamp",
+            "clamp",
+            "ClampMin",
+            "clampMin",
+            "ClampMax",
+            "clampMax",
+            "Triggers",
+            "triggers",
+            "OnAngleChanged",
+            "onAngleChanged",
+            "oldPoint",
+            "oldPointSet",
+            "cachedCanvas"
+          ],
+          "exported": true,
+          "lineCount": 211
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Camera",
+        "Tilt",
+        "Axis",
+        "Angle",
+        "Clamp",
+        "ClampMin",
+        "ClampMax",
+        "Triggers",
+        "OnAngleChanged",
+        "IncrementAngle",
+        "LeanSelectableDial"
+      ],
+      "totalLines": 259,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanSelectableDragTorque.cs": {
+      "filePath": "Required/Scripts/LeanSelectableDragTorque.cs",
+      "contentHash": "e424e9fee627d97215ac5fb6db17ad2d9bd10373824efd47785828cb21893860",
+      "functions": [
+        {
+          "name": "OnSelected",
+          "params": [
+            "select"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 37
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectableDragTorque",
+          "methods": [
+            "OnSelected",
+            "Update"
+          ],
+          "properties": [
+            "Camera",
+            "_camera",
+            "Force",
+            "force",
+            "oldScaledDelta",
+            "cachedRigidbody"
+          ],
+          "exported": true,
+          "lineCount": 63
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Camera",
+        "Force",
+        "LeanSelectableDragTorque"
+      ],
+      "totalLines": 92,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanSelectableDrop.cs": {
+      "filePath": "Required/Scripts/LeanSelectableDrop.cs",
+      "contentHash": "4c2f55905b40d173f5e13949be75b3cd2b71c51d94ce977a38a024640f9bec7a",
+      "functions": [
+        {
+          "name": "OnSelectedSelectFingerUp",
+          "params": [
+            "select",
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 29
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectableDrop",
+          "methods": [
+            "OnSelectedSelectFingerUp"
+          ],
+          "properties": [
+            "Ignore",
+            "ignore",
+            "ScreenQuery",
+            "OnGameObject",
+            "onGameObject",
+            "OnDropHandler",
+            "onDropHandler"
+          ],
+          "exported": true,
+          "lineCount": 62
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Ignore",
+        "ScreenQuery",
+        "OnGameObject",
+        "OnDropHandler",
+        "LeanSelectableDrop"
+      ],
+      "totalLines": 109,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanSelectablePressureScale.cs": {
+      "filePath": "Required/Scripts/LeanSelectablePressureScale.cs",
+      "contentHash": "ca4ec7eeb8077aaa8527726ae3ab702182eff11576cab8c782803353e02d523a",
+      "functions": [
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 18
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectablePressureScale",
+          "methods": [
+            "Update"
+          ],
+          "properties": [
+            "BaseScale",
+            "baseScale",
+            "PressureMultiplier",
+            "pressureMultiplier",
+            "PressureClamp",
+            "pressureClamp"
+          ],
+          "exported": true,
+          "lineCount": 32
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "BaseScale",
+        "PressureMultiplier",
+        "PressureClamp",
+        "LeanSelectablePressureScale"
+      ],
+      "totalLines": 61,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanSelectableSelected.cs": {
+      "filePath": "Required/Scripts/LeanSelectableSelected.cs",
+      "contentHash": "a7496b218756adcffe9bdc332b7c5f1b274e1fddbc7352babc380dd911b965dd",
+      "functions": [
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 41
+        },
+        {
+          "name": "OnSelected",
+          "params": [
+            "select"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "OnDeselected",
+          "params": [
+            "select"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 15
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectableSelected",
+          "methods": [
+            "Update",
+            "OnSelected",
+            "OnDeselected"
+          ],
+          "properties": [
+            "Threshold",
+            "threshold",
+            "Reset",
+            "reset",
+            "RawSelection",
+            "rawSelection",
+            "RequireFinger",
+            "requireFinger",
+            "OnSelectableDown",
+            "onSelectableDown",
+            "OnSelectableUpdate",
+            "onSelectableUpdate",
+            "OnSelectableUp",
+            "onSelectableUp",
+            "lastSet",
+            "seconds"
+          ],
+          "exported": true,
+          "lineCount": 110
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Threshold",
+        "Reset",
+        "RawSelection",
+        "RequireFinger",
+        "OnSelectableDown",
+        "OnSelectableUpdate",
+        "OnSelectableUp",
+        "LeanSelectableSelected"
+      ],
+      "totalLines": 165,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanSelectableTime.cs": {
+      "filePath": "Required/Scripts/LeanSelectableTime.cs",
+      "contentHash": "392320a39e825555b9f4437a5cfdb2a24ab751770777a4ff17029157a414bf15",
+      "functions": [
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 25
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectableTime",
+          "methods": [
+            "Update"
+          ],
+          "properties": [
+            "Send",
+            "send",
+            "OnSeconds",
+            "onSeconds",
+            "seconds"
+          ],
+          "exported": true,
+          "lineCount": 52
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Send",
+        "OnSeconds",
+        "LeanSelectableTime"
+      ],
+      "totalLines": 85,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanSelectionBox.cs": {
+      "filePath": "Required/Scripts/LeanSelectionBox.cs",
+      "contentHash": "b93029bd5c74f02e54af3c091d31f5c22114a58b734cc14cd83f2e17cb89a73b",
+      "functions": [
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "HandleFingerDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "HandleFingerSet",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "HandleFingerUp",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 18
+        },
+        {
+          "name": "WriteTransform",
+          "params": [
+            "rect",
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 66
+        },
+        {
+          "name": "HasRequiredTag",
+          "params": [
+            "tag"
+          ],
+          "returnType": "bool",
+          "exported": false,
+          "lineCount": 22
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSelectionBox",
+          "methods": [
+            "OnEnable",
+            "OnDisable",
+            "HandleFingerDown",
+            "HandleFingerSet",
+            "HandleFingerUp",
+            "WriteTransform",
+            "HasRequiredTag"
+          ],
+          "properties": [
+            "Camera",
+            "_camera",
+            "IgnoreIfStartedOverGui",
+            "ignoreIfStartedOverGui",
+            "Prefab",
+            "prefab",
+            "Root",
+            "root",
+            "Select",
+            "select",
+            "RequiredLayers",
+            "requiredLayers",
+            "RequiredTags",
+            "requiredTags",
+            "fingerDatas",
+            "selectables"
+          ],
+          "exported": true,
+          "lineCount": 210
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Camera",
+        "IgnoreIfStartedOverGui",
+        "Prefab",
+        "Root",
+        "Select",
+        "RequiredLayers",
+        "RequiredTags",
+        "LeanSelectionBox"
+      ],
+      "totalLines": 256,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanShape.cs": {
+      "filePath": "Required/Scripts/LeanShape.cs",
+      "contentHash": "0d601842e0076ce05026b23ee3d34445e96424fc6f8c0e0b2206cd40d8c62165",
+      "functions": [
+        {
+          "name": "Mod",
+          "params": [
+            "a",
+            "b"
+          ],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "GetPoint",
+          "params": [
+            "index",
+            "reverse"
+          ],
+          "returnType": "Vector2",
+          "exported": true,
+          "lineCount": 23
+        },
+        {
+          "name": "UpdateVisual",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 26
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanShape",
+          "methods": [
+            "Mod",
+            "GetPoint",
+            "UpdateVisual"
+          ],
+          "properties": [
+            "ConnectEnds",
+            "connectEnds",
+            "Visual",
+            "visual",
+            "Points",
+            "points"
+          ],
+          "exported": true,
+          "lineCount": 110
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "ConnectEnds",
+        "Visual",
+        "Points",
+        "Mod",
+        "GetPoint",
+        "UpdateVisual",
+        "LeanShape"
+      ],
+      "totalLines": 294,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanShapeDetector.cs": {
+      "filePath": "Required/Scripts/LeanShapeDetector.cs",
+      "contentHash": "e59109abc42ac680c1d1c96b3dfa41777a41d158c58d061cbccda181fe340e8c",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "HandleFingerDown",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "HandleFingerUpdate",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "HandleFingerUp",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 53
+        },
+        {
+          "name": "AddRange",
+          "params": [
+            "min",
+            "max"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "CalculateMatch",
+          "params": [
+            "drawnShape",
+            "referenceShape",
+            "distanceThreshold",
+            "errorThreshold",
+            "min",
+            "max"
+          ],
+          "returnType": "bool",
+          "exported": false,
+          "lineCount": 60
+        },
+        {
+          "name": "FitShape",
+          "params": [
+            "drawnShape",
+            "referenceShape"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "ConvertPoints",
+          "params": [
+            "referenceShape",
+            "min",
+            "max"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 25
+        },
+        {
+          "name": "Read",
+          "params": [
+            "list",
+            "index"
+          ],
+          "returnType": "Vector2",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "GetRect",
+          "params": [
+            "shape"
+          ],
+          "returnType": "Rect",
+          "exported": false,
+          "lineCount": 15
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanShapeDetector",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "OnEnable",
+            "OnDisable",
+            "HandleFingerDown",
+            "HandleFingerUpdate",
+            "HandleFingerUp",
+            "AddRange",
+            "CalculateMatch",
+            "FitShape",
+            "ConvertPoints",
+            "Read",
+            "GetRect"
+          ],
+          "properties": [
+            "Use",
+            "Shape",
+            "shape",
+            "StepThreshold",
+            "stepThreshold",
+            "DistanceThreshold",
+            "distanceThreshold",
+            "ErrorThreshold",
+            "errorThreshold",
+            "MinimumPoints",
+            "minimumPoints",
+            "Direction",
+            "direction",
+            "OnDetected",
+            "onDetected",
+            "fingerDatas",
+            "fingerDataPool",
+            "ranges",
+            "fittedShape",
+            "referenceLines"
+          ],
+          "exported": true,
+          "lineCount": 368
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "Shape",
+        "StepThreshold",
+        "DistanceThreshold",
+        "ErrorThreshold",
+        "MinimumPoints",
+        "Direction",
+        "OnDetected",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanShapeDetector"
+      ],
+      "totalLines": 404,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanSpawnWithFinger.cs": {
+      "filePath": "Required/Scripts/LeanSpawnWithFinger.cs",
+      "contentHash": "16be8d98cdcd99c529c5170e6f736edbcc5adaa9c50697c692df506c57262750",
+      "functions": [
+        {
+          "name": "Spawn",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 65
+        },
+        {
+          "name": "OnEnable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "OnDisable",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "UpdateSpawnedTransform",
+          "params": [
+            "finger",
+            "instance"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 45
+        },
+        {
+          "name": "HandleFingerUp",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 31
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSpawnWithFinger",
+          "methods": [
+            "Spawn",
+            "OnEnable",
+            "OnDisable",
+            "Update",
+            "UpdateSpawnedTransform",
+            "HandleFingerUp"
+          ],
+          "properties": [
+            "Prefab",
+            "prefab",
+            "RotateTo",
+            "rotateTo",
+            "DragAfterSpawn",
+            "dragAfterSpawn",
+            "DestroyIfBlocked",
+            "destroyIfBlocked",
+            "BlockedScreenQuery",
+            "DestroyIfMissing",
+            "destroyIfMissing",
+            "MissingScreenQuery",
+            "SelectOnSpawn",
+            "selectOnSpawn",
+            "SelectWith",
+            "selectWith",
+            "DeselectOnUp",
+            "deselectOnUp",
+            "ScreenDepth",
+            "PixelOffset",
+            "pixelOffset",
+            "PixelScale",
+            "pixelScale",
+            "WorldOffset",
+            "worldOffset",
+            "WorldRelativeTo",
+            "worldRelativeTo",
+            "fingerDatas",
+            "fingerDataPool"
+          ],
+          "exported": true,
+          "lineCount": 234
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "System.Collections.Generic",
+          "specifiers": [
+            "Generic"
+          ]
+        },
+        {
+          "source": "Lean.Common",
+          "specifiers": [
+            "Common"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Prefab",
+        "RotateTo",
+        "DragAfterSpawn",
+        "DestroyIfBlocked",
+        "BlockedScreenQuery",
+        "DestroyIfMissing",
+        "MissingScreenQuery",
+        "SelectOnSpawn",
+        "SelectWith",
+        "DeselectOnUp",
+        "ScreenDepth",
+        "PixelOffset",
+        "PixelScale",
+        "WorldOffset",
+        "WorldRelativeTo",
+        "Spawn",
+        "LeanSpawnWithFinger"
+      ],
+      "totalLines": 306,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanSwipeEdge.cs": {
+      "filePath": "Required/Scripts/LeanSwipeEdge.cs",
+      "contentHash": "3f804b845d55ef70b29be61fdaa48808b3861178977605be8db7740d4884e46f",
+      "functions": [
+        {
+          "name": "CheckBetween",
+          "params": [
+            "from",
+            "to"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "InvokeEdge",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "CheckAngle",
+          "params": [
+            "a",
+            "b"
+          ],
+          "returnType": "bool",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "CheckEdge",
+          "params": [
+            "distance"
+          ],
+          "returnType": "bool",
+          "exported": false,
+          "lineCount": 4
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanSwipeEdge",
+          "methods": [
+            "CheckBetween",
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update",
+            "InvokeEdge",
+            "CheckAngle",
+            "CheckEdge"
+          ],
+          "properties": [
+            "Use",
+            "Left",
+            "left",
+            "Right",
+            "right",
+            "Bottom",
+            "bottom",
+            "Top",
+            "top",
+            "AngleThreshold",
+            "angleThreshold",
+            "EdgeThreshold",
+            "edgeThreshold",
+            "OnEdge",
+            "onEdge"
+          ],
+          "exported": true,
+          "lineCount": 116
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "UnityEngine.Events",
+          "specifiers": [
+            "Events"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "Left",
+        "Right",
+        "Bottom",
+        "Top",
+        "AngleThreshold",
+        "EdgeThreshold",
+        "OnEdge",
+        "CheckBetween",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanSwipeEdge"
+      ],
+      "totalLines": 160,
+      "hasStructuralAnalysis": true
+    },
+    "Required/Scripts/LeanTwistCamera.cs": {
+      "filePath": "Required/Scripts/LeanTwistCamera.cs",
+      "contentHash": "bf69bba319fd8926d88850a0fd44d0ad6b9c72248d95c81a4397be5fccba58b0",
+      "functions": [
+        {
+          "name": "AddFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveFinger",
+          "params": [
+            "finger"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "RemoveAllFingers",
+          "params": [],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "Awake",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Update",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 48
+        }
+      ],
+      "classes": [
+        {
+          "name": "LeanTwistCamera",
+          "methods": [
+            "AddFinger",
+            "RemoveFinger",
+            "RemoveAllFingers",
+            "Awake",
+            "Update"
+          ],
+          "properties": [
+            "Use",
+            "Damping",
+            "damping",
+            "Relative",
+            "relative",
+            "ScreenDepth",
+            "remainingTranslation",
+            "remainingRotation"
+          ],
+          "exported": true,
+          "lineCount": 104
+        }
+      ],
+      "imports": [
+        {
+          "source": "UnityEngine",
+          "specifiers": [
+            "UnityEngine"
+          ]
+        },
+        {
+          "source": "CW.Common",
+          "specifiers": [
+            "Common"
+          ]
+        }
+      ],
+      "exports": [
+        "Use",
+        "Damping",
+        "Relative",
+        "ScreenDepth",
+        "AddFinger",
+        "RemoveFinger",
+        "RemoveAllFingers",
+        "LeanTwistCamera"
+      ],
+      "totalLines": 134,
+      "hasStructuralAnalysis": true
+    },
+    "package.json": {
+      "filePath": "package.json",
+      "contentHash": "48f737489a027512de2bcb104c55b68bedc0e6383059d363fc4284b5a006cec6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 16,
+      "hasStructuralAnalysis": true
+    }
+  }
+}

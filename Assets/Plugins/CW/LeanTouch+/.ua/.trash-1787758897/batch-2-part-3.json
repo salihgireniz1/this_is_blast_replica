@@ -1,0 +1,883 @@
+{
+  "nodes": [
+    {
+      "id": "file:Required/Scripts/LeanSelectableBlock.cs",
+      "type": "file",
+      "name": "LeanSelectableBlock.cs",
+      "filePath": "Required/Scripts/LeanSelectableBlock.cs",
+      "summary": "Reference implementation of a match-3 style grid block: it holds integer grid coordinates, swaps with the neighbouring block the selecting finger drags toward, and eases into its grid position.",
+      "tags": [
+        "example",
+        "match-3",
+        "grid",
+        "selectable",
+        "monobehaviour"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Keeps a static Instances list registered in OnEnable/OnDisable, so FindBlock is an O(n) linear scan over all live blocks rather than a grid lookup."
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectableBlock.cs:LeanSelectableBlock",
+      "type": "class",
+      "name": "LeanSelectableBlock",
+      "filePath": "Required/Scripts/LeanSelectableBlock.cs",
+      "lineRange": [
+        11,
+        131
+      ],
+      "summary": "A selectable grid block tracking x/y coordinates in a static instance registry; while selected it converts the finger position to a grid coordinate and swaps with an adjacent block, then damps its transform toward the target grid position.",
+      "tags": [
+        "example",
+        "match-3",
+        "grid",
+        "selectable"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectableBlock.cs:LeanSelectableBlock_Editor",
+      "type": "class",
+      "name": "LeanSelectableBlock_Editor",
+      "filePath": "Required/Scripts/LeanSelectableBlock.cs",
+      "lineRange": [
+        142,
+        153
+      ],
+      "summary": "Custom Unity inspector for LeanSelectableBlock, drawing its serialized fields and surfacing setup warnings in the Inspector.",
+      "tags": [
+        "editor-only",
+        "inspector",
+        "unity-editor",
+        "custom-inspector"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanSelectableBlock.cs:FindBlock",
+      "type": "function",
+      "name": "FindBlock",
+      "filePath": "Required/Scripts/LeanSelectableBlock.cs",
+      "lineRange": [
+        34,
+        47
+      ],
+      "summary": "Static linear scan over the Instances registry returning the block at the given x/y grid coordinate, or null.",
+      "tags": [
+        "static",
+        "lookup",
+        "grid"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanSelectableBlock.cs:Swap",
+      "type": "function",
+      "name": "Swap",
+      "filePath": "Required/Scripts/LeanSelectableBlock.cs",
+      "lineRange": [
+        63,
+        73
+      ],
+      "summary": "Static helper exchanging the x/y grid coordinates of two blocks; the damped Update then animates both into their new positions.",
+      "tags": [
+        "static",
+        "grid",
+        "swap"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanSelectableBlock.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanSelectableBlock.cs",
+      "lineRange": [
+        75,
+        130
+      ],
+      "summary": "While selected, projects the selecting finger to a world point at the block's depth, rounds it to a grid coordinate, and if that coordinate is orthogonally adjacent swaps with the block found there (optionally deselecting); then damps localPosition toward x/y * BlockSize.",
+      "tags": [
+        "unity-lifecycle",
+        "grid",
+        "match-3",
+        "damping"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:Required/Scripts/LeanSelectableCenter.cs",
+      "type": "file",
+      "name": "LeanSelectableCenter.cs",
+      "filePath": "Required/Scripts/LeanSelectableCenter.cs",
+      "summary": "On demand, averages the world positions of every currently selected LeanSelectable and emits the centroid as a Vector3 event.",
+      "tags": [
+        "selectable",
+        "centroid",
+        "utility",
+        "monobehaviour",
+        "manual-invoke"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectableCenter.cs:LeanSelectableCenter",
+      "type": "class",
+      "name": "LeanSelectableCenter",
+      "filePath": "Required/Scripts/LeanSelectableCenter.cs",
+      "lineRange": [
+        12,
+        45
+      ],
+      "summary": "Exposes a Calculate method (also a context-menu item) that averages the transform positions of all selected LeanSelectable instances and invokes OnPosition; it does nothing on its own each frame.",
+      "tags": [
+        "selectable",
+        "centroid",
+        "manual-invoke"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectableCenter.cs:LeanSelectableCenter_Editor",
+      "type": "class",
+      "name": "LeanSelectableCenter_Editor",
+      "filePath": "Required/Scripts/LeanSelectableCenter.cs",
+      "lineRange": [
+        56,
+        63
+      ],
+      "summary": "Custom Unity inspector for LeanSelectableCenter, drawing its serialized fields and surfacing setup warnings in the Inspector.",
+      "tags": [
+        "editor-only",
+        "inspector",
+        "unity-editor",
+        "custom-inspector"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanSelectableCenter.cs:Calculate",
+      "type": "function",
+      "name": "Calculate",
+      "filePath": "Required/Scripts/LeanSelectableCenter.cs",
+      "lineRange": [
+        20,
+        44
+      ],
+      "summary": "Iterates LeanSelectable.Instances, sums the positions of the selected ones, and invokes OnPosition with the average when at least one is selected.",
+      "tags": [
+        "centroid",
+        "public-api",
+        "selectable"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanSelectableDial.cs",
+      "type": "file",
+      "name": "LeanSelectableDial.cs",
+      "filePath": "Required/Scripts/LeanSelectableDial.cs",
+      "summary": "Turns the selected object into a dial or knob: dragging rotates it about a configured axis, with optional angle clamping and a list of angular triggers that fire enter/exit events.",
+      "tags": [
+        "selectable",
+        "dial",
+        "rotation",
+        "ui",
+        "monobehaviour"
+      ],
+      "complexity": "complex",
+      "languageNotes": "GetPoint has two paths - RectTransformUtility for a Canvas dial (overlay and camera render modes handled separately) and a plane raycast for a world-space dial."
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectableDial.cs:LeanSelectableDial",
+      "type": "class",
+      "name": "LeanSelectableDial",
+      "filePath": "Required/Scripts/LeanSelectableDial.cs",
+      "lineRange": [
+        12,
+        219
+      ],
+      "summary": "Accumulates the signed angle swept by the selecting finger around the dial axis, clamps it if configured, applies it as a local rotation on top of a tilt, and drives the angular Trigger enter/exit events.",
+      "tags": [
+        "selectable",
+        "dial",
+        "rotation",
+        "trigger-zones"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectableDial.cs:LeanSelectableDial_Editor",
+      "type": "class",
+      "name": "LeanSelectableDial_Editor",
+      "filePath": "Required/Scripts/LeanSelectableDial.cs",
+      "lineRange": [
+        230,
+        256
+      ],
+      "summary": "Custom Unity inspector for LeanSelectableDial, drawing its serialized fields and surfacing setup warnings in the Inspector.",
+      "tags": [
+        "editor-only",
+        "inspector",
+        "unity-editor",
+        "custom-inspector"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectableDial.cs:Trigger",
+      "type": "class",
+      "name": "Trigger",
+      "filePath": "Required/Scripts/LeanSelectableDial.cs",
+      "lineRange": [
+        15,
+        44
+      ],
+      "summary": "Serializable angular zone with min/max bounds, an inside latch, and OnEnter/OnExit UnityEvents fired as the dial angle crosses into or out of the zone.",
+      "tags": [
+        "data-model",
+        "trigger-zones",
+        "event-handler",
+        "serializable"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanSelectableDial.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanSelectableDial.cs",
+      "lineRange": [
+        96,
+        162
+      ],
+      "summary": "Resets to the tilt orientation, measures the signed angle between the previous and current finger points around the axis, applies clamping, rotates the transform, then evaluates every Trigger and fires its OnEnter/OnExit on state change.",
+      "tags": [
+        "unity-lifecycle",
+        "dial",
+        "rotation",
+        "trigger-zones"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:Required/Scripts/LeanSelectableDial.cs:GetPoint",
+      "type": "function",
+      "name": "GetPoint",
+      "filePath": "Required/Scripts/LeanSelectableDial.cs",
+      "lineRange": [
+        164,
+        218
+      ],
+      "summary": "Converts a screen position into a dial-local 2D point: via RectTransformUtility when on a Canvas (handling overlay versus camera render modes) or via a plane raycast against the dial axis for world objects, falling back to the previous point.",
+      "tags": [
+        "coordinates",
+        "raycast",
+        "ui",
+        "canvas"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:Required/Scripts/LeanSelectableDragTorque.cs",
+      "type": "file",
+      "name": "LeanSelectableDragTorque.cs",
+      "filePath": "Required/Scripts/LeanSelectableDragTorque.cs",
+      "summary": "Adds physics torque to the attached Rigidbody based on how the selecting finger spins, so a selected object can be flicked into rotation.",
+      "tags": [
+        "selectable",
+        "physics",
+        "torque",
+        "rigidbody",
+        "monobehaviour"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectableDragTorque.cs:LeanSelectableDragTorque",
+      "type": "class",
+      "name": "LeanSelectableDragTorque",
+      "filePath": "Required/Scripts/LeanSelectableDragTorque.cs",
+      "lineRange": [
+        11,
+        70
+      ],
+      "summary": "While selected, compares the previous and current finger deltas to derive an angular change and applies it as torque about the camera forward axis on the cached Rigidbody.",
+      "tags": [
+        "selectable",
+        "physics",
+        "torque",
+        "rigidbody"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectableDragTorque.cs:LeanSelectableDragTorque_Editor",
+      "type": "class",
+      "name": "LeanSelectableDragTorque_Editor",
+      "filePath": "Required/Scripts/LeanSelectableDragTorque.cs",
+      "lineRange": [
+        81,
+        89
+      ],
+      "summary": "Custom Unity inspector for LeanSelectableDragTorque, drawing its serialized fields and surfacing setup warnings in the Inspector.",
+      "tags": [
+        "editor-only",
+        "inspector",
+        "unity-editor",
+        "custom-inspector"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanSelectableDragTorque.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanSelectableDragTorque.cs",
+      "lineRange": [
+        33,
+        69
+      ],
+      "summary": "Derives the angle between the previous and current finger scaled deltas, weights it by their combined magnitude, and applies the result as an acceleration-mode torque about the camera forward axis; logs an error when no camera resolves.",
+      "tags": [
+        "unity-lifecycle",
+        "physics",
+        "torque",
+        "error-handling"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:Required/Scripts/LeanSelectableDrop.cs",
+      "type": "file",
+      "name": "LeanSelectableDrop.cs",
+      "filePath": "Required/Scripts/LeanSelectableDrop.cs",
+      "summary": "On finger release, raycasts under the selected object for an IDropHandler and hands the drop over to it, emitting the receiving GameObject and handler as events.",
+      "tags": [
+        "selectable",
+        "drag-and-drop",
+        "screen-query",
+        "event-handler",
+        "monobehaviour"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Temporarily moves this GameObject (and optionally its ancestors) to IgnoreRaycast via LeanScreenQuery.ChangeLayers so the query can see through the dragged object."
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectableDrop.cs:LeanSelectableDrop",
+      "type": "class",
+      "name": "LeanSelectableDrop",
+      "filePath": "Required/Scripts/LeanSelectableDrop.cs",
+      "lineRange": [
+        11,
+        70
+      ],
+      "summary": "Handles the select-finger-up event by querying the screen position for an IDropHandler - masking its own layers first - then calls HandleDrop on the target and invokes the GameObject and handler events.",
+      "tags": [
+        "selectable",
+        "drag-and-drop",
+        "screen-query",
+        "layer-masking"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectableDrop.cs:LeanSelectableDrop_Editor",
+      "type": "class",
+      "name": "LeanSelectableDrop_Editor",
+      "filePath": "Required/Scripts/LeanSelectableDrop.cs",
+      "lineRange": [
+        81,
+        106
+      ],
+      "summary": "Custom Unity inspector for LeanSelectableDrop, drawing its serialized fields and surfacing setup warnings in the Inspector.",
+      "tags": [
+        "editor-only",
+        "inspector",
+        "unity-editor",
+        "custom-inspector"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectableDrop.cs:IgnoreType",
+      "type": "class",
+      "name": "IgnoreType",
+      "filePath": "Required/Scripts/LeanSelectableDrop.cs",
+      "lineRange": [
+        13,
+        18
+      ],
+      "summary": "Selects whether this GameObject alone, this GameObject plus its ancestors, or nothing is temporarily switched to IgnoreRaycast during the drop query.",
+      "tags": [
+        "enum",
+        "configuration",
+        "layer-masking"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanSelectableDrop.cs:OnSelectedSelectFingerUp",
+      "type": "function",
+      "name": "OnSelectedSelectFingerUp",
+      "filePath": "Required/Scripts/LeanSelectableDrop.cs",
+      "lineRange": [
+        39,
+        67
+      ],
+      "summary": "On finger release, masks layers per IgnoreType, runs ScreenQuery.TryQuery for an IDropHandler, reverts the layers, then calls HandleDrop and invokes the GameObject and handler events on success.",
+      "tags": [
+        "drag-and-drop",
+        "screen-query",
+        "event-handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:Required/Scripts/LeanSelectablePressureScale.cs",
+      "type": "file",
+      "name": "LeanSelectablePressureScale.cs",
+      "filePath": "Required/Scripts/LeanSelectablePressureScale.cs",
+      "summary": "Scales the selected object in proportion to the selecting finger pressure, for force-touch style feedback.",
+      "tags": [
+        "selectable",
+        "pressure",
+        "scaling",
+        "feedback",
+        "monobehaviour"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectablePressureScale.cs:LeanSelectablePressureScale",
+      "type": "class",
+      "name": "LeanSelectablePressureScale",
+      "filePath": "Required/Scripts/LeanSelectablePressureScale.cs",
+      "lineRange": [
+        9,
+        38
+      ],
+      "summary": "Reads the selecting finger's Pressure each frame, optionally clamps it to 0..1, and sets localScale to BaseScale plus a pressure-weighted multiple of it.",
+      "tags": [
+        "selectable",
+        "pressure",
+        "scaling"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectablePressureScale.cs:LeanSelectablePressureScale_Editor",
+      "type": "class",
+      "name": "LeanSelectablePressureScale_Editor",
+      "filePath": "Required/Scripts/LeanSelectablePressureScale.cs",
+      "lineRange": [
+        49,
+        58
+      ],
+      "summary": "Custom Unity inspector for LeanSelectablePressureScale, drawing its serialized fields and surfacing setup warnings in the Inspector.",
+      "tags": [
+        "editor-only",
+        "inspector",
+        "unity-editor",
+        "custom-inspector"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanSelectablePressureScale.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanSelectablePressureScale.cs",
+      "lineRange": [
+        20,
+        37
+      ],
+      "summary": "Samples the selecting finger pressure (0 when nothing is selected), optionally clamps it, and writes localScale = baseScale + baseScale * pressure * multiplier.",
+      "tags": [
+        "unity-lifecycle",
+        "pressure",
+        "scaling"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:Required/Scripts/LeanSelectableSelected.cs",
+      "type": "file",
+      "name": "LeanSelectableSelected.cs",
+      "filePath": "Required/Scripts/LeanSelectableSelected.cs",
+      "summary": "Fires down/update/up events once a selectable has been held selected for a threshold number of seconds, with configurable reset timing and an optional require-a-finger gate.",
+      "tags": [
+        "selectable",
+        "timer",
+        "hold",
+        "event-handler",
+        "monobehaviour"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectableSelected.cs:LeanSelectableSelected",
+      "type": "class",
+      "name": "LeanSelectableSelected",
+      "filePath": "Required/Scripts/LeanSelectableSelected.cs",
+      "lineRange": [
+        11,
+        118
+      ],
+      "summary": "Accumulates selected time each frame, and once past the threshold fires the down event on the first qualifying frame, the update event every frame after, and the up event on deselect; ResetType controls when the timer clears.",
+      "tags": [
+        "selectable",
+        "timer",
+        "hold",
+        "state-machine"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectableSelected.cs:LeanSelectableSelected_Editor",
+      "type": "class",
+      "name": "LeanSelectableSelected_Editor",
+      "filePath": "Required/Scripts/LeanSelectableSelected.cs",
+      "lineRange": [
+        129,
+        162
+      ],
+      "summary": "Custom Unity inspector for LeanSelectableSelected, drawing its serialized fields and surfacing setup warnings in the Inspector.",
+      "tags": [
+        "editor-only",
+        "inspector",
+        "unity-editor",
+        "custom-inspector"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:Required/Scripts/LeanSelectableSelected.cs:ResetType",
+      "type": "class",
+      "name": "ResetType",
+      "filePath": "Required/Scripts/LeanSelectableSelected.cs",
+      "lineRange": [
+        13,
+        19
+      ],
+      "summary": "Selects whether the accumulated seconds are cleared on select, on deselect, or not at all.",
+      "tags": [
+        "enum",
+        "configuration",
+        "timer"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanSelectableSelected.cs:Update",
+      "type": "function",
+      "name": "Update",
+      "filePath": "Required/Scripts/LeanSelectableSelected.cs",
+      "lineRange": [
+        50,
+        90
+      ],
+      "summary": "Increments the selected-seconds timer while selected (optionally requiring a selecting finger via LeanSelectableByFinger), then fires the down event on the first frame past the threshold and the update event every frame thereafter.",
+      "tags": [
+        "unity-lifecycle",
+        "timer",
+        "state-machine"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:Required/Scripts/LeanSelectableSelected.cs:OnSelected",
+      "type": "function",
+      "name": "OnSelected",
+      "filePath": "Required/Scripts/LeanSelectableSelected.cs",
+      "lineRange": [
+        92,
+        101
+      ],
+      "summary": "Clears the timer when ResetType is OnSelect and resets the latch so the down event can fire again.",
+      "tags": [
+        "event-handler",
+        "timer",
+        "selectable"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:Required/Scripts/LeanSelectableSelected.cs:OnDeselected",
+      "type": "function",
+      "name": "OnDeselected",
+      "filePath": "Required/Scripts/LeanSelectableSelected.cs",
+      "lineRange": [
+        103,
+        117
+      ],
+      "summary": "Clears the timer when ResetType is OnDeselect and fires the up event if the threshold had been reached.",
+      "tags": [
+        "event-handler",
+        "timer",
+        "selectable"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:Required/Scripts/LeanSelectableBlock.cs",
+      "target": "class:Required/Scripts/LeanSelectableBlock.cs:LeanSelectableBlock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableBlock.cs",
+      "target": "class:Required/Scripts/LeanSelectableBlock.cs:LeanSelectableBlock",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableBlock.cs",
+      "target": "class:Required/Scripts/LeanSelectableBlock.cs:LeanSelectableBlock_Editor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanSelectableBlock.cs:LeanSelectableBlock",
+      "target": "function:Required/Scripts/LeanSelectableBlock.cs:FindBlock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanSelectableBlock.cs:LeanSelectableBlock",
+      "target": "function:Required/Scripts/LeanSelectableBlock.cs:Swap",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanSelectableBlock.cs:LeanSelectableBlock",
+      "target": "function:Required/Scripts/LeanSelectableBlock.cs:Update",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableCenter.cs",
+      "target": "class:Required/Scripts/LeanSelectableCenter.cs:LeanSelectableCenter",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableCenter.cs",
+      "target": "class:Required/Scripts/LeanSelectableCenter.cs:LeanSelectableCenter",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableCenter.cs",
+      "target": "class:Required/Scripts/LeanSelectableCenter.cs:LeanSelectableCenter_Editor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanSelectableCenter.cs:LeanSelectableCenter",
+      "target": "function:Required/Scripts/LeanSelectableCenter.cs:Calculate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableDial.cs",
+      "target": "class:Required/Scripts/LeanSelectableDial.cs:LeanSelectableDial",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableDial.cs",
+      "target": "class:Required/Scripts/LeanSelectableDial.cs:LeanSelectableDial",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableDial.cs",
+      "target": "class:Required/Scripts/LeanSelectableDial.cs:LeanSelectableDial_Editor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanSelectableDial.cs:LeanSelectableDial",
+      "target": "class:Required/Scripts/LeanSelectableDial.cs:Trigger",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanSelectableDial.cs:LeanSelectableDial",
+      "target": "function:Required/Scripts/LeanSelectableDial.cs:Update",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanSelectableDial.cs:LeanSelectableDial",
+      "target": "function:Required/Scripts/LeanSelectableDial.cs:GetPoint",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableDragTorque.cs",
+      "target": "class:Required/Scripts/LeanSelectableDragTorque.cs:LeanSelectableDragTorque",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableDragTorque.cs",
+      "target": "class:Required/Scripts/LeanSelectableDragTorque.cs:LeanSelectableDragTorque",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableDragTorque.cs",
+      "target": "class:Required/Scripts/LeanSelectableDragTorque.cs:LeanSelectableDragTorque_Editor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanSelectableDragTorque.cs:LeanSelectableDragTorque",
+      "target": "function:Required/Scripts/LeanSelectableDragTorque.cs:Update",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableDrop.cs",
+      "target": "class:Required/Scripts/LeanSelectableDrop.cs:LeanSelectableDrop",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableDrop.cs",
+      "target": "class:Required/Scripts/LeanSelectableDrop.cs:LeanSelectableDrop",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableDrop.cs",
+      "target": "class:Required/Scripts/LeanSelectableDrop.cs:LeanSelectableDrop_Editor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanSelectableDrop.cs:LeanSelectableDrop",
+      "target": "class:Required/Scripts/LeanSelectableDrop.cs:IgnoreType",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanSelectableDrop.cs:LeanSelectableDrop",
+      "target": "function:Required/Scripts/LeanSelectableDrop.cs:OnSelectedSelectFingerUp",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableDrop.cs",
+      "target": "file:Required/Scripts/IDropHandler.cs",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectablePressureScale.cs",
+      "target": "class:Required/Scripts/LeanSelectablePressureScale.cs:LeanSelectablePressureScale",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectablePressureScale.cs",
+      "target": "class:Required/Scripts/LeanSelectablePressureScale.cs:LeanSelectablePressureScale",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectablePressureScale.cs",
+      "target": "class:Required/Scripts/LeanSelectablePressureScale.cs:LeanSelectablePressureScale_Editor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanSelectablePressureScale.cs:LeanSelectablePressureScale",
+      "target": "function:Required/Scripts/LeanSelectablePressureScale.cs:Update",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableSelected.cs",
+      "target": "class:Required/Scripts/LeanSelectableSelected.cs:LeanSelectableSelected",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableSelected.cs",
+      "target": "class:Required/Scripts/LeanSelectableSelected.cs:LeanSelectableSelected",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:Required/Scripts/LeanSelectableSelected.cs",
+      "target": "class:Required/Scripts/LeanSelectableSelected.cs:LeanSelectableSelected_Editor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanSelectableSelected.cs:LeanSelectableSelected",
+      "target": "class:Required/Scripts/LeanSelectableSelected.cs:ResetType",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanSelectableSelected.cs:LeanSelectableSelected",
+      "target": "function:Required/Scripts/LeanSelectableSelected.cs:Update",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanSelectableSelected.cs:LeanSelectableSelected",
+      "target": "function:Required/Scripts/LeanSelectableSelected.cs:OnSelected",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:Required/Scripts/LeanSelectableSelected.cs:LeanSelectableSelected",
+      "target": "function:Required/Scripts/LeanSelectableSelected.cs:OnDeselected",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    }
+  ]
+}

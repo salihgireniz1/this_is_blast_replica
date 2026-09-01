@@ -1,0 +1,31 @@
+{
+  "projectRoot": "C:/Users/giren/Desktop/Projects/this_is_blast_replica/Assets/Plugins/CW/LeanTouch+",
+  "batchFiles": [
+    {"path": "Required/Scripts/LeanManualSwipe.cs", "language": "csharp", "sizeLines": 111, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanMouseWheel.cs", "language": "csharp", "sizeLines": 140, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanMultiDirection.cs", "language": "csharp", "sizeLines": 134, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanMultiDown.cs", "language": "csharp", "sizeLines": 163, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanMultiHeld.cs", "language": "csharp", "sizeLines": 364, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanMultiPinch.cs", "language": "csharp", "sizeLines": 164, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanMultiPull.cs", "language": "csharp", "sizeLines": 231, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanMultiSwipe.cs", "language": "csharp", "sizeLines": 226, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanMultiTap.cs", "language": "csharp", "sizeLines": 203, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanMultiTwist.cs", "language": "csharp", "sizeLines": 126, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanMultiUp.cs", "language": "csharp", "sizeLines": 139, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanMultiUpdate.cs", "language": "csharp", "sizeLines": 354, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanMultiUpdateCanvas.cs", "language": "csharp", "sizeLines": 66, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanPick.cs", "language": "csharp", "sizeLines": 92, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanPickable.cs", "language": "csharp", "sizeLines": 88, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanPinchCamera.cs", "language": "csharp", "sizeLines": 265, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanReplayFinger.cs", "language": "csharp", "sizeLines": 131, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanSelectSelf.cs", "language": "csharp", "sizeLines": 0, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanSelectableBlock.cs", "language": "csharp", "sizeLines": 155, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanSelectableCenter.cs", "language": "csharp", "sizeLines": 65, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanSelectableDial.cs", "language": "csharp", "sizeLines": 258, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanSelectableDragTorque.cs", "language": "csharp", "sizeLines": 91, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanSelectableDrop.cs", "language": "csharp", "sizeLines": 108, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanSelectablePressureScale.cs", "language": "csharp", "sizeLines": 60, "fileCategory": "code"},
+    {"path": "Required/Scripts/LeanSelectableSelected.cs", "language": "csharp", "sizeLines": 164, "fileCategory": "code"}
+  ],
+  "batchImportData": {}
+}
