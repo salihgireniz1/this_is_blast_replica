@@ -114,8 +114,21 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   nothing is defaulted. Zero ammo is refused HERE because SlotRow reads zero as an empty
   slot. Probe: building the grid upside down turned exactly the aimed test red.
   Level files live in `Assets/00_GAME/Levels/` — the future HTML editor's export target.
-- Next: the sample level (all 5 colours, a hidden shooter, solvable), then the
-  Application game loop, then presentation.
+- `Level_01.json` + `LevelFileTests` — done, 50/50 green. The sample level: 10x10 board in
+  horizontal colour bands, exactly 20 cubes AND 20 ammo per colour (every shooter drains
+  fully and leaves — no shooter can end up stranded with leftover ammo); 5 queue columns
+  x 3 deep, the five initial fronts are the five big shooters (R10/B10/Y10/G10/O10 — seat
+  all five and the first five bands clear themselves); two hidden shooters at depths 1-2
+  that reveal mid-game. Full playthrough verified on paper: at every band the needed
+  colours are at reachable fronts. `LevelFileTests` walks every file in
+  `Assets/00_GAME/Levels/` and asserts the case brief per file: parses, all five colours,
+  a hidden shooter, and ammo >= cubes per colour (under-ammo = unwinnable, the mistake
+  that only shows at the very end of a playthrough; over-ammo stays a legal choice).
+  **Editor trap, hit during the probe: editing an asset on disk does NOT reimport it** —
+  run_tests read the stale TextAsset and stayed green until an explicit
+  `AssetDatabase.ImportAsset(..., ForceUpdate)`; `recompile` does not cover it.
+- Next: the Application game loop (select -> occupy -> fire ticks -> verdicts, restart),
+  then presentation.
 
 The phase plan below is the **portfolio** plan. It resumes after the case ships; the case
 overrides it wherever they disagree (no merge feature, their art, 10x10 single layer).

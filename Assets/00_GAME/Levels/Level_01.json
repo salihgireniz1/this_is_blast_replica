@@ -1,0 +1,42 @@
+{
+  "boardRows": [
+    "RRRRRBBBBB",
+    "RRRRRBBBBB",
+    "YYYYYGGGGG",
+    "YYYYYGGGGG",
+    "OOOOOOOOOO",
+    "BBBBBRRRRR",
+    "GGGGGYYYYY",
+    "OOOOOYYYYY",
+    "RRRRRBBBBB",
+    "GGGGGOOOOO"
+  ],
+  "slotCount": 5,
+  "shooterColumns": [
+    { "shooters": [
+      { "color": "R", "ammo": 10, "hidden": false },
+      { "color": "O", "ammo": 5, "hidden": false },
+      { "color": "G", "ammo": 5, "hidden": false }
+    ]},
+    { "shooters": [
+      { "color": "B", "ammo": 10, "hidden": false },
+      { "color": "R", "ammo": 5, "hidden": false },
+      { "color": "Y", "ammo": 5, "hidden": false }
+    ]},
+    { "shooters": [
+      { "color": "Y", "ammo": 10, "hidden": false },
+      { "color": "B", "ammo": 5, "hidden": false },
+      { "color": "O", "ammo": 5, "hidden": false }
+    ]},
+    { "shooters": [
+      { "color": "G", "ammo": 10, "hidden": false },
+      { "color": "Y", "ammo": 5, "hidden": false },
+      { "color": "R", "ammo": 5, "hidden": true }
+    ]},
+    { "shooters": [
+      { "color": "O", "ammo": 10, "hidden": false },
+      { "color": "G", "ammo": 5, "hidden": true },
+      { "color": "B", "ammo": 5, "hidden": false }
+    ]}
+  ]
+}
