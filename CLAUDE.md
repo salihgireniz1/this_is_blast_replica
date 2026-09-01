@@ -127,8 +127,25 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   **Editor trap, hit during the probe: editing an asset on disk does NOT reimport it** —
   run_tests read the stale TextAsset and stayed green until an explicit
   `AssetDatabase.ImportAsset(..., ForceUpdate)`; `recompile` does not cover it.
-- Next: the Application game loop (select -> occupy -> fire ticks -> verdicts, restart),
-  then presentation.
+- First visible build — done, 50/50 green. Play now shows the full level: 100 cubes in
+  the authored bands on GameArea, 15 shooters in 5 queue columns with ammo counters, the
+  two hidden ones wearing `Cube_Hidden` and a "?" label. The pieces:
+  `IColorMaterials` (Presentation defines the seam — it may not see Infrastructure — and
+  Bootstrap's `PaletteColorMaterials` adapts `PaletteData` onto it; `HiddenMaterial` is
+  the palette's Surprise row), `CubeView` + `ShooterView` (humble: sharedMaterial only,
+  they render state and never compute it), `LevelSpawner` (serialized layout: board
+  origin (-4.275, 0.45, -4.275), cell 0.95 — GameArea's inner floor is 9.5 x 9.5 so ten
+  cells span it exactly; queue origin z=-7.5, spacing 1.5/1.2, columns centred on x=0).
+  `GameLifetimeScope` parses the level once (only Bootstrap sees both parser and views),
+  registers the three domain models, and hands the spawner its dependencies through
+  `Construct`. Prefabs: `CubeView.prefab` (their Cube.fbx at 0.9 scale),
+  `ShooterView.prefab` (Salih's Cannon: WalkingCube rig + Count_Text TMP; coloured parts
+  are the CubesWalk MeshRenderer and the CashierBody SkinnedMeshRenderer). The scene
+  keeps both template instances deactivated - the Cannon one is the prefab's source.
+  `Blast.Presentation.asmdef` gained `Unity.TextMeshPro` (third-party refs are outside
+  the architecture test's scope, verified before adding).
+- Next: the Application game loop (select -> run to slot -> fire ticks -> cube flow ->
+  verdicts -> restart), driving the spawned views.
 
 The phase plan below is the **portfolio** plan. It resumes after the case ships; the case
 overrides it wherever they disagree (no merge feature, their art, 10x10 single layer).

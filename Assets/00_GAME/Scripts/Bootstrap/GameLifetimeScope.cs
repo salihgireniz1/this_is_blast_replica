@@ -11,6 +11,7 @@
 // serialized reference is checked by Unity, survives a rename, and is visible to a test.
 
 using Blast.Infrastructure;
+using Blast.Presentation;
 using DG.Tweening;
 using UnityEngine;
 using VContainer;
@@ -37,6 +38,12 @@ namespace Blast.Bootstrap
         /// <summary>The authored tween timings. Assigned in the inspector.</summary>
         [SerializeField] JuiceConfig _juice;
 
+        /// <summary>The level file the game boots into. Assigned in the inspector.</summary>
+        [SerializeField] TextAsset _level;
+
+        /// <summary>The spawner that builds the level on screen. Assigned in the inspector.</summary>
+        [SerializeField] LevelSpawner _spawner;
+
         #endregion
 
         #region Properties
@@ -46,6 +53,12 @@ namespace Blast.Bootstrap
 
         /// <summary>The juice config this scope will register. Exposed so a test can see the wiring.</summary>
         public JuiceConfig Juice => _juice;
+
+        /// <summary>The level file this scope will boot. Exposed so a test can see the wiring.</summary>
+        public TextAsset Level => _level;
+
+        /// <summary>The spawner this scope will construct. Exposed so a test can see the wiring.</summary>
+        public LevelSpawner Spawner => _spawner;
 
         #endregion
 
@@ -63,6 +76,19 @@ namespace Blast.Bootstrap
 
             builder.RegisterInstance(_palette);
             builder.RegisterInstance(_juice);
+
+            // The level is parsed once, here, because this is the only layer that may see
+            // both the parser (Infrastructure) and the views (Presentation). The domain
+            // models are registered individually - the game loop will resolve them without
+            // ever learning a level file exists.
+            ParsedLevel level = LevelParser.Parse(_level.text);
+            builder.RegisterInstance(level.Board);
+            builder.RegisterInstance(level.Shooters);
+            builder.RegisterInstance(level.Slots);
+
+            // The spawner is a scene object, so its dependencies are handed over directly;
+            // registering it in the container would only re-route the same handshake.
+            _spawner.Construct(level.Board, level.Shooters, new PaletteColorMaterials(_palette));
         }
 
         #endregion

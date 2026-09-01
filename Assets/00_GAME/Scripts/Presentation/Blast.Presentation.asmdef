@@ -3,6 +3,7 @@
     "rootNamespace": "Blast.Presentation",
     "references": [
         "Blast.Domain",
-        "Blast.Application"
+        "Blast.Application",
+        "Unity.TextMeshPro"
     ]
 }
