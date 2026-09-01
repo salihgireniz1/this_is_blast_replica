@@ -662,7 +662,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fd7ee071aff19498da53e7892ca8f320, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.08
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fd7ee071aff19498da53e7892ca8f320, type: 3}
       propertyPath: m_LocalPosition.z
@@ -705,67 +705,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd7ee071aff19498da53e7892ca8f320, type: 3}
---- !u!1001 &8102829219063478186
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 325546954418564187, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
-      propertyPath: m_Name
-      value: CubeView
-      objectReference: {fileID: 0}
-    - target: {fileID: 325546954418564187, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1139203544241698529, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1139203544241698529, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1139203544241698529, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1139203544241698529, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1139203544241698529, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.000000021855694
-      objectReference: {fileID: 0}
-    - target: {fileID: 1139203544241698529, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1139203544241698529, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1139203544241698529, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1139203544241698529, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1139203544241698529, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
 --- !u!1001 &9103577399313847614
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -818,10 +757,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cannon
       objectReference: {fileID: 0}
+    - target: {fileID: 2630179953481358617, guid: 05b06f3019d616041bac456c32ea3a09, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4983181733376537491, guid: 05b06f3019d616041bac456c32ea3a09, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 05b06f3019d616041bac456c32ea3a09, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -834,6 +780,5 @@ SceneRoots:
   - {fileID: 1753832529}
   - {fileID: 53515859}
   - {fileID: 2117716401}
-  - {fileID: 8102829219063478186}
   - {fileID: 1900672654}
   - {fileID: 1024472674}
