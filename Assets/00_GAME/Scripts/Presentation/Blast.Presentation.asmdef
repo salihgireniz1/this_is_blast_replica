@@ -6,7 +6,7 @@
         "Blast.Application",
         "Unity.TextMeshPro",
         "UniTask",
-        "Unity.InputSystem",
-        "UniTask.DOTween"
+        "UniTask.DOTween",
+        "LeanTouch"
     ]
 }

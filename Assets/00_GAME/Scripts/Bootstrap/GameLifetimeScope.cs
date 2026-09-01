@@ -98,8 +98,9 @@ namespace Blast.Bootstrap
             GameLoop loop = new GameLoop(level.Board, level.Shooters, level.Slots);
             builder.RegisterInstance(loop);
 
-            _spawner.Construct(level.Board, level.Shooters, level.Slots, new PaletteColorMaterials(_palette));
-            _director.Construct(loop, level.Slots, _spawner);
+            PaletteColorMaterials materials = new PaletteColorMaterials(_palette);
+            _spawner.Construct(level.Board, level.Shooters, level.Slots, materials);
+            _director.Construct(loop, level.Slots, _spawner, materials);
         }
 
         #endregion

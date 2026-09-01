@@ -1,24 +1,31 @@
 // GameDirector - the async glue: input in, GameLoop calls out, animations around both.
 // Layer: Presentation.
 // Responsibility: turning a tap into a TrySelect, pacing each seated shooter's TryShoot
-//   calls, and dressing every result - the run to the slot, the queue step-up, the cube
-//   death and flow, the drained shooter's exit.
+//   calls, and dressing every result - the run to the slot, the queue step-up, the bullet
+//   flight, the cube death and flow, the drained shooter's exit.
 // NOT its responsibility: a single game rule. Every decision is a GameLoop call; if this
 //   file ever contains an if about colours, ammo or verdicts beyond relaying them, that
 //   logic has leaked out of the testable layer.
+//
+// Input comes through LeanTouch, not a hand-rolled Update loop: it unifies mouse and
+// touch, which is what a mobile case is actually judged on.
 //
 // Why each fire loop counts its own ammo instead of watching the slot: the slot frees on
 // the last shot and the PLAYER may seat a new shooter into it before this loop's next
 // tick. A loop keyed on occupancy would then keep firing with the new tenant's ammo and
 // the old tenant's view. The local count makes each loop fire exactly its own shots.
+//
+// Why the visual kill POPS the cube view before the bullet flies: the registry must hand
+// out views in the exact order the domain removed cubes. Popping at impact time instead
+// would let two in-flight shots at one column swap their victims.
 
 using System;
 using Blast.Application;
 using Blast.Domain;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Lean.Touch;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Blast.Presentation
 {
@@ -26,6 +33,18 @@ namespace Blast.Presentation
     public sealed class GameDirector : MonoBehaviour
     {
         #region Fields
+
+        /// <summary>The visual a bullet is made of; it wears the firing shooter's material.</summary>
+        [SerializeField] CubeView _bulletPrefab;
+
+        /// <summary>Uniform scale of a bullet.</summary>
+        [SerializeField] float _bulletScale = 0.3f;
+
+        /// <summary>Height above a shooter's feet a bullet leaves from.</summary>
+        [SerializeField] float _bulletMuzzleHeight = 0.7f;
+
+        /// <summary>How long a bullet flies to its cube.</summary>
+        [SerializeField] float _bulletFlightDuration = 0.12f;
 
         /// <summary>How long a selected shooter runs to its slot.</summary>
         [SerializeField] float _runDuration = 0.45f;
@@ -57,6 +76,9 @@ namespace Blast.Presentation
         /// <summary>The view registry: who stands where. Handed in by Construct.</summary>
         LevelSpawner _spawner;
 
+        /// <summary>The colour table bullets dress from. Handed in by Construct.</summary>
+        IColorMaterials _materials;
+
         /// <summary>The camera taps are raycast from.</summary>
         Camera _camera;
 
@@ -71,11 +93,13 @@ namespace Blast.Presentation
         /// <param name="loop">The use case every action goes through.</param>
         /// <param name="slots">The slot row, for ammo reads.</param>
         /// <param name="spawner">The view registry.</param>
-        public void Construct(GameLoop loop, SlotRow slots, LevelSpawner spawner)
+        /// <param name="materials">The colour table bullets dress from.</param>
+        public void Construct(GameLoop loop, SlotRow slots, LevelSpawner spawner, IColorMaterials materials)
         {
             _loop = loop;
             _slots = slots;
             _spawner = spawner;
+            _materials = materials;
             _camera = Camera.main;
         }
 
@@ -83,22 +107,29 @@ namespace Blast.Presentation
 
         #region Private Methods
 
-        /// <summary>Turns a tap on a front-row shooter into a selection.</summary>
-        void Update()
+        /// <summary>Starts listening for taps.</summary>
+        void OnEnable()
         {
-            // Construct runs from the scope's Configure; a frame can arrive before it.
-            if (_loop == null)
+            LeanTouch.OnFingerTap += HandleTap;
+        }
+
+        /// <summary>Stops listening for taps.</summary>
+        void OnDisable()
+        {
+            LeanTouch.OnFingerTap -= HandleTap;
+        }
+
+        /// <summary>Turns a tap on a front-row shooter into a selection.</summary>
+        /// <param name="finger">The finger (or mouse) that tapped.</param>
+        void HandleTap(LeanFinger finger)
+        {
+            // Construct runs from the scope's Configure; a tap can arrive before it.
+            if (_loop == null || finger.IsOverGui)
             {
                 return;
             }
 
-            Mouse mouse = Mouse.current;
-            if (mouse == null || !mouse.leftButton.wasPressedThisFrame)
-            {
-                return;
-            }
-
-            Ray ray = _camera.ScreenPointToRay(mouse.position.ReadValue());
+            Ray ray = finger.GetRay(_camera);
             if (!Physics.Raycast(ray, out RaycastHit hit, 100f))
             {
                 return;
@@ -122,8 +153,11 @@ namespace Blast.Presentation
                 return;
             }
 
-            // Domain first, views second: the ammo read below must see the seated shooter.
+            // Domain first, views second: these reads must see the seated shooter, and
+            // the slot may free long before the bullet material is last needed.
             int ammo = _slots.AmmoAt(slot);
+            Material bulletMaterial = _materials.MaterialOf(_slots.ShooterAt(slot).Color);
+
             ShooterView view = _spawner.PopFrontShooter(column);
             _spawner.StepQueueForward(column, _stepDuration);
 
@@ -131,14 +165,15 @@ namespace Blast.Presentation
 
             await view.transform.DOMove(_spawner.SlotWorldPosition(slot), _runDuration).SetEase(Ease.OutQuad);
 
-            FireLoop(slot, view, ammo).Forget();
+            FireLoop(slot, view, ammo, bulletMaterial).Forget();
         }
 
         /// <summary>One seated shooter's whole life: fire, wait when targetless, leave when dry.</summary>
         /// <param name="slot">The slot the shooter fires from.</param>
         /// <param name="view">The shooter's visual.</param>
         /// <param name="ammo">Its own shots - see the header for why the slot is not read.</param>
-        async UniTaskVoid FireLoop(int slot, ShooterView view, int ammo)
+        /// <param name="bulletMaterial">What this shooter's bullets wear.</param>
+        async UniTaskVoid FireLoop(int slot, ShooterView view, int ammo, Material bulletMaterial)
         {
             while (ammo > 0)
             {
@@ -151,8 +186,7 @@ namespace Blast.Presentation
                 {
                     ammo--;
                     view.SetAmmo(ammo);
-                    KillFrontCube(hitColumn).Forget();
-                    _spawner.FlowBoardColumn(hitColumn, _flowDuration);
+                    ShotVisual(view, bulletMaterial, hitColumn).Forget();
                     AnnounceIfDecided();
                 }
 
@@ -164,11 +198,25 @@ namespace Blast.Presentation
             await Leave(view);
         }
 
-        /// <summary>Shrinks the dead front cube of a column away and despawns it.</summary>
-        /// <param name="column">The board column that was hit.</param>
-        async UniTaskVoid KillFrontCube(int column)
+        /// <summary>One shot on screen: the bullet flies, the cube dies, the column flows.</summary>
+        /// <param name="shooter">The visual that fired.</param>
+        /// <param name="bulletMaterial">What the bullet wears.</param>
+        /// <param name="hitColumn">The board column the domain says was hit.</param>
+        async UniTaskVoid ShotVisual(ShooterView shooter, Material bulletMaterial, int hitColumn)
         {
-            CubeView cube = _spawner.PopFrontCube(column);
+            // Popped now, not at impact - the registry must hand views out in domain
+            // removal order, or two in-flight shots at one column swap their victims.
+            CubeView cube = _spawner.PopFrontCube(hitColumn);
+
+            Vector3 muzzle = shooter.transform.position + Vector3.up * _bulletMuzzleHeight;
+            CubeView bullet = Instantiate(_bulletPrefab, muzzle, Quaternion.identity, transform);
+            bullet.transform.localScale = Vector3.one * _bulletScale;
+            bullet.Wear(bulletMaterial);
+
+            await bullet.transform.DOMove(cube.transform.position, _bulletFlightDuration).SetEase(Ease.Linear);
+
+            Destroy(bullet.gameObject);
+            _spawner.FlowBoardColumn(hitColumn, _flowDuration);
 
             await cube.transform.DOScale(Vector3.zero, _cubeDeathDuration).SetEase(Ease.InBack);
 
