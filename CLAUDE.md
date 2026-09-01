@@ -75,8 +75,17 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   AppsAssets, nothing needed the store install). Scene keeps the camera/light/volume rig,
   the scope, imported `GameArea`+`Floor`, and a `Cannon` object Salih is hand-building
   into the shooter prefab (WalkingCube + ammo TMP text).
-- Next: Domain shooter types (`Shooter`, queue with selectable front row, 5-slot row),
-  then firing/win/fail rules, then JSON level format, then presentation.
+- `Shooter` + `ShooterQueue` (Domain) — done, 28/28 green. `Shooter` is a readonly struct
+  of authored facts only (colour, ammo, hidden flag); concealment is answered by the queue
+  (`IsRevealed`: visible anywhere, hidden only at depth 0) because it is a question about
+  position, not about the shooter. Same nothing-moves shape as `BoardModel`: jagged
+  authored arrays plus a per-column front index. Only `TakeFront` exists, so "only the
+  front row is selectable" is enforced by the API shape rather than checked at runtime.
+  Probe: dropping the `depth == 0` term turned exactly one test red with the right message.
+  The depth check exists because a negative depth resolves to an already-taken shooter —
+  a valid array slot, so nothing would ever throw without it.
+- Next: the slot row (5 slots, occupy/leave rules), then the firing rule and win/fail
+  detection, then the JSON level format, then presentation.
 
 The phase plan below is the **portfolio** plan. It resumes after the case ships; the case
 overrides it wherever they disagree (no merge feature, their art, 10x10 single layer).
