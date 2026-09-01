@@ -168,8 +168,24 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   Presentation asmdef gained UniTask, UniTask.DOTween (awaiting a tween needs the
   extension assembly, not just the define) and Unity.InputSystem; the project is
   Input System-only (`activeInputHandler: 1`), so input reads `Mouse.current`.
+- LeanTouch input + bullets — done, 57/57 green. Input is `LeanTouch.OnFingerTap` ->
+  `finger.GetRay(camera)` (Salih's call: LeanTouch over hand-rolled Input System reads;
+  the asmdef swapped Unity.InputSystem for LeanTouch). The scene gained the LeanTouch
+  runner and an EventSystem + InputSystemUIInputModule — LeanTouch's IsOverGui logs an
+  error without one. Every shot spawns a small cube bullet (CubeView prefab at 0.3 scale)
+  wearing the shooter's material; the cube dies on impact, the column flows after. The
+  cube VIEW is still popped at fire time, not impact time — registry order must match
+  domain removal order or two in-flight shots at one column swap victims.
+  **Prefab trap, hit and fixed:** applying prefab overrides while the scene's template
+  instance was deactivated applied `active=false` to the prefab root too — every clone
+  spawned disabled. Apply runs on ALL overrides, so re-apply with the instance active,
+  then deactivate WITHOUT applying; the template's off-state stays an instance-only
+  override now.
+- Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
+  not wired, no deck/dock visual and no room for one in the current framing (shooters run
+  into the queue-playarea gap), layout needs breathing room. Core loop first.
 - Next: win/fail overlay + restart button (UI layer), then juice (gun, shoot/run
-  animations, outline on selectables, splash particle, sound).
+  animations, outline on selectables, splash particle, sound, deck visual + framing).
 
 The phase plan below is the **portfolio** plan. It resumes after the case ships; the case
 overrides it wherever they disagree (no merge feature, their art, 10x10 single layer).
