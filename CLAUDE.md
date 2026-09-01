@@ -54,6 +54,33 @@ version is the "before" half of the evidence.
 
 ## Status
 
+**THE CASE IS LIVE — read this before anything below.** The interview case from Apps
+(apps.com.tr) arrived 2026-09-01 and is built **in this project**. Deadline: **Monday
+2026-09-07**, delivered by mail after the final push. The repo is
+`github.com/salihgireniz1/this_is_blast_replica` (private, `info@apps.com.tr` invited).
+Brief: `Game Developer Case.pptx` in Downloads; full spec digest in the auto-memory file
+`case-is-live-in-this-repo.md`. The short version: This is Blast core WITHOUT merge,
+10x10 cube grid, 5 slots, top shooter row selectable + 2 queue rows visible, Hidden
+Shooter feature, JSON-driven sample level (solvable, all 5 colors, includes a hidden),
+win/fail overlays with restart, direct play on Editor Play, Unity 6000.0.68f1 + URP.
+Evaluation order: bug-free > juiciness > architecture > performance > git usage.
+
+**Case status:**
+- Art swap — done, 22/22 green. `AppsAssets.unitypackage` imported (their WalkingCube
+  shooter, Gun, Cube.fbx, per-color materials + Hidden + Outline, self-contained TCP2
+  `CustomShader`, SplashEffect, Splash.wav, Baloo2 font). `Palette.asset` rows now bind
+  the AppsAssets materials (`Surprise` → `Cube_Hidden`), tints synced from each
+  material's `_BaseColor`. Deleted: `00_GAME/Materials`, `00_GAME/Meshes` (RoundedCube),
+  `JMO Assets` (49MB paid TCP2 install — their materials bind the generated shader inside
+  AppsAssets, nothing needed the store install). Scene keeps the camera/light/volume rig,
+  the scope, imported `GameArea`+`Floor`, and a `Cannon` object Salih is hand-building
+  into the shooter prefab (WalkingCube + ammo TMP text).
+- Next: Domain shooter types (`Shooter`, queue with selectable front row, 5-slot row),
+  then firing/win/fail rules, then JSON level format, then presentation.
+
+The phase plan below is the **portfolio** plan. It resumes after the case ships; the case
+overrides it wherever they disagree (no merge feature, their art, 10x10 single layer).
+
 **Phase 0 — infrastructure**
 
 - 0.1 packages + `UNITASK_DOTWEEN_SUPPORT` define — done
