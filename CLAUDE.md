@@ -102,7 +102,19 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   IsFailed's letter too. Probes: reading the top authored layer instead of the living one
   turned exactly the aimed test red; dropping the IsFull half was caught by SlotRow's own
   empty-slot guard (and the assert would catch the skip-empties variant).
-- Next: the JSON level format + parser (Infrastructure) and the sample level, then the
+- `LevelDefinition` + `ParsedLevel` + `LevelParser` (Infrastructure) — done, 49/49 green.
+  The JSON schema: `boardRows` (letter strings Y/R/B/G/O, index 0 = the FRONT row, one
+  letter per column — dimensions derive from string length and row count, so nothing can
+  disagree), `slotCount`, `shooterColumns` (each `{"shooters":[...]}` front-first with
+  `color`/`ammo`/`hidden` — the wrapper object exists because JsonUtility cannot read
+  jagged arrays). The DTO's fields are lowercase on purpose (JsonUtility maps strictly by
+  name; the type IS the file contract, the future HTML editor writes it too). The parser
+  is the trust boundary: JsonUtility never fails on missing keys — it hands back nulls
+  and zeros — so every refusal is an explicit FormatException naming the file location;
+  nothing is defaulted. Zero ammo is refused HERE because SlotRow reads zero as an empty
+  slot. Probe: building the grid upside down turned exactly the aimed test red.
+  Level files live in `Assets/00_GAME/Levels/` — the future HTML editor's export target.
+- Next: the sample level (all 5 colours, a hidden shooter, solvable), then the
   Application game loop, then presentation.
 
 The phase plan below is the **portfolio** plan. It resumes after the case ships; the case
