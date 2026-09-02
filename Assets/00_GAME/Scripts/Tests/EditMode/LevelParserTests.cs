@@ -21,11 +21,15 @@ namespace Blast.Tests
         #region Fields
 
         /// <summary>
-        /// A 3x2 level with every part deliberately asymmetric: rows differ from columns,
-        /// row 0 differs from row 1, and the two queue columns differ in length.
+        /// A 3x2x2 level with every part deliberately asymmetric: rows differ from columns,
+        /// row 0 differs from row 1, the upper layer differs from the ground layer cell for
+        /// cell, and the two queue columns differ in length.
         /// </summary>
         const string ValidLevel = @"{
-            ""boardRows"": [""YRB"", ""GOR""],
+            ""boardLayers"": [
+                { ""rows"": [""YRB"", ""GOR""] },
+                { ""rows"": [""OBG"", ""RYO""] }
+            ],
             ""slotCount"": 2,
             ""shooterColumns"": [
                 { ""shooters"": [
@@ -43,7 +47,7 @@ namespace Blast.Tests
         #region Public Methods
 
         /// <summary>
-        /// The board comes out exactly as authored: boardRows[0] is the front row and each
+        /// The board comes out exactly as authored: rows[0] of the ground layer is the front row and each
         /// string reads left to right across the columns. A transposed or upside-down build
         /// still fills every cell, so only spot checks on an asymmetric grid can tell.
         /// </summary>
@@ -60,6 +64,36 @@ namespace Blast.Tests
                 "The last letter of the first row is not at the last column of the front row.");
             Assert.AreEqual(BlastColor.Orange, level.Board.Get(new Cell(1, 1, 0)),
                 "The grid is transposed or upside down.");
+        }
+
+        /// <summary>
+        /// Layers come out ground first: boardLayers[0] is the layer on the floor and each
+        /// later entry stacks on top of it. Swapped layers put the wrong colour on top of
+        /// every stack, which is the colour the first shot has to match.
+        /// </summary>
+        [Test]
+        public void Parse_BuildsTheLayersGroundFirst()
+        {
+            var level = LevelParser.Parse(ValidLevel);
+
+            Assert.AreEqual(2, level.Board.Layers, "The layer count did not come from the layer list.");
+            Assert.AreEqual(BlastColor.Orange, level.Board.Get(new Cell(0, 0, 1)),
+                "The second layer's first letter is not on top of the front-left cell.");
+            Assert.AreEqual(BlastColor.Yellow, level.Board.Get(new Cell(1, 1, 1)),
+                "The upper layer is transposed, upside down or read through the ground layer.");
+        }
+
+        /// <summary>
+        /// A layer with a different row count is refused - a shallower upper layer would
+        /// leave its missing rows reading as Yellow, the enum's zero, without a word.
+        /// </summary>
+        [Test]
+        public void Parse_RefusesLayersOfDifferentDepth()
+        {
+            var broken = ValidLevel.Replace(@"[""OBG"", ""RYO""]", @"[""OBG""]");
+
+            Assert.Throws<FormatException>(() => LevelParser.Parse(broken),
+                "A layer shallower than the ground layer was accepted.");
         }
 
         /// <summary>

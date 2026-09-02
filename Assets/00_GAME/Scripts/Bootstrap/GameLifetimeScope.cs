@@ -105,7 +105,7 @@ namespace Blast.Bootstrap
 
             PaletteColorMaterials materials = new PaletteColorMaterials(_palette);
             _spawner.Construct(level.Board, level.Shooters, level.Slots, materials);
-            _director.Construct(loop, level.Slots, _spawner, materials);
+            _director.Construct(loop, level.Slots, _spawner);
         }
 
         #endregion

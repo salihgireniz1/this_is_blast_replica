@@ -1,15 +1,17 @@
 {
-  "boardRows": [
-    "RRRRRBBBBB",
-    "RRRRRBBBBB",
-    "YYYYYGGGGG",
-    "YYYYYGGGGG",
-    "OOOOOOOOOO",
-    "BBBBBRRRRR",
-    "GGGGGYYYYY",
-    "OOOOOYYYYY",
-    "RRRRRBBBBB",
-    "GGGGGOOOOO"
+  "boardLayers": [
+    { "rows": [
+      "RRRRRBBBBB",
+      "RRRRRBBBBB",
+      "YYYYYGGGGG",
+      "YYYYYGGGGG",
+      "OOOOOOOOOO",
+      "BBBBBRRRRR",
+      "GGGGGYYYYY",
+      "OOOOOYYYYY",
+      "RRRRRBBBBB",
+      "GGGGGOOOOO"
+    ]}
   ],
   "slotCount": 5,
   "shooterColumns": [

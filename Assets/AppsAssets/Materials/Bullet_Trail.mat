@@ -228,8 +228,8 @@ Material:
     - _ZWrite: 0
     - __dummy__: 0
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 0.5686275}
-    - _Color: {r: 1, g: 1, b: 1, a: 0.5686275}
+    - _BaseColor: {r: 0.8066038, g: 0.97741514, b: 1, a: 0.38431373}
+    - _Color: {r: 0.8066038, g: 0.97741514, b: 1, a: 0.38431373}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _HColor: {r: 1, g: 1, b: 1, a: 1}

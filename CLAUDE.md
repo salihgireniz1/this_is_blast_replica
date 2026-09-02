@@ -106,8 +106,9 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   turned exactly the aimed test red; dropping the IsFull half was caught by SlotRow's own
   empty-slot guard (and the assert would catch the skip-empties variant).
 - `LevelDefinition` + `ParsedLevel` + `LevelParser` (Infrastructure) — done, 49/49 green.
-  The JSON schema: `boardRows` (letter strings Y/R/B/G/O, index 0 = the FRONT row, one
-  letter per column — dimensions derive from string length and row count, so nothing can
+  The JSON schema: `boardLayers` (ground layer first, each `{"rows":[...]}`; rows are
+  letter strings Y/R/B/G/O, index 0 = the FRONT row, one letter per column; `boardRows`
+  was the single-layer shape until 2026-09-02 — dimensions derive from string length and row count, so nothing can
   disagree), `slotCount`, `shooterColumns` (each `{"shooters":[...]}` front-first with
   `color`/`ammo`/`hidden` — the wrapper object exists because JsonUtility cannot read
   jagged arrays). The DTO's fields are lowercase on purpose (JsonUtility maps strictly by
@@ -365,7 +366,7 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   `ShooterMotion.Defaults` failed silently and printed nothing). **Play-verification trap:** with the
   editor unfocused Play only ticks during a command, so a multi-eval "sample positions" loop
   sees a frozen game; set `Application.runInBackground = true` in the first eval and hook an
-  `EditorApplication.update` logger instead of polling.
+  `EditorApplication.update` logger instead of polling. **And unsubscribe it:** a logger installed through eval outlives Play mode, and one that touches scene objects then throws `MissingReferenceException` every editor frame until a domain reload (`EditorUtility.RequestScriptReload()` clears it; hit 2026-09-02). Hook `EditorApplication.playModeStateChanged` to remove it, or read the log and reload.
 - `ShotAudio` (Presentation) - done, 63/63 green, verified in Play (five slots chain-firing,
   50 cubes shot, the scene holds exactly 2 AudioSources and the peak count playing at once
   was 2; before, every one of the 40 pooled splashes carried its own source). Salih's report:
@@ -398,6 +399,108 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   the eval reported a 5 s main-thread timeout but had applied and saved (check the file, not
   the reply). `LevelSpawnerTests` injected its stand-in prefab by the old path `_cubePrefab`
   and went red in SetUp with a null reference; it now writes `_prefabs.Cube`.
+- Layered levels, chunk 1 of 3: format + parser - done, 65/65 green. Salih asked for a
+  hard level (3 layers, as many cubes as fit); `BoardModel` already removes top layer first
+  but the file format was one layer. `boardRows` became `boardLayers` (a wrapper per layer
+  because JsonUtility cannot read `string[][]`, same reason as `shooterColumns`); the ground
+  layer sets the size and every other layer must match it in depth and width, refused with
+  the location named. `Level_01.json` wrapped in one layer (force-reimported: the editor
+  trap above). Red first: 4 tests "The level has no boardRows".
+- Layered levels, chunk 2 of 3: `LevelSpawner` - done, 67/67 green. Two silent bugs a
+  layered level would have hit: `SpawnCubes` listed layers ground-first while the domain
+  removes top-first, so `PopFrontCube` shrank the bottom cube and left the top floating
+  (now the inner loop runs `Layers - 1` down to 0 and `CellOfCubeView` inverts to match);
+  and `FlowBoardColumn` flowed on every pop, but a row only falls when its whole stack is
+  gone - it now returns null unless `_cubeFront % Layers == 0`, the row boundary. The
+  director is untouched: it already treats a null slide as "nothing moved". Single-layer
+  levels are unchanged (`% 1` is always 0). Red first with the right numbers: the popped
+  view sat at y 0.45 where the top was 2.35, and a survivor slid 0.95 on the first shot.
+- Layered levels, chunk 3 of 3: `Level_02.json` - done, 67/67 green, verified in Play (600
+  cubes, 50 shooters, back row at z 13.8 running off the top of the frame, 3 layers
+  stacked to y 2.35, zero errors). Salih's call: 10x20x3 = 600 cubes, the board extends
+  backwards past GameArea and the camera; the case's own sample stays `Level_01`. **The
+  scene's scope now points at `Level_02`** - swap `_level` back to `Level_01` before the
+  case ships. The file is generated, not hand-written: `Docs/Tools/generate_level_02.py`
+  simulates the game's own rules (leftmost matching exposed cube, five slots, fail when
+  every slot is occupied and targetless), starts from one queue column per colour (always
+  winnable: every colour is at a front) and scrambles it with cross-column swaps, keeping
+  a swap only while a colour-aware player still wins under 8 random firing interleavings;
+  the kept seed (1) wins 40/40 interleavings, and the naive player (always the leftmost
+  front) loses. Ammo == cubes per colour (120 each), 6 hidden, columns 9-12 deep. **Every
+  stack is one colour** (the three cubes on a cell match; 200 stacks, 40 per colour) -
+  Salih's rule after the first cut mixed colours within a stack and read as impossible:
+  clearing one cell then needs three different shooters. Re-verified in Play: 600 cubes,
+  200 stacks, zero mixed, zero errors. **The
+  finding that shaped the generator:** seated shooters strip their own colours off the
+  exposed layer, so the exposed set converges to whatever colour is NOT seated - a queue
+  whose fronts do not offer every colour often enough is unwinnable however many cubes it
+  has. A random queue never won; a queue built from a recorded play only won under the
+  exact firing order it was recorded with. Deeper queue rows spawn off-screen behind the
+  visible three and step forward as usual.
+- A shooter finishes a stack before moving on - done, 67/67 green, verified in Play (a blue
+  shooter selected via `OnShooterSelected`, columns losing cubes logged per frame: col6 x3,
+  col7 x3, col9 x3, zero errors). Salih's report: on a layered level the shooter killed the
+  top cube of one stack, then hopped to ANOTHER matching column, then back. Cause: the
+  director held the column for the whole bullet + death + flow (0.27 s) while the fire
+  interval is 0.16 s, so the next `TryShoot` saw the column held and `TryFindTarget` skipped
+  it to the next match. The hold exists so no shot lands on a cube still sliding into place;
+  while a stack still stands nothing slides, so `ShotVisual` now asks the new
+  `LevelSpawner.StackStillStands` right after the pop and only holds, flows and releases
+  when the row actually falls. With one-colour stacks the leftmost match is then the same
+  column shot after shot, which is the original's top-down order. No new test: the domain
+  already sticks (no hold in EditMode), the hop lived purely in presentation timing. A
+  mixed-colour stack would still hop by design - the domain has no target lock, and the
+  level rule above says stacks are one colour.
+- Bullets no longer wear the shooter's colour - done, 67/67 green. Salih's call: one
+  standard bullet, the prefab's own `Gun.mat`. The director lost `IColorMaterials` entirely
+  (its only use was the bullet), so `Construct` is three args and the scope passes
+  `materials` to the spawner alone. `CubeView.Wear` stays: the spawner dresses board cubes
+  and shooters with it.
+- Dying cubes rattle while they shrink - done, 67/67 green, verified in Play (three fronts
+  seated and firing, zero errors from the run). Salih's call: a small random positional
+  jitter during the swell-and-collapse. `DOShakePosition(ShrinkDuration, ShakeStrength)`
+  fired alongside the `DOScale` (not awaited: same duration, ends the same frame; DOTween's
+  default fadeOut makes it die down with the scale). `DOPunchPosition` rejected: it is one
+  directional hit that springs back, not a random rattle. New `CubeDeath.ShakeStrength`
+  (default 0.15, written into the scene via eval - the new-struct-field-arrives-as-0 trap
+  again). Vibrato left at DOTween's default 10; add a field if 0.25 s wants more shakes.
+- Landing punch is rotation, not position - done, 67/67 green, verified in Play (a column
+  flowed: 57 survivors tilted to a 15.0 degree peak and every cube read 0 degrees again
+  once settled). Salih's call. `DOPunchPosition(back * SettleDistance)` became
+  `DOPunchRotation(Vector3.left * SettleAngle)` - negative x tips the top toward -z, the
+  way the cube was travelling, so it reads as inertia. `CubeDeath.SettleDistance` (0.1
+  world units) is now `SettleAngle` (15 degrees), written into the scene by hand because
+  a renamed struct field arrives as 0. **New rule the swap needed:** the flow's `DOKill`
+  used to be healed by the next slide targeting an absolute rest, but a rotation punch
+  killed mid-rock leaves the cube tilted and nothing else ever writes its rotation, so
+  `FlowBoardColumn` resets `rotation = identity` right after the kill.
+- Cube death in three beats - done, 67/67 green, verified in Play (per-frame log of every
+  cube: swell peaked at 1.20 = 0.9 x 1.33, rock peaked at 20 degrees, collapse reached
+  0.05 before Destroy, everything back to 0.90 between deaths, zero errors). Salih's
+  spec: on impact a jelly `DOPunchRotation` (fire-and-forget, `.ToUniTask().Forget()`)
+  and a bouncy `DOPunchScale` start together; the `DOScale(0)` collapse starts the moment
+  the swell ends (awaited). No `Sequence` - **house rule from Salih: chain tweens with
+  `.ToUniTask()` and `await`, or `.Forget()` when nothing waits, never `Append`.** The old
+  `InBack` shrink and the parallel `DOShakePosition` are gone with their fields
+  (`ShrinkDuration`, `ShrinkOvershoot`, `ShakeStrength`); `CubeDeath` now has `RockAngle`
+  20 / `RockDuration` 0.3 / `SwellScale` 0.3 / `SwellDuration` 0.12 / `CollapseDuration`
+  0.12, written into the scene by hand (new struct fields arrive as 0). The rock outlives
+  the collapse on purpose and is `DOKill`ed right before Destroy. The director's other
+  tween awaits were converted to `.ToUniTask()` in the same method; `OnSelected` and
+  `Leave` still use the bare `await tween` (same extension, same behaviour).
+- Swell exposed as fields, and the vibrato trap - done, 67/67 green, verified in Play
+  (one dying cube per frame: x 1.09 -> 0.66 -> 0.90 -> 1.09 -> 0.84, y the mirror image,
+  yaw +20 / -14 with four sign changes, then the collapse to 0.05). `CubeDeath.SwellScale`
+  is a `Vector3` now ((0.3, -0.25, 0.3): wider and flatter, then the reverse - the
+  squash-and-stretch that reads as jelly; uniform reads as a breath), plus `SwellVibrato`
+  and `SwellElasticity` (0-1). **The trap, measured before it was understood:** the first
+  cut (vibrato 8, 0.35 s, elasticity 1) produced one bump and no bounce at all. DOTween's
+  punch cuts itself into `(int)(vibrato * duration)` segments, so vibrato is per SECOND:
+  8 x 0.35 = 2 segments = out and back, and the opposite swing that elasticity governs
+  only exists from 3 segments up. 20 x 0.35 = 7 segments is the jelly. The rock had the
+  same problem (4 x 0.3 = 1, clamped to 2: a single nod) and is now vibrato 15 inline;
+  Salih had already switched its axis to `Vector3.up` (a yaw shimmy, not a forward tip)
+  and elasticity to 1 by hand, both kept. Tooltips say per-second now.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

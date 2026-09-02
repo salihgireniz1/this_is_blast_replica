@@ -4,7 +4,9 @@
 //   shooter at the world position its address maps to - and, from then on, answering
 //   which view stands at which front and moving the survivors when a front falls. It
 //   mirrors the domain's nothing-moves bookkeeping: views stay in their authored lists
-//   and a front index walks forward.
+//   and a front index walks forward. The lists run top layer first within each row, because
+//   that is the order BoardModel.Remove hands cubes out; a row's survivors flow only once
+//   its whole stack is gone, which the front index says by landing on a row boundary.
 // NOT its responsibility: gameplay decisions or pacing. GameDirector decides WHEN a view
 //   is popped, killed or stepped; this type only knows WHERE everything is, because it
 //   owns the layout numbers.
@@ -171,16 +173,28 @@ namespace Blast.Presentation
             return front;
         }
 
+        /// <summary>Whether the front stack of a column still has cubes standing after the last
+        /// pop. The front index walks Layers views per row, so anything but a row boundary
+        /// means the row has not fallen yet and nothing behind it is going to move.</summary>
+        /// <param name="column">The board column to ask about.</param>
+        public bool StackStillStands(int column) => _cubeFront[column] % _board.Layers != 0;
+
         /// <summary>Flows a board column's surviving cubes one cell toward the player, each
-        /// landing with a small overshoot-and-bounce.</summary>
+        /// landing with a small forward tip that rocks back upright.</summary>
         /// <param name="column">The column that just lost its front.</param>
         /// <param name="duration">How long the slide takes.</param>
-        /// <param name="settleDistance">How far a cube overshoots its cell before bouncing back.</param>
+        /// <param name="settleAngle">Degrees a cube tips forward on landing before rocking back.</param>
         /// <param name="settleDuration">How long that bounce takes.</param>
         /// <returns>The slide the director may await before the column is shootable again;
         /// null when nothing was left to move.</returns>
-        public Tween FlowBoardColumn(int column, float duration, float settleDistance, float settleDuration)
+        public Tween FlowBoardColumn(int column, float duration, float settleAngle, float settleDuration)
         {
+            // A row falls only when its last cube dies.
+            if (StackStillStands(column))
+            {
+                return null;
+            }
+
             List<CubeView> views = _cubeColumns[column];
             int flowed = ++_cubeFlowed[column];
             Tween slide = null;
@@ -192,15 +206,18 @@ namespace Blast.Presentation
                 Vector3 rest = authored - new Vector3(0f, 0f, flowed * _boardLayout.CellSize);
 
                 // Kill first: the previous flow's tween still holds the previous rest as
-                // its target and would drag the cube back when it lands. A landing bounce
-                // cut short by this kill is healed the same way: the next slide targets the
-                // absolute rest, wherever the bounce left the cube.
+                // its target and would drag the cube back when it lands. The slide heals
+                // itself by targeting the absolute rest, but a landing rock cut short by
+                // this kill would leave the cube tilted, so the rotation is reset by hand.
                 view.DOKill();
+                view.rotation = Quaternion.identity;
                 slide = view.DOMove(rest, duration)
                     .SetEase(Ease.OutSine)
                     .OnComplete(() => view
-                        .DOPunchPosition(Vector3.back * settleDistance, settleDuration, vibrato: 2, elasticity: 0.5f)
+                        .DOPunchRotation(Vector3.left * settleAngle, settleDuration, vibrato: 2, elasticity: 0.5f)
                         .SetEase(Ease.OutBounce));
+                // Vector3.left: a negative x rotation tips the top toward -z, the way the
+                // cube was travelling, so the rock reads as inertia and not as a nod back.
                 // ponytail: the OnComplete closure allocates per cube per shot; a pooled
                 // Sequence is the upgrade if the phase 5 profiler flags it.
             }
@@ -236,8 +253,10 @@ namespace Blast.Presentation
             {
                 _cubeColumns[column] = new List<CubeView>(_board.Rows * _board.Layers);
 
+                // Top layer first within a row: the domain removes a stack from the top down,
+                // and PopFrontCube must hand out the same cube the domain just removed.
                 for (int row = 0; row < _board.Rows; row++)
-                for (int layer = 0; layer < _board.Layers; layer++)
+                for (int layer = _board.Layers - 1; layer >= 0; layer--)
                 {
                     Cell cell = new Cell(column, row, layer);
                     CubeView cube = Instantiate(_prefabs.Cube, CubeWorldPosition(cell), Quaternion.identity, home);
@@ -285,7 +304,7 @@ namespace Blast.Presentation
         Cell CellOfCubeView(int column, int index)
         {
             int row = index / _board.Layers;
-            int layer = index % _board.Layers;
+            int layer = _board.Layers - 1 - index % _board.Layers;
 
             return new Cell(column, row, layer);
         }

@@ -20,8 +20,8 @@ namespace Blast.Infrastructure
     {
         #region Fields
 
-        /// <summary>One string per board row, front row first, one colour letter per column.</summary>
-        public string[] boardRows;
+        /// <summary>The board's layers, ground layer first; each stacks on the one before it.</summary>
+        public BoardLayerDefinition[] boardLayers;
 
         /// <summary>How many slots the level's slot row holds.</summary>
         public int slotCount;
@@ -32,6 +32,14 @@ namespace Blast.Infrastructure
         #endregion
 
         #region Nested Types
+
+        /// <summary>One layer of the board: a full grid of colour letters.</summary>
+        [Serializable]
+        public sealed class BoardLayerDefinition
+        {
+            /// <summary>One string per board row, front row first, one colour letter per column.</summary>
+            public string[] rows;
+        }
 
         /// <summary>One column of shooters, front first.</summary>
         [Serializable]

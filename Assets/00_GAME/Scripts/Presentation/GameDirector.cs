@@ -71,9 +71,6 @@ namespace Blast.Presentation
         /// <summary>The view registry: who stands where. Handed in by Construct.</summary>
         LevelSpawner _spawner;
 
-        /// <summary>The colour table bullets dress from. Handed in by Construct.</summary>
-        IColorMaterials _materials;
-
         /// <summary>Whether the verdict has been announced; it only happens once.</summary>
         bool _verdictAnnounced;
 
@@ -85,13 +82,11 @@ namespace Blast.Presentation
         /// <param name="loop">The use case every action goes through.</param>
         /// <param name="slots">The slot row, for ammo reads.</param>
         /// <param name="spawner">The view registry.</param>
-        /// <param name="materials">The colour table bullets dress from.</param>
-        public void Construct(GameLoop loop, SlotRow slots, LevelSpawner spawner, IColorMaterials materials)
+        public void Construct(GameLoop loop, SlotRow slots, LevelSpawner spawner)
         {
             _loop = loop;
             _slots = slots;
             _spawner = spawner;
-            _materials = materials;
         }
 
         /// <summary>Turns a LeanSelectByFinger selection of a front-row shooter into a play.</summary>
@@ -126,10 +121,8 @@ namespace Blast.Presentation
                 return;
             }
 
-            // Domain first, views second: these reads must see the seated shooter, and
-            // the slot may free long before the bullet material is last needed.
+            // Domain first, views second: this read must see the seated shooter.
             int ammo = _slots.AmmoAt(slot);
-            Material bulletMaterial = _materials.MaterialOf(_slots.ShooterAt(slot).Color);
 
             ShooterView view = _spawner.PopFrontShooter(column);
             _spawner.StepQueueForward(column, _motion.StepDuration);
@@ -144,15 +137,14 @@ namespace Blast.Presentation
             view.SetRunning(false);
             view.FaceForward(_motion.TurnDuration);
 
-            FireLoop(slot, view, ammo, bulletMaterial).Forget();
+            FireLoop(slot, view, ammo).Forget();
         }
 
         /// <summary>One seated shooter's whole life: fire, wait when targetless, leave when dry.</summary>
         /// <param name="slot">The slot the shooter fires from.</param>
         /// <param name="view">The shooter's visual.</param>
         /// <param name="ammo">Its own shots - see the header for why the slot is not read.</param>
-        /// <param name="bulletMaterial">What this shooter's bullets wear.</param>
-        async UniTaskVoid FireLoop(int slot, ShooterView view, int ammo, Material bulletMaterial)
+        async UniTaskVoid FireLoop(int slot, ShooterView view, int ammo)
         {
             while (ammo > 0)
             {
@@ -166,7 +158,7 @@ namespace Blast.Presentation
                     ammo--;
                     view.SetAmmo(ammo);
                     view.PlayShoot();
-                    ShotVisual(view, bulletMaterial, hitColumn).Forget();
+                    ShotVisual(view, hitColumn).Forget();
                     AnnounceIfDecided();
                 }
                 else
@@ -186,19 +178,27 @@ namespace Blast.Presentation
 
         /// <summary>One shot on screen: the bullet flies, the cube dies, the column flows.</summary>
         /// <param name="shooter">The visual that fired.</param>
-        /// <param name="bulletMaterial">What the bullet wears.</param>
         /// <param name="hitColumn">The board column the domain says was hit.</param>
-        async UniTaskVoid ShotVisual(ShooterView shooter, Material bulletMaterial, int hitColumn)
+        async UniTaskVoid ShotVisual(ShooterView shooter, int hitColumn)
         {
             // Popped now, not at impact - the registry must hand views out in domain
             // removal order, or two in-flight shots at one column swap their victims.
             CubeView cube = _spawner.PopFrontCube(hitColumn);
 
-            // Held until the survivors have landed: the domain already sees the next cube
-            // as the front, but the player must not watch a shot land on a cube that is
-            // still sliding into place. Synchronous, before the first await, so no other
-            // shooter's TryShoot in this frame can pick the column either.
-            _loop.HoldColumn(hitColumn);
+            // Held until the survivors have landed, but only when a row actually falls: the
+            // domain already sees the next cube as the front, and the player must not watch
+            // a shot land on a cube that is still sliding into place. While the stack still
+            // stands, the next cube is right there under the dying one, so no hold - and
+            // because the hold is what made TryFindTarget skip this column, skipping it here
+            // is what keeps a shooter on one stack until it is gone instead of hopping to
+            // the next matching column mid-stack (the original finishes a stack top-down).
+            // Synchronous, before the first await, so no other shooter's TryShoot in this
+            // frame can pick a falling column either.
+            bool rowFalls = !_spawner.StackStillStands(hitColumn);
+            if (rowFalls)
+            {
+                _loop.HoldColumn(hitColumn);
+            }
 
             shooter.TurnTo(cube.transform.position, _motion.TurnDuration);
 
@@ -210,27 +210,48 @@ namespace Blast.Presentation
             _pools.Splashes.Take(muzzle, Quaternion.LookRotation(aim));
             _audio.Play();
 
+            // The bullet keeps the prefab's own material: one bullet colour for every shooter.
             CubeView bullet = _pools.Bullets.Take(muzzle);
-            bullet.Wear(bulletMaterial);
 
-            await bullet.transform.DOMove(cube.transform.position, _firing.FlightDuration).SetEase(Ease.Linear);
+            await bullet.transform.DOMove(cube.transform.position, _firing.FlightDuration)
+                .SetEase(Ease.Linear)
+                .ToUniTask();
 
             _pools.Bullets.Return(bullet);
 
-            // Death first, flow second - the original's order. The survivors only start
-            // sliding once the dead cube is gone, so the eye reads two beats, not one blur.
-            // InBack swells before it collapses; at DOTween's default overshoot (1.7) the
-            // swell peaks at +10% and is invisible, so the overshoot is a tuned field.
-            await cube.transform.DOScale(Vector3.zero, _cubeDeath.ShrinkDuration)
-                .SetEase(Ease.InBack, _cubeDeath.ShrinkOvershoot);
+            // Death in three beats. The rock and the swell start together on impact; the
+            // rock is fire-and-forget because nothing waits for it, the swell is awaited
+            // because the collapse starts the moment it ends. Rotation and scale are
+            // different properties, so the rock keeps wobbling through the collapse.
+            Transform dying = cube.transform;
+            // vibrato is per second: 15 x 0.3 s = 4 segments, so the rock swings back twice.
+            dying.DOPunchRotation(Vector3.up * _cubeDeath.RockAngle, _cubeDeath.RockDuration, vibrato: 15, elasticity: 1f)
+                .ToUniTask()
+                .Forget();
+            await dying.DOPunchScale(_cubeDeath.SwellScale, _cubeDeath.SwellDuration, _cubeDeath.SwellVibrato, _cubeDeath.SwellElasticity)
+                .ToUniTask();
+            await dying.DOScale(Vector3.zero, _cubeDeath.CollapseDuration)
+                .SetEase(Ease.InQuad)
+                .ToUniTask();
 
+            // The rock may still be running; kill it explicitly rather than leaning on
+            // safe mode to notice the target is gone.
+            dying.DOKill();
             Destroy(cube.gameObject);
 
+            // Death first, flow second - the original's order. The survivors only start
+            // sliding once the dead cube is gone, so the eye reads two beats, not one blur.
+
+            if (!rowFalls)
+            {
+                return;
+            }
+
             Tween slide = _spawner.FlowBoardColumn(
-                hitColumn, _cubeDeath.FlowDuration, _cubeDeath.SettleDistance, _cubeDeath.SettleDuration);
+                hitColumn, _cubeDeath.FlowDuration, _cubeDeath.SettleAngle, _cubeDeath.SettleDuration);
             if (slide != null)
             {
-                await slide;
+                await slide.ToUniTask();
             }
 
             _loop.ReleaseColumn(hitColumn);
@@ -345,21 +366,45 @@ namespace Blast.Presentation
         [Serializable]
         public struct CubeDeath
         {
-            /// <summary>How long a dying cube shrinks away.</summary>
-            [Tooltip("Seconds a hit cube takes to shrink to nothing.")]
-            public float ShrinkDuration;
+            /// <summary>Degrees a hit cube rocks forward as it dies; a jelly wobble that runs through the collapse.</summary>
+            [Tooltip("Degrees a hit cube rocks forward on impact. The wobble runs alongside the swell and the collapse.")]
+            public float RockAngle;
 
-            /// <summary>InBack's overshoot: how much the cube swells before collapsing (3 = +25% at mid-tween).</summary>
-            [Tooltip("InBack overshoot: how much the cube swells before collapsing. DOTween's default is 1.7; 3 gives +25% at mid-tween.")]
-            public float ShrinkOvershoot;
+            /// <summary>How long the rock keeps wobbling.</summary>
+            [Tooltip("Seconds the impact rock keeps wobbling.")]
+            public float RockDuration;
+
+            /// <summary>How much a hit cube swells on impact, per axis, as a fraction of its size.
+            /// Opposite signs on x/z against y give squash-and-stretch; uniform reads as a breath.</summary>
+            [Tooltip("Impact swell per axis, as a fraction of size. (0.3, -0.25, 0.3) = wider and flatter, then the reverse: jelly. Uniform = a breath.")]
+            public Vector3 SwellScale;
+
+            /// <summary>How long the swell wobbles before the collapse starts.</summary>
+            [Tooltip("Seconds the swell wobbles. The collapse starts the moment it ends. Under ~0.25 the wobble has no frames to show in.")]
+            public float SwellDuration;
+
+            /// <summary>Oscillations per second. DOTween cuts the punch into vibrato x duration
+            /// segments (rounded down): 2 segments is out-and-back with no bounce at all, the
+            /// first opposite swing needs 3, a visible jelly needs 6 or more.</summary>
+            [Tooltip("Oscillations per SECOND, not per punch. Segments = vibrato x duration, rounded down: 2 = out and back, no bounce; 3 = one opposite swing; 6+ = jelly. 20 x 0.35 s = 7.")]
+            public int SwellVibrato;
+
+            /// <summary>How far the swell overshoots the other way: 0 = swell and settle, 1 = shrink as far as it swelled.</summary>
+            [Tooltip("0 = swells then settles; 1 = shrinks as far as it swelled on the way back. Jelly wants ~1.")]
+            [Range(0f, 1f)]
+            public float SwellElasticity;
+
+            /// <summary>How long the collapse to nothing takes, after the swell.</summary>
+            [Tooltip("Seconds the cube takes to collapse to nothing once the swell has ended.")]
+            public float CollapseDuration;
 
             /// <summary>How long a column's survivors take to flow one cell forward.</summary>
             [Tooltip("Seconds a column's survivors take to slide one cell forward, after the shrink has finished.")]
             public float FlowDuration;
 
-            /// <summary>How far a flowed cube overshoots its cell before bouncing back into it.</summary>
-            [Tooltip("World units a flowed cube overshoots past its cell before bouncing back.")]
-            public float SettleDistance;
+            /// <summary>How far a flowed cube tips forward on landing before rocking back upright.</summary>
+            [Tooltip("Degrees a flowed cube tips forward on landing before rocking back upright.")]
+            public float SettleAngle;
 
             /// <summary>How long that landing bounce takes.</summary>
             [Tooltip("Seconds that landing bounce takes.")]
@@ -368,10 +413,15 @@ namespace Blast.Presentation
             /// <summary>The values a fresh director starts with - the clone's numbers, which read right.</summary>
             public static CubeDeath Defaults => new CubeDeath
             {
-                ShrinkDuration = 0.15f,
-                ShrinkOvershoot = 3f,
+                RockAngle = 20f,
+                RockDuration = 0.3f,
+                SwellScale = new Vector3(0.3f, -0.25f, 0.3f),
+                SwellDuration = 0.35f,
+                SwellVibrato = 20,
+                SwellElasticity = 1f,
+                CollapseDuration = 0.12f,
                 FlowDuration = 0.15f,
-                SettleDistance = 0.1f,
+                SettleAngle = 15f,
                 SettleDuration = 0.15f,
             };
         }
