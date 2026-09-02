@@ -61,8 +61,10 @@ namespace Blast.Tests
             _spawner.Construct(
                 new BoardModel(1, 3, 1), new ShooterQueue(new Shooter[0][]), new SlotRow(1), new NoMaterials());
 
-            Transform front = _spawner.transform.GetChild(0);
-            Transform survivor = _spawner.transform.GetChild(2);
+            // The spawner groups its views by kind; the board lives under "Cubes".
+            Transform cubes = _spawner.transform.Find("Cubes");
+            Transform front = cubes.GetChild(0);
+            Transform survivor = cubes.GetChild(2);
             Vector3 frontStart = front.position;
 
             // The fast case: both shots resolve before either flow has tweened a frame.

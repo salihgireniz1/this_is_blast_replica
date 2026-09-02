@@ -233,12 +233,23 @@ namespace Blast.Presentation
 
         #region Private Methods
 
+        /// <summary>Makes an empty child to spawn one kind of view under, so the hierarchy reads by kind.</summary>
+        /// <param name="name">What the child is called.</param>
+        Transform NewGroup(string name)
+        {
+            Transform group = new GameObject(name).transform;
+            group.SetParent(transform, false);
+
+            return group;
+        }
+
         /// <summary>Places one CubeView per board cell, coloured as authored.</summary>
         void SpawnCubes()
         {
             _cubeColumns = new List<CubeView>[_board.Columns];
             _cubeFront = new int[_board.Columns];
             _cubeFlowed = new int[_board.Columns];
+            Transform home = NewGroup("Cubes");
 
             for (int column = 0; column < _board.Columns; column++)
             {
@@ -248,7 +259,7 @@ namespace Blast.Presentation
                 for (int layer = 0; layer < _board.Layers; layer++)
                 {
                     Cell cell = new Cell(column, row, layer);
-                    CubeView cube = Instantiate(_cubePrefab, CubeWorldPosition(cell), Quaternion.identity, transform);
+                    CubeView cube = Instantiate(_cubePrefab, CubeWorldPosition(cell), Quaternion.identity, home);
 
                     cube.Wear(_materials.MaterialOf(_board.Get(cell)));
                     _cubeColumns[column].Add(cube);
@@ -261,6 +272,7 @@ namespace Blast.Presentation
         {
             _queueColumns = new List<ShooterView>[_shooters.Columns];
             _queueFront = new int[_shooters.Columns];
+            Transform home = NewGroup("Shooters");
 
             for (int column = 0; column < _shooters.Columns; column++)
             {
@@ -269,7 +281,7 @@ namespace Blast.Presentation
                 for (int depth = 0; depth < _shooters.Remaining(column); depth++)
                 {
                     Vector3 position = QueueWorldPosition(column, depth);
-                    ShooterView view = Instantiate(_shooterPrefab, position, Quaternion.identity, transform);
+                    ShooterView view = Instantiate(_shooterPrefab, position, Quaternion.identity, home);
                     Shooter shooter = _shooters.Peek(column, depth);
 
                     if (_shooters.IsRevealed(column, depth))

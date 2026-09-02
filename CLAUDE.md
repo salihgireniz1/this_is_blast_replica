@@ -379,6 +379,14 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   and the project's Max Real Voices setting (it would cap every sound in the game, not this
   one). No test: the whole behaviour is one restart plus a modulo, and EditMode cannot observe
   playback. Add a third AudioSource in the scene if two voices read too thin.
+- Spawner hierarchy grouped - done, 63/63 green, verified in Play (`LevelSpawner` holds exactly
+  two children, `Cubes` with 100 and `Shooters` with 15). Salih's report: 115 views flat under
+  one object. `LevelSpawner.NewGroup(name)` makes an empty child the way `ShotPools.Build`
+  does, and each spawn loop instantiates under its own. Shooters stay under `Shooters` while
+  they run to a slot and leave; positions are world-space so the parent moves nothing.
+  `LevelSpawnerTests` read the board by `GetChild` index on the spawner itself and went red
+  with "Transform child out of bounds"; it now reads through `Find("Cubes")`. Tooltips also
+  landed on every inspector field the same day (42 across 7 files, struct fields included).
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.
