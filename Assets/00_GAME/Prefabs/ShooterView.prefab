@@ -124,6 +124,7 @@ MonoBehaviour:
   - {fileID: 8421721717333830850}
   _ammoText: {fileID: 4639908675800896803}
   _animator: {fileID: 2918607155893072014}
+  _outline: {fileID: 2100000, guid: 82d755344726442f796eeb57973edc15, type: 2}
 --- !u!114 &111513524791106548
 MonoBehaviour:
   m_ObjectHideFlags: 0

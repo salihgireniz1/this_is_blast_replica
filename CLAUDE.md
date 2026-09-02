@@ -576,6 +576,23 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   earlier "zero console errors" reads in this section that filtered on `type` saw nothing
   and would have said zero regardless. Filter on `level` and on a timestamp taken before
   the probe. The UI is complete: overlay, restart, frozen shooters, clean reload.
+- Outline on selectable shooters - done, 72/72 green, verified in Play (5 outlined at the
+  queue's front row z=-14 and 46 plain; after a tap the popped shooter ran to its slot
+  plain and the one stepping up wore the outline; zero errors). Juice 1. Apps'
+  `Cube_Outline.mat` is an inverted-hull URP Shader Graph (`OutlineShader`, RenderFace
+  Back, `_Color` black, `_Scale`) meant as a SECOND material slot on the same mesh, so
+  `ShooterView.SetOutlined(bool)` writes `sharedMaterials` as `[colour, outline]` or
+  `[colour]` on every coloured part (MeshRenderer + SkinnedMeshRenderer both draw twice).
+  Slot 0 stays the colour, so `Wear` (which sets `sharedMaterial`) keeps working in either
+  order. The outline material is a prefab field (`_outline`, wired to `Cube_Outline` via
+  eval), not a palette row: it is how a shooter looks selectable, not a colour. The
+  spawner owns the rule "outline = you may tap this": `SetOutlined(depth == 0)` at spawn,
+  `false` in `PopFrontShooter`, `true` on the view revealed in `StepQueueForward`.
+  `LevelSpawnerTests.Outline_FollowsTheSelectableFront` builds the first ShooterView
+  stand-in (MeshRenderer + a 3D TextMeshPro child + a throwaway material; the animator can
+  stay null because Construct never calls SetRunning) and asserts front outlined / second
+  not / popped plain / stepped-up outlined. Red first: 71/72. One small array per toggle,
+  on a tap, not per frame. Outline thickness is `_Scale` on the material, Salih's to tune.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

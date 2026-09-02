@@ -15,6 +15,7 @@ using Blast.Domain;
 using Blast.Presentation;
 using DG.Tweening;
 using NUnit.Framework;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 
@@ -30,6 +31,12 @@ namespace Blast.Tests
 
         /// <summary>The spawner under test, and the parent every spawned view lands under.</summary>
         LevelSpawner _spawner;
+
+        /// <summary>The stand-in shooter prefab, built only by the test that needs one.</summary>
+        ShooterView _shooterPrefab;
+
+        /// <summary>The outline material the stand-in shooter wears while selectable.</summary>
+        Material _outline;
 
         #endregion
 
@@ -55,6 +62,38 @@ namespace Blast.Tests
             DOTween.KillAll();
             Object.DestroyImmediate(_spawner.gameObject);
             Object.DestroyImmediate(_cubePrefab.gameObject);
+            if (_shooterPrefab != null)
+            {
+                Object.DestroyImmediate(_shooterPrefab.gameObject);
+                Object.DestroyImmediate(_outline);
+            }
+        }
+
+        /// <summary>
+        /// The outline marks exactly the shooters the player may tap: each column's front,
+        /// and nobody else. An outline on the second row invites a tap that does nothing;
+        /// a front without one hides the only legal move. When the front is taken, the
+        /// outline leaves with it and lands on the shooter stepping up.
+        /// </summary>
+        [Test]
+        public void Outline_FollowsTheSelectableFront()
+        {
+            BuildShooterPrefab();
+            var queue = new ShooterQueue(new[] { new[] { new Shooter(BlastColor.Red, 1, false), new Shooter(BlastColor.Red, 1, false) } });
+            _spawner.Construct(new BoardModel(1, 1, 1), queue, new SlotRow(1), new NoMaterials());
+
+            Transform shooters = _spawner.transform.Find("Shooters");
+            Renderer first = shooters.GetChild(0).GetComponent<Renderer>();
+            Renderer second = shooters.GetChild(1).GetComponent<Renderer>();
+
+            Assert.IsTrue(Wears(first, _outline), "The front is not outlined; the only legal move is hidden.");
+            Assert.IsFalse(Wears(second, _outline), "The second row is outlined; it invites a tap that does nothing.");
+
+            ShooterView popped = _spawner.PopFrontShooter(0);
+            _spawner.StepQueueForward(0, duration: 0f);
+
+            Assert.IsFalse(Wears(popped.GetComponent<Renderer>(), _outline), "A selected shooter kept its outline.");
+            Assert.IsTrue(Wears(second, _outline), "The shooter stepping up did not receive the outline.");
         }
 
         /// <summary>Two removals inside one flow duration shift the survivors two cells, not one.</summary>
@@ -175,6 +214,43 @@ namespace Blast.Tests
             return best;
         }
 
+
+        /// <summary>Builds a ShooterView stand-in: one renderer to colour, a TMP counter, an outline material.</summary>
+        void BuildShooterPrefab()
+        {
+            var prefabObject = new GameObject("ShooterPrefab");
+            prefabObject.AddComponent<MeshRenderer>();
+            var counter = new GameObject("Counter").AddComponent<TextMeshPro>();
+            counter.transform.SetParent(prefabObject.transform);
+            _outline = new Material(Shader.Find("Hidden/InternalErrorShader"));
+            _shooterPrefab = prefabObject.AddComponent<ShooterView>();
+
+            var serialized = new SerializedObject(_shooterPrefab);
+            SerializedProperty parts = serialized.FindProperty("_coloredParts");
+            parts.arraySize = 1;
+            parts.GetArrayElementAtIndex(0).objectReferenceValue = prefabObject.GetComponent<MeshRenderer>();
+            serialized.FindProperty("_ammoText").objectReferenceValue = counter;
+            serialized.FindProperty("_outline").objectReferenceValue = _outline;
+            serialized.ApplyModifiedProperties();
+
+            AssignField(_spawner, "_prefabs.Shooter", _shooterPrefab);
+        }
+
+        /// <summary>Whether a renderer carries a material in any of its slots.</summary>
+        /// <param name="renderer">The renderer to inspect.</param>
+        /// <param name="material">The material to look for.</param>
+        static bool Wears(Renderer renderer, Material material)
+        {
+            foreach (Material slot in renderer.sharedMaterials)
+            {
+                if (slot == material)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         /// <summary>Writes a serialized private field, the way a prefab's inspector would.</summary>
         /// <param name="target">The component to write to.</param>

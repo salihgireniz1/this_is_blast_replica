@@ -130,6 +130,7 @@ namespace Blast.Presentation
         {
             ShooterView front = _queueColumns[column][_queueFront[column]];
             _queueFront[column]++;
+            front.SetOutlined(false);
 
             return front;
         }
@@ -160,6 +161,7 @@ namespace Blast.Presentation
             {
                 Shooter front = _shooters.Peek(column, 0);
                 views[_queueFront[column]].ShowRevealed(_materials.MaterialOf(front.Color), front.Ammo);
+                views[_queueFront[column]].SetOutlined(true);
             }
         }
 
@@ -293,6 +295,8 @@ namespace Blast.Presentation
                         view.ShowConcealed(_materials.HiddenMaterial);
                     }
 
+                    // The outline is the "you may tap this" mark, so only the front wears it.
+                    view.SetOutlined(depth == 0);
                     _queueColumns[column].Add(view);
                 }
             }

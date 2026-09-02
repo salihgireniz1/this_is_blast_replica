@@ -31,6 +31,10 @@ namespace Blast.Presentation
         [Tooltip("The WalkingCube Animator. SetRunning drives isRun / isIdle, PlayShoot pulls the Shoot trigger.")]
         [SerializeField] Animator _animator;
 
+        /// <summary>The inverted-hull outline, worn as a second material slot while selectable. Assigned in the prefab.</summary>
+        [Tooltip("The inverted-hull outline material. SetOutlined adds it as a second slot on every coloured part while the shooter is a selectable front.")]
+        [SerializeField] Material _outline;
+
         /// <summary>Animator parameter: standing still.</summary>
         static readonly int IsIdle = Animator.StringToHash("isIdle");
 
@@ -65,6 +69,20 @@ namespace Blast.Presentation
         {
             Wear(hiddenMaterial);
             _ammoText.SetText(ConcealedLabel);
+        }
+
+        /// <summary>Marks the shooter as selectable, or not: the outline rides as a second
+        /// material slot so the colour in slot 0 is untouched and Wear keeps working.</summary>
+        /// <param name="outlined">True for a column's front, false for everyone else.</param>
+        public void SetOutlined(bool outlined)
+        {
+            foreach (var part in _coloredParts)
+            {
+                // A small array per toggle; a toggle is a tap, not a frame.
+                part.sharedMaterials = outlined
+                    ? new[] { part.sharedMaterial, _outline }
+                    : new[] { part.sharedMaterial };
+            }
         }
 
         /// <summary>Updates the counter as shots are spent.</summary>
