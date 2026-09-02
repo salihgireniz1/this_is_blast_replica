@@ -513,6 +513,20 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   (UI, pure C#, R3), then `LevelEndView` (UGUI + restart = scene reload), then the
   director's UniTask loops get a destroy-cancellation token so a fast restart cannot
   touch destroyed views.
+- `LevelEndViewModel` (UI) - done, 70/70 green. UI chunk 2 of 4, the first file in
+  `Blast.UI`. MVVM per plan D3, Salih's call over MVC: this UI is data display with no
+  navigation, binding deletes the controller. Pure C#, ctor takes the `GameLoop` and
+  subscribes `Decided`; exposes `ReadOnlyReactiveProperty<bool> IsShown`,
+  `ReadOnlyReactiveProperty<string> Title` (`WonTitle` / `LostTitle` consts, written BEFORE
+  IsShown flips so a shown overlay is never untitled) and `ReactiveCommand<Unit> Restart`.
+  **Restart is a command, not an injected Action** (Salih rejected the callback): the view
+  model raises the intent, Bootstrap subscribes and decides it means a scene reload, so the
+  view model never sees Unity and the test never needs a fake. No test on Restart itself -
+  it is `new ReactiveCommand`, nothing in this file can break it. No Dispose: loop and view
+  model are both level-lifetime and die together on the reload. R3 core (`R3.dll`) comes
+  from NuGetForUnity under `Assets/Packages`, auto-referenced, so `Blast.UI.asmdef` needed
+  nothing; the test asmdef overrides references and got `R3.dll` + `Blast.UI` explicitly.
+  Red first: `'UI' does not exist in the namespace 'Blast'`.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

@@ -7,9 +7,12 @@
         "Blast.Application",
         "Blast.Infrastructure",
         "Blast.Presentation",
+        "Blast.UI",
         "UnityEditor.TestRunner",
         "Blast.Bootstrap",
-        "VContainer"
+        "VContainer",
+        "Unity.TextMeshPro",
+        "UnityEngine.UI"
     ],
     "includePlatforms": [
         "Editor"
@@ -19,7 +22,8 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "nunit.framework.dll",
-        "DOTween.dll"
+        "DOTween.dll",
+        "R3.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [
