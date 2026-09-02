@@ -169,6 +169,52 @@ namespace Blast.Tests
         /// that move - not on some later poll. The player must see the fail the moment it
         /// becomes true.
         /// </summary>
+        /// <summary>
+        /// A held column - one whose cubes are still sliding into place on screen - is
+        /// skipped by targeting, so the shooter takes the next match or holds fire, and
+        /// the column is shootable again the moment it is released.
+        /// </summary>
+        [Test]
+        public void Shoot_SkipsAHeldColumnUntilItIsReleased()
+        {
+            var slots = new SlotRow(slots: 1);
+            var loop = new GameLoop(
+                BoardWithFronts(BlastColor.Red, BlastColor.Red),
+                QueueOf(new Shooter(BlastColor.Red, ammo: 3, isHidden: false)),
+                slots);
+            loop.TrySelect(0, out _);
+
+            loop.HoldColumn(0);
+            loop.TryShoot(0, out int hit);
+            Assert.AreEqual(1, hit, "The shot went into the column that is still settling.");
+
+            loop.HoldColumn(1);
+            Assert.IsFalse(loop.TryShoot(0, out _), "The shooter fired with every target still settling.");
+            Assert.AreEqual(2, slots.AmmoAt(0), "Holding fire still cost ammo.");
+
+            loop.ReleaseColumn(0);
+            loop.TryShoot(0, out hit);
+            Assert.AreEqual(0, hit, "The released column was not shootable again.");
+        }
+
+        /// <summary>
+        /// A held column still counts as a target for the fail verdict: its cubes are on
+        /// their way, so a full row waiting on it is paused, not stuck.
+        /// </summary>
+        [Test]
+        public void AFullRowWaitingOnAHeldColumn_IsNotLost()
+        {
+            var loop = new GameLoop(
+                BoardWithFronts(BlastColor.Red),
+                QueueOf(new Shooter(BlastColor.Red, ammo: 1, isHidden: false)),
+                new SlotRow(slots: 1));
+
+            loop.HoldColumn(0);
+            loop.TrySelect(0, out _);
+
+            Assert.AreEqual(GameVerdict.Playing, loop.Verdict, "A settling column was read as no target at all.");
+        }
+
         [Test]
         public void FillingTheRowWithTargetlessShooters_Loses()
         {

@@ -737,6 +737,56 @@ Transform:
   m_Children: []
   m_Father: {fileID: 247479152}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &921700891
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 921700893}
+  - component: {fileID: 921700892}
+  m_Layer: 0
+  m_Name: Pools
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &921700892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 921700891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d54530373cab76749b44ef660d3eb03f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bullets:
+    Prefab: {fileID: 6742646012057801151, guid: 88e744a18b2a4cf4ba0713e8e60308a3, type: 3}
+    Prewarm: 10
+  _splashes:
+    Prefab: {fileID: 9115013375107063508, guid: 9098df64dbd0a4e9f9f57f73d8d31bc1, type: 3}
+    Prewarm: 40
+--- !u!4 &921700893
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 921700891}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1024472673
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,17 +831,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d3c042ac9fe3f14786886da5fdbe46f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bulletPrefab: {fileID: 6742646012057801151, guid: 88e744a18b2a4cf4ba0713e8e60308a3, type: 3}
-  _splashPrefab: {fileID: 9115013375107063508, guid: 9098df64dbd0a4e9f9f57f73d8d31bc1, type: 3}
-  _bulletMuzzleHeight: 0.7
-  _bulletFlightDuration: 0.12
-  _runDuration: 0.45
-  _stepDuration: 0.25
-  _fireInterval: 0.16
-  _cubeDeathDuration: 0.12
-  _flowDuration: 0.15
-  _leaveDuration: 0.6
-  _leaveDistance: 6
+  _pools: {fileID: 921700892}
+  _motion:
+    RunDuration: 0.45
+    TurnDuration: 0.15
+    StepDuration: 0.25
+    LeaveDuration: 0.6
+    LeaveDistance: 6
+  _firing:
+    Interval: 0.16
+    MuzzleHeight: 0.7
+    FlightDuration: 0.12
+  _cubeDeath:
+    ShrinkDuration: 0.25
+    ShrinkOvershoot: 1.5
+    FlowDuration: 0.15
+    SettleDistance: 0.1
+    SettleDuration: 0.15
 --- !u!1 &1396654964
 GameObject:
   m_ObjectHideFlags: 0
@@ -1069,11 +1125,11 @@ MonoBehaviour:
   _shooterPrefab: {fileID: 5202188498316596109, guid: 05b06f3019d616041bac456c32ea3a09, type: 3}
   _boardOrigin: {x: -4.275, y: 0.45, z: -4.275}
   _cellSize: 0.95
-  _queueOrigin: {x: 0, y: 0, z: -13}
+  _queueOrigin: {x: 0, y: 0, z: -13.25}
   _queueSpacingX: 2
-  _queueSpacingZ: 2
+  _queueSpacingZ: 2.25
   _slotZ: -9
-  _slotSpacingX: 1.5
+  _slotSpacingX: 2
 --- !u!4 &1933728905 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: fd7ee071aff19498da53e7892ca8f320, type: 3}
@@ -1303,3 +1359,4 @@ SceneRoots:
   - {fileID: 1753832529}
   - {fileID: 1900672654}
   - {fileID: 1024472674}
+  - {fileID: 921700893}

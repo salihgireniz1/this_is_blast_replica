@@ -73,6 +73,11 @@ namespace Blast.Presentation
         /// <summary>Each board column's first view still standing.</summary>
         int[] _cubeFront;
 
+        /// <summary>How many cells each board column has flowed forward. Counted, never
+        /// read off a transform: a move target derived from a mid-tween position is short
+        /// by whatever the tween had left to run.</summary>
+        int[] _cubeFlowed;
+
         /// <summary>Each queue column's shooter views in authored order; the front index walks forward.</summary>
         List<ShooterView>[] _queueColumns;
 
@@ -146,8 +151,13 @@ namespace Blast.Presentation
 
             for (int index = _queueFront[column]; index < views.Count; index++)
             {
-                views[index].transform.DOMove(
-                    views[index].transform.position + new Vector3(0f, 0f, _queueSpacingZ), duration);
+                Transform view = views[index].transform;
+                int depth = index - _queueFront[column];
+
+                // Same rule as the board's flow: an absolute target, and the previous
+                // step's tween killed so two selections in one breath cannot end short.
+                view.DOKill();
+                view.DOMove(QueueWorldPosition(column, depth), duration);
             }
 
             // The domain's front has already advanced (the director selects before it
@@ -171,18 +181,43 @@ namespace Blast.Presentation
             return front;
         }
 
-        /// <summary>Flows a board column's surviving cubes one cell toward the player.</summary>
+        /// <summary>Flows a board column's surviving cubes one cell toward the player, each
+        /// landing with a small overshoot-and-bounce.</summary>
         /// <param name="column">The column that just lost its front.</param>
-        /// <param name="duration">How long the flow takes.</param>
-        public void FlowBoardColumn(int column, float duration)
+        /// <param name="duration">How long the slide takes.</param>
+        /// <param name="settleDistance">How far a cube overshoots its cell before bouncing back.</param>
+        /// <param name="settleDuration">How long that bounce takes.</param>
+        /// <returns>The slide the director may await before the column is shootable again;
+        /// null when nothing was left to move.</returns>
+        public Tween FlowBoardColumn(int column, float duration, float settleDistance, float settleDuration)
         {
             List<CubeView> views = _cubeColumns[column];
+            int flowed = ++_cubeFlowed[column];
+            Tween slide = null;
 
             for (int index = _cubeFront[column]; index < views.Count; index++)
             {
-                views[index].transform.DOMove(
-                    views[index].transform.position - new Vector3(0f, 0f, _cellSize), duration);
+                Transform view = views[index].transform;
+                Vector3 authored = CubeWorldPosition(CellOfCubeView(column, index));
+                Vector3 rest = authored - new Vector3(0f, 0f, flowed * _cellSize);
+
+                // Kill first: the previous flow's tween still holds the previous rest as
+                // its target and would drag the cube back when it lands. A landing bounce
+                // cut short by this kill is healed the same way: the next slide targets the
+                // absolute rest, wherever the bounce left the cube.
+                view.DOKill();
+                slide = view.DOMove(rest, duration)
+                    .SetEase(Ease.OutSine)
+                    .OnComplete(() => view
+                        .DOPunchPosition(Vector3.back * settleDistance, settleDuration, vibrato: 2, elasticity: 0.5f)
+                        .SetEase(Ease.OutBounce));
+                // ponytail: the OnComplete closure allocates per cube per shot; a pooled
+                // Sequence is the upgrade if the phase 5 profiler flags it.
             }
+
+            // Every survivor slides for the same duration, so the last one's tween stands
+            // for the whole column's landing.
+            return slide;
         }
 
         #endregion
@@ -194,6 +229,7 @@ namespace Blast.Presentation
         {
             _cubeColumns = new List<CubeView>[_board.Columns];
             _cubeFront = new int[_board.Columns];
+            _cubeFlowed = new int[_board.Columns];
 
             for (int column = 0; column < _board.Columns; column++)
             {
@@ -239,6 +275,17 @@ namespace Blast.Presentation
                     _queueColumns[column].Add(view);
                 }
             }
+        }
+
+        /// <summary>Maps a column's list index back to the address the view was spawned at.</summary>
+        /// <param name="column">The board column the view belongs to.</param>
+        /// <param name="index">Its position in that column's list, as SpawnCubes filled it.</param>
+        Cell CellOfCubeView(int column, int index)
+        {
+            int row = index / _board.Layers;
+            int layer = index % _board.Layers;
+
+            return new Cell(column, row, layer);
         }
 
         /// <summary>Maps a board address to the world position of its cube's centre.</summary>

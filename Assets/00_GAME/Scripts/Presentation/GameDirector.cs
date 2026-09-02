@@ -36,38 +36,17 @@ namespace Blast.Presentation
     {
         #region Fields
 
-        /// <summary>The bullet visual; its body wears the firing shooter's material.</summary>
-        [SerializeField] CubeView _bulletPrefab;
+        /// <summary>The bullet and splash pools. Assigned in the inspector; owns its own prewarm.</summary>
+        [SerializeField] ShotPools _pools;
 
-        /// <summary>The muzzle flash spawned at every shot. Destroys itself when it stops.</summary>
-        [SerializeField] ParticleSystem _splashPrefab;
+        /// <summary>How a shooter moves: to its slot, in place, off-screen.</summary>
+        [SerializeField] ShooterMotion _motion = ShooterMotion.Defaults;
 
-        /// <summary>Height above a shooter's feet a bullet leaves from.</summary>
-        [SerializeField] float _bulletMuzzleHeight = 0.7f;
+        /// <summary>The rhythm and geometry of a shot.</summary>
+        [SerializeField] Firing _firing = Firing.Defaults;
 
-        /// <summary>How long a bullet flies to its cube.</summary>
-        [SerializeField] float _bulletFlightDuration = 0.12f;
-
-        /// <summary>How long a selected shooter runs to its slot.</summary>
-        [SerializeField] float _runDuration = 0.45f;
-
-        /// <summary>How long the queue's step-up takes after a selection.</summary>
-        [SerializeField] float _stepDuration = 0.25f;
-
-        /// <summary>Seconds between a seated shooter's shots - also its idle re-check rate.</summary>
-        [SerializeField] float _fireInterval = 0.22f;
-
-        /// <summary>How long a dying cube shrinks away.</summary>
-        [SerializeField] float _cubeDeathDuration = 0.12f;
-
-        /// <summary>How long a column's survivors take to flow one cell forward.</summary>
-        [SerializeField] float _flowDuration = 0.15f;
-
-        /// <summary>How long a drained shooter takes to run off-screen.</summary>
-        [SerializeField] float _leaveDuration = 0.6f;
-
-        /// <summary>How far off-screen a drained shooter runs before despawning.</summary>
-        [SerializeField] float _leaveDistance = 6f;
+        /// <summary>What happens to the board when a cube is hit.</summary>
+        [SerializeField] CubeDeath _cubeDeath = CubeDeath.Defaults;
 
         /// <summary>The use case every action goes through. Handed in by Construct.</summary>
         GameLoop _loop;
@@ -139,13 +118,17 @@ namespace Blast.Presentation
             Material bulletMaterial = _materials.MaterialOf(_slots.ShooterAt(slot).Color);
 
             ShooterView view = _spawner.PopFrontShooter(column);
-            _spawner.StepQueueForward(column, _stepDuration);
+            _spawner.StepQueueForward(column, _motion.StepDuration);
 
             AnnounceIfDecided();
 
+            Vector3 slotPosition = _spawner.SlotWorldPosition(slot);
+
             view.SetRunning(true);
-            await view.transform.DOMove(_spawner.SlotWorldPosition(slot), _runDuration).SetEase(Ease.OutQuad);
+            view.TurnTo(slotPosition, _motion.TurnDuration);
+            await view.transform.DOMove(slotPosition, _motion.RunDuration).SetEase(Ease.OutQuad);
             view.SetRunning(false);
+            view.FaceForward(_motion.TurnDuration);
 
             FireLoop(slot, view, ammo, bulletMaterial).Forget();
         }
@@ -174,13 +157,14 @@ namespace Blast.Presentation
                 }
                 else
                 {
-                    // Targetless: stand idle until a matching cube reaches the front.
+                    // Targetless: stand idle, facing the board, until a matching cube reaches the front.
                     view.SetRunning(false);
+                    view.FaceForward(_motion.TurnDuration);
                 }
 
                 // One rhythm for firing and for waiting: a targetless shooter re-checks at
                 // the same rate it would have fired, which reads naturally on screen.
-                await UniTask.Delay(TimeSpan.FromSeconds(_fireInterval));
+                await UniTask.Delay(TimeSpan.FromSeconds(_firing.Interval));
             }
 
             await Leave(view);
@@ -196,34 +180,56 @@ namespace Blast.Presentation
             // removal order, or two in-flight shots at one column swap their victims.
             CubeView cube = _spawner.PopFrontCube(hitColumn);
 
-            Vector3 muzzle = shooter.transform.position + Vector3.up * _bulletMuzzleHeight;
+            // Held until the survivors have landed: the domain already sees the next cube
+            // as the front, but the player must not watch a shot land on a cube that is
+            // still sliding into place. Synchronous, before the first await, so no other
+            // shooter's TryShoot in this frame can pick the column either.
+            _loop.HoldColumn(hitColumn);
 
-            // ponytail: Instantiate/Destroy per shot; pool both in the measured pass.
-            // The splash prefab's Stop Action is Destroy, so nothing here has to time it.
-            Instantiate(_splashPrefab, muzzle, Quaternion.identity, transform);
+            shooter.TurnTo(cube.transform.position, _motion.TurnDuration);
 
-            Quaternion bulletFacing = _bulletPrefab.transform.rotation;
-            CubeView bullet = Instantiate(_bulletPrefab, muzzle, bulletFacing, transform);
+            Vector3 muzzle = shooter.transform.position + Vector3.up * _firing.MuzzleHeight;
+
+            // The shooter is still mid-turn when the shot leaves, so the splash takes the
+            // aim itself: yaw toward the cube, the same axis TurnTo constrains the body to.
+            Vector3 aim = Vector3.ProjectOnPlane(cube.transform.position - muzzle, Vector3.up);
+            _pools.Splashes.Take(muzzle, Quaternion.LookRotation(aim));
+
+            CubeView bullet = _pools.Bullets.Take(muzzle);
             bullet.Wear(bulletMaterial);
 
-            await bullet.transform.DOMove(cube.transform.position, _bulletFlightDuration).SetEase(Ease.Linear);
+            await bullet.transform.DOMove(cube.transform.position, _firing.FlightDuration).SetEase(Ease.Linear);
 
-            Destroy(bullet.gameObject);
-            _spawner.FlowBoardColumn(hitColumn, _flowDuration);
+            _pools.Bullets.Return(bullet);
 
-            await cube.transform.DOScale(Vector3.zero, _cubeDeathDuration).SetEase(Ease.InBack);
+            // Death first, flow second - the original's order. The survivors only start
+            // sliding once the dead cube is gone, so the eye reads two beats, not one blur.
+            // InBack swells before it collapses; at DOTween's default overshoot (1.7) the
+            // swell peaks at +10% and is invisible, so the overshoot is a tuned field.
+            await cube.transform.DOScale(Vector3.zero, _cubeDeath.ShrinkDuration)
+                .SetEase(Ease.InBack, _cubeDeath.ShrinkOvershoot);
 
             Destroy(cube.gameObject);
+
+            Tween slide = _spawner.FlowBoardColumn(
+                hitColumn, _cubeDeath.FlowDuration, _cubeDeath.SettleDistance, _cubeDeath.SettleDuration);
+            if (slide != null)
+            {
+                await slide;
+            }
+
+            _loop.ReleaseColumn(hitColumn);
         }
 
         /// <summary>Runs a drained shooter off-screen and despawns it.</summary>
         /// <param name="view">The shooter's visual.</param>
         async UniTask Leave(ShooterView view)
         {
-            Vector3 offScreen = view.transform.position + new Vector3(0f, 0f, -_leaveDistance);
+            Vector3 offScreen = view.transform.position + new Vector3(0f, 0f, -_motion.LeaveDistance);
 
             view.SetRunning(true);
-            await view.transform.DOMove(offScreen, _leaveDuration).SetEase(Ease.InQuad);
+            view.TurnTo(offScreen, _motion.TurnDuration);
+            await view.transform.DOMove(offScreen, _motion.LeaveDuration).SetEase(Ease.InQuad);
 
             Destroy(view.gameObject);
         }
@@ -238,6 +244,87 @@ namespace Blast.Presentation
 
             _verdictAnnounced = true;
             Debug.Log($"Level over: {_loop.Verdict}");
+        }
+
+        #endregion
+
+        #region Nested Types
+
+        /// <summary>How a shooter moves: to its slot, in place, off-screen. One inspector heading.</summary>
+        [Serializable]
+        public struct ShooterMotion
+        {
+            /// <summary>How long a selected shooter runs to its slot.</summary>
+            public float RunDuration;
+
+            /// <summary>How long a shooter takes to turn: toward where it runs, toward what it shoots, back to forward.</summary>
+            public float TurnDuration;
+
+            /// <summary>How long the queue's step-up takes after a selection.</summary>
+            public float StepDuration;
+
+            /// <summary>How long a drained shooter takes to run off-screen.</summary>
+            public float LeaveDuration;
+
+            /// <summary>How far off-screen a drained shooter runs before despawning.</summary>
+            public float LeaveDistance;
+
+            /// <summary>The values a fresh director starts with.</summary>
+            public static ShooterMotion Defaults => new ShooterMotion
+            {
+                RunDuration = 0.45f,
+                TurnDuration = 0.15f,
+                StepDuration = 0.25f,
+                LeaveDuration = 0.6f,
+                LeaveDistance = 6f,
+            };
+        }
+
+        /// <summary>The rhythm and geometry of a shot. One inspector heading.</summary>
+        [Serializable]
+        public struct Firing
+        {
+            /// <summary>Seconds between a seated shooter's shots - also its idle re-check rate.</summary>
+            public float Interval;
+
+            /// <summary>Height above a shooter's feet a bullet leaves from.</summary>
+            public float MuzzleHeight;
+
+            /// <summary>How long a bullet flies to its cube.</summary>
+            public float FlightDuration;
+
+            /// <summary>The values a fresh director starts with.</summary>
+            public static Firing Defaults => new Firing { Interval = 0.22f, MuzzleHeight = 0.7f, FlightDuration = 0.12f };
+        }
+
+        /// <summary>What happens to the board when a cube is hit. One inspector heading.</summary>
+        [Serializable]
+        public struct CubeDeath
+        {
+            /// <summary>How long a dying cube shrinks away.</summary>
+            public float ShrinkDuration;
+
+            /// <summary>InBack's overshoot: how much the cube swells before collapsing (3 = +25% at mid-tween).</summary>
+            public float ShrinkOvershoot;
+
+            /// <summary>How long a column's survivors take to flow one cell forward.</summary>
+            public float FlowDuration;
+
+            /// <summary>How far a flowed cube overshoots its cell before bouncing back into it.</summary>
+            public float SettleDistance;
+
+            /// <summary>How long that landing bounce takes.</summary>
+            public float SettleDuration;
+
+            /// <summary>The values a fresh director starts with - the clone's numbers, which read right.</summary>
+            public static CubeDeath Defaults => new CubeDeath
+            {
+                ShrinkDuration = 0.15f,
+                ShrinkOvershoot = 3f,
+                FlowDuration = 0.15f,
+                SettleDistance = 0.1f,
+                SettleDuration = 0.15f,
+            };
         }
 
         #endregion

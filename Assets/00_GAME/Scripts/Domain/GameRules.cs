@@ -26,9 +26,24 @@ namespace Blast.Domain
         /// <param name="column">The column to shoot at; -1 when there is none.</param>
         /// <returns>True when a front cube of that colour stands somewhere.</returns>
         public static bool TryFindTarget(BoardModel board, BlastColor color, out int column)
+            => TryFindTarget(board, color, null, out column);
+
+        /// <summary>Finds the leftmost column whose front cube wears the given colour, skipping held columns.</summary>
+        /// <param name="board">The board to scan.</param>
+        /// <param name="color">The colour the shooter fires.</param>
+        /// <param name="held">Per column, true to leave it out of targeting; null holds nothing.</param>
+        /// <param name="column">The column to shoot at; -1 when there is none.</param>
+        /// <returns>True when a front cube of that colour stands in an unheld column.</returns>
+        public static bool TryFindTarget(BoardModel board, BlastColor color, bool[] held, out int column)
         {
             for (int candidate = 0; candidate < board.Columns; candidate++)
             {
+                bool columnHeld = held != null && held[candidate];
+                if (columnHeld)
+                {
+                    continue;
+                }
+
                 // TryFrontColor is what skips spent columns: their authored colours are
                 // still in the array, but a column with no front has nothing to shoot.
                 bool columnStands = board.TryFrontColor(candidate, out BlastColor front);

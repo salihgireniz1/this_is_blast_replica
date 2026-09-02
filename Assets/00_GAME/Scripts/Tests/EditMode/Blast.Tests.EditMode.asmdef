@@ -6,6 +6,7 @@
         "Blast.Domain",
         "Blast.Application",
         "Blast.Infrastructure",
+        "Blast.Presentation",
         "UnityEditor.TestRunner",
         "Blast.Bootstrap",
         "VContainer"

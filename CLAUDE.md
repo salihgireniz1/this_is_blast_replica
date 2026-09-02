@@ -234,6 +234,114 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   Parameter names are `Animator.StringToHash` statics, no per-call string hashing. Layout
   note: Salih moved the queue to origin z=-13 with 2/2 spacing and the slots to z=-9; the
   older numbers quoted above are superseded by the scene.
+- `SplashPool` (Presentation) â€” done, 58/58 green, verified in Play (40 prewarmed, five
+  slots chain-firing peaked at 20 active, the instance count never grew past the prewarm
+  once it covered the peak; before the bump it grew 16 -> 27 and then held). Grow-only
+  pool: a list of every instance, `PlayAt` re-lights the first switched-off one or clones
+  another, `Prewarm(n)` fills it before the first shot. **No return callback and no
+  PooledX component**: the prefab's Stop Action is Disable (was Destroy), so Unity switches
+  a finished splash off itself and "off" is the only signal the pool reads; switching it
+  back on replays Play On Awake on the root and the InnerSplash child. Finding a free one
+  is a linear scan over a few dozen entries, marked `ponytail:`; `UnityEngine.Pool.
+  ObjectPool` was the alternative and lost on needing a callback component to release.
+  Prewarm is 40 = five slots x (1.7 s splash life / 0.22 s fire interval). The test
+  (`SplashPoolTests`, the first Presentation test; the test asmdef now references
+  `Blast.Presentation`) simulates a finished splash by deactivating it and asserts a third
+  instance is NOT created â€” red first with "expected 2 but was 3". The bullet is still
+  Instantiate/Destroy per shot, still marked for the measured pass.
+- Shooters face where they go and what they shoot â€” done, 58/58 green, verified in Play
+  (seated shooters sampled at yaw -3..-46 while firing at cubes across the board, back to
+  0 the tick they ran out of targets). The clone has the same mechanic (turn toward the
+  move direction, snap toward the target on each shot, drift back to forward); ours is two
+  `ShooterView` methods, `TurnTo(worldPoint, duration)` = `DOLookAt` constrained to yaw,
+  and `FaceForward(duration)` = rotate to identity. Both kill the previous turn tween
+  first, or a run-turn and an aim-turn on the same transform would fight. The director
+  calls TurnTo(slot) before the run and TurnTo(offScreen) before the leave, FaceForward on
+  arrival and on every targetless tick, TurnTo(cube) at every shot. One `_turnDuration`
+  (0.15 s) serves all three; split it if the aim ever wants to be snappier than the run.
+  The ammo counter is a child, so it yaws with the body - the original's does too.
+- `ComponentPool<T>` (Presentation) — done, 61/61 green. `SplashPool` generalised at Salih's
+  call so a bullet pool would not be a second, differently shaped pool: one grow-only class
+  for any `Component` prefab, `Take(position)` (places first, then switches on - Play On
+  Awake must fire at the new spot), `Return(item)` (switches off), `Prewarm(n)`. "Off" is
+  still the only free-signal; a splash goes off by its Stop Action, a bullet by the
+  director's Return after impact. `SplashPool.cs` and its test are gone (both were
+  uncommitted); `ComponentPoolTests` has three tests: Unity-switched-off reused, Returned
+  reused, Take places. Probe: emptying `Return` turned exactly the Returned test red
+  ("A returned instance was not reused; a third was instantiated").
+- Bullet pool + pool parents in `GameDirector` — done, 61/61 green, verified in Play (a full
+  level: 100 shots through exactly 5 bullet instances, `BulletPool` never grew past its
+  prewarm, `SplashPool` held at 40, verdict `Won`, zero gameplay errors). `Construct` makes
+  two empty children, `SplashPool` and `BulletPool`, and each `ComponentPool` spawns under
+  its own; the director's transform itself holds nothing. The bullet is `Take(muzzle)` +
+  `Wear`, then `Return` after the flight tween - the Instantiate/Destroy per shot and its
+  `ponytail:` marker are gone. `_bulletPrewarm` is 5: one per slot, because a flight
+  (0.12 s) ends before the next shot (0.22 s). No director test: the reuse rule lives in
+  `ComponentPoolTests`, the director only calls it. Unverified by eye, the CLI round trip
+  is slower than a flight: the bullet's TrailRenderer on reuse. `Take` moves the bullet
+  while it is off and switches it on afterwards, so no streak is expected; watch the first
+  reused shot in Play once.
+- `ShotPools` (Presentation) - done, 61/61 green, verified in Play (`Pools/BulletPool` held 5
+  and `Pools/SplashPool` 40 children on entering Play, zero errors). Salih's call: the director
+  carried six pooling fields plus a `NewChild` helper that were a second responsibility, so
+  they moved to a MonoBehaviour on a scene object `Pools`: two `PoolSettings<T>` rows (prefab +
+  prewarm, a serializable generic struct - Unity serializes concrete generic fields since
+  2020.1) built and prewarmed in `Awake`, exposed as `Bullets` / `Splashes`. The director
+  holds one inspector reference (`_pools`) and only calls `Take` / `Return`. Awake order
+  against the scope is irrelevant: nothing reads a pool before the first tap. No new test -
+  no new branch; the reuse rule stays in `ComponentPoolTests`. Scene re-wired via eval with
+  `SerializedObject` paths (`_bullets.Prefab` ...); the director's tuned `_fireInterval` 0.16
+  survived because field names outside the moved six did not change.
+- Director settings as structs - done, 61/61 green, verified in Play (live read
+  `_firing.Interval` 0.16, `_motion.RunDuration` 0.45, zero gameplay errors). The ten loose
+  floats became three `[Serializable]` nested structs, one inspector heading each:
+  `ShooterMotion` (run / turn / step / leave duration / leave distance), `Firing` (interval /
+  muzzle height / flight duration), `CubeDeath` (shrink / flow). Public PascalCase fields
+  (a settings bag, no invariants to guard), a static `Defaults` per struct so a fresh
+  director carries the same numbers the loose fields did. **Moving a field into a struct
+  changes its serialized path**, so the scene's values were re-written through
+  `SerializedObject` (`_firing.Interval` etc.) and the tuned 0.16 carried across by hand;
+  `FormerlySerializedAs` cannot cross into a nested struct.
+- Cube death and flow re-timed to the clone's numbers - done, 61/61 green, verified in Play
+  (two columns drained 100 -> 80 cubes, every tween settled, zero errors). Salih's report: cubes
+  vanished instantly and the survivors' slide had no weight. Two causes. The shrink was 0.12 s
+  `InBack`, which spends its first half growing and then collapses in ~0.05 s - it reads as a
+  pop, not a shrink; now 0.15 s `OutQuad` to zero, exactly `ColorCube.DestroyCube`. And the flow
+  started at impact, concurrent with the shrink, so the two beats blurred into one; now
+  `ShotVisual` awaits the shrink, destroys, THEN calls `FlowBoardColumn` - the clone's
+  `SetDelay(_hideDuration)` expressed as sequencing. The slide is `OutSine` and lands with the
+  clone's wobble: `DOPunchPosition(back * 0.1, 0.15 s, vibrato 2, elasticity 0.5, OutBounce)`
+  from an `OnComplete`. `CubeDeath` gained `SettleDistance` / `SettleDuration` (written into the
+  scene via eval - a new serialized field on an existing struct arrives as 0, not as the C#
+  default). The kill-then-absolute-target rule already heals a bounce cut short by the next
+  flow. The `OnComplete` closure allocates per cube per shot, marked `ponytail:` for the
+  measured pass. **Rule this confirms:** when a juice note says "take the clone's values", take
+  the ORDER of the tweens too, not only the durations.
+  **Then swapped back to `InBack` at Salih's call** - he wants the swell-then-collapse he
+  remembers from the original, which the clone does not do. Why InBack looked like an instant
+  pop before: DOTween's default overshoot (1.70158) peaks at only +10% scale at 42% of the
+  tween, three frames at 0.12 s. Now `SetEase(Ease.InBack, ShrinkOvershoot)` with a new
+  `CubeDeath.ShrinkOvershoot` field at 3 (+25% at mid-tween) over 0.15 s. If it still reads
+  weak, the agreed fallback is a two-step Sequence (grow 0.06 s OutQuad to 1.25, collapse
+  0.12 s InQuad) so swell and collapse tune independently.
+- Held columns (`GameLoop.HoldColumn` / `ReleaseColumn`) - done, 63/63 green, verified in Play
+  (five fronts seated, 100 -> 50 cubes, every column released at the end, zero errors). Salih's
+  report: shooters fired at cubes that were still sliding forward, because the domain removes
+  the cube at fire time and the next cube is the front in the SAME call - while the bullet has
+  0.12 s of flight, the death 0.15 s and the flow 0.15 s still to show. The fix lives in
+  Application, the layer that mediates the time-free domain and the paced presentation: a
+  `bool[] _held` per board column, `TryShoot` passes it to a new `GameRules.TryFindTarget`
+  overload that skips held columns (the leftmost UNHELD match, so a shooter hops columns while
+  one settles instead of stalling). **`IsFailed` deliberately does NOT see the mask**: a held
+  column's cubes are on their way, so a full row waiting on it is paused, not stuck - the second
+  test pins that, and it is the one that would go red if someone "helpfully" threads `_held`
+  into the verdict. Director: `HoldColumn` synchronously after the pop (before the first await,
+  so no other shooter's TryShoot in that frame can pick the column), `ReleaseColumn` after
+  awaiting the slide `FlowBoardColumn` now returns (`Tween`, null when the column is spent; the
+  UniTask awaiter completes on kill too). Consequence: a single-colour column now drains at
+  ~0.45 s per shot instead of 0.16 s - flight + death + flow - which is the pacing Salih asked
+  for; the fire interval only governs the hop between free columns. Red first with
+  "The shot went into the column that is still settling. Expected: 1 But was: 0".
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

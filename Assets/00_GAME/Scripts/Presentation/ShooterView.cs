@@ -1,12 +1,14 @@
 // ShooterView - one shooter in the queue or in a slot, as the player sees it.
 // Layer: Presentation (humble: holds references and applies what it is told, decides nothing).
 // Responsibility: wearing its colour's material - or the hidden one while concealed -
-//   showing its remaining ammo on the counter, and driving the animator's three
-//   parameters (isIdle / isRun booleans, Shoot trigger) as it is told to run, stand or fire.
+//   showing its remaining ammo on the counter, driving the animator's three parameters
+//   (isIdle / isRun booleans, Shoot trigger) as it is told to run, stand or fire, and
+//   turning to face where it runs or what it shoots.
 // NOT its responsibility: deciding whether it is revealed (ShooterQueue's rule), how much
 //   ammo remains (SlotRow's count), or when it runs, fires and leaves (the game loop's
 //   calls, in a later chunk). It renders state; it never computes it.
 
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -34,6 +36,9 @@ namespace Blast.Presentation
 
         /// <summary>Animator trigger: one shot.</summary>
         static readonly int Shoot = Animator.StringToHash("Shoot");
+
+        /// <summary>The turn in progress; killed before a new one starts so two never fight.</summary>
+        Tween _turn;
 
         /// <summary>What the counter shows while the colour is concealed.</summary>
         const string ConcealedLabel = "?";
@@ -79,6 +84,23 @@ namespace Blast.Presentation
         {
             _animator.SetBool(IsIdle, false);
             _animator.SetTrigger(Shoot);
+        }
+
+        /// <summary>Turns (yaw only) to face a world point: the slot it runs to, the cube it shoots.</summary>
+        /// <param name="worldPoint">What to face.</param>
+        /// <param name="duration">How long the turn takes.</param>
+        public void TurnTo(Vector3 worldPoint, float duration)
+        {
+            _turn.Kill();
+            _turn = transform.DOLookAt(worldPoint, duration, AxisConstraint.Y);
+        }
+
+        /// <summary>Turns back to face the board straight on.</summary>
+        /// <param name="duration">How long the turn takes.</param>
+        public void FaceForward(float duration)
+        {
+            _turn.Kill();
+            _turn = transform.DORotateQuaternion(Quaternion.identity, duration);
         }
 
         #endregion
