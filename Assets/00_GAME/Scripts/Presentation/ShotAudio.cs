@@ -20,6 +20,7 @@ namespace Blast.Presentation
         #region Fields
 
         /// <summary>The voices, each carrying the clip. Their count is how many shots can sound at once.</summary>
+        [Tooltip("One AudioSource per shot sound that may overlap. Add one to allow one more; when all are busy the oldest shot is cut.")]
         [SerializeField] AudioSource[] _voices;
 
         /// <summary>Which voice the next shot takes.</summary>

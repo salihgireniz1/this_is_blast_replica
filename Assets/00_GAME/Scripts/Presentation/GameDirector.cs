@@ -43,18 +43,23 @@ namespace Blast.Presentation
         const int LeavePathSamples = 8;
 
         /// <summary>The bullet and splash pools. Assigned in the inspector; owns its own prewarm.</summary>
+        [Tooltip("The scene's ShotPools object.")]
         [SerializeField] ShotPools _pools;
 
         /// <summary>The shot sound. Assigned in the inspector; owns its own voice cap.</summary>
+        [Tooltip("The scene's ShotAudio object.")]
         [SerializeField] ShotAudio _audio;
 
         /// <summary>How a shooter moves: to its slot, in place, off-screen.</summary>
+        [Tooltip("How shooters move: to the slot, turning, stepping up, leaving.")]
         [SerializeField] ShooterMotion _motion = ShooterMotion.Defaults;
 
         /// <summary>The rhythm and geometry of a shot.</summary>
+        [Tooltip("Shot rhythm and where bullets spawn.")]
         [SerializeField] Firing _firing = Firing.Defaults;
 
         /// <summary>What happens to the board when a cube is hit.</summary>
+        [Tooltip("What a hit cube and its column do.")]
         [SerializeField] CubeDeath _cubeDeath = CubeDeath.Defaults;
 
         /// <summary>The use case every action goes through. Handed in by Construct.</summary>
@@ -281,21 +286,27 @@ namespace Blast.Presentation
         public struct ShooterMotion
         {
             /// <summary>How long a selected shooter runs to its slot.</summary>
+            [Tooltip("Seconds a tapped shooter takes to run from the queue to its slot.")]
             public float RunDuration;
 
             /// <summary>How long a shooter takes to turn: toward where it runs, toward what it shoots, back to forward.</summary>
+            [Tooltip("Seconds for any turn: toward the slot, toward the aimed cube, back to forward.")]
             public float TurnDuration;
 
             /// <summary>How long the queue's step-up takes after a selection.</summary>
+            [Tooltip("Seconds the rest of a queue column takes to step up after a selection.")]
             public float StepDuration;
 
             /// <summary>How long a drained shooter takes to run off-screen.</summary>
+            [Tooltip("Seconds a drained shooter takes to run off-screen.")]
             public float LeaveDuration;
 
             /// <summary>How far sideways a drained shooter runs before despawning; must clear the portrait frame's half-width.</summary>
+            [Tooltip("World units a drained shooter runs sideways. Must exceed the portrait frame's half-width (about 6.5 at ortho size 11.5) or it stops on screen.")]
             public float LeaveDistance;
 
             /// <summary>The leave run's shape: x is the fraction of LeaveDistance covered sideways, y is the forward offset in world units at that point.</summary>
+            [Tooltip("Shape of the leave run. X: fraction of Leave Distance covered sideways. Y: world units forward of the slot at that point.")]
             public AnimationCurve LeavePath;
 
             /// <summary>The values a fresh director starts with.</summary>
@@ -315,12 +326,15 @@ namespace Blast.Presentation
         public struct Firing
         {
             /// <summary>Seconds between a seated shooter's shots - also its idle re-check rate.</summary>
+            [Tooltip("Seconds between one seated shooter's shots, and how often a targetless shooter re-checks the board.")]
             public float Interval;
 
             /// <summary>Height above a shooter's feet a bullet leaves from.</summary>
+            [Tooltip("World units above the shooter's feet where the bullet and splash spawn.")]
             public float MuzzleHeight;
 
             /// <summary>How long a bullet flies to its cube.</summary>
+            [Tooltip("Seconds a bullet takes to reach its cube. The cube dies on arrival.")]
             public float FlightDuration;
 
             /// <summary>The values a fresh director starts with.</summary>
@@ -332,18 +346,23 @@ namespace Blast.Presentation
         public struct CubeDeath
         {
             /// <summary>How long a dying cube shrinks away.</summary>
+            [Tooltip("Seconds a hit cube takes to shrink to nothing.")]
             public float ShrinkDuration;
 
             /// <summary>InBack's overshoot: how much the cube swells before collapsing (3 = +25% at mid-tween).</summary>
+            [Tooltip("InBack overshoot: how much the cube swells before collapsing. DOTween's default is 1.7; 3 gives +25% at mid-tween.")]
             public float ShrinkOvershoot;
 
             /// <summary>How long a column's survivors take to flow one cell forward.</summary>
+            [Tooltip("Seconds a column's survivors take to slide one cell forward, after the shrink has finished.")]
             public float FlowDuration;
 
             /// <summary>How far a flowed cube overshoots its cell before bouncing back into it.</summary>
+            [Tooltip("World units a flowed cube overshoots past its cell before bouncing back.")]
             public float SettleDistance;
 
             /// <summary>How long that landing bounce takes.</summary>
+            [Tooltip("Seconds that landing bounce takes.")]
             public float SettleDuration;
 
             /// <summary>The values a fresh director starts with - the clone's numbers, which read right.</summary>

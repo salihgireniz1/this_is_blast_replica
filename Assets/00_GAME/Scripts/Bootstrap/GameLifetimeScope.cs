@@ -34,18 +34,23 @@ namespace Blast.Bootstrap
         const int SequencesCapacity = 100;
 
         /// <summary>The authored colour table. Assigned in the inspector.</summary>
+        [Tooltip("The colour table every cube and shooter renders from. Swap it for another palette to retheme the whole game.")]
         [SerializeField] PaletteData _palette;
 
         /// <summary>The authored tween timings. Assigned in the inspector.</summary>
+        [Tooltip("The tween timings asset.")]
         [SerializeField] JuiceConfig _juice;
 
         /// <summary>The level file the game boots into. Assigned in the inspector.</summary>
+        [Tooltip("The JSON level the game boots into on Play. Must live in Assets/00_GAME/Levels so LevelFileTests checks it.")]
         [SerializeField] TextAsset _level;
 
         /// <summary>The spawner that builds the level on screen. Assigned in the inspector.</summary>
+        [Tooltip("The scene's LevelSpawner; it is handed the parsed level.")]
         [SerializeField] LevelSpawner _spawner;
 
         /// <summary>The director that runs the play session. Assigned in the inspector.</summary>
+        [Tooltip("The scene's GameDirector; it is handed the domain models.")]
         [SerializeField] GameDirector _director;
 
         #endregion

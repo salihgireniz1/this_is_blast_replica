@@ -19,9 +19,11 @@ namespace Blast.Presentation
         #region Fields
 
         /// <summary>The bullet visual and how many to make up front: one per slot, since a flight is shorter than the fire interval.</summary>
+        [Tooltip("The bullet prefab and how many are made on Awake. One per slot is enough: a flight ends before the next shot.")]
         [SerializeField] PoolSettings<CubeView> _bullets = new PoolSettings<CubeView> { Prewarm = 5 };
 
         /// <summary>The muzzle flash and how many to make up front: enough for five slots chain-firing. Its Stop Action is Disable, which is how the pool sees it finish.</summary>
+        [Tooltip("The muzzle splash prefab and how many are made on Awake. Its Stop Action must be Disable. Prewarm = slots x (splash life / fire interval).")]
         [SerializeField] PoolSettings<ParticleSystem> _splashes = new PoolSettings<ParticleSystem> { Prewarm = 40 };
 
         #endregion
@@ -69,9 +71,11 @@ namespace Blast.Presentation
         public struct PoolSettings<T> where T : Component
         {
             /// <summary>What every instance is cloned from.</summary>
+            [Tooltip("What every pooled instance is cloned from.")]
             public T Prefab;
 
             /// <summary>How many instances exist before the first Take.</summary>
+            [Tooltip("How many instances are created before the first shot. The pool grows past this if needed and never shrinks.")]
             public int Prewarm;
         }
 

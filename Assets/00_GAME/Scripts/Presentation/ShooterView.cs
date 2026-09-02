@@ -20,12 +20,15 @@ namespace Blast.Presentation
         #region Fields
 
         /// <summary>Every renderer that wears the colour material. Assigned in the prefab.</summary>
+        [Tooltip("Every renderer Wear recolours: the walking cube body and the cashier body.")]
         [SerializeField] Renderer[] _coloredParts;
 
         /// <summary>The ammo counter above the head. Assigned in the prefab.</summary>
+        [Tooltip("The counter above the head. Shows ammo left, or ? while the shooter is hidden.")]
         [SerializeField] TMP_Text _ammoText;
 
         /// <summary>The WalkingCube animator. Assigned in the prefab.</summary>
+        [Tooltip("The WalkingCube Animator. SetRunning drives isRun / isIdle, PlayShoot pulls the Shoot trigger.")]
         [SerializeField] Animator _animator;
 
         /// <summary>Animator parameter: standing still.</summary>

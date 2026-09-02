@@ -16,6 +16,7 @@ namespace Blast.Presentation
         #region Fields
 
         /// <summary>The renderer that wears the colour material. Assigned in the prefab.</summary>
+        [Tooltip("The renderer Wear recolours: the cube body, or the bullet body on the bullet prefab.")]
         [SerializeField] MeshRenderer _renderer;
 
         #endregion

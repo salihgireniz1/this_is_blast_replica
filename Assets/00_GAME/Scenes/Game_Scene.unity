@@ -228,13 +228,13 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: fede019e27028bd4296cf7d5ee9efa41, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
+  m_Volume: 0.086
+  m_Pitch: 0.85
   Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 256
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -325,7 +325,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: fede019e27028bd4296cf7d5ee9efa41, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1116,7 +1116,7 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   _firing:
-    Interval: 0.16
+    Interval: 0.2
     MuzzleHeight: 0.7
     FlightDuration: 0.12
   _cubeDeath:
@@ -1402,7 +1402,7 @@ MonoBehaviour:
   _shooterPrefab: {fileID: 5202188498316596109, guid: 05b06f3019d616041bac456c32ea3a09, type: 3}
   _boardOrigin: {x: -4.275, y: 0.45, z: -4.275}
   _cellSize: 0.95
-  _queueOrigin: {x: 0, y: 0, z: -13.25}
+  _queueOrigin: {x: 0, y: 0, z: -14}
   _queueSpacingX: 2
   _queueSpacingZ: 2.25
   _slotZ: -10

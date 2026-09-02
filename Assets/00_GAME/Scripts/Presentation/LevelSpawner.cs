@@ -29,30 +29,39 @@ namespace Blast.Presentation
         #region Fields
 
         /// <summary>The cube visual to instantiate per board cell.</summary>
+        [Tooltip("The CubeView prefab spawned per board cell.")]
         [SerializeField] CubeView _cubePrefab;
 
         /// <summary>The shooter visual to instantiate per queued shooter.</summary>
+        [Tooltip("The ShooterView prefab spawned per queued shooter.")]
         [SerializeField] ShooterView _shooterPrefab;
 
         /// <summary>World position of the front-left cube's centre.</summary>
+        [Tooltip("World centre of the front-left cube (column 0, front row, ground layer). Move this to move the whole board.")]
         [SerializeField] Vector3 _boardOrigin = new Vector3(-4.275f, 0.45f, -4.275f);
 
         /// <summary>Distance between neighbouring cube centres; ten cells span GameArea's 9.5.</summary>
+        [Tooltip("World units between neighbouring cube centres, on every axis. 0.95 x 10 spans GameArea's 9.5 floor exactly.")]
         [SerializeField] float _cellSize = 0.95f;
 
         /// <summary>World position of the front shooter of the leftmost queue column.</summary>
+        [Tooltip("World centre of the queue's front row. Columns spread left and right of it, deeper rows go further back.")]
         [SerializeField] Vector3 _queueOrigin = new Vector3(0f, 0f, -7.5f);
 
         /// <summary>Distance between neighbouring queue columns; the row centres on x = 0.</summary>
+        [Tooltip("World units between neighbouring queue columns.")]
         [SerializeField] float _queueSpacingX = 1.5f;
 
         /// <summary>Distance between queue rows, walking away from the board.</summary>
+        [Tooltip("World units between queue rows, going away from the board.")]
         [SerializeField] float _queueSpacingZ = 1.2f;
 
         /// <summary>Depth of the slot row, between the board and the queue.</summary>
+        [Tooltip("Z of the slot row. Sits between the board's front row and the queue.")]
         [SerializeField] float _slotZ = -5.9f;
 
         /// <summary>Distance between neighbouring slots; the row centres on x = 0.</summary>
+        [Tooltip("World units between neighbouring slots. The row centres on x = 0.")]
         [SerializeField] float _slotSpacingX = 1.5f;
 
         /// <summary>The board the cubes come from. Handed in by Construct.</summary>
