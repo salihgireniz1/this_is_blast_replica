@@ -631,7 +631,8 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   fixed at five, the spawned slot markers went again (Salih: put the five in the scene):
   `Dock` holds five `SlotMarker` prefab instances at x -4..4, z -10; `SpawnSlotMarkers`,
   `Prefabs.SlotMarker`, the test and its stand-in are deleted. If the slot z ever moves,
-  move the Dock by hand. **The scope now boots `Level_01`** (the case's own level; the
+  move the Dock by hand. **Salih then tuned the markers by hand (2026-09-02): z -9.58, scale 0.31 -
+  they sit exactly under a seated shooter. Do not touch them.** **The scope now boots `Level_01`** (the case's own level; the
   10x20 `Level_02` stays in the repo as the hard level, swap it in by hand to stress-test).
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
