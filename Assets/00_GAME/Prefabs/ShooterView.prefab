@@ -29,6 +29,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2745266894739084931, guid: 9903af90ceaf140e3a1c0c0ed549a581, type: 2}
     - target: {fileID: 3778882874434467128, guid: d187609a2319bba41adbde9de6307116, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3778882874434467128, guid: d187609a2319bba41adbde9de6307116, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3778882874434467128, guid: d187609a2319bba41adbde9de6307116, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3778882874434467128, guid: d187609a2319bba41adbde9de6307116, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
@@ -124,6 +136,8 @@ MonoBehaviour:
   - {fileID: 8421721717333830850}
   _ammoText: {fileID: 4639908675800896803}
   _animator: {fileID: 2918607155893072014}
+  _ammoPunchScale: 0.3
+  _ammoPunchDuration: 0.15
   _outline: {fileID: 2100000, guid: 82d755344726442f796eeb57973edc15, type: 2}
 --- !u!114 &111513524791106548
 MonoBehaviour:
