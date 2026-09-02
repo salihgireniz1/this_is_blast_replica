@@ -593,6 +593,21 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   stay null because Construct never calls SetRunning) and asserts front outlined / second
   not / popped plain / stepped-up outlined. Red first: 71/72. One small array per toggle,
   on a tap, not per frame. Outline thickness is `_Scale` on the material, Salih's to tune.
+- Slot markers on the dock - done, 73/73 green, verified in Play (5 markers at x -4..4,
+  z -10, sprite visible, zero errors). Juice 2, first half of "deck + framing". What Apps
+  supplied for this: `Textures/Slot.png` (488 px sprite, unused until now) - the rounded
+  translucent square the original draws under each shooter slot. NOT a deck: the scene's
+  `Gate` (Gate.fbx at scale 320, `GameArea_Ceiling`) is the canopy over the board's far
+  edge, and a Gate.fbx at scale 1 is 0.1 units wide. `Prefabs/SlotMarker.prefab` is a
+  SpriteRenderer (Slot.png, rotated 90 on X, scale 0.35 = 1.71 world units against the 2.0
+  slot spacing), no material of its own. The spawner spawns one per slot under a `Slots`
+  group at `SlotWorldPosition(slot)`: the count is the level's (`SlotRow.Slots`), so a
+  four-slot level shows four, and a marker can never drift from the position the shooter
+  is actually seated at because both read the same formula. `LevelSpawnerTests` gained a
+  stand-in marker in SetUp (an empty Transform; the earlier spawner tests went red in
+  SetUp without it, 68/73) and one test: count follows the level, each marker is under its
+  slot. Framing itself (the empty band between board and dock) is untouched: those are
+  Salih's numbers (slot z -10, queue z -14, camera ortho 12 at (0,10,-10) / 70 deg).
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

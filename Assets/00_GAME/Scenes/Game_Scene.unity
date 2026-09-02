@@ -1896,6 +1896,7 @@ MonoBehaviour:
   _prefabs:
     Cube: {fileID: 6940791486018957847, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
     Shooter: {fileID: 5202188498316596109, guid: 05b06f3019d616041bac456c32ea3a09, type: 3}
+    SlotMarker: {fileID: 5327951511860264260, guid: d4ddabea3104fe54f9cb85a4acfba108, type: 3}
   _boardLayout:
     Origin: {x: -4.275, y: 0.45, z: -4.275}
     CellSize: 0.95
