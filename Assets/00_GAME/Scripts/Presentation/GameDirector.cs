@@ -146,6 +146,14 @@ namespace Blast.Presentation
             view.SetRunning(false);
             view.FaceForward(_motion.TurnDuration);
 
+            // The thump on arrival. Not awaited: the first shot may leave mid-squash, which
+            // is how the original reads too. vibrato is per second: 10 x 0.3 s = 3 segments
+            // of 0.1 s - the squash itself is the first one, and it has to outlast the frame
+            // hitch the first shot causes on this same frame (measured 56 ms in the editor:
+            // a 0.067 s segment vanished inside it). Low elasticity keeps the swing back
+            // through the opposite stretch small, so what reads is the squash.
+            view.transform.DOPunchScale(_motion.LandSquash, _motion.LandDuration, vibrato: 10, elasticity: 0.3f);
+
             FireLoop(slot, view, ammo).Forget();
         }
 
@@ -332,6 +340,14 @@ namespace Blast.Presentation
             [Tooltip("Shape of the leave run. X: fraction of Leave Distance covered sideways. Y: world units forward of the slot at that point.")]
             public AnimationCurve LeavePath;
 
+            /// <summary>The squash a shooter lands with: per axis, as a fraction of its scale. Negative y and positive x/z read as a thump.</summary>
+            [Tooltip("The landing squash on arrival at the slot, per axis as a fraction of scale. Wider and flatter (negative y) reads as a thump; the punch swings back through the opposite before settling.")]
+            public Vector3 LandSquash;
+
+            /// <summary>How long the landing squash takes to settle.</summary>
+            [Tooltip("Seconds the landing squash takes to settle.")]
+            public float LandDuration;
+
             /// <summary>The values a fresh director starts with.</summary>
             public static ShooterMotion Defaults => new ShooterMotion
             {
@@ -341,6 +357,8 @@ namespace Blast.Presentation
                 LeaveDuration = 0.6f,
                 LeaveDistance = 10f,
                 LeavePath = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(0.25f, 2f), new Keyframe(1f, 2f)),
+                LandSquash = new Vector3(0.2f, -0.25f, 0.2f),
+                LandDuration = 0.3f,
             };
         }
 

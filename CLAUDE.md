@@ -645,6 +645,21 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   there would grow the counter shot by shot. Vibrato 2 x 0.15 s = one segment: out and back,
   a tick. No test: a tween on a humble view. Not awaited, not UniTask-wrapped: nothing waits
   for it.
+- Landing squash on arrival at the slot - done, 72/72 green, verified in Play (root scale
+  logged per game frame: peak (1.19, 0.76, 1.19), a 1.05 rebound, back to 1.000; zero
+  errors). Juice 4. `OnSelected` fires `DOPunchScale(_motion.LandSquash, _motion.LandDuration,
+  vibrato: 10, elasticity: 0.3)` on the view's root right after the run, not awaited (the
+  first shot leaves mid-squash, as in the original). New `ShooterMotion` fields `LandSquash`
+  (0.2, -0.25, 0.2: wider and flatter, the cube swell's shape) and `LandDuration` 0.3 -
+  written into the scene by eval, the new-struct-field-arrives-as-zero trap again.
+  **Measured trap that set the numbers:** the first cut (0.2 s, vibrato 15, elasticity
+  0.5) showed NO squash at all, only the stretch swing: the arrival frame carries a 56 ms
+  hitch (the first shot's splash + audio + bullet on the same frame, editor first-use
+  cost) and the whole 0.067 s squash segment fell inside it, leaving the 0.5-elastic
+  rebound as the only visible motion - the opposite shape. Now 3 segments of 0.1 s and a
+  0.3 rebound. Checked and cleared: the WalkingCube Animator is on a child at scale 1.91
+  and never writes the root scale. Logger pattern reused (`EditorApplication.update`,
+  one sample per `Time.frameCount`, unsubscribed on `playModeStateChanged`).
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.
