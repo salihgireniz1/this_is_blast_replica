@@ -39,6 +39,9 @@ namespace Blast.Presentation
         /// <summary>How far ahead of itself a shooter looks while following its leave path; near zero keeps the nose on the curve.</summary>
         const float PathLookAhead = 0.01f;
 
+        /// <summary>How many points the leave curve is sampled into; enough for a Catmull-Rom to follow a single bend.</summary>
+        const int LeavePathSamples = 8;
+
         /// <summary>The bullet and splash pools. Assigned in the inspector; owns its own prewarm.</summary>
         [SerializeField] ShotPools _pools;
 
@@ -233,14 +236,20 @@ namespace Blast.Presentation
             float side = Mathf.Sign(view.transform.position.x);
             Vector3 start = view.transform.position;
 
-            // A step forward first, then the sweep to the side: a Catmull-Rom through the
-            // two points bends the run instead of snapping it. The look-at replaces TurnTo
-            // because the heading changes all along the path, not once at the start.
-            Vector3 bend = start + new Vector3(0f, 0f, _motion.LeaveArc);
-            Vector3 offScreen = start + new Vector3(side * _motion.LeaveDistance, 0f, _motion.LeaveArc);
+            // The inspector curve draws the run's shape: x is how far along the sideways
+            // distance, y is how far forward at that point. Sampling it into a Catmull-Rom
+            // path keeps the tween machinery, and the look-at replaces TurnTo because the
+            // heading changes all along the curve, not once at the start.
+            Vector3[] path = new Vector3[LeavePathSamples];
+            for (int i = 0; i < LeavePathSamples; i++)
+            {
+                float progress = (i + 1f) / LeavePathSamples;
+                float forward = _motion.LeavePath.Evaluate(progress);
+                path[i] = start + new Vector3(side * _motion.LeaveDistance * progress, 0f, forward);
+            }
 
             view.SetRunning(true);
-            await view.transform.DOPath(new[] { bend, offScreen }, _motion.LeaveDuration, PathType.CatmullRom)
+            await view.transform.DOPath(path, _motion.LeaveDuration, PathType.CatmullRom)
                 .SetEase(Ease.InQuad)
                 .SetLookAt(PathLookAhead);
 
@@ -282,8 +291,8 @@ namespace Blast.Presentation
             /// <summary>How far sideways a drained shooter runs before despawning; must clear the portrait frame's half-width.</summary>
             public float LeaveDistance;
 
-            /// <summary>How far forward a drained shooter steps before its run bends to the side.</summary>
-            public float LeaveArc;
+            /// <summary>The leave run's shape: x is the fraction of LeaveDistance covered sideways, y is the forward offset in world units at that point.</summary>
+            public AnimationCurve LeavePath;
 
             /// <summary>The values a fresh director starts with.</summary>
             public static ShooterMotion Defaults => new ShooterMotion
@@ -293,7 +302,7 @@ namespace Blast.Presentation
                 StepDuration = 0.25f,
                 LeaveDuration = 0.6f,
                 LeaveDistance = 10f,
-                LeaveArc = 2f,
+                LeavePath = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(0.25f, 2f), new Keyframe(1f, 2f)),
             };
         }
 

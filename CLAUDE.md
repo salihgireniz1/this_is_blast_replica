@@ -352,9 +352,17 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   sketch: a step up, then a sweep to the side, not a straight line): `Leave` is now a
   `DOPath` Catmull-Rom through `start + forward * LeaveArc` and `start + side * LeaveDistance +
   forward * LeaveArc`, `SetLookAt(0.01)` replacing `TurnTo` because the heading changes all
-  along the curve. New `ShooterMotion.LeaveArc` (2, written into the scene via eval - a new
-  struct field arrives as 0). Verified in Play both ways: yaw eased 330 -> 270 leaving left and
-  50 -> 90 leaving right, z rose -9 -> -7.9 and held, x swept to +-13. **Play-verification trap:** with the
+  along the curve. **Then made an `AnimationCurve` at Salih's call** so the shape is drawn in
+  the inspector rather than typed: `ShooterMotion.LeavePath`, x = fraction of `LeaveDistance`
+  covered sideways, y = forward offset in world units; `Leave` samples it into 8 points
+  (`LeavePathSamples`) for the Catmull-Rom. Default keys (0,0) (0.25,2) (1,2). `LeaveArc` is
+  gone. Verified in Play both ways: yaw eased 310 -> 270 leaving left and 50 -> 90 leaving
+  right, z rose -10 -> -8 (slot z is -10) and held, x swept to +-12.6. **Scene trap, hit twice
+  in this chunk:** a new struct field arrives in the scene as its zero value, and for an
+  `AnimationCurve` Unity then writes a linear 0 -> 1 default on the next save - the run looked
+  bent but a unit short until the keys were written through `SerializedProperty.
+  animationCurveValue` with explicit `Keyframe`s (an eval that referenced the nested
+  `ShooterMotion.Defaults` failed silently and printed nothing). **Play-verification trap:** with the
   editor unfocused Play only ticks during a command, so a multi-eval "sample positions" loop
   sees a frozen game; set `Application.runInBackground = true` in the first eval and hook an
   `EditorApplication.update` logger instead of polling.
