@@ -696,6 +696,16 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   `loop.Decided += progression.Record` (Won advances and wraps, Lost holds; saved at the
   verdict, not at the button); the overlay's button reads NEXT after a win and RESTART
   after a loss, and still just reloads the scene.
+- Level progression, chunk 2 of 4: `ISaveStore` + `LevelProgression` (Application) - done,
+  76/76 green. `ISaveStore` is two generic methods, `T Load<T>(key, fallback)` / `Save<T>(key,
+  value)` - an interface because the backend is a dependency supplied from outside and
+  substituted in tests (the test's `MemoryStore` is the whole contract in eight lines).
+  `LevelProgression(levelCount, store)` reads `"LevelIndex"` in its ctor folded by `%
+  levelCount` (a save from a longer catalogue must not throw on boot after a level file is
+  removed - the fourth test), `Record(Won)` advances, wraps and saves, `Record(Lost)` returns
+  early. Red first with the compile error. The extension point Salih asked for is the
+  interface, not an abstract base: ES3 and any other local store share a contract, not
+  code; a base class appears the day two stores share a line.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.
