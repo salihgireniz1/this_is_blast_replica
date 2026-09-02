@@ -10,6 +10,7 @@
 // NOT its responsibility: the rules themselves. Targeting, win and fail live in
 //   GameRules; this type only decides when to ask.
 
+using System;
 using Blast.Domain;
 
 namespace Blast.Application
@@ -39,6 +40,10 @@ namespace Blast.Application
 
         /// <summary>The level's state. Once decided, every entry point refuses.</summary>
         public GameVerdict Verdict { get; private set; } = GameVerdict.Playing;
+
+        /// <summary>Raised once, the moment the level is decided, with the verdict. Nothing
+        /// polls Verdict for the ending: the UI learns it here.</summary>
+        public event Action<GameVerdict> Decided;
 
         #endregion
 
@@ -92,7 +97,7 @@ namespace Blast.Application
             // died), so only the fail needs re-reading here.
             if (GameRules.IsFailed(_board, _slots))
             {
-                Verdict = GameVerdict.Lost;
+                Decide(GameVerdict.Lost);
             }
 
             return true;
@@ -129,14 +134,27 @@ namespace Blast.Application
             // letter too, and this ordering is what keeps that ending a win.
             if (GameRules.IsWon(_board))
             {
-                Verdict = GameVerdict.Won;
+                Decide(GameVerdict.Won);
             }
             else if (GameRules.IsFailed(_board, _slots))
             {
-                Verdict = GameVerdict.Lost;
+                Decide(GameVerdict.Lost);
             }
 
             return true;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>Ends the level: records the verdict and announces it. The only writer of
+        /// Verdict past Playing, so the announcement cannot be forgotten at one site.</summary>
+        /// <param name="verdict">How the level ended.</param>
+        void Decide(GameVerdict verdict)
+        {
+            Verdict = verdict;
+            Decided?.Invoke(verdict);
         }
 
         #endregion

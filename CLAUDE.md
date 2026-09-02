@@ -501,6 +501,18 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   same problem (4 x 0.3 = 1, clamped to 2: a single nod) and is now vibrato 15 inline;
   Salih had already switched its axis to `Vector3.up` (a yaw shimmy, not a forward tip)
   and elasticity to 1 by hand, both kept. Tooltips say per-second now.
+- `GameLoop.Decided` (Application) - done, 68/68 green. UI chunk 1 of 4. The overlay
+  needs to learn the ending without polling, and Presentation/UI are siblings that may not
+  see each other, so the loop announces it: `event Action<GameVerdict> Decided`, raised from
+  a private `Decide(verdict)` that is now the ONLY writer of `Verdict` past Playing (three
+  assignment sites became three calls, so no site can forget the announcement). A plain C#
+  event, not an R3 property: Application stays library-free; the ViewModel (chunk 2) is
+  where the event becomes R3 for binding. Red first with the compile error, then the test
+  pins "raised exactly once, with the verdict, on the SEATING path" - the fail a selection
+  causes is the one a TryShoot-only announcement would miss. Next: `LevelEndViewModel`
+  (UI, pure C#, R3), then `LevelEndView` (UGUI + restart = scene reload), then the
+  director's UniTask loops get a destroy-cancellation token so a fast restart cannot
+  touch destroyed views.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

@@ -233,6 +233,37 @@ namespace Blast.Tests
                 "Every slot is stuck and the game still calls itself playable.");
         }
 
+        /// <summary>
+        /// The verdict is announced through Decided exactly once, carrying the verdict,
+        /// and never while the game is still playing. A loop that raises on every
+        /// mutation would flash the overlay mid-game; one that raises only from TryShoot
+        /// would never show the fail a selection causes.
+        /// </summary>
+        [Test]
+        public void Deciding_RaisesDecidedOnceWithTheVerdict()
+        {
+            var loop = new GameLoop(
+                BoardWithFronts(BlastColor.Blue),
+                QueueOf(new Shooter(BlastColor.Red, 1, false)),
+                new SlotRow(1));
+            int raised = 0;
+            GameVerdict announced = GameVerdict.Playing;
+            loop.Decided += verdict =>
+            {
+                raised++;
+                announced = verdict;
+            };
+
+            loop.TrySelect(0, out int slot);
+
+            Assert.AreEqual(1, raised, "The seating that stuck the row was not announced exactly once.");
+            Assert.AreEqual(GameVerdict.Lost, announced, "The announced verdict is not the one decided.");
+
+            loop.TryShoot(slot, out _);
+
+            Assert.AreEqual(1, raised, "A refused move after the decision announced again.");
+        }
+
         #endregion
     }
 }
