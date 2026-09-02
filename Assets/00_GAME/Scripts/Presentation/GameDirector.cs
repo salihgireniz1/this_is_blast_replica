@@ -22,6 +22,7 @@
 // would let two in-flight shots at one column swap their victims.
 
 using System;
+using System.Threading;
 using Blast.Application;
 using Blast.Domain;
 using Cysharp.Threading.Tasks;
@@ -71,9 +72,20 @@ namespace Blast.Presentation
         /// <summary>The view registry: who stands where. Handed in by Construct.</summary>
         LevelSpawner _spawner;
 
+        /// <summary>Cancelled when this director is destroyed - a restart reloads the scene
+        /// while shots are still in flight, and every await below stops here instead of
+        /// waking up to touch a destroyed view.</summary>
+        CancellationToken _destroyed;
+
         #endregion
 
         #region Public Methods
+
+        /// <summary>Takes the token every async flow below is tied to.</summary>
+        void Awake()
+        {
+            _destroyed = this.GetCancellationTokenOnDestroy();
+        }
 
         /// <summary>Receives the loop, the slots and the registry this director drives.</summary>
         /// <param name="loop">The use case every action goes through.</param>
@@ -128,7 +140,9 @@ namespace Blast.Presentation
 
             view.SetRunning(true);
             view.TurnTo(slotPosition, _motion.TurnDuration);
-            await view.transform.DOMove(slotPosition, _motion.RunDuration).SetEase(Ease.OutQuad);
+            await view.transform.DOMove(slotPosition, _motion.RunDuration)
+                .SetEase(Ease.OutQuad)
+                .ToUniTask(cancellationToken: _destroyed);
             view.SetRunning(false);
             view.FaceForward(_motion.TurnDuration);
 
@@ -169,7 +183,7 @@ namespace Blast.Presentation
 
                 // One rhythm for firing and for waiting: a targetless shooter re-checks at
                 // the same rate it would have fired, which reads naturally on screen.
-                await UniTask.Delay(TimeSpan.FromSeconds(_firing.Interval));
+                await UniTask.Delay(TimeSpan.FromSeconds(_firing.Interval), cancellationToken: _destroyed);
             }
 
             await Leave(view);
@@ -214,7 +228,7 @@ namespace Blast.Presentation
 
             await bullet.transform.DOMove(cube.transform.position, _firing.FlightDuration)
                 .SetEase(Ease.Linear)
-                .ToUniTask();
+                .ToUniTask(cancellationToken: _destroyed);
 
             _pools.Bullets.Return(bullet);
 
@@ -228,10 +242,10 @@ namespace Blast.Presentation
                 .ToUniTask()
                 .Forget();
             await dying.DOPunchScale(_cubeDeath.SwellScale, _cubeDeath.SwellDuration, _cubeDeath.SwellVibrato, _cubeDeath.SwellElasticity)
-                .ToUniTask();
+                .ToUniTask(cancellationToken: _destroyed);
             await dying.DOScale(Vector3.zero, _cubeDeath.CollapseDuration)
                 .SetEase(Ease.InQuad)
-                .ToUniTask();
+                .ToUniTask(cancellationToken: _destroyed);
 
             // The rock may still be running; kill it explicitly rather than leaning on
             // safe mode to notice the target is gone.
@@ -250,7 +264,7 @@ namespace Blast.Presentation
                 hitColumn, _cubeDeath.FlowDuration, _cubeDeath.SettleAngle, _cubeDeath.SettleDuration);
             if (slide != null)
             {
-                await slide.ToUniTask();
+                await slide.ToUniTask(cancellationToken: _destroyed);
             }
 
             _loop.ReleaseColumn(hitColumn);
@@ -280,7 +294,8 @@ namespace Blast.Presentation
             view.SetRunning(true);
             await view.transform.DOPath(path, _motion.LeaveDuration, PathType.CatmullRom)
                 .SetEase(Ease.InQuad)
-                .SetLookAt(PathLookAhead);
+                .SetLookAt(PathLookAhead)
+                .ToUniTask(cancellationToken: _destroyed);
 
             Destroy(view.gameObject);
         }

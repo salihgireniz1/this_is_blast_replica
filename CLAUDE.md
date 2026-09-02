@@ -560,6 +560,22 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   the forced Lost and did not reproduce; not explained. If it recurs in real play, log
   `isIdle` / `isRun` / the `Shoot` trigger per frame for the stuck view (the eval logger
   pattern: `EditorApplication.update`, unsubscribed on `playModeStateChanged`).
+- Director awaits cancel on destroy - done, 71/71 green, verified in Play. UI chunk 4 of
+  4. Red first, live: shooters firing, `Decide(Won)` + `RestartButton.onClick.Invoke()` in
+  the same frame gave 2 x `MissingReferenceException: 'UnityEngine.Animator' has been
+  destroyed` (FireLoop ticks waking after the reload) plus 2 errors caught by DOTween's
+  safe mode. Fix: `_destroyed = this.GetCancellationTokenOnDestroy()` in `Awake`, passed to
+  every await in the file - `UniTask.Delay(..., cancellationToken:)` and every tween's
+  `.ToUniTask(cancellationToken:)` (the two bare `await tween`s in `OnSelected` and `Leave`
+  became explicit `ToUniTask` calls for it). A cancelled await throws
+  OperationCanceledException into a `UniTaskVoid`, which UniTask drops silently by default,
+  so nothing after the await runs and nothing is logged. Same probe after: 28 cubes shot,
+  restart, 600 cubes back, 0 errors. No EditMode test: the behaviour is UniTask's
+  cancellation, observable only with a scene reload. **Console-reading trap, hit here:**
+  the CLI `console` entries carry `level` (`error`) and `timestampUtc`, not `type`; the
+  earlier "zero console errors" reads in this section that filtered on `type` saw nothing
+  and would have said zero regardless. Filter on `level` and on a timestamp taken before
+  the probe. The UI is complete: overlay, restart, frozen shooters, clean reload.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.
