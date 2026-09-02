@@ -36,6 +36,9 @@ namespace Blast.Presentation
     {
         #region Fields
 
+        /// <summary>How far ahead of itself a shooter looks while following its leave path; near zero keeps the nose on the curve.</summary>
+        const float PathLookAhead = 0.01f;
+
         /// <summary>The bullet and splash pools. Assigned in the inspector; owns its own prewarm.</summary>
         [SerializeField] ShotPools _pools;
 
@@ -225,14 +228,21 @@ namespace Blast.Presentation
         /// <param name="view">The shooter's visual.</param>
         async UniTask Leave(ShooterView view)
         {
-            // Sideways, toward whichever edge is closer: the original's shooters never
-            // back out through the queue. Mathf.Sign(0) is +1, so the centre slot goes right.
+            // Toward whichever edge is closer: the original's shooters never back out
+            // through the queue. Mathf.Sign(0) is +1, so the centre slot goes right.
             float side = Mathf.Sign(view.transform.position.x);
-            Vector3 offScreen = view.transform.position + new Vector3(side * _motion.LeaveDistance, 0f, 0f);
+            Vector3 start = view.transform.position;
+
+            // A step forward first, then the sweep to the side: a Catmull-Rom through the
+            // two points bends the run instead of snapping it. The look-at replaces TurnTo
+            // because the heading changes all along the path, not once at the start.
+            Vector3 bend = start + new Vector3(0f, 0f, _motion.LeaveArc);
+            Vector3 offScreen = start + new Vector3(side * _motion.LeaveDistance, 0f, _motion.LeaveArc);
 
             view.SetRunning(true);
-            view.TurnTo(offScreen, _motion.TurnDuration);
-            await view.transform.DOMove(offScreen, _motion.LeaveDuration).SetEase(Ease.InQuad);
+            await view.transform.DOPath(new[] { bend, offScreen }, _motion.LeaveDuration, PathType.CatmullRom)
+                .SetEase(Ease.InQuad)
+                .SetLookAt(PathLookAhead);
 
             Destroy(view.gameObject);
         }
@@ -272,6 +282,9 @@ namespace Blast.Presentation
             /// <summary>How far sideways a drained shooter runs before despawning; must clear the portrait frame's half-width.</summary>
             public float LeaveDistance;
 
+            /// <summary>How far forward a drained shooter steps before its run bends to the side.</summary>
+            public float LeaveArc;
+
             /// <summary>The values a fresh director starts with.</summary>
             public static ShooterMotion Defaults => new ShooterMotion
             {
@@ -280,6 +293,7 @@ namespace Blast.Presentation
                 StepDuration = 0.25f,
                 LeaveDuration = 0.6f,
                 LeaveDistance = 10f,
+                LeaveArc = 2f,
             };
         }
 

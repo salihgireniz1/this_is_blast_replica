@@ -297,7 +297,7 @@ Camera:
   far clip plane: 20
   field of view: 60
   orthographic: 1
-  orthographic size: 11.5
+  orthographic size: 12
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -507,15 +507,15 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: bf192859aadd5d14b9ab7f821e29cd4c, type: 2}
     - target: {fileID: -8679921383154817045, guid: 8d093cb7a7c777545b8d48ada980d363, type: 3}
       propertyPath: m_LocalScale.x
-      value: 330
+      value: 320
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8d093cb7a7c777545b8d48ada980d363, type: 3}
       propertyPath: m_LocalScale.y
-      value: 330
+      value: 320
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8d093cb7a7c777545b8d48ada980d363, type: 3}
       propertyPath: m_LocalScale.z
-      value: 330
+      value: 320
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8d093cb7a7c777545b8d48ada980d363, type: 3}
       propertyPath: m_LocalPosition.x
@@ -838,6 +838,7 @@ MonoBehaviour:
     StepDuration: 0.25
     LeaveDuration: 0.6
     LeaveDistance: 10
+    LeaveArc: 2
   _firing:
     Interval: 0.16
     MuzzleHeight: 0.7
@@ -1128,7 +1129,7 @@ MonoBehaviour:
   _queueOrigin: {x: 0, y: 0, z: -13.25}
   _queueSpacingX: 2
   _queueSpacingZ: 2.25
-  _slotZ: -9
+  _slotZ: -10
   _slotSpacingX: 2
 --- !u!4 &1933728905 stripped
 Transform:

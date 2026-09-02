@@ -348,7 +348,13 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   run to whichever screen edge is nearer. `Leave` now offsets along `Mathf.Sign(position.x)`
   (Sign(0) is +1, so the centre slot goes right) and `LeaveDistance` went 6 -> 10 in both the
   struct default and the scene: the camera is ortho 11.5, so a 9:16 portrait frame is ~6.5 wide
-  at half-width and the old 6 from x=0 stopped inside it. **Play-verification trap:** with the
+  at half-width and the old 6 from x=0 stopped inside it. **Then bent at Salih's call** (his
+  sketch: a step up, then a sweep to the side, not a straight line): `Leave` is now a
+  `DOPath` Catmull-Rom through `start + forward * LeaveArc` and `start + side * LeaveDistance +
+  forward * LeaveArc`, `SetLookAt(0.01)` replacing `TurnTo` because the heading changes all
+  along the curve. New `ShooterMotion.LeaveArc` (2, written into the scene via eval - a new
+  struct field arrives as 0). Verified in Play both ways: yaw eased 330 -> 270 leaving left and
+  50 -> 90 leaving right, z rose -9 -> -7.9 and held, x swept to +-13. **Play-verification trap:** with the
   editor unfocused Play only ticks during a command, so a multi-eval "sample positions" loop
   sees a frozen game; set `Application.runInBackground = true` in the first eval and hook an
   `EditorApplication.update` logger instead of polling.
