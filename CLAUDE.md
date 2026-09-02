@@ -366,6 +366,19 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   editor unfocused Play only ticks during a command, so a multi-eval "sample positions" loop
   sees a frozen game; set `Application.runInBackground = true` in the first eval and hook an
   `EditorApplication.update` logger instead of polling.
+- `ShotAudio` (Presentation) - done, 63/63 green, verified in Play (five slots chain-firing,
+  50 cubes shot, the scene holds exactly 2 AudioSources and the peak count playing at once
+  was 2; before, every one of the 40 pooled splashes carried its own source). Salih's report:
+  the shot sound stacked into a wall. Cause: `SplashEffect.prefab` had an AudioSource with
+  Play On Awake and `Splash.wav`, so the pool re-enabling a splash replayed it per shot,
+  uncapped. Fix: the prefab's AudioSource is gone; a scene object `ShotAudio` carries two
+  AudioSources (clip, Play On Awake off, 2D) and the component plays them round-robin - `Play`
+  on a busy source restarts it, so the voice count IS the concurrency cap and the oldest shot
+  is the one cut. The director holds `_audio` and calls `Play()` next to the splash `Take`.
+  Rejected: `PlayOneShot` and per-splash sources (both stack one voice per shot with no cap),
+  and the project's Max Real Voices setting (it would cap every sound in the game, not this
+  one). No test: the whole behaviour is one restart plus a modulo, and EditMode cannot observe
+  playback. Add a third AudioSource in the scene if two voices read too thin.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

@@ -45,6 +45,9 @@ namespace Blast.Presentation
         /// <summary>The bullet and splash pools. Assigned in the inspector; owns its own prewarm.</summary>
         [SerializeField] ShotPools _pools;
 
+        /// <summary>The shot sound. Assigned in the inspector; owns its own voice cap.</summary>
+        [SerializeField] ShotAudio _audio;
+
         /// <summary>How a shooter moves: to its slot, in place, off-screen.</summary>
         [SerializeField] ShooterMotion _motion = ShooterMotion.Defaults;
 
@@ -200,6 +203,7 @@ namespace Blast.Presentation
             // aim itself: yaw toward the cube, the same axis TurnTo constrains the body to.
             Vector3 aim = Vector3.ProjectOnPlane(cube.transform.position - muzzle, Vector3.up);
             _pools.Splashes.Take(muzzle, Quaternion.LookRotation(aim));
+            _audio.Play();
 
             CubeView bullet = _pools.Bullets.Take(muzzle);
             bullet.Wear(bulletMaterial);
