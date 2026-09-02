@@ -221,11 +221,14 @@ namespace Blast.Presentation
             _loop.ReleaseColumn(hitColumn);
         }
 
-        /// <summary>Runs a drained shooter off-screen and despawns it.</summary>
+        /// <summary>Runs a drained shooter off the nearer side of the screen and despawns it.</summary>
         /// <param name="view">The shooter's visual.</param>
         async UniTask Leave(ShooterView view)
         {
-            Vector3 offScreen = view.transform.position + new Vector3(0f, 0f, -_motion.LeaveDistance);
+            // Sideways, toward whichever edge is closer: the original's shooters never
+            // back out through the queue. Mathf.Sign(0) is +1, so the centre slot goes right.
+            float side = Mathf.Sign(view.transform.position.x);
+            Vector3 offScreen = view.transform.position + new Vector3(side * _motion.LeaveDistance, 0f, 0f);
 
             view.SetRunning(true);
             view.TurnTo(offScreen, _motion.TurnDuration);
@@ -266,7 +269,7 @@ namespace Blast.Presentation
             /// <summary>How long a drained shooter takes to run off-screen.</summary>
             public float LeaveDuration;
 
-            /// <summary>How far off-screen a drained shooter runs before despawning.</summary>
+            /// <summary>How far sideways a drained shooter runs before despawning; must clear the portrait frame's half-width.</summary>
             public float LeaveDistance;
 
             /// <summary>The values a fresh director starts with.</summary>
@@ -276,7 +279,7 @@ namespace Blast.Presentation
                 TurnDuration = 0.15f,
                 StepDuration = 0.25f,
                 LeaveDuration = 0.6f,
-                LeaveDistance = 6f,
+                LeaveDistance = 10f,
             };
         }
 

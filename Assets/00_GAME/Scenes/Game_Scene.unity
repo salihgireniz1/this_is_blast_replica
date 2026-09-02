@@ -837,7 +837,7 @@ MonoBehaviour:
     TurnDuration: 0.15
     StepDuration: 0.25
     LeaveDuration: 0.6
-    LeaveDistance: 6
+    LeaveDistance: 10
   _firing:
     Interval: 0.16
     MuzzleHeight: 0.7

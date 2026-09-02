@@ -342,6 +342,16 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   ~0.45 s per shot instead of 0.16 s - flight + death + flow - which is the pacing Salih asked
   for; the fire interval only governs the hop between free columns. Red first with
   "The shot went into the column that is still settling. Expected: 1 But was: 0".
+- Drained shooters leave sideways - done, 63/63 green, verified in Play (two seated at x=2 and
+  x=4 ran off along +x at z=-9, logged frame by frame to x=11.7 before despawn, zero gameplay
+  errors). Salih's report: they backed out through the queue (`-z`); the clone and the original
+  run to whichever screen edge is nearer. `Leave` now offsets along `Mathf.Sign(position.x)`
+  (Sign(0) is +1, so the centre slot goes right) and `LeaveDistance` went 6 -> 10 in both the
+  struct default and the scene: the camera is ortho 11.5, so a 9:16 portrait frame is ~6.5 wide
+  at half-width and the old 6 from x=0 stopped inside it. **Play-verification trap:** with the
+  editor unfocused Play only ticks during a command, so a multi-eval "sample positions" loop
+  sees a frozen game; set `Application.runInBackground = true` in the first eval and hook an
+  `EditorApplication.update` logger instead of polling.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.
