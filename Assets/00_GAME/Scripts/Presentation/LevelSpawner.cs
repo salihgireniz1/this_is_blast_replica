@@ -94,7 +94,6 @@ namespace Blast.Presentation
 
             SpawnCubes();
             SpawnShooters();
-            SpawnSlotMarkers();
         }
 
         /// <summary>The world position of a slot's centre.</summary>
@@ -303,17 +302,6 @@ namespace Blast.Presentation
             }
         }
 
-        /// <summary>Places one marker per slot, so the empty dock still shows where shooters seat.</summary>
-        void SpawnSlotMarkers()
-        {
-            Transform home = NewGroup("Slots");
-
-            for (int slot = 0; slot < _slotCount; slot++)
-            {
-                Instantiate(_prefabs.SlotMarker, SlotWorldPosition(slot), _prefabs.SlotMarker.rotation, home);
-            }
-        }
-
         /// <summary>Maps a column's list index back to the address the view was spawned at.</summary>
         /// <param name="column">The board column the view belongs to.</param>
         /// <param name="index">Its position in that column's list, as SpawnCubes filled it.</param>
@@ -360,10 +348,6 @@ namespace Blast.Presentation
             /// <summary>The shooter visual to instantiate per queued shooter.</summary>
             [Tooltip("The ShooterView prefab spawned per queued shooter.")]
             public ShooterView Shooter;
-
-            /// <summary>The floor marker to instantiate per slot.</summary>
-            [Tooltip("The marker spawned on the floor under each slot; the count follows the level.")]
-            public Transform SlotMarker;
         }
 
         /// <summary>Where the board sits and how big a cell is. One inspector heading.</summary>
@@ -381,7 +365,7 @@ namespace Blast.Presentation
             /// <summary>The values a fresh spawner starts with: the scene's tuned numbers.</summary>
             public static BoardLayout Defaults => new BoardLayout
             {
-                Origin = new Vector3(-4.275f, 0.45f, -4.275f),
+                Origin = new Vector3(-4.275f, 0.45f, -5.775f),
                 CellSize = 0.95f,
             };
         }

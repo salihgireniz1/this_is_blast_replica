@@ -32,9 +32,6 @@ namespace Blast.Tests
         /// <summary>The spawner under test, and the parent every spawned view lands under.</summary>
         LevelSpawner _spawner;
 
-        /// <summary>The stand-in slot marker prefab: an empty transform, only its position matters.</summary>
-        Transform _slotMarkerPrefab;
-
         /// <summary>The stand-in shooter prefab, built only by the test that needs one.</summary>
         ShooterView _shooterPrefab;
 
@@ -54,11 +51,8 @@ namespace Blast.Tests
             _cubePrefab = prefabObject.AddComponent<CubeView>();
             AssignField(_cubePrefab, "_renderer", prefabObject.GetComponent<MeshRenderer>());
 
-            _slotMarkerPrefab = new GameObject("SlotMarkerPrefab").transform;
-
             _spawner = new GameObject("Spawner").AddComponent<LevelSpawner>();
             AssignField(_spawner, "_prefabs.Cube", _cubePrefab);
-            AssignField(_spawner, "_prefabs.SlotMarker", _slotMarkerPrefab);
         }
 
         /// <summary>Destroys everything the test spawned.</summary>
@@ -68,33 +62,10 @@ namespace Blast.Tests
             DOTween.KillAll();
             Object.DestroyImmediate(_spawner.gameObject);
             Object.DestroyImmediate(_cubePrefab.gameObject);
-            Object.DestroyImmediate(_slotMarkerPrefab.gameObject);
             if (_shooterPrefab != null)
             {
                 Object.DestroyImmediate(_shooterPrefab.gameObject);
                 Object.DestroyImmediate(_outline);
-            }
-        }
-
-        /// <summary>
-        /// One marker per slot, each exactly where its shooter will stand. The count comes
-        /// from the level, so a four-slot level shows four; a marker drawn from a different
-        /// formula than SlotWorldPosition drifts away from the shooter it is meant to seat.
-        /// </summary>
-        [Test]
-        public void SlotMarkers_StandWhereTheShootersWill()
-        {
-            _spawner.Construct(
-                new BoardModel(1, 1, 1), new ShooterQueue(new Shooter[0][]), new SlotRow(4), new NoMaterials());
-
-            Transform markers = _spawner.transform.Find("Slots");
-
-            Assert.AreEqual(4, markers.childCount, "The marker count does not follow the level's slot count.");
-            for (int slot = 0; slot < 4; slot++)
-            {
-                Assert.That(
-                    Vector3.Distance(markers.GetChild(slot).position, _spawner.SlotWorldPosition(slot)), Is.LessThan(0.001f),
-                    $"Marker {slot} is not under slot {slot}.");
             }
         }
 

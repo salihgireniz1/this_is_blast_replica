@@ -608,6 +608,31 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   SetUp without it, 68/73) and one test: count follows the level, each marker is under its
   slot. Framing itself (the empty band between board and dock) is untouched: those are
   Salih's numbers (slot z -10, queue z -14, camera ortho 12 at (0,10,-10) / 70 deg).
+- Framing matched to the original + brief re-read - done, 72/72 green, verified in Play.
+  Salih re-sent the case deck and a YouTube frame of the shipped game (375x812) as the
+  proportion reference; the deck's own images are schematic wireframes, not to scale (their
+  phone frame is 0.63 wide, and they put the slot row at 53%), so the frame outranks them.
+  Measured, as % of screen height / width: original board width 88%, board bottom 50%,
+  slot row centre 64%, slot spacing 18.4%, shooter rows 75/85/92%; ours before was 88 /
+  44 / 64.5 / 18 / 77-86-95. Horizontal scale and the dock already matched; the one real
+  gap was the board sitting 6 points too high, a 20% board-to-dock band against 14%. Fix:
+  the board moved 1.5 units back in WORLD, not the camera, so the dock and queue kept their
+  screen positions: `GameArea` z 0 -> -1.5, `Gate` (the canopy at the far edge) z 4 -> 2.5,
+  `_boardLayout.Origin` z -4.275 -> -5.775 in the scene and in `BoardLayout.Defaults`. After:
+  board bottom 49.3-50.0%, top 13% (original ~9%: the shipped game's camera is perspective
+  and renders the board ~4% taller for the same width; left alone, ortho stays).
+  **Brief facts re-confirmed from the deck (they override anything below that disagrees):**
+  Not1 grid always 10x10; Not2 slot count ALWAYS 5; Not3 shooter column count is the
+  level's; Not4 exactly 2 queue rows visible beyond the selectable one; slide 4 says the
+  selectable row is "more stroked" via `Cube_Outline` as a secondary material (done that
+  way); slides 8-9 want the background darkened and the words **WIN** / **LOST** plus a
+  restart button - `LevelEndViewModel.WonTitle` / `LostTitle` are now "WIN" / "LOST"
+  verbatim (the test compares against the consts, so it did not move). Because the count is
+  fixed at five, the spawned slot markers went again (Salih: put the five in the scene):
+  `Dock` holds five `SlotMarker` prefab instances at x -4..4, z -10; `SpawnSlotMarkers`,
+  `Prefabs.SlotMarker`, the test and its stand-in are deleted. If the slot z ever moves,
+  move the Dock by hand. **The scope now boots `Level_01`** (the case's own level; the
+  10x20 `Level_02` stays in the repo as the hard level, swap it in by hand to stress-test).
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.
