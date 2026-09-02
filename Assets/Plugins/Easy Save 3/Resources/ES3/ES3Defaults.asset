@@ -36,7 +36,31 @@ MonoBehaviour:
     serializationDepthLimit: 64
     assemblyNames:
     - Assembly-CSharp-firstpass
-    - Assembly-CSharp
+    - Blast.Application
+    - Blast.Bootstrap
+    - Blast.Domain
+    - Blast.Infrastructure
+    - Blast.Presentation
+    - Blast.UI
+    - CW.Common
+    - EasySave3
+    - KinoBloom.Runtime
+    - LeanCommon
+    - LeanCommonPlus
+    - LeanTouch
+    - LeanTouchPlus
+    - R3.Unity
+    - R3.Unity.TextMeshPro
+    - R3.Unity.XRInteractionToolkit
+    - ToonyColorsPro.Runtime
+    - ToonyColorsPro2.Demo
+    - UniTask
+    - UniTask.Addressables
+    - UniTask.DOTween
+    - UniTask.Linq
+    - UniTask.TextMeshPro
+    - VContainer
+    - VInspector
     showAdvancedSettings: 0
   addMgrToSceneAutomatically: 0
   autoUpdateReferences: 1
