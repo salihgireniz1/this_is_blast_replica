@@ -19,11 +19,11 @@ namespace Blast.UI
     {
         #region Fields
 
-        /// <summary>The title a won level shows.</summary>
-        public const string WonTitle = "Level Complete";
+        /// <summary>The title a won level shows - the case brief's word, verbatim.</summary>
+        public const string WonTitle = "WIN";
 
-        /// <summary>The title a lost level shows.</summary>
-        public const string LostTitle = "Level Failed";
+        /// <summary>The title a lost level shows - the case brief's word, verbatim.</summary>
+        public const string LostTitle = "LOST";
 
         /// <summary>Backs IsShown; flips once, on the decision.</summary>
         readonly ReactiveProperty<bool> _isShown = new ReactiveProperty<bool>(false);
