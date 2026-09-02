@@ -634,6 +634,17 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   move the Dock by hand. **Salih then tuned the markers by hand (2026-09-02): z -9.58, scale 0.31 -
   they sit exactly under a seated shooter. Do not touch them.** **The scope now boots `Level_01`** (the case's own level; the
   10x20 `Level_02` stays in the repo as the hard level, swap it in by hand to stress-test).
+- Ammo counter punch - done, 72/72 green, verified in Play (one seated shooter logged per
+  frame through ten shots: counter scale base 1.000, peak 1.300, back to 1.000 at the end,
+  no drift, zero errors). Juice 3. `ShooterView.SetAmmo` now does `DOKill(complete: true)`
+  on the counter's transform and then `DOPunchScale(one * _ammoPunchScale, _ammoPunchDuration,
+  vibrato: 2)`; two new serialized fields (0.3, 0.15 s) with tooltips, prefab keeps the C#
+  defaults (a new plain field on a MonoBehaviour arrives with its initialiser - only fields
+  inside an existing serialized STRUCT arrive as zero). Why complete-then-punch: a punch
+  returns to the scale it started from, so killing one mid-swell and starting the next from
+  there would grow the counter shot by shot. Vibrato 2 x 0.15 s = one segment: out and back,
+  a tick. No test: a tween on a humble view. Not awaited, not UniTask-wrapped: nothing waits
+  for it.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

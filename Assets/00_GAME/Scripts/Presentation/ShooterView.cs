@@ -31,6 +31,14 @@ namespace Blast.Presentation
         [Tooltip("The WalkingCube Animator. SetRunning drives isRun / isIdle, PlayShoot pulls the Shoot trigger.")]
         [SerializeField] Animator _animator;
 
+        /// <summary>How much the counter swells per shot, as a fraction of its scale.</summary>
+        [Tooltip("How much the ammo counter swells on each shot, as a fraction of its scale. 0 disables the punch.")]
+        [SerializeField] float _ammoPunchScale = 0.3f;
+
+        /// <summary>How long the counter's swell lasts. Shorter than the fire interval, so shots never queue punches.</summary>
+        [Tooltip("Seconds the ammo counter's swell takes to settle. Keep it under the fire interval.")]
+        [SerializeField] float _ammoPunchDuration = 0.15f;
+
         /// <summary>The inverted-hull outline, worn as a second material slot while selectable. Assigned in the prefab.</summary>
         [Tooltip("The inverted-hull outline material. SetOutlined adds it as a second slot on every coloured part while the shooter is a selectable front.")]
         [SerializeField] Material _outline;
@@ -90,6 +98,14 @@ namespace Blast.Presentation
         public void SetAmmo(int ammo)
         {
             _ammoText.SetText("{0}", ammo);
+
+            // A punch returns to the scale it started from, so a punch still running is
+            // completed first - otherwise the next one would start from a swollen scale
+            // and the counter would drift larger shot by shot.
+            Transform counter = _ammoText.transform;
+            counter.DOKill(complete: true);
+            // vibrato is per second: 2 x 0.15 s rounds to one segment, out and back - a tick, not a wobble.
+            counter.DOPunchScale(Vector3.one * _ammoPunchScale, _ammoPunchDuration, vibrato: 2);
         }
 
         /// <summary>Runs or stands: the two booleans are always each other's opposite.</summary>
