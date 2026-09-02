@@ -1863,6 +1863,7 @@ MonoBehaviour:
   _titlePopDuration: 0.4
   _title: {fileID: 1155521608}
   _restart: {fileID: 799293599}
+  _buttonLabel: {fileID: 2079429376}
 --- !u!4 &1697098210 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8d093cb7a7c777545b8d48ada980d363, type: 3}
@@ -1996,7 +1997,9 @@ MonoBehaviour:
   autoInjectGameObjects: []
   _palette: {fileID: 11400000, guid: e53a972901a90ef469636081d317fa58, type: 2}
   _juice: {fileID: 11400000, guid: 4dba0608ddd49334cbdfe6935e948ecd, type: 2}
-  _level: {fileID: 4900000, guid: 9ee776849efaae549aa0e62fe430680c, type: 3}
+  _levels:
+  - {fileID: 4900000, guid: 9ee776849efaae549aa0e62fe430680c, type: 3}
+  - {fileID: 4900000, guid: 723b436bb1098ec48b3605315cc809a5, type: 3}
   _spawner: {fileID: 1900672655}
   _director: {fileID: 1024472675}
   _levelEnd: {fileID: 1644923741}

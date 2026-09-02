@@ -710,6 +710,24 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   expression-bodied methods over `ES3.Load(key, fallback)` / `ES3.Save(key, value)`; the file
   and format are ES3's defaults. No test: one call each way, file IO. Swapping the backend
   is another ISaveStore class plus one `new` in the scope.
+- Level progression, chunk 4 of 4: the loop wired - done, 76/76 green, verified in Play
+  (ES3 key cleared, then: fresh boot Level_01 100 cubes / forced Won -> panel NEXT, saved
+  1 / click -> Level_02 600 cubes / forced Lost -> RESTART, saved 1 / click -> Level_02
+  again / forced Won + click -> Level_01, saved 0, the wrap; zero errors; key cleared
+  again afterwards so Salih and the reviewer boot Level_01). `GameLifetimeScope` lost
+  `_level` for `TextAsset[] _levels` (scene: Level_01, Level_02), builds `new Es3SaveStore()`
+  - the one swap line - and `new LevelProgression(_levels.Length, store)`, parses
+  `_levels[progression.Current]`, and subscribes `loop.Decided += progression.Record`.
+  `LevelEndViewModel` gained `ButtonLabel` (`NextLabel` "NEXT" after a win, `RestartLabel`
+  "RESTART" after a loss); the view binds it to the button's TMP label (`_buttonLabel`).
+  The button still only reloads the scene: what the reload brings was decided at the
+  verdict. Tests extended, red first with the compile error. **ES3 file:** lives in
+  `Application.persistentDataPath`, shared between Play sessions on one machine; to
+  boot Level_01 again run `ES3.DeleteKey("LevelIndex")` in an eval or
+  `Tools > Easy Save 3 > Clear Persistent Data Path`. The reviewer's fresh machine has no
+  file, so index 0. **Case note:** slides 8-9 say "restart the same level" after a WIN
+  too; Salih chose NEXT (the endless loop was his ask) - if that is ever questioned,
+  `Record` ignoring Won and the label staying RESTART is a two-line revert.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

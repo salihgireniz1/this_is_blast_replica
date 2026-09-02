@@ -44,9 +44,9 @@ namespace Blast.Bootstrap
         [Tooltip("The tween timings asset.")]
         [SerializeField] JuiceConfig _juice;
 
-        /// <summary>The level file the game boots into. Assigned in the inspector.</summary>
-        [Tooltip("The JSON level the game boots into on Play. Must live in Assets/00_GAME/Levels so LevelFileTests checks it.")]
-        [SerializeField] TextAsset _level;
+        /// <summary>The level catalogue, in play order. Assigned in the inspector.</summary>
+        [Tooltip("The JSON levels in play order. A win moves to the next, the last wraps to the first, a loss replays. Every file must live in Assets/00_GAME/Levels so LevelFileTests checks it.")]
+        [SerializeField] TextAsset[] _levels;
 
         /// <summary>The spawner that builds the level on screen. Assigned in the inspector.</summary>
         [Tooltip("The scene's LevelSpawner; it is handed the parsed level.")]
@@ -70,8 +70,8 @@ namespace Blast.Bootstrap
         /// <summary>The juice config this scope will register. Exposed so a test can see the wiring.</summary>
         public JuiceConfig Juice => _juice;
 
-        /// <summary>The level file this scope will boot. Exposed so a test can see the wiring.</summary>
-        public TextAsset Level => _level;
+        /// <summary>The level catalogue this scope boots from. Exposed so a test can see the wiring.</summary>
+        public TextAsset[] Levels => _levels;
 
         /// <summary>The spawner this scope will construct. Exposed so a test can see the wiring.</summary>
         public LevelSpawner Spawner => _spawner;
@@ -99,11 +99,16 @@ namespace Blast.Bootstrap
             builder.RegisterInstance(_palette);
             builder.RegisterInstance(_juice);
 
+            // Which level: the progression remembers the index across sessions through the
+            // local store. Swapping the store is this one line; nothing below knows ES3.
+            ISaveStore store = new Es3SaveStore();
+            LevelProgression progression = new LevelProgression(_levels.Length, store);
+
             // The level is parsed once, here, because this is the only layer that may see
             // both the parser (Infrastructure) and the views (Presentation). The domain
             // models are registered individually - the game loop will resolve them without
             // ever learning a level file exists.
-            ParsedLevel level = LevelParser.Parse(_level.text);
+            ParsedLevel level = LevelParser.Parse(_levels[progression.Current].text);
             builder.RegisterInstance(level.Board);
             builder.RegisterInstance(level.Shooters);
             builder.RegisterInstance(level.Slots);
@@ -112,6 +117,10 @@ namespace Blast.Bootstrap
             // them in the container would only re-route the same handshake.
             GameLoop loop = new GameLoop(level.Board, level.Shooters, level.Slots);
             builder.RegisterInstance(loop);
+
+            // Recorded at the verdict, not at the button: a player who quits on the WIN
+            // screen still resumes on the next level.
+            loop.Decided += progression.Record;
 
             PaletteColorMaterials materials = new PaletteColorMaterials(_palette);
             _spawner.Construct(level.Board, level.Shooters, level.Slots, materials);
