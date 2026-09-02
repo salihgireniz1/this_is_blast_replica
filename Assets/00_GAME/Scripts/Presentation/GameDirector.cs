@@ -71,9 +71,6 @@ namespace Blast.Presentation
         /// <summary>The view registry: who stands where. Handed in by Construct.</summary>
         LevelSpawner _spawner;
 
-        /// <summary>Whether the verdict has been announced; it only happens once.</summary>
-        bool _verdictAnnounced;
-
         #endregion
 
         #region Public Methods
@@ -127,8 +124,6 @@ namespace Blast.Presentation
             ShooterView view = _spawner.PopFrontShooter(column);
             _spawner.StepQueueForward(column, _motion.StepDuration);
 
-            AnnounceIfDecided();
-
             Vector3 slotPosition = _spawner.SlotWorldPosition(slot);
 
             view.SetRunning(true);
@@ -159,7 +154,6 @@ namespace Blast.Presentation
                     view.SetAmmo(ammo);
                     view.PlayShoot();
                     ShotVisual(view, hitColumn).Forget();
-                    AnnounceIfDecided();
                 }
                 else
                 {
@@ -284,18 +278,6 @@ namespace Blast.Presentation
                 .SetLookAt(PathLookAhead);
 
             Destroy(view.gameObject);
-        }
-
-        /// <summary>Announces the verdict once. The overlay UI replaces this in its own chunk.</summary>
-        void AnnounceIfDecided()
-        {
-            if (_verdictAnnounced || _loop.Verdict == GameVerdict.Playing)
-            {
-                return;
-            }
-
-            _verdictAnnounced = true;
-            Debug.Log($"Level over: {_loop.Verdict}");
         }
 
         #endregion

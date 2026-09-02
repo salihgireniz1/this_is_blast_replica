@@ -527,6 +527,26 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   from NuGetForUnity under `Assets/Packages`, auto-referenced, so `Blast.UI.asmdef` needed
   nothing; the test asmdef overrides references and got `R3.dll` + `Blast.UI` explicitly.
   Red first: `'UI' does not exist in the namespace 'Blast'`.
+- `LevelEndView` + scene overlay + scope wiring (UI, Bootstrap) - done, 71/71 green,
+  verified in Play (forced `Decide(Won)` via reflection: panel off -> on, title "Level
+  Complete"; `RestartButton.onClick.Invoke()` reloaded the scene: 1 scope, verdict Playing,
+  panel off, 600 cubes, zero console errors). UI chunk 3 of 4. The view is humble: three
+  serialized refs (`_panel`, `_title` TMP, `_restart` Button), `Construct(viewModel)` binds
+  IsShown -> SetActive, Title -> text (both `AddTo(this)`) and onClick -> `Restart.Execute`.
+  Plain `onClick.AddListener` over `OnClickAsObservable`: the button dies with the view, so
+  no subscription to manage. `LevelEndViewTests` builds the hierarchy in EditMode and
+  asserts each binding by name (a forgotten binding is the only silent mistake a humble
+  view can make). The scope now builds `LevelEndViewModel(loop)`, subscribes `Restart` to
+  `SceneManager.LoadScene(gameObject.scene.buildIndex)` (restart = reload; the composition
+  decision lives here alone) and hands the view model to `_levelEnd`. The director's
+  `AnnounceIfDecided` + `_verdictAnnounced` are gone. Scene: `Canvas` (overlay, scaler
+  1080x1920 match 0.5) > `LevelEnd` (view) > `Panel` (60% black, inactive) > `Title`
+  (Baloo2 110) + `RestartButton` (520x160 amber, "RESTART" label), built by
+  `eval_file` and saved. `Blast.UI.asmdef` gained R3.Unity, Unity.TextMeshPro,
+  UnityEngine.UI; the test asmdef the latter two. **Capture trap:** `capture_game_view`
+  renders the camera only, a Screen Space Overlay canvas is invisible in it; `unity cmd
+  screenshot` (ScreenCapture) shows the overlay. Next, chunk 4: destroy-cancellation
+  tokens on the director's UniTask loops so a restart mid-flight cannot touch destroyed views.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

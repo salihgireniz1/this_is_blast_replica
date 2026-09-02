@@ -13,8 +13,11 @@
 using Blast.Application;
 using Blast.Infrastructure;
 using Blast.Presentation;
+using Blast.UI;
 using DG.Tweening;
+using R3;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using VContainer;
 using VContainer.Unity;
 
@@ -53,6 +56,10 @@ namespace Blast.Bootstrap
         [Tooltip("The scene's GameDirector; it is handed the domain models.")]
         [SerializeField] GameDirector _director;
 
+        /// <summary>The overlay that shows the verdict. Assigned in the inspector.</summary>
+        [Tooltip("The scene's LevelEndView; it is handed the overlay's view model.")]
+        [SerializeField] LevelEndView _levelEnd;
+
         #endregion
 
         #region Properties
@@ -71,6 +78,9 @@ namespace Blast.Bootstrap
 
         /// <summary>The director this scope will construct. Exposed so a test can see the wiring.</summary>
         public GameDirector Director => _director;
+
+        /// <summary>The overlay this scope will construct. Exposed so a test can see the wiring.</summary>
+        public LevelEndView LevelEnd => _levelEnd;
 
         #endregion
 
@@ -106,6 +116,12 @@ namespace Blast.Bootstrap
             PaletteColorMaterials materials = new PaletteColorMaterials(_palette);
             _spawner.Construct(level.Board, level.Shooters, level.Slots, materials);
             _director.Construct(loop, level.Slots, _spawner);
+
+            // The overlay only raises the restart intent; that it means "reload this scene"
+            // is a composition decision, so it is decided here and nowhere else.
+            LevelEndViewModel levelEnd = new LevelEndViewModel(loop);
+            levelEnd.Restart.Subscribe(_ => SceneManager.LoadScene(gameObject.scene.buildIndex));
+            _levelEnd.Construct(levelEnd);
         }
 
         #endregion

@@ -3,6 +3,9 @@
     "rootNamespace": "Blast.UI",
     "references": [
         "Blast.Domain",
-        "Blast.Application"
+        "Blast.Application",
+        "R3.Unity",
+        "Unity.TextMeshPro",
+        "UnityEngine.UI"
     ]
 }
