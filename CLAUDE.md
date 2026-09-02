@@ -678,6 +678,24 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   `maximumDeltaTime` 0.333 s and DOTween advances the whole 0.3/0.4 s entrance in it, so
   the first sample already showed everything finished. Raise the event from the logger's
   own Nth `EditorApplication.update` tick instead, then sample.
+- Level progression, chunk 1 of 4: Easy Save 3 wired into the layering - done, 72/72 green.
+  Salih installed ES3 (`Assets/Plugins/Easy Save 3`, source, plus `ES3_TMPRO` / `ES3_UGUI`
+  defines in ProjectSettings) for "resume the last level". Plugins scripts without an asmdef
+  compile into Assembly-CSharp-firstpass, which no asmdef assembly can reference, so ES3's
+  own support was used: `Tools > Easy Save 3 > Enable Assembly Definition Files` renames its
+  shipped `EasySave3.asmdef` / `EasySave3Editor.asmdef` into place (references
+  Unity.VisualScripting.Core + Unity.TextMeshPro; the Editor one is Editor-only), and
+  `Blast.Infrastructure.asmdef` now references `EasySave3`. **Trap:** that menu command
+  popped a modal and froze the main thread for minutes (every main-thread command timed
+  out at 30 s while `console` and `recompile_status` still answered); Salih closed it.
+  Design agreed: `ISaveStore` (Application, `T Load<T>(key, fallback)` / `Save<T>(key,
+  value)`, SYNC on purpose - local only, no PlayFab or any cloud; async would drag UniTask
+  into Application and an async boot into the scope for nothing) implemented by
+  `Es3SaveStore` (Infrastructure); `LevelProgression` (Application) owns the index and the
+  key; the scope holds `TextAsset[] _levels` and boots `_levels[progression.Current]`;
+  `loop.Decided += progression.Record` (Won advances and wraps, Lost holds; saved at the
+  verdict, not at the button); the overlay's button reads NEXT after a win and RESTART
+  after a loss, and still just reloads the scene.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.
