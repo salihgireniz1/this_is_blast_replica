@@ -48,9 +48,13 @@ namespace Blast.UI
         [Tooltip("The title label; shows Level Complete or Level Failed.")]
         [SerializeField] TMP_Text _title;
 
-        /// <summary>The button that asks for a restart.</summary>
-        [Tooltip("The restart button.")]
+        /// <summary>The button that asks for the reload.</summary>
+        [Tooltip("The button that reloads the scene: NEXT after a win, RESTART after a loss.")]
         [SerializeField] Button _restart;
+
+        /// <summary>The button's label; follows ButtonLabel.</summary>
+        [Tooltip("The label on the button; shows NEXT or RESTART.")]
+        [SerializeField] TMP_Text _buttonLabel;
 
         #endregion
 
@@ -62,6 +66,7 @@ namespace Blast.UI
         {
             viewModel.IsShown.Subscribe(Show).AddTo(this);
             viewModel.Title.Subscribe(title => _title.text = title).AddTo(this);
+            viewModel.ButtonLabel.Subscribe(label => _buttonLabel.text = label).AddTo(this);
             _restart.onClick.AddListener(() => viewModel.Restart.Execute(Unit.Default));
         }
 

@@ -25,11 +25,20 @@ namespace Blast.UI
         /// <summary>The title a lost level shows - the case brief's word, verbatim.</summary>
         public const string LostTitle = "LOST";
 
+        /// <summary>The button's label after a win: the next level is what the reload brings.</summary>
+        public const string NextLabel = "NEXT";
+
+        /// <summary>The button's label after a loss: the same level again.</summary>
+        public const string RestartLabel = "RESTART";
+
         /// <summary>Backs IsShown; flips once, on the decision.</summary>
         readonly ReactiveProperty<bool> _isShown = new ReactiveProperty<bool>(false);
 
         /// <summary>Backs Title; written before IsShown flips so a shown overlay is never untitled.</summary>
         readonly ReactiveProperty<string> _title = new ReactiveProperty<string>(string.Empty);
+
+        /// <summary>Backs ButtonLabel; written with the title, for the same reason.</summary>
+        readonly ReactiveProperty<string> _buttonLabel = new ReactiveProperty<string>(string.Empty);
 
         #endregion
 
@@ -40,6 +49,11 @@ namespace Blast.UI
 
         /// <summary>The title matching the verdict; empty while playing.</summary>
         public ReadOnlyReactiveProperty<string> Title => _title;
+
+        /// <summary>What the button promises: NEXT after a win, RESTART after a loss. The
+        /// button does the same thing either way (reload); LevelProgression has already
+        /// decided which level that reload brings, and this label says so.</summary>
+        public ReadOnlyReactiveProperty<string> ButtonLabel => _buttonLabel;
 
         /// <summary>The player's restart intent. The view executes it; Bootstrap subscribes.</summary>
         public ReactiveCommand<Unit> Restart { get; } = new ReactiveCommand<Unit>();
@@ -63,7 +77,9 @@ namespace Blast.UI
         /// <param name="verdict">How the level ended.</param>
         void OnDecided(GameVerdict verdict)
         {
-            _title.Value = verdict == GameVerdict.Won ? WonTitle : LostTitle;
+            bool won = verdict == GameVerdict.Won;
+            _title.Value = won ? WonTitle : LostTitle;
+            _buttonLabel.Value = won ? NextLabel : RestartLabel;
             _isShown.Value = true;
         }
 

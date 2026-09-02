@@ -54,10 +54,13 @@ namespace Blast.Tests
             title.transform.SetParent(_root.transform);
             var button = new GameObject("Restart").AddComponent<Button>();
             button.transform.SetParent(_root.transform);
+            var buttonLabel = new GameObject("Label").AddComponent<TextMeshProUGUI>();
+            buttonLabel.transform.SetParent(button.transform);
             AssignField(view, "_panel", panel);
             AssignField(view, "_panelGroup", panelGroup);
             AssignField(view, "_title", title);
             AssignField(view, "_restart", button);
+            AssignField(view, "_buttonLabel", buttonLabel);
 
             var board = new BoardModel(columns: 1, rows: 1, layers: 1);
             board.Set(new Cell(0, 0, 0), BlastColor.Blue);
@@ -72,6 +75,7 @@ namespace Blast.Tests
 
             Assert.IsTrue(panel.activeSelf, "The panel is not bound to IsShown.");
             Assert.AreEqual(LevelEndViewModel.LostTitle, title.text, "The title label is not bound to Title.");
+            Assert.AreEqual(LevelEndViewModel.RestartLabel, buttonLabel.text, "The button's label is not bound to ButtonLabel.");
 
             // The entrance must END solid and full-size, or the overlay is there and invisible.
             DOTween.CompleteAll();
