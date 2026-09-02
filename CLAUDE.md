@@ -706,6 +706,10 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   early. Red first with the compile error. The extension point Salih asked for is the
   interface, not an abstract base: ES3 and any other local store share a contract, not
   code; a base class appears the day two stores share a line.
+- Level progression, chunk 3 of 4: `Es3SaveStore` (Infrastructure) - done, 76/76 green. Two
+  expression-bodied methods over `ES3.Load(key, fallback)` / `ES3.Save(key, value)`; the file
+  and format are ES3's defaults. No test: one call each way, file IO. Swapping the backend
+  is another ISaveStore class plus one `new` in the scope.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.
