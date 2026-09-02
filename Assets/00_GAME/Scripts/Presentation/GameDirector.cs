@@ -145,6 +145,11 @@ namespace Blast.Presentation
             {
                 if (_loop.Verdict != GameVerdict.Playing)
                 {
+                    // Frozen, not abandoned: PlayShoot dropped isIdle and only this tick
+                    // would have raised it again, so without this the last shooter to
+                    // fire stays in its Shoot pose under the overlay.
+                    view.SetRunning(false);
+                    view.FaceForward(_motion.TurnDuration);
                     return;
                 }
 

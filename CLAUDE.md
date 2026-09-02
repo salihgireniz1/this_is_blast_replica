@@ -547,6 +547,19 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   renders the camera only, a Screen Space Overlay canvas is invisible in it; `unity cmd
   screenshot` (ScreenCapture) shows the overlay. Next, chunk 4: destroy-cancellation
   tokens on the director's UniTask loops so a restart mid-flight cannot touch destroyed views.
+- Shooters idle when the level is decided - done, 71/71 green. Salih's report (video):
+  after a fail the last shooter to fire stayed frozen in `Runner_Shoot`. Cause: `FireLoop`
+  returned on a decided verdict without the `SetRunning(false)` a targetless tick would
+  have done, and `PlayShoot` had dropped `isIdle`, so no transition ever left Shoot. The
+  verdict exit now calls `SetRunning(false)` + `FaceForward` before returning. Verified in
+  Play with forced `Decide(Lost)` (reflection) mid-fire: five probes, every seated shooter
+  sampled `WalkingCube_Idle` with `isIdle=True`; a per-frame logger showed each
+  `Shoot idle=True` sample resolving to Idle after exactly the 0.25 s Any->Idle blend, and
+  a Shoot trigger set during an un-interruptible blend firing once afterwards, then
+  consumed. One probe out of six sampled two seated shooters still in Shoot 1.5 s after
+  the forced Lost and did not reproduce; not explained. If it recurs in real play, log
+  `isIdle` / `isRun` / the `Shoot` trigger per frame for the stuck view (the eval logger
+  pattern: `EditorApplication.update`, unsubscribed on `playModeStateChanged`).
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.
