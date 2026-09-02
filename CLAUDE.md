@@ -387,6 +387,17 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   `LevelSpawnerTests` read the board by `GetChild` index on the spawner itself and went red
   with "Transform child out of bounds"; it now reads through `Find("Cubes")`. Tooltips also
   landed on every inspector field the same day (42 across 7 files, struct fields included).
+- Spawner settings as structs - done, 63/63 green, verified in Play (100 cubes from -4.28 to
+  4.28, 15 shooters from z -14 to -18.5, slot 0 at (-4, 0, -10): every position identical to
+  before the move). Same shape as the director's: `Prefabs` (Cube, Shooter), `BoardLayout`
+  (Origin, CellSize), `QueueLayout` (Origin, SpacingX, SpacingZ), `SlotLayout` (Z, SpacingX),
+  one inspector heading each, public fields with tooltips, a static `Defaults` per layout
+  struct. **The defaults are the scene's tuned numbers now** (queue z -14, spacing 2 / 2.25,
+  slot z -10), not the stale loose-field initialisers (-7.5, 1.5, 1.2, -5.9) - a fresh spawner
+  matches the scene. Scene values re-written through `SerializedObject` under the new paths;
+  the eval reported a 5 s main-thread timeout but had applied and saved (check the file, not
+  the reply). `LevelSpawnerTests` injected its stand-in prefab by the old path `_cubePrefab`
+  and went red in SetUp with a null reference; it now writes `_prefabs.Cube`.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

@@ -40,7 +40,7 @@ namespace Blast.Tests
             AssignField(_cubePrefab, "_renderer", prefabObject.GetComponent<MeshRenderer>());
 
             _spawner = new GameObject("Spawner").AddComponent<LevelSpawner>();
-            AssignField(_spawner, "_cubePrefab", _cubePrefab);
+            AssignField(_spawner, "_prefabs.Cube", _cubePrefab);
         }
 
         /// <summary>Destroys everything the test spawned.</summary>

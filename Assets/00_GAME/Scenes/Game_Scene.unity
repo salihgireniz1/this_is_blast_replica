@@ -1398,15 +1398,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89e15c6370eb5164ebc33edcb2a287d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cubePrefab: {fileID: 6940791486018957847, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
-  _shooterPrefab: {fileID: 5202188498316596109, guid: 05b06f3019d616041bac456c32ea3a09, type: 3}
-  _boardOrigin: {x: -4.275, y: 0.45, z: -4.275}
-  _cellSize: 0.95
-  _queueOrigin: {x: 0, y: 0, z: -14}
-  _queueSpacingX: 2
-  _queueSpacingZ: 2.25
-  _slotZ: -10
-  _slotSpacingX: 2
+  _prefabs:
+    Cube: {fileID: 6940791486018957847, guid: 0b264b5fa144ec54d9c0d89bc696c738, type: 3}
+    Shooter: {fileID: 5202188498316596109, guid: 05b06f3019d616041bac456c32ea3a09, type: 3}
+  _boardLayout:
+    Origin: {x: -4.275, y: 0.45, z: -4.275}
+    CellSize: 0.95
+  _queueLayout:
+    Origin: {x: 0, y: 0, z: -14}
+    SpacingX: 2
+    SpacingZ: 2.25
+  _slotLayout:
+    Z: -10
+    SpacingX: 2
 --- !u!4 &1933728905 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: fd7ee071aff19498da53e7892ca8f320, type: 3}

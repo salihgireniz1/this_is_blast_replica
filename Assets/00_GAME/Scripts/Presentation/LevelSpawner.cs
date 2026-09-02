@@ -16,6 +16,7 @@
 // 0.95 cells span it exactly), and reading bounds at runtime would re-derive at startup
 // what is a design-time fact - and drift the moment someone swaps the art.
 
+using System;
 using System.Collections.Generic;
 using Blast.Domain;
 using DG.Tweening;
@@ -28,41 +29,21 @@ namespace Blast.Presentation
     {
         #region Fields
 
-        /// <summary>The cube visual to instantiate per board cell.</summary>
-        [Tooltip("The CubeView prefab spawned per board cell.")]
-        [SerializeField] CubeView _cubePrefab;
+        /// <summary>What to instantiate for a cube and for a shooter. One inspector heading.</summary>
+        [Tooltip("The two view prefabs the level is built from.")]
+        [SerializeField] Prefabs _prefabs;
 
-        /// <summary>The shooter visual to instantiate per queued shooter.</summary>
-        [Tooltip("The ShooterView prefab spawned per queued shooter.")]
-        [SerializeField] ShooterView _shooterPrefab;
+        /// <summary>Where the board sits and how big a cell is. One inspector heading.</summary>
+        [Tooltip("Where the board sits and how far apart its cubes are.")]
+        [SerializeField] BoardLayout _boardLayout = BoardLayout.Defaults;
 
-        /// <summary>World position of the front-left cube's centre.</summary>
-        [Tooltip("World centre of the front-left cube (column 0, front row, ground layer). Move this to move the whole board.")]
-        [SerializeField] Vector3 _boardOrigin = new Vector3(-4.275f, 0.45f, -4.275f);
+        /// <summary>Where the shooter queue sits and how it spreads. One inspector heading.</summary>
+        [Tooltip("Where the shooter queue sits and how its columns and rows spread.")]
+        [SerializeField] QueueLayout _queueLayout = QueueLayout.Defaults;
 
-        /// <summary>Distance between neighbouring cube centres; ten cells span GameArea's 9.5.</summary>
-        [Tooltip("World units between neighbouring cube centres, on every axis. 0.95 x 10 spans GameArea's 9.5 floor exactly.")]
-        [SerializeField] float _cellSize = 0.95f;
-
-        /// <summary>World position of the front shooter of the leftmost queue column.</summary>
-        [Tooltip("World centre of the queue's front row. Columns spread left and right of it, deeper rows go further back.")]
-        [SerializeField] Vector3 _queueOrigin = new Vector3(0f, 0f, -7.5f);
-
-        /// <summary>Distance between neighbouring queue columns; the row centres on x = 0.</summary>
-        [Tooltip("World units between neighbouring queue columns.")]
-        [SerializeField] float _queueSpacingX = 1.5f;
-
-        /// <summary>Distance between queue rows, walking away from the board.</summary>
-        [Tooltip("World units between queue rows, going away from the board.")]
-        [SerializeField] float _queueSpacingZ = 1.2f;
-
-        /// <summary>Depth of the slot row, between the board and the queue.</summary>
-        [Tooltip("Z of the slot row. Sits between the board's front row and the queue.")]
-        [SerializeField] float _slotZ = -5.9f;
-
-        /// <summary>Distance between neighbouring slots; the row centres on x = 0.</summary>
-        [Tooltip("World units between neighbouring slots. The row centres on x = 0.")]
-        [SerializeField] float _slotSpacingX = 1.5f;
+        /// <summary>Where the slot row sits and how it spreads. One inspector heading.</summary>
+        [Tooltip("Where seated shooters stand and how far apart.")]
+        [SerializeField] SlotLayout _slotLayout = SlotLayout.Defaults;
 
         /// <summary>The board the cubes come from. Handed in by Construct.</summary>
         BoardModel _board;
@@ -119,7 +100,7 @@ namespace Blast.Presentation
         {
             float centeredSlot = slot - (_slotCount - 1) * 0.5f;
 
-            return new Vector3(centeredSlot * _slotSpacingX, 0f, _slotZ);
+            return new Vector3(centeredSlot * _slotLayout.SpacingX, 0f, _slotLayout.Z);
         }
 
         /// <summary>Whether a view is the selectable front of its queue column.</summary>
@@ -208,7 +189,7 @@ namespace Blast.Presentation
             {
                 Transform view = views[index].transform;
                 Vector3 authored = CubeWorldPosition(CellOfCubeView(column, index));
-                Vector3 rest = authored - new Vector3(0f, 0f, flowed * _cellSize);
+                Vector3 rest = authored - new Vector3(0f, 0f, flowed * _boardLayout.CellSize);
 
                 // Kill first: the previous flow's tween still holds the previous rest as
                 // its target and would drag the cube back when it lands. A landing bounce
@@ -259,7 +240,7 @@ namespace Blast.Presentation
                 for (int layer = 0; layer < _board.Layers; layer++)
                 {
                     Cell cell = new Cell(column, row, layer);
-                    CubeView cube = Instantiate(_cubePrefab, CubeWorldPosition(cell), Quaternion.identity, home);
+                    CubeView cube = Instantiate(_prefabs.Cube, CubeWorldPosition(cell), Quaternion.identity, home);
 
                     cube.Wear(_materials.MaterialOf(_board.Get(cell)));
                     _cubeColumns[column].Add(cube);
@@ -281,7 +262,7 @@ namespace Blast.Presentation
                 for (int depth = 0; depth < _shooters.Remaining(column); depth++)
                 {
                     Vector3 position = QueueWorldPosition(column, depth);
-                    ShooterView view = Instantiate(_shooterPrefab, position, Quaternion.identity, home);
+                    ShooterView view = Instantiate(_prefabs.Shooter, position, Quaternion.identity, home);
                     Shooter shooter = _shooters.Peek(column, depth);
 
                     if (_shooters.IsRevealed(column, depth))
@@ -315,7 +296,7 @@ namespace Blast.Presentation
         {
             // Row 0 is the front row: the board edge nearest the slots, so rows walk away
             // from the camera (+z) while queue rows walk toward it (-z).
-            return _boardOrigin + new Vector3(cell.Column * _cellSize, cell.Layer * _cellSize, cell.Row * _cellSize);
+            return _boardLayout.Origin + new Vector3(cell.Column * _boardLayout.CellSize, cell.Layer * _boardLayout.CellSize, cell.Row * _boardLayout.CellSize);
         }
 
         /// <summary>Maps a queue address to the world position of its shooter.</summary>
@@ -326,7 +307,85 @@ namespace Blast.Presentation
             // Columns centre on the origin's x so any column count sits symmetrically.
             float centeredColumn = column - (_shooters.Columns - 1) * 0.5f;
 
-            return _queueOrigin + new Vector3(centeredColumn * _queueSpacingX, 0f, -depth * _queueSpacingZ);
+            return _queueLayout.Origin + new Vector3(centeredColumn * _queueLayout.SpacingX, 0f, -depth * _queueLayout.SpacingZ);
+        }
+
+        #endregion
+
+        #region Nested Types
+
+        /// <summary>The two view prefabs the level is built from. One inspector heading.</summary>
+        [Serializable]
+        public struct Prefabs
+        {
+            /// <summary>The cube visual to instantiate per board cell.</summary>
+            [Tooltip("The CubeView prefab spawned per board cell.")]
+            public CubeView Cube;
+
+            /// <summary>The shooter visual to instantiate per queued shooter.</summary>
+            [Tooltip("The ShooterView prefab spawned per queued shooter.")]
+            public ShooterView Shooter;
+        }
+
+        /// <summary>Where the board sits and how big a cell is. One inspector heading.</summary>
+        [Serializable]
+        public struct BoardLayout
+        {
+            /// <summary>World position of the front-left cube's centre.</summary>
+            [Tooltip("World centre of the front-left cube (column 0, front row, ground layer). Move this to move the whole board.")]
+            public Vector3 Origin;
+
+            /// <summary>Distance between neighbouring cube centres; ten cells span GameArea's 9.5.</summary>
+            [Tooltip("World units between neighbouring cube centres, on every axis. 0.95 x 10 spans GameArea's 9.5 floor exactly.")]
+            public float CellSize;
+
+            /// <summary>The values a fresh spawner starts with: the scene's tuned numbers.</summary>
+            public static BoardLayout Defaults => new BoardLayout
+            {
+                Origin = new Vector3(-4.275f, 0.45f, -4.275f),
+                CellSize = 0.95f,
+            };
+        }
+
+        /// <summary>Where the shooter queue sits and how it spreads. One inspector heading.</summary>
+        [Serializable]
+        public struct QueueLayout
+        {
+            /// <summary>World position the queue's front row centres on.</summary>
+            [Tooltip("World centre of the queue's front row. Columns spread left and right of it, deeper rows go further back.")]
+            public Vector3 Origin;
+
+            /// <summary>Distance between neighbouring queue columns; the row centres on Origin.</summary>
+            [Tooltip("World units between neighbouring queue columns.")]
+            public float SpacingX;
+
+            /// <summary>Distance between queue rows, walking away from the board.</summary>
+            [Tooltip("World units between queue rows, going away from the board.")]
+            public float SpacingZ;
+
+            /// <summary>The values a fresh spawner starts with: the scene's tuned numbers.</summary>
+            public static QueueLayout Defaults => new QueueLayout
+            {
+                Origin = new Vector3(0f, 0f, -14f),
+                SpacingX = 2f,
+                SpacingZ = 2.25f,
+            };
+        }
+
+        /// <summary>Where the slot row sits and how it spreads. One inspector heading.</summary>
+        [Serializable]
+        public struct SlotLayout
+        {
+            /// <summary>Depth of the slot row, between the board and the queue.</summary>
+            [Tooltip("Z of the slot row. Sits between the board's front row and the queue.")]
+            public float Z;
+
+            /// <summary>Distance between neighbouring slots; the row centres on x = 0.</summary>
+            [Tooltip("World units between neighbouring slots. The row centres on x = 0.")]
+            public float SpacingX;
+
+            /// <summary>The values a fresh spawner starts with: the scene's tuned numbers.</summary>
+            public static SlotLayout Defaults => new SlotLayout { Z = -10f, SpacingX = 2f };
         }
 
         #endregion
