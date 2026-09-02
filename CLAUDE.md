@@ -660,6 +660,24 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   0.3 rebound. Checked and cleared: the WalkingCube Animator is on a child at scale 1.91
   and never writes the root scale. Logger pattern reused (`EditorApplication.update`,
   one sample per `Time.frameCount`, unsubscribed on `playModeStateChanged`).
+- Overlay entrance - done, 72/72 green, verified in Play (per-frame log from a decision
+  raised inside a normal frame: panel alpha 0 -> 1 by 0.27 s, title scale 0 -> 1.10 overshoot
+  at 0.22 s -> 1.00 at 0.38 s; zero errors). Juice 5. `LevelEndView.Show(bool)` replaced the
+  inline `SetActive` lambda: it still switches the panel, then resets and tweens a
+  `CanvasGroup` alpha 0 -> 1 (`_fadeDuration` 0.3) and the title's scale 0 -> 1 with `OutBack`
+  (`_titlePopDuration` 0.4), both fire-and-forget, both reset first so a re-show never starts
+  half-faded. The fade is `DOTween.To` on `alpha`, NOT `CanvasGroup.DOFade`: that extension
+  is in DOTween's UI module under `Plugins/Demigiant/DOTween/Modules`, which has no asmdef
+  and compiles into Assembly-CSharp-firstpass, unreachable from `Blast.UI`. The scene's
+  `Panel` gained a CanvasGroup, wired to `_panelGroup`. `LevelEndViewTests` adds the group
+  to its stand-in and, after `DOTween.CompleteAll()`, asserts alpha 1 and title scale one -
+  the silent failure being an overlay that is active and invisible. No red-first on this
+  one: the asserts were written with the code (they pin the END state, which a forgotten
+  tween target would break). **Measurement trap, new:** a decision forced from inside an
+  eval lands on a frame the eval itself stretched; Unity clamps that frame to
+  `maximumDeltaTime` 0.333 s and DOTween advances the whole 0.3/0.4 s entrance in it, so
+  the first sample already showed everything finished. Raise the event from the logger's
+  own Nth `EditorApplication.update` tick instead, then sample.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

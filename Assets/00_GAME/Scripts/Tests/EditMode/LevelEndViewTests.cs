@@ -7,6 +7,7 @@
 using Blast.Application;
 using Blast.Domain;
 using Blast.UI;
+using DG.Tweening;
 using NUnit.Framework;
 using R3;
 using TMPro;
@@ -30,7 +31,11 @@ namespace Blast.Tests
 
         /// <summary>Destroys the throwaway hierarchy.</summary>
         [TearDown]
-        public void TearDown() => Object.DestroyImmediate(_root);
+        public void TearDown()
+        {
+            DOTween.KillAll();
+            Object.DestroyImmediate(_root);
+        }
 
         /// <summary>
         /// Once the loop decides, the panel is on and titled; a click on the button reaches
@@ -44,11 +49,13 @@ namespace Blast.Tests
             var panel = new GameObject("Panel");
             panel.transform.SetParent(_root.transform);
             panel.SetActive(false);
+            var panelGroup = panel.AddComponent<CanvasGroup>();
             var title = new GameObject("Title").AddComponent<TextMeshProUGUI>();
             title.transform.SetParent(_root.transform);
             var button = new GameObject("Restart").AddComponent<Button>();
             button.transform.SetParent(_root.transform);
             AssignField(view, "_panel", panel);
+            AssignField(view, "_panelGroup", panelGroup);
             AssignField(view, "_title", title);
             AssignField(view, "_restart", button);
 
@@ -65,6 +72,12 @@ namespace Blast.Tests
 
             Assert.IsTrue(panel.activeSelf, "The panel is not bound to IsShown.");
             Assert.AreEqual(LevelEndViewModel.LostTitle, title.text, "The title label is not bound to Title.");
+
+            // The entrance must END solid and full-size, or the overlay is there and invisible.
+            DOTween.CompleteAll();
+
+            Assert.AreEqual(1f, panelGroup.alpha, 0.001f, "The panel does not fade all the way in.");
+            Assert.AreEqual(Vector3.one, title.transform.localScale, "The title does not pop back to full size.");
 
             button.onClick.Invoke();
 
