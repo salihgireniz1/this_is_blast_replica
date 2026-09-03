@@ -240,9 +240,12 @@ namespace Blast.Presentation
             // trails behind it, so a bullet spawned in the prefab's rotation would fly sideways.
             CubeView bullet = _pools.Bullets.Take(muzzle, Quaternion.LookRotation(aim));
 
-            await bullet.transform.DOMove(cube.transform.position, _firing.FlightDuration)
-                .SetEase(Ease.Linear)
-                .ToUniTask(cancellationToken: _destroyed);
+            // FlyTo re-targets the bullet's one tween: five pooled bullets fly forty times a
+            // second between them, and a DOMove per flight was two closures each. A reused
+            // tween never auto-kills, and ToUniTask waits for the kill: AwaitForComplete
+            // waits for the landing, which is the event.
+            await bullet.FlyTo(cube.transform.position, _firing.FlightDuration)
+                .AwaitForComplete(cancellationToken: _destroyed);
 
             _pools.Bullets.Return(bullet);
 
@@ -278,7 +281,8 @@ namespace Blast.Presentation
             Tween slide = _spawner.FlowBoardColumn(hitColumn, _cubeDeath.FlowDuration, _cubeDeath.SettleOvershoot);
             if (slide != null)
             {
-                await slide.ToUniTask(cancellationToken: _destroyed);
+                // The slide is a reused tween too (CubeView.SlideTo): complete, not kill.
+                await slide.AwaitForComplete(cancellationToken: _destroyed);
             }
 
             _loop.MarkSettled(hitColumn);

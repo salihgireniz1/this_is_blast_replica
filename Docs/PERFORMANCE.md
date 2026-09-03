@@ -506,6 +506,22 @@ visible hitch, so this is a ledger correction, not a frame-rate problem; closing
 means the reused-tween pattern (one `Tweener` per cube for the slide, one per pooled
 bullet for the flight) and dropping the per-await cancellation registration.
 
+**Closed, the two big ones (2026-09-04).** `CubeView` owns one movement tween, built
+on its first slide or flight with `DOTween.To` and re-targeted ever after with the
+typed `TweenerCore.ChangeEndValue` plus `Restart`: `SlideTo` (OutBack, the column
+flow) and `FlyTo` (linear, the bullet). `FlowBoardColumn` and the director's shot call
+those instead of `DOMove`. Pinned by `LevelSpawnerTests.ASecondFlow_DoesNotAllocate`
+and `CubeViewTests.ASecondFlight_DoesNotAllocate`, both red before and stable green
+after. **Trap found by the red test:** `Tweener.ChangeEndValue(object, ...)` boxes the
+`Vector3` (40 B per call); only the typed overload on `TweenerCore<T1,T2,TPlugOptions>`
+is allocation-free, and the shooter's yaw tween had the same boxing until now.
+
+Left, on purpose: the dying cube's `DOScale` (two closures per death, once per cube),
+the per-await `CancellationToken.Register` node (48 B; it is what stops a fast restart
+touching destroyed views, and the alternative is a hand-rolled destroy check on every
+continuation), the counter's `DOPunchScale` per shot, and `Leave`'s path. Together
+~15% of the old per-shot garbage.
+
 On the phone, same build configuration as 2f plus the two fixes:
 
 | Scene | State | fps | frame ms | worst ms | GC B/frame | allocations/frame |

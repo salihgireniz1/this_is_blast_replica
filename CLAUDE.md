@@ -1000,6 +1000,23 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   except the seconds a shooter leaves. **Rule from this:** when Salih reports a look
   regression, bisect with captures at the pre-change commit before touching anything -
   two of the three "regressions" predated the pass.
+- **Performance pass, step 3b: the reused-tween pattern on cubes and bullets** - done,
+  83/83 green (two allocation tests, stable over repeated runs), verified in Play. The HUD
+  had exposed that "0 B while firing" was measured after the bursts; the honest number was
+  ~2 KB per shot, 65% of it `FlowBoardColumn`'s `DOMove` per surviving cube (DOTween
+  shortcuts allocate two closures per call). `CubeView` now owns one
+  `TweenerCore<Vector3,Vector3,VectorOptions>` built on first use: `SlideTo` (OutBack,
+  the flow) and `FlyTo` (linear, the pooled bullet) re-target it with the **typed**
+  `ChangeEndValue` + `Restart`. **Two traps, both found by tests/Play, not by reading:**
+  (1) `Tweener.ChangeEndValue(object, ...)` boxes the Vector3 - 40 B per call, the
+  allocation test stayed red until the typed `TweenerCore` overload; the shooter's yaw
+  tween had it too. (2) `ToUniTask()` waits for the tween's **kill**, and a reused
+  `SetAutoKill(false)` tween never kills: the flight await never resolved, no cube died,
+  the bullet pool grew to 10 with every bullet stuck active. `AwaitForComplete` is the
+  await for a reused tween; both director awaits (flight, slide) use it now. Bullet
+  prewarm 5 -> 10 (flight 0.17 s is longer than the 0.12 s interval, so more than five
+  are in the air). Left with reasons in the ledger: death `DOScale`, the per-await
+  cancellation node, the counter punch, `Leave`'s path (~15% of the old garbage).
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.
