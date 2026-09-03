@@ -60,14 +60,21 @@ Read off the assets, not guessed:
 Each step is measured before and after. A step that does not move a number is reverted
 and recorded as such.
 
-1. Baseline: the probe in the scene, `Level_02` with five slots firing, editor and phone.
-2. Free wins, settings only: `targetFrameRate`, splash shadows and particle cap, shadow
-   distance and resolution sized to the board, Animator culling for off-screen shooters.
-3. Allocations: whatever the probe shows, closed one source at a time.
-4. Draw calls: Frame Debugger count; SRP Batcher compatibility of `CustomShader`; the
-   outline's second material; unused shader keywords.
-5. The one quality trade: bloom. Measured, then decided by the number.
-6. A low quality tier, only if 1-5 leave the phone under 60.
+1. Baseline: the probe in the scene, `Level_03` with five slots firing, editor and phone.
+   **Done.**
+2. Settings: `targetFrameRate`, shadows, post processing, HDR, the shader's alpha clip,
+   splash shadows, Animator culling. **Done: both levels at a locked 60 fps.**
+3. Allocations: whatever the probe shows, closed one source at a time. **Done: 0 B/frame
+   idle and firing, on the phone.**
+4. Draw calls. **Closed without a change**: taking 390 casters out of the shadow pass
+   removed 390 batches and 0 ms (2c); SetPass is 11-14 on every scene, so the SRP Batcher
+   already does what GPU instancing or a master material would. Not built, with the
+   number that says why.
+5. Bloom. **Decided**: post processing deleted (2d), Salih's call after the sweep put HDR
+   and post at 3-4 ms.
+6. A low quality tier. **Not needed**: the reference phone holds 60 fps on the case level
+   and on the 900-cube stress level. Above 60 is unknown until the phone's display mode
+   is set to Adaptive (2f).
 
 ## Ledger
 
