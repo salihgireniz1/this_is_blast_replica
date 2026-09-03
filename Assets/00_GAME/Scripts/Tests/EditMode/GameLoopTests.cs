@@ -189,6 +189,76 @@ namespace Blast.Tests
         }
 
         /// <summary>
+        /// A locked column - one whose front was just shot and is still being hit on
+        /// screen - is not a target at all, not even as a fallback: the shooter takes
+        /// another match or holds its fire and ammo, until the column starts settling.
+        /// </summary>
+        [Test]
+        public void Shoot_SkipsALockedColumnUntilItStartsSettling()
+        {
+            var slots = new SlotRow(slots: 1);
+            var loop = new GameLoop(
+                BoardWithFronts(BlastColor.Red, BlastColor.Red),
+                QueueOf(new Shooter(BlastColor.Red, ammo: 3, isHidden: false)),
+                slots);
+            loop.TrySelect(0, out _);
+
+            loop.LockColumn(0);
+            loop.TryShoot(0, out int hit);
+            Assert.AreEqual(1, hit, "The shot went into the locked column while another match stood.");
+
+            Assert.IsFalse(loop.TryShoot(0, out _), "The shooter fired into a locked column that held the only match.");
+            Assert.AreEqual(2, slots.AmmoAt(0), "Holding fire for a locked column still cost ammo.");
+
+            loop.MarkSettling(0);
+            Assert.IsTrue(loop.TryShoot(0, out hit), "The column stayed unshootable once it started settling.");
+            Assert.AreEqual(0, hit, "The settling column was not the one shot.");
+        }
+
+        /// <summary>
+        /// Shots at one column overlap on screen: the first is sliding its row while the
+        /// second is still in the air. The first shot finishing must not free the column
+        /// under the second - it stays locked until every shot at it has played out.
+        /// </summary>
+        [Test]
+        public void AColumnShotTwice_StaysLockedUntilBothShotsHavePlayedOut()
+        {
+            var loop = new GameLoop(
+                BoardWithFronts(BlastColor.Red),
+                QueueOf(new Shooter(BlastColor.Red, ammo: 3, isHidden: false)),
+                new SlotRow(slots: 1));
+            loop.TrySelect(0, out _);
+
+            loop.LockColumn(0);
+            loop.LockColumn(0);
+            loop.MarkSettling(0);
+            loop.MarkSettled(0);
+
+            Assert.IsFalse(loop.TryShoot(0, out _), "The first shot settling freed a column the second shot still has locked.");
+
+            loop.MarkSettling(0);
+            Assert.IsTrue(loop.TryShoot(0, out _), "The column stayed locked after its last shot started settling.");
+        }
+
+        /// <summary>
+        /// A locked column still counts as a target for the fail verdict: its cubes are on
+        /// their way, so a full row waiting on it is paused, not stuck.
+        /// </summary>
+        [Test]
+        public void AFullRowWaitingOnALockedColumn_IsNotLost()
+        {
+            var loop = new GameLoop(
+                BoardWithFronts(BlastColor.Red),
+                QueueOf(new Shooter(BlastColor.Red, ammo: 1, isHidden: false)),
+                new SlotRow(slots: 1));
+
+            loop.LockColumn(0);
+            loop.TrySelect(0, out _);
+
+            Assert.AreEqual(GameVerdict.Playing, loop.Verdict, "A locked column was read as no target at all.");
+        }
+
+        /// <summary>
         /// Seating the last shooter into a row where nobody has a target loses the game on
         /// that move - not on some later poll. The player must see the fail the moment it
         /// becomes true.

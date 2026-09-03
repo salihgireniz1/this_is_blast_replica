@@ -28,14 +28,14 @@ namespace Blast.Domain
         public static bool TryFindTarget(BoardModel board, BlastColor color, out int column)
             => TryFindTarget(board, color, null, out column);
 
-        /// <summary>Finds the leftmost column whose front cube wears the given colour, preferring
-        /// columns that are not settling; a settling column is taken only when no other matches.</summary>
+        /// <summary>Finds the leftmost free column whose front cube wears the given colour; failing
+        /// that, the leftmost settling one. A locked column is never a target.</summary>
         /// <param name="board">The board to scan.</param>
         /// <param name="color">The colour the shooter fires.</param>
-        /// <param name="settling">Per column, true to rank it behind every settled match; null ranks nothing.</param>
+        /// <param name="states">Per column, how far its last shot has played out; null reads every column as free.</param>
         /// <param name="column">The column to shoot at; -1 when there is none.</param>
-        /// <returns>True when a front cube of that colour stands somewhere.</returns>
-        public static bool TryFindTarget(BoardModel board, BlastColor color, bool[] settling, out int column)
+        /// <returns>True when a front cube of that colour stands in a column that may be shot.</returns>
+        public static bool TryFindTarget(BoardModel board, BlastColor color, ColumnState[] states, out int column)
         {
             int settlingMatch = -1;
 
@@ -49,15 +49,16 @@ namespace Blast.Domain
                     continue;
                 }
 
-                bool columnSettling = settling != null && settling[candidate];
-                if (!columnSettling)
+                ColumnState state = states == null ? ColumnState.Free : states[candidate];
+                if (state == ColumnState.Free)
                 {
                     column = candidate;
                     return true;
                 }
 
-                // Remembered, not taken: a settled match further right still wins.
-                if (settlingMatch < 0)
+                // A settling match is remembered, not taken: a free match further right
+                // still wins. A locked one is not even remembered.
+                if (state == ColumnState.Settling && settlingMatch < 0)
                 {
                     settlingMatch = candidate;
                 }

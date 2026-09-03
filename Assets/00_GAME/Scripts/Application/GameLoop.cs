@@ -29,10 +29,19 @@ namespace Blast.Application
         /// <summary>The slot row seated shooters fire from.</summary>
         readonly SlotRow _slots;
 
-        /// <summary>Per board column: true while its next front is still on its way on
-        /// screen. A preference, never a ban: targeting takes a settled match first and
-        /// falls back to a settling one, so a shooter never waits for a row to land.</summary>
-        readonly bool[] _settling;
+        /// <summary>Per board column: what targeting may do with it, derived from the two
+        /// counts below. Locked while any shot at it is still hitting its cube (no target at
+        /// all), Settling while any is collapsing or sliding (a last-resort target), Free when
+        /// every shot has played out.</summary>
+        readonly ColumnState[] _columns;
+
+        /// <summary>Per board column: shots whose bullet is flying or whose cube is being hit.
+        /// A count, not a flag: shots at one column overlap on screen, and the first one
+        /// settling must not free the column under the second.</summary>
+        readonly int[] _lockedShots;
+
+        /// <summary>Per board column: shots whose cube is collapsing or whose row is sliding.</summary>
+        readonly int[] _settlingShots;
 
         #endregion
 
@@ -58,16 +67,37 @@ namespace Blast.Application
             _board = board;
             _queue = queue;
             _slots = slots;
-            _settling = new bool[board.Columns];
+            _columns = new ColumnState[board.Columns];
+            _lockedShots = new int[board.Columns];
+            _settlingShots = new int[board.Columns];
         }
 
-        /// <summary>Marks a column's next front as still moving, so targeting prefers others.</summary>
+        /// <summary>Counts a shot whose cube is being hit: the column is no target at all until
+        /// that shot, and every other one at the column, has moved on to settling.</summary>
         /// <param name="column">The board column that just lost its front.</param>
-        public void MarkSettling(int column) => _settling[column] = true;
+        public void LockColumn(int column)
+        {
+            _lockedShots[column]++;
+            RefreshState(column);
+        }
 
-        /// <summary>Clears the mark once the column's survivors stand still.</summary>
+        /// <summary>Moves one shot from hitting to settling: the column may be shot again once
+        /// no shot at it is still hitting, but only when no free column matches.</summary>
+        /// <param name="column">The board column whose dead cube has started to collapse.</param>
+        public void MarkSettling(int column)
+        {
+            _lockedShots[column]--;
+            _settlingShots[column]++;
+            RefreshState(column);
+        }
+
+        /// <summary>Retires one settling shot: the column is free again once none is left.</summary>
         /// <param name="column">The board column whose survivors have landed.</param>
-        public void MarkSettled(int column) => _settling[column] = false;
+        public void MarkSettled(int column)
+        {
+            _settlingShots[column]--;
+            RefreshState(column);
+        }
 
         /// <summary>Moves a column's front shooter into the first empty slot.</summary>
         /// <param name="column">The queue column the player tapped.</param>
@@ -118,7 +148,7 @@ namespace Blast.Application
 
             Shooter shooter = _slots.ShooterAt(slot);
 
-            if (!GameRules.TryFindTarget(_board, shooter.Color, _settling, out hitColumn))
+            if (!GameRules.TryFindTarget(_board, shooter.Color, _columns, out hitColumn))
             {
                 return false;
             }
@@ -145,6 +175,26 @@ namespace Blast.Application
         #endregion
 
         #region Private Methods
+
+        /// <summary>Derives what targeting may do with a column from its shot counts: any
+        /// shot still hitting locks it, otherwise any shot settling ranks it last.</summary>
+        /// <param name="column">The board column whose counts just changed.</param>
+        void RefreshState(int column)
+        {
+            if (_lockedShots[column] > 0)
+            {
+                _columns[column] = ColumnState.Locked;
+            }
+            else if (_settlingShots[column] > 0)
+            {
+                _columns[column] = ColumnState.Settling;
+            }
+            else
+            {
+                _columns[column] = ColumnState.Free;
+            }
+        }
+
 
         /// <summary>Ends the level: records the verdict and announces it. The only writer of
         /// Verdict past Playing, so the announcement cannot be forgotten at one site.</summary>

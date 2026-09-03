@@ -794,6 +794,30 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   hangs at "running" forever while the editor is in Play mode (Salih had pressed Play);
   `cancel_tests` + `editor_stop`, then rerun. **Probe trap:** `CubeView` roots are not at
   scale 0.9 (the 0.9 sits on the mesh child), so "scale != 0.9 means dying" flagged all 100.
+- Column states: Locked, then Settling, then Free - done, 78/78 green, verified in Play
+  (five fronts seated on `Level_01`, 50 shots, 100 -> 50 cubes; the gap between consecutive
+  bullets aimed at the same column, read off each bullet's tween `Elapsed`, was never under
+  0.368 s; zero gameplay errors). Salih's finding, from 4 orange in front of 4 blue: the
+  domain removes a cube at fire time, so the blue behind became a target the same instant
+  the orange in front was shot - the blue shooter fired before the orange bullet had even
+  landed. The settling preference alone cannot stop that, so the column now walks three
+  states, `Domain/ColumnState.cs`: **Locked** from the pop until the swell ends (flight +
+  hit, 0.24 s: no target at all, `GameRules` does not even remember it), **Settling** from
+  the collapse until the slide lands (a last resort, as before), **Free** after.
+  `GameLoop.LockColumn` / `MarkSettling` / `MarkSettled` are COUNTS per column
+  (`_lockedShots`, `_settlingShots`), and `RefreshState` derives the `ColumnState[]` that
+  `TryFindTarget` reads. **Why counts, measured before it was understood:** with plain
+  flags the first probe showed 4 of 50 same-column gaps at exactly one flight (0.12 s):
+  shot A's slide finished and freed the column while shot B's bullet was still in the air,
+  because A's `MarkSettled` overwrote B's lock. The test
+  `AColumnShotTwice_StaysLockedUntilBothShotsHavePlayedOut` went red first with the right
+  message ("The first shot settling freed a column the second shot still has locked").
+  Also back: `AFullRowWaitingOnALockedColumn_IsNotLost` - `IsFailed` reads the bare board,
+  a locked column's cubes are on their way. Stacks still get no states while they stand
+  (the next cube is right under the dying one). **Console trap, hit here:** `unity cmd
+  console` returns old entries too, so a grep for a probe's tag matched the PREVIOUS run's
+  lines and hid that the new eval had never installed; filter on `timestampUtc` against a
+  stamp taken before the probe (`since.py` pattern) before believing any probe output.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

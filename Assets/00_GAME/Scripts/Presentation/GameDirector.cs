@@ -206,17 +206,19 @@ namespace Blast.Presentation
             // removal order, or two in-flight shots at one column swap their victims.
             CubeView cube = _spawner.PopFrontCube(hitColumn);
 
-            // When a row falls, the column's next front is still one cell back and then
-            // sliding, so it is marked settling until it lands: other matching fronts are
-            // shot first and the shooter comes back to this column once its cube stands
-            // still - unless it is the only match, in which case it fires here at once,
+            // When a row falls, the column walks three states. Locked while the bullet
+            // flies and the cube takes the hit: the domain already sees the next cube as
+            // the front, and without the lock a second shooter fires at it before this
+            // bullet has landed. Settling from the collapse to the end of the slide: other
+            // matching fronts are shot first and the shooter comes back once the cube
+            // stands still, unless it is the only match, in which case it fires at once,
             // as the original does. While the stack still stands, the next cube is right
-            // under the dying one, so no mark. Synchronous, before the first await, so no
-            // other shooter's TryShoot in this frame can rank this column first either.
+            // under the dying one, so no states. Synchronous, before the first await, so
+            // no other shooter's TryShoot in this frame can pick this column either.
             bool rowFalls = !_spawner.StackStillStands(hitColumn);
             if (rowFalls)
             {
-                _loop.MarkSettling(hitColumn);
+                _loop.LockColumn(hitColumn);
             }
 
             shooter.TurnTo(cube.transform.position, _motion.TurnDuration);
@@ -251,6 +253,13 @@ namespace Blast.Presentation
                 .Forget();
             await dying.DOPunchScale(_cubeDeath.SwellScale, _cubeDeath.SwellDuration, _cubeDeath.SwellVibrato, _cubeDeath.SwellElasticity)
                 .ToUniTask(cancellationToken: _destroyed);
+
+            // The hit has played out; from the collapse on, the column is a last resort.
+            if (rowFalls)
+            {
+                _loop.MarkSettling(hitColumn);
+            }
+
             await dying.DOScale(Vector3.zero, _cubeDeath.CollapseDuration)
                 .SetEase(Ease.InQuad)
                 .ToUniTask(cancellationToken: _destroyed);
