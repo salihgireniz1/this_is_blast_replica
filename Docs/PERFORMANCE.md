@@ -484,8 +484,25 @@ every later turn re-targets it with `ChangeEndValue(..., snapStartValue: true)` 
 `Restart` - the `CameraShake` pattern. `TurnTo` computes the yaw itself (the flattened
 direction's heading, which is what `DOLookAt` with a Y constraint did). `FaceForward`
 returns early while the body already faces forward, so the targetless tick is free.
-After: 120 recorded frames of five shooters firing, **0 allocations under `PlayerLoop`**
-other than the probe's log line.
+After: 120 recorded frames of five shooters firing, 0 allocations under `PlayerLoop`
+other than the probe's log line. **That claim was wrong, and the on-screen readout is
+what caught it** (2h): the recording started three seconds after seating, by which time
+the 9- and 10-ammo shooters had emptied, so the window held targetless ticks and no
+shots. Re-run with the shooters seated from the first recorded frame, 238 frames, ~50
+shots on `Level_01`, ~125 KB in total, about 2 KB per shot:
+
+| Source | Share | What allocates |
+|---|---|---|
+| `LevelSpawner.FlowBoardColumn`: a `DOMove` per surviving cube per shot | 65% | every DOTween shortcut builds a getter and a setter closure per call; 4-5 cubes slide per shot |
+| the bullet's `DOMove` + `ToUniTask` | 20% | the same two closures, plus a 48 B `CancellationToken.Register` node per await |
+| the dying cube's `DOScale` | 6% | two closures |
+| `Leave`'s `DOPath` | 3% | per departure, as recorded below |
+
+At the fire rhythm that is ~85 KB/s, 0.5-1 KB per frame at 90 Hz, exactly what the HUD
+shows during a burst. Idle stays at 0. The incremental GC absorbs 85 KB/s without a
+visible hitch, so this is a ledger correction, not a frame-rate problem; closing it
+means the reused-tween pattern (one `Tweener` per cube for the slide, one per pooled
+bullet for the flight) and dropping the per-await cancellation registration.
 
 On the phone, same build configuration as 2f plus the two fixes:
 
