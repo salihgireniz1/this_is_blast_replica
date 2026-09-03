@@ -165,6 +165,30 @@ namespace Blast.Tests
         }
 
         /// <summary>
+        /// A settling column - one whose next front is still on its way on screen - is a
+        /// preference, not a ban: the shooter takes a settled match first, and when the
+        /// settling column holds the only match it fires there at once instead of waiting.
+        /// </summary>
+        [Test]
+        public void Shoot_PrefersASettledColumnButNeverHoldsFireForOne()
+        {
+            var slots = new SlotRow(slots: 1);
+            var loop = new GameLoop(
+                BoardWithFronts(BlastColor.Red, BlastColor.Red),
+                QueueOf(new Shooter(BlastColor.Red, ammo: 3, isHidden: false)),
+                slots);
+            loop.TrySelect(0, out _);
+
+            loop.MarkSettling(0);
+            loop.TryShoot(0, out int hit);
+            Assert.AreEqual(1, hit, "The shot went into the settling column while a settled match stood.");
+
+            Assert.IsTrue(loop.TryShoot(0, out hit), "The shooter held fire for a settling column that held the only match.");
+            Assert.AreEqual(0, hit, "The fallback shot went nowhere.");
+            Assert.AreEqual(1, slots.AmmoAt(0), "The fallback shot was not paid for.");
+        }
+
+        /// <summary>
         /// Seating the last shooter into a row where nobody has a target loses the game on
         /// that move - not on some later poll. The player must see the fail the moment it
         /// becomes true.

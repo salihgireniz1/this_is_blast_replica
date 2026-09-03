@@ -26,21 +26,45 @@ namespace Blast.Domain
         /// <param name="column">The column to shoot at; -1 when there is none.</param>
         /// <returns>True when a front cube of that colour stands somewhere.</returns>
         public static bool TryFindTarget(BoardModel board, BlastColor color, out int column)
+            => TryFindTarget(board, color, null, out column);
+
+        /// <summary>Finds the leftmost column whose front cube wears the given colour, preferring
+        /// columns that are not settling; a settling column is taken only when no other matches.</summary>
+        /// <param name="board">The board to scan.</param>
+        /// <param name="color">The colour the shooter fires.</param>
+        /// <param name="settling">Per column, true to rank it behind every settled match; null ranks nothing.</param>
+        /// <param name="column">The column to shoot at; -1 when there is none.</param>
+        /// <returns>True when a front cube of that colour stands somewhere.</returns>
+        public static bool TryFindTarget(BoardModel board, BlastColor color, bool[] settling, out int column)
         {
+            int settlingMatch = -1;
+
             for (int candidate = 0; candidate < board.Columns; candidate++)
             {
                 // TryFrontColor is what skips spent columns: their authored colours are
                 // still in the array, but a column with no front has nothing to shoot.
                 bool columnStands = board.TryFrontColor(candidate, out BlastColor front);
-                if (columnStands && front == color)
+                if (!columnStands || front != color)
+                {
+                    continue;
+                }
+
+                bool columnSettling = settling != null && settling[candidate];
+                if (!columnSettling)
                 {
                     column = candidate;
                     return true;
                 }
+
+                // Remembered, not taken: a settled match further right still wins.
+                if (settlingMatch < 0)
+                {
+                    settlingMatch = candidate;
+                }
             }
 
-            column = -1;
-            return false;
+            column = settlingMatch;
+            return column >= 0;
         }
 
         /// <summary>Whether every cube on the board is gone.</summary>

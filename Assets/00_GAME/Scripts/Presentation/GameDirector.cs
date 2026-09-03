@@ -206,6 +206,19 @@ namespace Blast.Presentation
             // removal order, or two in-flight shots at one column swap their victims.
             CubeView cube = _spawner.PopFrontCube(hitColumn);
 
+            // When a row falls, the column's next front is still one cell back and then
+            // sliding, so it is marked settling until it lands: other matching fronts are
+            // shot first and the shooter comes back to this column once its cube stands
+            // still - unless it is the only match, in which case it fires here at once,
+            // as the original does. While the stack still stands, the next cube is right
+            // under the dying one, so no mark. Synchronous, before the first await, so no
+            // other shooter's TryShoot in this frame can rank this column first either.
+            bool rowFalls = !_spawner.StackStillStands(hitColumn);
+            if (rowFalls)
+            {
+                _loop.MarkSettling(hitColumn);
+            }
+
             shooter.TurnTo(cube.transform.position, _motion.TurnDuration);
 
             Vector3 muzzle = shooter.transform.position + Vector3.up * _firing.MuzzleHeight;
@@ -249,10 +262,19 @@ namespace Blast.Presentation
 
             // Death first, flow second - the original's order. The survivors only start
             // sliding once the dead cube is gone, so the eye reads two beats, not one blur.
-            // Nothing waits for the slide: the next shot at this column is already in the
-            // air, as in the original, where a shooter never pauses for a settling row.
-            _spawner.FlowBoardColumn(
+            if (!rowFalls)
+            {
+                return;
+            }
+
+            Tween slide = _spawner.FlowBoardColumn(
                 hitColumn, _cubeDeath.FlowDuration, _cubeDeath.SettleAngle, _cubeDeath.SettleDuration);
+            if (slide != null)
+            {
+                await slide.ToUniTask(cancellationToken: _destroyed);
+            }
+
+            _loop.MarkSettled(hitColumn);
         }
 
         /// <summary>Runs a drained shooter off the nearer side of the screen and despawns it.</summary>

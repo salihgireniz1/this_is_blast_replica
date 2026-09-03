@@ -29,6 +29,11 @@ namespace Blast.Application
         /// <summary>The slot row seated shooters fire from.</summary>
         readonly SlotRow _slots;
 
+        /// <summary>Per board column: true while its next front is still on its way on
+        /// screen. A preference, never a ban: targeting takes a settled match first and
+        /// falls back to a settling one, so a shooter never waits for a row to land.</summary>
+        readonly bool[] _settling;
+
         #endregion
 
         #region Properties
@@ -53,7 +58,16 @@ namespace Blast.Application
             _board = board;
             _queue = queue;
             _slots = slots;
+            _settling = new bool[board.Columns];
         }
+
+        /// <summary>Marks a column's next front as still moving, so targeting prefers others.</summary>
+        /// <param name="column">The board column that just lost its front.</param>
+        public void MarkSettling(int column) => _settling[column] = true;
+
+        /// <summary>Clears the mark once the column's survivors stand still.</summary>
+        /// <param name="column">The board column whose survivors have landed.</param>
+        public void MarkSettled(int column) => _settling[column] = false;
 
         /// <summary>Moves a column's front shooter into the first empty slot.</summary>
         /// <param name="column">The queue column the player tapped.</param>
@@ -104,7 +118,7 @@ namespace Blast.Application
 
             Shooter shooter = _slots.ShooterAt(slot);
 
-            if (!GameRules.TryFindTarget(_board, shooter.Color, out hitColumn))
+            if (!GameRules.TryFindTarget(_board, shooter.Color, _settling, out hitColumn))
             {
                 return false;
             }

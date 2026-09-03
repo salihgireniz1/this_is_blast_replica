@@ -179,7 +179,7 @@ namespace Blast.Presentation
         /// pop. The front index walks Layers views per row, so anything but a row boundary
         /// means the row has not fallen yet and nothing behind it is going to move.</summary>
         /// <param name="column">The board column to ask about.</param>
-        bool StackStillStands(int column) => _cubeFront[column] % _board.Layers != 0;
+        public bool StackStillStands(int column) => _cubeFront[column] % _board.Layers != 0;
 
         /// <summary>Flows a board column's surviving cubes one cell toward the player, each
         /// landing with a small forward tip that rocks back upright.</summary>
@@ -187,7 +187,8 @@ namespace Blast.Presentation
         /// <param name="duration">How long the slide takes.</param>
         /// <param name="settleAngle">Degrees a cube tips forward on landing before rocking back.</param>
         /// <param name="settleDuration">How long that bounce takes.</param>
-        /// <returns>The slide, so a caller can watch it settle; null when nothing was left to move.</returns>
+        /// <returns>The slide the director awaits before the column counts as settled;
+        /// null when nothing was left to move.</returns>
         public Tween FlowBoardColumn(int column, float duration, float settleAngle, float settleDuration)
         {
             // A row falls only when its last cube dies.

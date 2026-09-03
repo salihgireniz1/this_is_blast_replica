@@ -773,6 +773,27 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   under load, so "last position while active" was mid-flight; read the DOTween
   `TweenerCore.endValue` instead. Also: an `eval_file` that reports the 5 s main-thread
   timeout may still have run - check the console before installing a second copy.
+- Settling columns as a preference, not a ban - done, 75/75 green, verified in Play (five
+  fronts seated on `Level_01`; death order logged by the frame a cube view is destroyed:
+  the first ten were c0 c5 c1 c6 c2 c7 c3 c8 c4 c9, all at the front line z -5.78 - red and
+  blue alternating, each sweeping its half 0-1-2-3-4; the second red row then died at the
+  front line too, i.e. settled; yellow, whose only match was column 0, fired at it while it
+  was still one cell back - the fallback; zero gameplay errors). Salih's 4x2 case: after the
+  leftmost front dies the shooter should sweep the other fronts before coming back for the
+  cube behind, but never wait when that cube is the only match. `GameLoop._settling` +
+  `MarkSettling` / `MarkSettled`; `GameRules.TryFindTarget(board, color, settling, out)`
+  takes the leftmost NON-settling match and otherwise the leftmost settling one - one pass,
+  one remembered index, no allocation; the 3-arg overload forwards null. Director: mark on
+  the pop when the row falls (`StackStillStands` public again), await `FlowBoardColumn`'s
+  slide, unmark. Rejected: a time threshold (the old ban with a shorter fuse - still waits
+  when there is no other target) and a neighbour-first scan (a different rule that only
+  fits 4x2; cost was never the issue, ten columns per shot). `IsFailed` is untouched and
+  no longer interacts with the mask: a settling column is always a legal target. Test:
+  `Shoot_PrefersASettledColumnButNeverHoldsFireForOne` - the second half is what the old
+  hold would have failed. Red first with the compile error. **Trap:** an EditMode test run
+  hangs at "running" forever while the editor is in Play mode (Salih had pressed Play);
+  `cancel_tests` + `editor_stop`, then rerun. **Probe trap:** `CubeView` roots are not at
+  scale 0.9 (the 0.9 sits on the mesh child), so "scale != 0.9 means dying" flagged all 100.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.
