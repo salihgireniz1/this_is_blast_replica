@@ -182,14 +182,14 @@ namespace Blast.Presentation
         public bool StackStillStands(int column) => _cubeFront[column] % _board.Layers != 0;
 
         /// <summary>Flows a board column's surviving cubes one cell toward the player, each
-        /// landing with a small forward tip that rocks back upright.</summary>
+        /// overshooting its cell a little and easing back: the original's landing, measured
+        /// frame by frame (see CLAUDE.md).</summary>
         /// <param name="column">The column that just lost its front.</param>
-        /// <param name="duration">How long the slide takes.</param>
-        /// <param name="settleAngle">Degrees a cube tips forward on landing before rocking back.</param>
-        /// <param name="settleDuration">How long that bounce takes.</param>
+        /// <param name="duration">How long the slide takes, overshoot and settle included.</param>
+        /// <param name="overshoot">DOTween's OutBack overshoot: 1.7 is the default, ~10% of a cell past the rest.</param>
         /// <returns>The slide the director awaits before the column counts as settled;
         /// null when nothing was left to move.</returns>
-        public Tween FlowBoardColumn(int column, float duration, float settleAngle, float settleDuration)
+        public Tween FlowBoardColumn(int column, float duration, float overshoot)
         {
             // A row falls only when its last cube dies.
             if (StackStillStands(column))
@@ -209,19 +209,10 @@ namespace Blast.Presentation
 
                 // Kill first: the previous flow's tween still holds the previous rest as
                 // its target and would drag the cube back when it lands. The slide heals
-                // itself by targeting the absolute rest, but a landing rock cut short by
-                // this kill would leave the cube tilted, so the rotation is reset by hand.
+                // itself by targeting the absolute rest, so a cube cut off mid-overshoot
+                // simply continues to the next cell from wherever it is.
                 view.DOKill();
-                view.rotation = Quaternion.identity;
-                slide = view.DOMove(rest, duration)
-                    .SetEase(Ease.OutSine)
-                    .OnComplete(() => view
-                        .DOPunchRotation(Vector3.left * settleAngle, settleDuration, vibrato: 2, elasticity: 0.5f)
-                        .SetEase(Ease.OutBounce));
-                // Vector3.left: a negative x rotation tips the top toward -z, the way the
-                // cube was travelling, so the rock reads as inertia and not as a nod back.
-                // ponytail: the OnComplete closure allocates per cube per shot; a pooled
-                // Sequence is the upgrade if the phase 5 profiler flags it.
+                slide = view.DOMove(rest, duration).SetEase(Ease.OutBack, overshoot);
             }
 
             // Every survivor slides for the same duration, so the last one's tween stands

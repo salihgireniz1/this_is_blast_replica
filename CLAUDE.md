@@ -849,6 +849,28 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   "Scene(s) Have Been Modified", which freezes every main-thread command; Salih clicked Save.
   Write scene values and start tests in separate steps. The fit script and the per-frame
   measurements live only in this session's scratchpad; the numbers above are the record.
+- Column flow as one OutBack - done, 78/78 green, verified in Play (five fronts seated on
+  `Level_01`, 45 cubes shot, zero errors; one survivor logged per frame across three slides:
+  -1.28 -> crosses the rest -2.18 at ~0.11 s -> peaks -2.264 at 0.18 s, 9.3% of a cell past ->
+  settled by 0.3 s; the other two slides peaked 0.085 past their rests too; max rotation on
+  any cube 0.00 degrees). The measured original slide (linear ~120 ms + a ~10% overshoot
+  settling ~100 ms later) was fitted against three candidates: linear + position punch
+  (rms 0.086), OutBack (rms 0.100, T 320 ms, DOTween's default overshoot 1.7), InBack
+  (rms 0.149, no fit: it pulls back first and never overshoots). One frame at 30 fps is
+  ~0.25 of a cell of progress, so the first two are indistinguishable and the single tween
+  wins - Salih's call. `FlowBoardColumn(column, duration, overshoot)` is now one
+  `DOMove(rest, duration).SetEase(Ease.OutBack, overshoot)` per survivor after the `DOKill`;
+  the `OnComplete` closure, its `ponytail:` marker, `DOPunchRotation` and the
+  `rotation = identity` reset are gone (nothing rotates any more, so nothing needs healing).
+  `CubeDeath.SettleAngle` / `SettleDuration` became `SettleOvershoot` 1.7, `FlowDuration` is
+  0.3 (the whole slide, overshoot and settle included); both written into the scene via eval.
+  OutBack's known difference from the original: its peak sits ~50 ms later and the return
+  ~100 ms later, a slightly floatier landing; if it reads that way, drop `FlowDuration` to
+  0.25 and raise `SettleOvershoot` to ~2.5. `LevelSpawnerTests` only changed its four call
+  sites to the new signature; the end state it asserts (rest reached after `CompleteAll`) is
+  what OutBack guarantees at u = 1. **Probe trap:** a frame logger that only records cubes
+  whose z changed since the last tick never logs the first frame, so the first sample is
+  already mid-slide; read the rest from the authored grid, not from the first line.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

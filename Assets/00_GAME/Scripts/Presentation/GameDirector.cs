@@ -277,8 +277,7 @@ namespace Blast.Presentation
                 return;
             }
 
-            Tween slide = _spawner.FlowBoardColumn(
-                hitColumn, _cubeDeath.FlowDuration, _cubeDeath.SettleAngle, _cubeDeath.SettleDuration);
+            Tween slide = _spawner.FlowBoardColumn(hitColumn, _cubeDeath.FlowDuration, _cubeDeath.SettleOvershoot);
             if (slide != null)
             {
                 await slide.ToUniTask(cancellationToken: _destroyed);
@@ -407,17 +406,13 @@ namespace Blast.Presentation
             [Tooltip("Seconds from impact until the cube has shrunk to nothing. OutQuad: most of the shrink happens in the first half.")]
             public float CollapseDuration;
 
-            /// <summary>How long a column's survivors take to flow one cell forward.</summary>
-            [Tooltip("Seconds a column's survivors take to slide one cell forward, after the shrink has finished.")]
+            /// <summary>How long a column's survivors take to flow one cell forward, overshoot and settle included.</summary>
+            [Tooltip("Seconds a column's survivors take to slide one cell forward and settle, after the shrink has finished. OutBack: the rest is crossed at ~40%, the overshoot peaks at ~60%.")]
             public float FlowDuration;
 
-            /// <summary>How far a flowed cube tips forward on landing before rocking back upright.</summary>
-            [Tooltip("Degrees a flowed cube tips forward on landing before rocking back upright.")]
-            public float SettleAngle;
-
-            /// <summary>How long that landing bounce takes.</summary>
-            [Tooltip("Seconds that landing bounce takes.")]
-            public float SettleDuration;
+            /// <summary>How far the slide overshoots its cell before easing back, as DOTween's OutBack overshoot.</summary>
+            [Tooltip("OutBack overshoot. 1.7 (DOTween's default) peaks ~10% of a cell past the rest, the original's bump; 0 is a plain ease-out.")]
+            public float SettleOvershoot;
 
             /// <summary>The values a fresh director starts with - the original's, measured from a frame-by-frame capture.</summary>
             public static CubeDeath Defaults => new CubeDeath
@@ -425,9 +420,8 @@ namespace Blast.Presentation
                 HopHeight = 0.15f,
                 HopDuration = 0.1f,
                 CollapseDuration = 0.18f,
-                FlowDuration = 0.15f,
-                SettleAngle = 15f,
-                SettleDuration = 0.15f,
+                FlowDuration = 0.3f,
+                SettleOvershoot = 1.7f,
             };
         }
 

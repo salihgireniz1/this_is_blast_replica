@@ -113,9 +113,9 @@ namespace Blast.Tests
 
             // The fast case: both shots resolve before either flow has tweened a frame.
             _spawner.PopFrontCube(0);
-            _spawner.FlowBoardColumn(0, 0.15f, 0.1f, 0.15f);
+            _spawner.FlowBoardColumn(0, 0.3f, 1.7f);
             _spawner.PopFrontCube(0);
-            _spawner.FlowBoardColumn(0, 0.15f, 0.1f, 0.15f);
+            _spawner.FlowBoardColumn(0, 0.3f, 1.7f);
 
             DOTween.CompleteAll();
 
@@ -168,7 +168,7 @@ namespace Blast.Tests
 
             // Top of the front stack dies: the row behind must not move yet.
             CubeView first = _spawner.PopFrontCube(0);
-            _spawner.FlowBoardColumn(0, 0.15f, 0.1f, 0.15f);
+            _spawner.FlowBoardColumn(0, 0.3f, 1.7f);
             DOTween.CompleteAll();
 
             for (int i = 0; i < spawned.Length; i++)
@@ -180,7 +180,7 @@ namespace Blast.Tests
 
             // Ground of the front stack dies: now the next row's ground cube reaches the front.
             _spawner.PopFrontCube(0);
-            _spawner.FlowBoardColumn(0, 0.15f, 0.1f, 0.15f);
+            _spawner.FlowBoardColumn(0, 0.3f, 1.7f);
             DOTween.CompleteAll();
 
             bool someoneReachedTheFront = false;
