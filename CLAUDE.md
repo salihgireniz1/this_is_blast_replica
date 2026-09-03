@@ -13,7 +13,8 @@ Reference prototype, for **art and mechanics only â€” never copy its code**:
 `C:\Users\giren\Desktop\Projects\this-is-blast-clone`.
 
 House rules live in `.claude/rules/`: how we work chunk by chunk, the code standard,
-and how the Unity Editor is driven.
+how the Unity Editor is driven, and **`case-brief.md` â€” the Apps case requirements, which
+override every other file in this repo unless Salih says otherwise in chat.**
 
 ## Architecture
 
@@ -261,7 +262,7 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   arrival and on every targetless tick, TurnTo(cube) at every shot. One `_turnDuration`
   (0.15 s) serves all three; split it if the aim ever wants to be snappier than the run.
   The ammo counter is a child, so it yaws with the body - the original's does too.
-- `ComponentPool<T>` (Presentation) — done, 61/61 green. `SplashPool` generalised at Salih's
+- `ComponentPool<T>` (Presentation) ï¿½ done, 61/61 green. `SplashPool` generalised at Salih's
   call so a bullet pool would not be a second, differently shaped pool: one grow-only class
   for any `Component` prefab, `Take(position)` (places first, then switches on - Play On
   Awake must fire at the new spot), `Return(item)` (switches off), `Prewarm(n)`. "Off" is
@@ -270,7 +271,7 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   uncommitted); `ComponentPoolTests` has three tests: Unity-switched-off reused, Returned
   reused, Take places. Probe: emptying `Return` turned exactly the Returned test red
   ("A returned instance was not reused; a third was instantiated").
-- Bullet pool + pool parents in `GameDirector` — done, 61/61 green, verified in Play (a full
+- Bullet pool + pool parents in `GameDirector` ï¿½ done, 61/61 green, verified in Play (a full
   level: 100 shots through exactly 5 bullet instances, `BulletPool` never grew past its
   prewarm, `SplashPool` held at 40, verdict `Won`, zero gameplay errors). `Construct` makes
   two empty children, `SplashPool` and `BulletPool`, and each `ComponentPool` spawns under
