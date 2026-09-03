@@ -20,11 +20,14 @@ public class ES3GlobalManager : MonoBehaviour
             ES3.CacheFile();
     }
 
+    // Cached: a new WaitForEndOfFrame per frame was the game's only steady allocation (16 B/frame, Docs/PERFORMANCE.md step 3).
+    static readonly WaitForEndOfFrame endOfFrame = new WaitForEndOfFrame();
+
     public IEnumerator Start()
     {
         while (true)
         {
-            yield return new WaitForEndOfFrame();
+            yield return endOfFrame;
 
             if(ES3Settings.defaultSettings.location == ES3.Location.Cache && ES3Settings.defaultSettings.storeCacheAtEndOfEveryFrame || storeCache)
             {
