@@ -52,9 +52,9 @@ Deadline: **Monday 2026-09-07**, delivered by mail after the final push.
   a **restart button** that replays the same level.
 - **Fail:** all 5 slots occupied and no shootable front cube left. Show: background
   darkens, the word **LOST** in front, plus a restart button that replays the same level.
-- The brief says "restart the same level" after a win too. Salih chose NEXT-after-win as
-  his own extension; if that is ever questioned the revert is two lines
-  (`LevelProgression.Record` ignores Won, label stays RESTART).
+- After a win the button also replays the **same** level. Applied 2026-09-03: the
+  overlay's label is always RESTART and the scope no longer feeds the verdict to
+  `LevelProgression`, so the stored level index never advances.
 
 ## Level (slide 10)
 

@@ -53,7 +53,7 @@ namespace Blast.Tests
 
             Assert.IsTrue(viewModel.IsShown.CurrentValue, "The win did not show the overlay.");
             Assert.AreEqual(LevelEndViewModel.WonTitle, viewModel.Title.CurrentValue, "A win showed the wrong title.");
-            Assert.AreEqual(LevelEndViewModel.NextLabel, viewModel.ButtonLabel.CurrentValue, "A win does not offer NEXT; the player would think they replay the level.");
+            Assert.AreEqual(LevelEndViewModel.RestartLabel, viewModel.ButtonLabel.CurrentValue, "A win does not offer RESTART; the brief replays the same level after a win.");
         }
 
         /// <summary>A stuck row shows the overlay with the fail title.</summary>

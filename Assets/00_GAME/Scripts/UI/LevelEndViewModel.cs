@@ -25,10 +25,8 @@ namespace Blast.UI
         /// <summary>The title a lost level shows - the case brief's word, verbatim.</summary>
         public const string LostTitle = "LOST";
 
-        /// <summary>The button's label after a win: the next level is what the reload brings.</summary>
-        public const string NextLabel = "NEXT";
-
-        /// <summary>The button's label after a loss: the same level again.</summary>
+        /// <summary>The button's label: the same level again, after a win as after a loss
+        /// (the case brief, slides 8-9).</summary>
         public const string RestartLabel = "RESTART";
 
         /// <summary>Backs IsShown; flips once, on the decision.</summary>
@@ -50,9 +48,8 @@ namespace Blast.UI
         /// <summary>The title matching the verdict; empty while playing.</summary>
         public ReadOnlyReactiveProperty<string> Title => _title;
 
-        /// <summary>What the button promises: NEXT after a win, RESTART after a loss. The
-        /// button does the same thing either way (reload); LevelProgression has already
-        /// decided which level that reload brings, and this label says so.</summary>
+        /// <summary>What the button promises. Always RESTART today; kept as a stream so a
+        /// NEXT after a win is a one-line change in OnDecided, not a rewire of the view.</summary>
         public ReadOnlyReactiveProperty<string> ButtonLabel => _buttonLabel;
 
         /// <summary>The player's restart intent. The view executes it; Bootstrap subscribes.</summary>
@@ -79,7 +76,7 @@ namespace Blast.UI
         {
             bool won = verdict == GameVerdict.Won;
             _title.Value = won ? WonTitle : LostTitle;
-            _buttonLabel.Value = won ? NextLabel : RestartLabel;
+            _buttonLabel.Value = RestartLabel;
             _isShown.Value = true;
         }
 

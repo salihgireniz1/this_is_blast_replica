@@ -726,9 +726,15 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   `Application.persistentDataPath`, shared between Play sessions on one machine; to
   boot Level_01 again run `ES3.DeleteKey("LevelIndex")` in an eval or
   `Tools > Easy Save 3 > Clear Persistent Data Path`. The reviewer's fresh machine has no
-  file, so index 0. **Case note:** slides 8-9 say "restart the same level" after a WIN
-  too; Salih chose NEXT (the endless loop was his ask) - if that is ever questioned,
-  `Record` ignoring Won and the label staying RESTART is a two-line revert.
+  file, so index 0.
+- **Reverted to the brief on 2026-09-03, 76/76 green:** slides 8-9 say "restart the same
+  level" after a WIN too, and `.claude/rules/case-brief.md` now outranks everything, so
+  the scope no longer subscribes `loop.Decided += progression.Record` and
+  `LevelEndViewModel.ButtonLabel` is always `RestartLabel` (`NextLabel` deleted). The
+  progression stack (`LevelProgression`, `ISaveStore`, `Es3SaveStore`, `TextAsset[]
+  _levels`) is still built and read at boot but nothing ever advances it, so it is dormant:
+  a fresh machine always boots `_levels[0]` = `Level_01`. Deleting the stack is Salih's
+  call; until then it is the seam a level select would use.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

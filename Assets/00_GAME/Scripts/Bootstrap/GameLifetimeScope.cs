@@ -118,10 +118,6 @@ namespace Blast.Bootstrap
             GameLoop loop = new GameLoop(level.Board, level.Shooters, level.Slots);
             builder.RegisterInstance(loop);
 
-            // Recorded at the verdict, not at the button: a player who quits on the WIN
-            // screen still resumes on the next level.
-            loop.Decided += progression.Record;
-
             PaletteColorMaterials materials = new PaletteColorMaterials(_palette);
             _spawner.Construct(level.Board, level.Shooters, level.Slots, materials);
             _director.Construct(loop, level.Slots, _spawner);
