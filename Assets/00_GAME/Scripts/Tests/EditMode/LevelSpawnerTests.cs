@@ -18,6 +18,8 @@ using NUnit.Framework;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.TestTools.Constraints;
+using Is = UnityEngine.TestTools.Constraints.Is;
 
 namespace Blast.Tests
 {
@@ -122,6 +124,27 @@ namespace Blast.Tests
             Assert.That(
                 Vector3.Distance(survivor.position, frontStart), Is.LessThan(0.001f),
                 "The third cube did not reach the front: the column flowed short by a cell.");
+        }
+
+        /// <summary>
+        /// A column's second flow re-targets the tweens its first flow built instead of building
+        /// new ones. A DOTween shortcut allocates two closures per call, and a slide runs for every
+        /// survivor on every shot: measured at 65% of all firing-time garbage
+        /// (Docs/PERFORMANCE.md, step 3).
+        /// </summary>
+        [Test]
+        public void ASecondFlow_DoesNotAllocate()
+        {
+            _spawner.Construct(
+                new BoardModel(1, 4, 1), new ShooterQueue(new Shooter[0][]), new SlotRow(1), new NoMaterials());
+
+            // The first flow may build each survivor's tween; that is the one-time cost.
+            _spawner.PopFrontCube(0);
+            _spawner.FlowBoardColumn(0, 0.3f, 1.7f);
+            _spawner.PopFrontCube(0);
+
+            Assert.That(() => { _spawner.FlowBoardColumn(0, 0.3f, 1.7f); }, Is.Not.AllocatingGCMemory(),
+                "The second flow allocated: the survivors' slide tweens are being rebuilt per shot.");
         }
 
         /// <summary>

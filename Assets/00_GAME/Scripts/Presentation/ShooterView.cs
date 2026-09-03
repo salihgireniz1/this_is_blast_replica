@@ -9,6 +9,8 @@
 //   calls, in a later chunk). It renders state; it never computes it.
 
 using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using TMPro;
 using UnityEngine;
 
@@ -58,7 +60,7 @@ namespace Blast.Presentation
         /// shot, measured in Docs/PERFORMANCE.md step 3), so each turn re-targets and restarts
         /// this tween instead. Restart also means two turns never fight.
         /// </summary>
-        Tweener _turn;
+        TweenerCore<Quaternion, Vector3, QuaternionOptions> _turn;
 
         /// <summary>True while the body faces the board straight on, so a targetless tick does not restart a turn it already made.</summary>
         bool _facingForward = true;
@@ -171,7 +173,9 @@ namespace Blast.Presentation
                     .SetAutoKill(false);
             }
 
-            _turn.ChangeEndValue(euler, duration, snapStartValue: true).Restart();
+            // The typed ChangeEndValue: the Tweener one takes object and boxes the Vector3 per call.
+            _turn.ChangeEndValue(euler, duration, snapStartValue: true);
+            _turn.Restart();
         }
 
         /// <summary>Kills the reused tween with the view, since it never auto-kills.</summary>

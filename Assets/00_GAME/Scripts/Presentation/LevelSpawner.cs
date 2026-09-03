@@ -203,16 +203,13 @@ namespace Blast.Presentation
 
             for (int index = _cubeFront[column]; index < views.Count; index++)
             {
-                Transform view = views[index].transform;
                 Vector3 authored = CubeWorldPosition(CellOfCubeView(column, index));
                 Vector3 rest = authored - new Vector3(0f, 0f, flowed * _boardLayout.CellSize);
 
-                // Kill first: the previous flow's tween still holds the previous rest as
-                // its target and would drag the cube back when it lands. The slide heals
-                // itself by targeting the absolute rest, so a cube cut off mid-overshoot
-                // simply continues to the next cell from wherever it is.
-                view.DOKill();
-                slide = view.DOMove(rest, duration).SetEase(Ease.OutBack, overshoot);
+                // The rest is absolute, so a slide re-aimed mid-overshoot simply continues
+                // to the next cell from wherever the cube is; the view re-targets its one
+                // tween rather than building another.
+                slide = views[index].SlideTo(rest, duration, overshoot);
             }
 
             // Every survivor slides for the same duration, so the last one's tween stands
