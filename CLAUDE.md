@@ -871,6 +871,13 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   what OutBack guarantees at u = 1. **Probe trap:** a frame logger that only records cubes
   whose z changed since the last tick never logs the first frame, so the first sample is
   already mid-slide; read the rest from the authored grid, not from the first line.
+- Hop deleted - done, 78/78 green. Salih could not see it (2 segments of 0.05 s, 0.15 units,
+  under a 70-degree camera, during the shrink) and typing 12321 into `HopDuration` froze the
+  editor (cause not measured; a punch of that length is 12321 segments per dying cube).
+  The death is one awaited `DOScale(0, CollapseDuration).SetEase(OutQuad)` now, the
+  explicit `DOKill` before `Destroy` went with it (nothing else tweens the cube), and
+  `CubeDeath` is three fields: `CollapseDuration`, `FlowDuration`, `SettleOvershoot`. The
+  original's one-frame lift stays recorded above as a fact, not a feature.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

@@ -1549,8 +1549,6 @@ MonoBehaviour:
     MuzzleHeight: 0.5
     FlightDuration: 0.17
   _cubeDeath:
-    HopHeight: 0.15
-    HopDuration: 0.1
     CollapseDuration: 0.18
     FlowDuration: 0.3
     SettleOvershoot: 1.7

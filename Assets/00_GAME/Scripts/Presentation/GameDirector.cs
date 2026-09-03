@@ -247,14 +247,10 @@ namespace Blast.Presentation
             _pools.Splashes.Take(cube.transform.position, Quaternion.LookRotation(aim));
 
             // Death as the original plays it, measured frame by frame (see CLAUDE.md): the
-            // cube hops once on impact and shrinks to nothing in place, fast at first and
-            // slow at the end. No rock, no jelly - the hop is fire-and-forget because it
-            // ends before the shrink does, and the shrink is awaited because the column
-            // only flows once the cube is gone.
+            // cube shrinks to nothing in place, fast at first and slow at the end. No rock,
+            // no jelly, no hop (the original's one-frame lift was tried and could not be
+            // seen). Awaited because the column only flows once the cube is gone.
             Transform dying = cube.transform;
-            dying.DOPunchPosition(Vector3.up * _cubeDeath.HopHeight, _cubeDeath.HopDuration, vibrato: 1, elasticity: 0f)
-                .ToUniTask()
-                .Forget();
             await dying.DOScale(Vector3.zero, _cubeDeath.CollapseDuration)
                 .SetEase(Ease.OutQuad)
                 .ToUniTask(cancellationToken: _destroyed);
@@ -265,9 +261,6 @@ namespace Blast.Presentation
                 _loop.MarkSettling(hitColumn);
             }
 
-            // Nothing should still be tweening, but a hop longer than the shrink would be;
-            // kill explicitly rather than leaning on safe mode to notice the target is gone.
-            dying.DOKill();
             Destroy(cube.gameObject);
 
             // Death first, flow second - the original's order. The survivors only start
@@ -394,14 +387,6 @@ namespace Blast.Presentation
         [Serializable]
         public struct CubeDeath
         {
-            /// <summary>How high a hit cube hops on impact, in world units, before dropping straight back.</summary>
-            [Tooltip("World units a hit cube hops up on impact. It drops straight back; the shrink runs underneath.")]
-            public float HopHeight;
-
-            /// <summary>How long the hop takes, up and back. Shorter than the shrink, or the cube is destroyed mid-air.</summary>
-            [Tooltip("Seconds the hop takes, up and back. Keep it under the collapse: the cube is destroyed when the shrink ends.")]
-            public float HopDuration;
-
             /// <summary>How long the shrink to nothing takes, from impact. Eased out: fast at first, slow at the end.</summary>
             [Tooltip("Seconds from impact until the cube has shrunk to nothing. OutQuad: most of the shrink happens in the first half.")]
             public float CollapseDuration;
@@ -417,8 +402,6 @@ namespace Blast.Presentation
             /// <summary>The values a fresh director starts with - the original's, measured from a frame-by-frame capture.</summary>
             public static CubeDeath Defaults => new CubeDeath
             {
-                HopHeight = 0.15f,
-                HopDuration = 0.1f,
                 CollapseDuration = 0.18f,
                 FlowDuration = 0.3f,
                 SettleOvershoot = 1.7f,
