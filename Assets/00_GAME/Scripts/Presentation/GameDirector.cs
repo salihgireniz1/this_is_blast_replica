@@ -231,8 +231,10 @@ namespace Blast.Presentation
             _pools.Splashes.Take(muzzle, Quaternion.LookRotation(aim));
             _audio.Play();
 
-            // The bullet keeps the prefab's own material: one bullet colour for every shooter.
-            CubeView bullet = _pools.Bullets.Take(muzzle);
+            // The bullet keeps the prefab's own material (one bullet colour for every shooter)
+            // and takes the same aim as the splash: its head is +Z and the streak sprite
+            // trails behind it, so a bullet spawned in the prefab's rotation would fly sideways.
+            CubeView bullet = _pools.Bullets.Take(muzzle, Quaternion.LookRotation(aim));
 
             await bullet.transform.DOMove(cube.transform.position, _firing.FlightDuration)
                 .SetEase(Ease.Linear)

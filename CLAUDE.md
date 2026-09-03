@@ -736,6 +736,26 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   a fresh machine always boots `_levels[0]` = `Level_01`. **Salih's decision 2026-09-03:
   the stack stays** - it is the seam a level select will be stitched onto. Do not
   propose deleting it again.
+- Bullet is Apps' `Gun_Sprite` streak, aimed on Take - done, 76/76 green, verified in Play
+  (five fronts seated, 100 -> 50 cubes; per-frame log of two in-flight bullets:
+  dot(forward, velocity) 1.000 on every sample, the sprite's up along the velocity, its
+  normal (0,-1,0); zero gameplay errors). Salih's find: `Gun_Sprite.png` (125x231, a round
+  head with a fading tail) IS the bullet's streak, not a hint for a TrailRenderer. He
+  rebuilt `Bullet.prefab` by hand: root still the Cube.fbx head in `Gun.mat` at scale 0.4,
+  rotation identity now (was -90 X); a `Trail` child SpriteRenderer (URP's
+  `Sprite-Unlit-Default`, +90 X so the quad lies flat on the floor with the head toward
+  root +Z, local z -1, scale 2); TrailRenderer gone. Director: `_pools.Bullets.Take(muzzle,
+  Quaternion.LookRotation(aim))` - the splash's aim through the existing overload, one line;
+  the prefab-rotation `Take` would have flown the streak sideways. `Bullet_Trail.mat` deleted
+  (its only user was the TrailRenderer). Why sprite over trail: a TrailRenderer rebuilds and
+  uploads a mesh per bullet per frame (MinVertexDistance 0, 90 corner + 90 cap vertices), one
+  unbatchable draw each, and a pooled one keeps its old positions, so a reused bullet streaks
+  from the last impact to the new muzzle unless `Clear()` is called - the "watch the first
+  reused shot" item above, now moot. The sprite is one static quad, every bullet batches,
+  and the tail exists from the first frame (a 0.11 s trail barely formed in a 0.12 s
+  flight). Not seen by eye: the probe's screenshot landed on the frame the muzzle splash
+  covers the bullet; the log is the evidence. **Probe trap:** `Level_01`'s front row is one
+  colour, so seating a single front never fires - seat all five.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.
