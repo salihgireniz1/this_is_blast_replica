@@ -967,6 +967,24 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   under 16.7 ms are invisible until Salih sets Adaptive. Still open: 16 B/frame idle,
   ~49 B/frame while firing on `Level_03`; source not identified (not LeanTouch, not the
   EventSystem).
+- **Performance pass, step 3: allocations** - done, 0 B/frame idle and firing in the
+  editor's PlayerLoop (phone confirmation in `Docs/PERFORMANCE.md` step 3). Instrument:
+  an eval that records 120 profiler frames with `ProfilerDriver`, walks the raw frame
+  data for `GC.Alloc` samples, keeps only chains under `PlayerLoop` (editor UI garbage
+  filtered out) and, with `memoryRecordMode = GCAlloc`, resolves each one's call stack -
+  the script lives only in the session scratchpad, the pattern is in the ledger. Two
+  sources, both closed: (1) the 16 B/frame idle was Easy Save's `ES3GlobalManager`
+  coroutine doing `yield return new WaitForEndOfFrame()` every frame for a Cache
+  location we do not use - the instruction is now a static, one line in the plugin
+  (re-apply on an ES3 update). (2) Firing: `ShooterView.FaceForward` -> DOTween's
+  `DORotateQuaternion` shortcut, three closures per call, called on EVERY targetless tick;
+  `TurnTo` (`DOLookAt`) had the same shape per shot. Now one yaw `Tweener` per view built
+  once with `DOTween.To` + `SetAutoKill(false)`, re-targeted with
+  `ChangeEndValue(..., snapStartValue: true).Restart()` (the `CameraShake` pattern);
+  `TurnTo` computes the yaw from the flattened direction, `FaceForward` early-returns
+  while already forward. Verified in Play: yaws swing 300-60 while firing, settle to 0
+  when targetless, zero errors. Left alone with the reason recorded: `Leave`'s
+  `Vector3[8]` per departing shooter (DOTween's path keeps the array reference).
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

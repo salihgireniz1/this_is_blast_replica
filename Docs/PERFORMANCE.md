@@ -360,6 +360,70 @@ sits under 16.7 ms is unknown until the phone is put in its 90 Hz mode.
 | Render scale | 1.0 | 1.0 (worth 2.5 ms at most now; not spent) |
 | Optimized Frame Pacing | off | off (tried: +2 ms, no 90 Hz) |
 
+## 3. Allocations
+
+Instrument: the editor's own profiler, driven from an eval. 120 frames of Play are
+recorded with `ProfilerDriver`, then every `GC.Alloc` sample in the raw frame data is
+walked back to its parent chain and only chains under `PlayerLoop` are kept, which
+filters out the editor's own UI garbage (28 KB/frame, the reason the editor's GC counter
+was useless in step 1). The phone's 16 B/frame was reproduced exactly: one allocation of
+16 B in every one of the 120 frames, and its owner is not the game.
+
+| Owner | Per frame | What it is |
+|---|---|---|
+| `ES3GlobalManager.Start()` coroutine | 1 x 16 B | `while (true) yield return new WaitForEndOfFrame();` in Easy Save 3, a manager that only has work when the save location is Cache (ours is File) |
+| `PerfProbe.Update()` | once a second | the probe's own log line: number formatting and `Debug.Log`, which the ledger already discounts |
+
+Fix: the yield instruction is created once and reused, one line in the plugin's
+`ES3GlobalManager.cs`, marked with the reason (the file is source in the project; an
+Easy Save update would need the line again).
+
+After the fix, 118 recorded idle frames: no `GC.Alloc` under `PlayerLoop` except the
+probe's own once-a-second log line. **Idle is 0 B per frame.**
+
+**Firing.** Five shooters seated on `Level_03`, the same hunt with allocation call stacks
+switched on (`ProfilerDriver.memoryRecordMode = GCAlloc`, then `RawFrameDataView.
+GetSampleCallstack` + `ResolveMethodInfo`). 144 allocations in 118 frames, every one of
+them the same stack:
+
+```
+DOTween: ShortcutExtensions.DORotateQuaternion()
+Blast.Presentation: ShooterView.FaceForward()
+Blast.Presentation: GameDirector.FireLoop() [MoveNext]
+UniTask: DelayPromise.MoveNext() -> PlayerLoopRunner
+```
+
+Three objects per call (24 B + 2 x 128 B): a DOTween shortcut builds a getter and a
+setter closure over the transform every time it is called, and `FireLoop` called
+`FaceForward` on every targetless tick, so a seated shooter with nothing to shoot was
+creating and killing a tween eight times a second while already facing forward.
+`TurnTo` (`DOLookAt`) has the same shape and was next in line, once a shot.
+
+Fix, in `ShooterView`: one yaw tween per view, built with `DOTween.To` on the first
+turn (the closures are allocated then, once), kept alive with `SetAutoKill(false)`, and
+every later turn re-targets it with `ChangeEndValue(..., snapStartValue: true)` and
+`Restart` - the `CameraShake` pattern. `TurnTo` computes the yaw itself (the flattened
+direction's heading, which is what `DOLookAt` with a Y constraint did). `FaceForward`
+returns early while the body already faces forward, so the targetless tick is free.
+After: 120 recorded frames of five shooters firing, **0 allocations under `PlayerLoop`**
+other than the probe's log line.
+
+On the phone, same build configuration as 2f plus the two fixes:
+
+| Scene | State | fps | frame ms | worst ms | GC B/frame | allocations/frame |
+|---|---|---|---|---|---|---|
+| `Level_01` | idle | 60.0 | 16.67 | 16.9 | **0** | **0** |
+| `Level_01` | firing | 60.0 | 16.67 | 16.7 | **0** | **0** |
+| `Level_03` | idle | 60.0 | 16.67 | 16.9 | **0** | **0** |
+| `Level_03` | firing | 60.0 | 16.67 | 17.0 | **0** | **0** |
+
+The gameplay allocation target from `PLAN.md`, 0 B per frame, is met on the device.
+
+Left alone, on purpose: `GameDirector.Leave` allocates one `Vector3[8]` per shooter that
+leaves (fifteen per `Level_01`, once each, never per frame). DOTween's path keeps a
+reference to the array, so a shared buffer would corrupt a leave still in flight when a
+second shooter leaves; the allocation is the correct price.
+
 ### 2b. Shadow and animator settings that change nothing on screen
 
 Three edits, all in assets, none visible:

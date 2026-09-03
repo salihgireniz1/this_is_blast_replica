@@ -52,8 +52,16 @@ namespace Blast.Presentation
         /// <summary>Animator trigger: one shot.</summary>
         static readonly int Shoot = Animator.StringToHash("Shoot");
 
-        /// <summary>The turn in progress; killed before a new one starts so two never fight.</summary>
-        Tween _turn;
+        /// <summary>
+        /// The one yaw tween, built on the first turn and reused by every turn after it: a
+        /// DOTween shortcut allocates its getter and setter closures per call (three objects a
+        /// shot, measured in Docs/PERFORMANCE.md step 3), so each turn re-targets and restarts
+        /// this tween instead. Restart also means two turns never fight.
+        /// </summary>
+        Tweener _turn;
+
+        /// <summary>True while the body faces the board straight on, so a targetless tick does not restart a turn it already made.</summary>
+        bool _facingForward = true;
 
         /// <summary>What the counter shows while the colour is concealed.</summary>
         const string ConcealedLabel = "?";
@@ -128,21 +136,49 @@ namespace Blast.Presentation
         /// <param name="duration">How long the turn takes.</param>
         public void TurnTo(Vector3 worldPoint, float duration)
         {
-            _turn.Kill();
-            _turn = transform.DOLookAt(worldPoint, duration, AxisConstraint.Y);
+            // Yaw only, the way DOLookAt with a Y constraint did it: the direction flattened
+            // onto the floor, its heading measured from +Z.
+            Vector3 flat = worldPoint - transform.position;
+            flat.y = 0f;
+            float yaw = Mathf.Atan2(flat.x, flat.z) * Mathf.Rad2Deg;
+            _facingForward = false;
+            Turn(new Vector3(0f, yaw, 0f), duration);
         }
 
-        /// <summary>Turns back to face the board straight on.</summary>
+        /// <summary>Turns back to face the board straight on; nothing happens if it already does.</summary>
         /// <param name="duration">How long the turn takes.</param>
         public void FaceForward(float duration)
         {
-            _turn.Kill();
-            _turn = transform.DORotateQuaternion(Quaternion.identity, duration);
+            if (_facingForward) return;
+
+            _facingForward = true;
+            Turn(Vector3.zero, duration);
         }
 
         #endregion
 
         #region Private Methods
+
+        /// <summary>Re-targets the reused yaw tween from the current rotation and starts it over.</summary>
+        /// <param name="euler">The rotation to reach, as Euler angles.</param>
+        /// <param name="duration">How long the turn takes.</param>
+        void Turn(Vector3 euler, float duration)
+        {
+            if (_turn == null)
+            {
+                // The closures are allocated here, once per view, and never again.
+                _turn = DOTween.To(() => transform.rotation, rotation => transform.rotation = rotation, euler, duration)
+                    .SetAutoKill(false);
+            }
+
+            _turn.ChangeEndValue(euler, duration, snapStartValue: true).Restart();
+        }
+
+        /// <summary>Kills the reused tween with the view, since it never auto-kills.</summary>
+        void OnDestroy()
+        {
+            _turn?.Kill();
+        }
 
         /// <summary>Puts one material on every coloured part.</summary>
         /// <param name="material">The material to wear.</param>
