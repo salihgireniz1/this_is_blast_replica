@@ -134,3 +134,31 @@ cubes are leaving the frame. The main-thread time tracks the frame time, which o
 Vulkan phone means the CPU is waiting for the GPU or the swapchain, not working; whether
 the cost is submit (980 draws) or fill (two passes over 373k triangles, MSAA, bloom) is
 what 2b and 2c separate.
+
+### 2b. Shadow and animator settings that change nothing on screen
+
+Three edits, all in assets, none visible:
+
+- `SplashEffect.prefab`: both particle renderers stop casting and receiving shadows. A
+  puff of white particles was being drawn into the shadow map on every shot.
+- `WalkingCube.prefab`: the Animator's culling mode is Cull Completely. Off-screen
+  shooters (the deep queue rows) stop evaluating their state machine every frame; a
+  seated or running shooter is always on screen, so nothing visible changes.
+- `Mobile_RPAsset`: shadow distance 30 -> 20. **Reverted**: the camera's far plane is 20
+  and URP clamps the shadow distance to it, so 30 was already 20. Shadow casters stayed
+  at 503, the number that would have moved.
+
+| Scene | State | fps | frame ms | worst ms | GC B/frame | batches | shadow casters |
+|---|---|---|---|---|---|---|---|
+| `Level_01` | idle | 37.0 | 27.0 | 33.4 | 16 | 311 | 143 |
+| `Level_01` | firing | 43.0 | 23.3 | 33.4 | 16 | 186 | 83 |
+| `Level_03` | idle | 26.6 | 37.7 | 50.3 | 16 | 972 | 503 |
+| `Level_03` | firing | 27.5 | 36.3 | 50.0 | 88 | 977 | 505 |
+
+Result: nothing measurable, on either level, idle or firing. Ninety off-screen animators
+and a shadow-casting particle puff were not where the time goes. The two prefab edits
+stay: they are free, they are the settings a reviewer expects to find, and the brief's
+fourth criterion asks for every optimisation whether or not it looked necessary. What
+this step establishes is negative and useful: the frame is not CPU-side bookkeeping. With
+main-thread time tracking frame time on Vulkan, the phone is waiting on the GPU. Step 2c
+looks there.
