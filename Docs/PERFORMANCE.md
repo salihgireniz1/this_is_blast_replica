@@ -110,3 +110,27 @@ What the first table already says:
   cubes dying took 125 batches and 60 shadow casters with them.
 - SetPass stays at 11 whatever the cube count: the SRP Batcher is doing its job and
   materials are not the problem.
+
+### 2a. Ask for 60 fps
+
+Change: `Application.targetFrameRate = 60` in `GameLifetimeScope.Configure`, next to the
+tween capacity (the composition root's one-time runtime setup). One line, one constant.
+
+Why first: with the 30 fps cap every frame reads 33.3 ms whatever it costs. Nothing below
+can be measured until the cap is above the real frame time.
+
+| Scene | State | fps | frame ms | worst ms | GC B/frame | batches | shadow casters |
+|---|---|---|---|---|---|---|---|
+| `Level_01` | idle | 36.4 | 27.5 | 33.4 | 16 | 311 | 143 |
+| `Level_01` | firing | 39.0 | 25.6 | 33.4 | 16 | 186 | 83 |
+| `Level_03` | idle | 27.5 | 36.3 | 50.0 | 16 | 972 | 503 |
+| `Level_03` | firing | 27.5 | 36.3 | 50.0 | 78 | 977 | 505 |
+
+Result: `Level_03` did not move, it was already over the 33 ms cap. `Level_01` moved from
+a flat 33.3 to 25-27 ms, which is the real finding: the case's own level, 100 cubes, costs
+more than one 60 Hz slot on this phone. The frame alternates between 16.7 and 33.4 ms
+(vsync quantisation), so the true work is ~17-20 ms. Firing is cheaper than idle because
+cubes are leaving the frame. The main-thread time tracks the frame time, which on a
+Vulkan phone means the CPU is waiting for the GPU or the swapchain, not working; whether
+the cost is submit (980 draws) or fill (two passes over 373k triangles, MSAA, bloom) is
+what 2b and 2c separate.

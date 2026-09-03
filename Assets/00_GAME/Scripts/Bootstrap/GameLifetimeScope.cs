@@ -36,6 +36,12 @@ namespace Blast.Bootstrap
         /// <summary>Sequences reserved up front. Only the scripted set pieces use sequences.</summary>
         const int SequencesCapacity = 100;
 
+        /// <summary>
+        /// Frames per second the player is asked for. Android's default is 30 (measured:
+        /// Docs/PERFORMANCE.md, baseline), which halves the fire rhythm's visible frames.
+        /// </summary>
+        const int TargetFrameRate = 60;
+
         /// <summary>The authored colour table. Assigned in the inspector.</summary>
         [Tooltip("The colour table every cube and shooter renders from. Swap it for another palette to retheme the whole game.")]
         [SerializeField] PaletteData _palette;
@@ -95,6 +101,7 @@ namespace Blast.Bootstrap
             // DOTween reads it itself the first time anything tweens. Reserved once so the board
             // filling up never triggers a mid-game resize.
             DOTween.SetTweensCapacity(TweenersCapacity, SequencesCapacity);
+            UnityEngine.Application.targetFrameRate = TargetFrameRate;
 
             builder.RegisterInstance(_palette);
             builder.RegisterInstance(_juice);
