@@ -242,30 +242,31 @@ namespace Blast.Presentation
 
             _pools.Bullets.Return(bullet);
 
-            // Death in three beats. The rock and the swell start together on impact; the
-            // rock is fire-and-forget because nothing waits for it, the swell is awaited
-            // because the collapse starts the moment it ends. Rotation and scale are
-            // different properties, so the rock keeps wobbling through the collapse.
+            // The impact splash sits on the cube, the muzzle one on the shooter: the
+            // original shows both, and the pool does not care where a splash plays.
+            _pools.Splashes.Take(cube.transform.position, Quaternion.LookRotation(aim));
+
+            // Death as the original plays it, measured frame by frame (see CLAUDE.md): the
+            // cube hops once on impact and shrinks to nothing in place, fast at first and
+            // slow at the end. No rock, no jelly - the hop is fire-and-forget because it
+            // ends before the shrink does, and the shrink is awaited because the column
+            // only flows once the cube is gone.
             Transform dying = cube.transform;
-            // vibrato is per second: 15 x 0.3 s = 4 segments, so the rock swings back twice.
-            dying.DOPunchRotation(Vector3.up * _cubeDeath.RockAngle, _cubeDeath.RockDuration, vibrato: 15, elasticity: 1f)
+            dying.DOPunchPosition(Vector3.up * _cubeDeath.HopHeight, _cubeDeath.HopDuration, vibrato: 1, elasticity: 0f)
                 .ToUniTask()
                 .Forget();
-            await dying.DOPunchScale(_cubeDeath.SwellScale, _cubeDeath.SwellDuration, _cubeDeath.SwellVibrato, _cubeDeath.SwellElasticity)
+            await dying.DOScale(Vector3.zero, _cubeDeath.CollapseDuration)
+                .SetEase(Ease.OutQuad)
                 .ToUniTask(cancellationToken: _destroyed);
 
-            // The hit has played out; from the collapse on, the column is a last resort.
+            // The hit has played out; from here on the column is a last resort.
             if (rowFalls)
             {
                 _loop.MarkSettling(hitColumn);
             }
 
-            await dying.DOScale(Vector3.zero, _cubeDeath.CollapseDuration)
-                .SetEase(Ease.InQuad)
-                .ToUniTask(cancellationToken: _destroyed);
-
-            // The rock may still be running; kill it explicitly rather than leaning on
-            // safe mode to notice the target is gone.
+            // Nothing should still be tweening, but a hop longer than the shrink would be;
+            // kill explicitly rather than leaning on safe mode to notice the target is gone.
             dying.DOKill();
             Destroy(cube.gameObject);
 
@@ -394,36 +395,16 @@ namespace Blast.Presentation
         [Serializable]
         public struct CubeDeath
         {
-            /// <summary>Degrees a hit cube rocks forward as it dies; a jelly wobble that runs through the collapse.</summary>
-            [Tooltip("Degrees a hit cube rocks forward on impact. The wobble runs alongside the swell and the collapse.")]
-            public float RockAngle;
+            /// <summary>How high a hit cube hops on impact, in world units, before dropping straight back.</summary>
+            [Tooltip("World units a hit cube hops up on impact. It drops straight back; the shrink runs underneath.")]
+            public float HopHeight;
 
-            /// <summary>How long the rock keeps wobbling.</summary>
-            [Tooltip("Seconds the impact rock keeps wobbling.")]
-            public float RockDuration;
+            /// <summary>How long the hop takes, up and back. Shorter than the shrink, or the cube is destroyed mid-air.</summary>
+            [Tooltip("Seconds the hop takes, up and back. Keep it under the collapse: the cube is destroyed when the shrink ends.")]
+            public float HopDuration;
 
-            /// <summary>How much a hit cube swells on impact, per axis, as a fraction of its size.
-            /// Opposite signs on x/z against y give squash-and-stretch; uniform reads as a breath.</summary>
-            [Tooltip("Impact swell per axis, as a fraction of size. (0.3, -0.25, 0.3) = wider and flatter, then the reverse: jelly. Uniform = a breath.")]
-            public Vector3 SwellScale;
-
-            /// <summary>How long the swell wobbles before the collapse starts.</summary>
-            [Tooltip("Seconds the swell wobbles. The collapse starts the moment it ends. Under ~0.25 the wobble has no frames to show in.")]
-            public float SwellDuration;
-
-            /// <summary>Oscillations per second. DOTween cuts the punch into vibrato x duration
-            /// segments (rounded down): 2 segments is out-and-back with no bounce at all, the
-            /// first opposite swing needs 3, a visible jelly needs 6 or more.</summary>
-            [Tooltip("Oscillations per SECOND, not per punch. Segments = vibrato x duration, rounded down: 2 = out and back, no bounce; 3 = one opposite swing; 6+ = jelly. 20 x 0.35 s = 7.")]
-            public int SwellVibrato;
-
-            /// <summary>How far the swell overshoots the other way: 0 = swell and settle, 1 = shrink as far as it swelled.</summary>
-            [Tooltip("0 = swells then settles; 1 = shrinks as far as it swelled on the way back. Jelly wants ~1.")]
-            [Range(0f, 1f)]
-            public float SwellElasticity;
-
-            /// <summary>How long the collapse to nothing takes, after the swell.</summary>
-            [Tooltip("Seconds the cube takes to collapse to nothing once the swell has ended.")]
+            /// <summary>How long the shrink to nothing takes, from impact. Eased out: fast at first, slow at the end.</summary>
+            [Tooltip("Seconds from impact until the cube has shrunk to nothing. OutQuad: most of the shrink happens in the first half.")]
             public float CollapseDuration;
 
             /// <summary>How long a column's survivors take to flow one cell forward.</summary>
@@ -438,16 +419,12 @@ namespace Blast.Presentation
             [Tooltip("Seconds that landing bounce takes.")]
             public float SettleDuration;
 
-            /// <summary>The values a fresh director starts with - the clone's numbers, which read right.</summary>
+            /// <summary>The values a fresh director starts with - the original's, measured from a frame-by-frame capture.</summary>
             public static CubeDeath Defaults => new CubeDeath
             {
-                RockAngle = 20f,
-                RockDuration = 0.3f,
-                SwellScale = new Vector3(0.3f, -0.25f, 0.3f),
-                SwellDuration = 0.35f,
-                SwellVibrato = 20,
-                SwellElasticity = 1f,
-                CollapseDuration = 0.12f,
+                HopHeight = 0.15f,
+                HopDuration = 0.1f,
+                CollapseDuration = 0.18f,
                 FlowDuration = 0.15f,
                 SettleAngle = 15f,
                 SettleDuration = 0.15f,

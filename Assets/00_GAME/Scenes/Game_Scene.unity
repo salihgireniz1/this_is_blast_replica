@@ -1363,7 +1363,7 @@ MonoBehaviour:
     Prewarm: 10
   _splashes:
     Prefab: {fileID: 9115013375107063508, guid: 9098df64dbd0a4e9f9f57f73d8d31bc1, type: 3}
-    Prewarm: 40
+    Prewarm: 48
 --- !u!4 &921700893
 Transform:
   m_ObjectHideFlags: 0
@@ -1545,17 +1545,13 @@ MonoBehaviour:
     LandSquash: {x: 0.2, y: -0.25, z: 0.2}
     LandDuration: 0.3
   _firing:
-    Interval: 0.12
+    Interval: 0.1
     MuzzleHeight: 0.5
-    FlightDuration: 0.2
+    FlightDuration: 0.17
   _cubeDeath:
-    RockAngle: 50
-    RockDuration: 0.15
-    SwellScale: {x: 1, y: -0.6, z: 1}
-    SwellDuration: 0.1
-    SwellVibrato: 40
-    SwellElasticity: 1
-    CollapseDuration: 0.1
+    HopHeight: 0.15
+    HopDuration: 0.1
+    CollapseDuration: 0.18
     FlowDuration: 0.15
     SettleAngle: 30
     SettleDuration: 0.15

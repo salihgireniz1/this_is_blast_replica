@@ -818,6 +818,37 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   console` returns old entries too, so a grep for a probe's tag matched the PREVIOUS run's
   lines and hid that the new eval had never installed; filter on `timestampUtc` against a
   stamp taken before the probe (`since.py` pattern) before believing any probe output.
+- Cube death re-timed to the original, measured frame by frame - done, 78/78 green, verified
+  in Play (five fronts seated on `Level_01`, 49 cubes died in 3.5 s, zero errors; one dying
+  cube logged per frame: scale 0.79 -> 0.53 -> 0.34 -> 0.20 -> 0.09 -> 0.01 over 13 frames
+  = 0.18 s, hop peaking at y +0.15 and back down by 0.1 s). Salih sent a 2 s YouTube clip of
+  the shipped game (30 fps content in a 60 fps container, every frame doubled, so +-33 ms on
+  every number); frames were extracted with ffmpeg, the yellow mask measured per column per
+  frame, and the sheets kept locally as `Docs/Screenshots/original_cube_death_frames.png`
+  (column 0 at 4x) and `original_shot_sweep_frames.png` - that folder is gitignored, so they
+  are not in the repo. **What the original does, impact = t0:** the cube
+  HOPS up once (a shadow wedge appears under it, one frame) and shrinks to nothing IN PLACE,
+  fast first and slow last (0.85 -> 0.58 -> 0.37 -> 0.16 -> gone in ~150-190 ms; OutQuad and
+  OutSine both fit at this sampling rate), with a white splash ON THE CUBE as well as the
+  muzzle puff; the survivors do not move until the dead cube is gone; then the column slides
+  one cell in ~120 ms near-linearly, overshoots ~10-12% of a cell in the travel direction and
+  settles ~100 ms later (a single `OutBack` fits within the noise, see the next chunk); the
+  shooter fires every ~115 ms and sweeps c0..c4 before returning to c0, which is our
+  Locked/Settling preference producing the same order. **What it does NOT do:** no yaw rock,
+  no jelly swell, no landing tilt, no 470 ms of wobble. So `ShotVisual`'s death is one beat
+  now: `DOPunchPosition(up * HopHeight, HopDuration, vibrato 1)` fire-and-forget alongside an
+  awaited `DOScale(0, CollapseDuration).SetEase(OutQuad)`, and a second `Splashes.Take` at the
+  cube's position before it. Gone with their fields: `RockAngle`, `RockDuration`,
+  `SwellScale`, `SwellDuration`, `SwellVibrato`, `SwellElasticity`. New: `HopHeight` 0.15,
+  `HopDuration` 0.1, `CollapseDuration` 0.18 (written into the scene via eval; new struct
+  fields arrive as 0). `MarkSettling` moved to after the shrink, its only remaining await, so
+  Locked now lasts flight + 0.18 s. Two splashes per shot pushed the pool past its prewarm
+  (peaked at 41 with Salih's 0.1 s interval), so `_splashes.Prewarm` is 48 in the scene and
+  the C# default. No new test: a tween chain on a humble view, no branch. **Dialog trap, new:**
+  an eval that dirties the scene while an EditMode run is starting makes the test runner pop
+  "Scene(s) Have Been Modified", which freezes every main-thread command; Salih clicked Save.
+  Write scene values and start tests in separate steps. The fit script and the per-frame
+  measurements live only in this session's scratchpad; the numbers above are the record.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.
