@@ -242,7 +242,123 @@ Reading it:
   measured and they do not matter.
 
 The decision between hard and soft-Low, and between bloom on and off, is a look decision:
-Salih's, from screenshots, recorded below when made.
+Salih's, from screenshots. **Decided 2026-09-03: hard shadows; post processing removed
+entirely.**
+
+### 2d. The decision applied, and the cap raised to the display
+
+Changes:
+
+- Scene light: soft -> hard shadows.
+- Post processing: the Global Volume object and `Post_Profile.asset` (bloom 0.2,
+  vignette 0.15, saturation +5) are deleted, the camera's post processing is off, both
+  pipeline assets' default volume profile points at `DefaultVolumeProfile` again. Nothing
+  in the scene references post any more.
+- `Mobile_RPAsset`: HDR off. Bloom was the only thing that needed a colour target above 1.
+- `targetFrameRate` 60 -> 120. Android picks the highest display mode at or below the
+  request (the Surface frame-rate API), so the 90 Hz Galaxy A16 should run at 90 and a
+  60 Hz phone at 60. Also the only way to see the real frame time once it drops under
+  16.7 ms: the 60 cap hid it.
+
+Result (idle, phone still in its 60 Hz mode: Android did not switch to 90 on the
+request alone; see 2f):
+
+| Scene | fps | frame ms | batches |
+|---|---|---|---|
+| `Level_01` | 59-60 | 16.7-18.5 | 309 |
+| `Level_03` | 42-43 | 23.3 | 970 |
+
+`Level_01` sits on the 60 Hz cap. `Level_03` went from 36 to 23 ms with settings alone.
+
+### 2e. Fourth sweep: the fill levers, and the alpha clip
+
+Same instrument, on top of 2d. New in the list: an "opaque" copy of Apps' cube shader.
+TCP2 generated `CustomShader` as `RenderType=TransparentCutout` with a per-pixel
+`clip(alpha - cutoff)` in the forward and shadow passes. Nothing in the game uses the
+alpha: every cube, shooter and floor is solid. On a tile GPU a fragment `clip` disables
+early depth rejection for that draw, so hidden fragments run the full lighting before
+they are discarded, and a three-layer board is mostly hidden fragments. Two allocation
+probes rode along: LeanTouch and the EventSystem switched off for six seconds each.
+
+| Variant | `Level_03` ms | `Level_01` ms |
+|---|---|---|
+| baseline (2d) | 23.3 | 16.7-18.5 |
+| render scale 0.9 | 21.7 | 16.67 (cap) |
+| render scale 0.8 | 21.0 | 16.67 (cap) |
+| cubes do not receive shadows | 23.6 | 16.67 (cap) |
+| **opaque cube shader (no clip)** | **16.67 (cap)** | 16.67 (cap) |
+| opaque + receive off | 16.67 (cap) | 16.67 (cap) |
+| opaque + receive off + scale 0.8 | 16.67 (cap) | 16.67 (cap) |
+| LeanTouch off | 23.3 (GC unchanged: 16 B) | 16.67 |
+| EventSystem off | 23.3 (GC unchanged: 16 B) | 16.67 |
+
+Reading it:
+
+- **The alpha clip was the fill wall.** Removing it takes the 900-cube level from 23 ms
+  to the 60 Hz cap; 7 ms from two lines of shader that discarded nothing. Applied in
+  place on `CustomShader` (the copy was the experiment; the shipped shader is the fixed
+  original, so no material rebinds).
+- Cubes not receiving shadows is worth nothing once the shadow is hard (one tap), so it
+  stays on: the look keeps its cube-on-cube shading for free.
+- Render scale is worth 2.5 ms at most now and softens the image; not taken.
+- The 16 B per frame is neither LeanTouch's nor the EventSystem's.
+
+### 2f. Applied: opaque cube shader, and Optimized Frame Pacing
+
+- `CustomShader.shader`, in place: `RenderType` Opaque, `Queue` Geometry, the two `clip`
+  lines (forward and shadow caster) commented out with the reason. Checked before
+  cutting: every texture the shader is given is RGB with no alpha channel
+  (`Cube_Hidden.png` included, whose material carried a 0.92 cutoff that never fired).
+- `ProjectSettings`: Optimized Frame Pacing (Swappy) on. With it Unity asks Android for
+  the display mode that matches `targetFrameRate`; without it the phone stayed in its
+  60 Hz mode however high the request, and everything under 16.7 ms was invisible.
+- The sweep component stays in the scene switched off (`_run` false), the shader copy
+  it swapped in is deleted: the shipped shader is the fixed original.
+
+**The first "final" build was invalid, and the ledger keeps the mistake.** Its numbers
+(`Level_01` locked at 60, `Level_03` 18.5 ms) came out of a phone rendering at a fraction
+of its resolution: the screenshots were blocky. Cause: `PerfSweep` with `_run` off
+disabled itself in `Awake` before reading its baseline, Unity still called `OnDisable`,
+and `Restore` wrote the unread render scale, 0, into the pipeline asset (URP clamps it
+to its minimum). The sweep now arms `Restore` only after the baseline is read. Two facts
+survived the bad build because they do not depend on fill: Swappy did not move the
+display off 60 Hz (the mode is a user setting on Samsung phones, "Motion smoothness",
+and the frame-rate hint cannot override it), and with Swappy off the same near-zero-fill
+scene ran 16.67 locked where Swappy on ran 18.5, so **Swappy costs ~2 ms here and stays
+off**. Everything under 16.7 ms stays invisible on this phone until that display
+setting is Adaptive.
+
+The corrected build (render scale 1.0, sharp screenshots checked), Swappy off:
+
+| Scene | State | fps | frame ms | worst ms | GC B/frame | batches | shadow casters |
+|---|---|---|---|---|---|---|---|
+| `Level_01` | idle | 60.0 | 16.67 | 16.7 | 16 | 307 | 143 |
+| `Level_01` | firing | 60.0 | 16.67 | 16.8 | 16 | 182 | 83 |
+| `Level_03` | idle | 60.0 | 16.67 | 16.7 | 16 | 968 | 503 |
+| `Level_03` | firing | 60.0 | 16.67 | 16.8 | 49 | 973 | 505 |
+
+**Both levels sit on the 60 Hz cap, idle and firing, with no dropped frame in any
+sampled second.** Against the baseline: `Level_01` 33.3 -> 16.67 ms (the cap), `Level_03`
+36-38 -> 16.67 ms. What did it, in order of weight: the alpha clip, soft shadows,
+post processing + HDR, the frame-rate cap. What did not: draw calls, the shadow map's
+size, animators, particles in the shadow map, Swappy. Where the true frame time now
+sits under 16.7 ms is unknown until the phone is put in its 90 Hz mode.
+
+### Step 2, summary of what shipped
+
+| Setting | Before | After |
+|---|---|---|
+| `targetFrameRate` | -1 (30 on Android) | 120 (the display's rate, capped by the OS) |
+| Main light shadows | soft, High | hard |
+| Post processing | bloom + vignette + colour adjust | none (Volume and profile deleted) |
+| HDR | on | off |
+| `CustomShader` | TransparentCutout, per-pixel clip | Opaque, no clip |
+| Splash particles | cast + receive shadows | neither |
+| Shooter Animator culling | Always Animate | Cull Completely |
+| MSAA | 2x | 2x (measured free) |
+| Shadow map | 1024 | 1024 (measured irrelevant) |
+| Render scale | 1.0 | 1.0 (worth 2.5 ms at most now; not spent) |
+| Optimized Frame Pacing | off | off (tried: +2 ms, no 90 Hz) |
 
 ### 2b. Shadow and animator settings that change nothing on screen
 

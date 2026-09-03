@@ -39,8 +39,10 @@ namespace Blast.Bootstrap
         /// <summary>
         /// Frames per second the player is asked for. Android's default is 30 (measured:
         /// Docs/PERFORMANCE.md, baseline), which halves the fire rhythm's visible frames.
+        /// Asking for more than the display can show is harmless: the OS picks its highest
+        /// refresh rate at or below this, so a 90 Hz phone runs at 90 and a 60 Hz one at 60.
         /// </summary>
-        const int TargetFrameRate = 60;
+        const int TargetFrameRate = 120;
 
         /// <summary>The authored colour table. Assigned in the inspector.</summary>
         [Tooltip("The colour table every cube and shooter renders from. Swap it for another palette to retheme the whole game.")]

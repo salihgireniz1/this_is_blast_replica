@@ -942,6 +942,31 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   back on its own after the Player build; cause not established. Found in passing and
   fixed: `_levels` in the uncommitted scene had lost `Level_01` (Salih's hand edit), so a
   fresh machine would have booted `Level_02`; written back as `[01, 02, 03]`.
+- **Performance pass, step 2: settings** - done, 80/80 green, both levels at a locked
+  60 fps on the phone, idle and firing (`Level_01` was 33.3 ms, `Level_03` 36-38).
+  Everything is in `Docs/PERFORMANCE.md` (2a-2f, tables per sweep, the summary table of
+  what shipped); the short form: `targetFrameRate` 120, light shadows hard (Salih's
+  call), post processing deleted outright (Volume object + `Post_Profile.asset`; Salih:
+  "komple silebilirsin"), HDR off, `CustomShader` made Opaque with its two `clip`s
+  removed (TCP2 generated it as TransparentCutout; no texture in the game has alpha, and
+  a fragment clip kills early-Z on Mali: 7 ms on the 900-cube level), splash particles
+  out of the shadow map, shooter Animators Cull Completely. Measured and NOT taken, with
+  numbers: GPU instancing / draw count (390 fewer draws = 0 ms; the friend's case's
+  headline tactic), shadow map 512, cubes not receiving shadows (0 once hard), render
+  scale (2.5 ms, softens), Swappy (+2 ms, no 90 Hz). Instrument: `PerfSweep`
+  (Presentation, dev-only, `_run` off in the scene; rewrite its variant list per
+  experiment). **Traps:** (1) `PerfSweep` disabling itself in `Awake` still got
+  `OnDisable`, and `Restore` wrote render scale 0 - a whole "final" measurement was
+  taken on a blurry phone before the screenshots gave it away; now armed only after the
+  baseline read. Check a screenshot before believing a number. (2) `shader_feature`
+  keywords toggled at runtime do nothing in a build unless some material carried them at
+  build time (`Cube_Hidden` did, temporarily, for the receive-off variant). (3) The
+  EditMode runner hangs at "running" after a `recompile`; a Player build clears it every
+  time (three for three). (4) Samsung's 60/90 Hz mode is a user setting ("Motion
+  smoothness"); neither `targetFrameRate` nor Swappy overrides it, so true frame times
+  under 16.7 ms are invisible until Salih sets Adaptive. Still open: 16 B/frame idle,
+  ~49 B/frame while firing on `Level_03`; source not identified (not LeanTouch, not the
+  EventSystem).
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

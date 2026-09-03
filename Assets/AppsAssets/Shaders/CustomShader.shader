@@ -44,8 +44,8 @@ Shader "Toony Colors Pro 2/CustomShader"
 		Tags
 		{
 			"RenderPipeline" = "UniversalPipeline"
-			"RenderType"="TransparentCutout"
-			"Queue"="AlphaTest"
+			"RenderType"="Opaque"
+			"Queue"="Geometry"
 		}
 
 		HLSLINCLUDE
@@ -269,7 +269,7 @@ Shader "Toony Colors Pro 2/CustomShader"
 				half3 emission = half3(0,0,0);
 				// Alpha Testing
 				half cutoffValue = __cutoff;
-				clip(alpha - cutoffValue);
+				// clip removed (Docs/PERFORMANCE.md 2e): nothing in the game has alpha, and a fragment clip disables early depth rejection on tile GPUs.
 				
 				albedo *= __mainColor.rgb;
 
@@ -619,7 +619,7 @@ Shader "Toony Colors Pro 2/CustomShader"
 				half3 emission = half3(0,0,0);
 				// Alpha Testing
 				half cutoffValue = __cutoff;
-				clip(alpha - cutoffValue);
+				// clip removed (Docs/PERFORMANCE.md 2e): nothing in the game has alpha, and a fragment clip disables early depth rejection on tile GPUs.
 
 				#if defined(DEPTH_NORMALS_PASS)
 					#if defined(_WRITE_RENDERING_LAYERS)
