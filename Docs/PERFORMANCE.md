@@ -212,6 +212,38 @@ Reading it, and it inverts the first guess:
   quality tiers between High and hard, because a Low-quality soft shadow (4 taps) may
   keep the look for a quarter of the price.
 
+**Third sweep: the filter tiers.** Soft shadow quality is set per light through
+`UniversalAdditionalLightData.softShadowQuality`; the scene's light says "use pipeline
+settings" and the pipeline says High. The phone was left to cool for 20 s between levels.
+
+| Variant | `Level_03` ms | `Level_01` ms | `Level_01` fps |
+|---|---|---|---|
+| baseline: soft, High | 37.0 | 29.6 | 34 |
+| soft, Medium | 37.5 | 29.5 | 34 |
+| soft, Low | 29.0 | 21.3 | 47 |
+| hard | 26.4 | 18.9 | 53 |
+| soft Low + cubes do not receive | 26.0 | 21.9 | 46 |
+| soft Low + post off | 27.3 | 21.5 | 46 |
+| **hard + post off + HDR off** | 23.6 | **16.67** | **60, locked** |
+| soft Low + post off + HDR off | 27.8 | 20.7 | 48 |
+
+Reading it:
+
+- Medium costs exactly what High costs on this GPU, so it is not a tier here; the
+  choice is between Low (4 taps, -8 ms), hard (1 tap, -10.7 ms) and High.
+- `Level_01` reaches 60 fps in one configuration only: hard shadows with post
+  processing and HDR off. Soft Low with everything else off stops at 48.
+- `Level_03`, the 900-cube stress level, does not reach 60 in any configuration: its best
+  is 23.6 ms, and that is with 970 batches over 373k triangles on a 2.5 megapixel screen,
+  which is the fill wall the first sweep found (render scale 0.75 was worth 11 ms). Step
+  6's quality tier or a render scale is the only lever left for it, and it is not the
+  case's level.
+- Shadow map size, cube casting, and draw count have no place in the decision; they were
+  measured and they do not matter.
+
+The decision between hard and soft-Low, and between bloom on and off, is a look decision:
+Salih's, from screenshots, recorded below when made.
+
 ### 2b. Shadow and animator settings that change nothing on screen
 
 Three edits, all in assets, none visible:

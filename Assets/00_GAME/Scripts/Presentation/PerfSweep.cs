@@ -28,23 +28,20 @@ namespace Blast.Presentation
         /// <summary>Seconds each variant is left running; the probe logs once a second, so six lines each.</summary>
         const float VariantSeconds = 6f;
 
-        /// <summary>The shadow map size tried against the asset's 1024.</summary>
-        const int SmallShadowMap = 512;
-
         /// <summary>The cube shader's keyword that skips the shadow-map sample per pixel.</summary>
         const string ReceiveShadowsOff = "_RECEIVE_SHADOWS_OFF";
 
         /// <summary>The variants, in order. Index 0 is the untouched baseline.</summary>
         static readonly string[] Names =
         {
-            "baseline",
-            "shadow map 512",
-            "hard shadows",
-            "cubes cast off",
-            "cubes receive off",
-            "cubes cast off + hard + 512",
-            "cubes cast off + post off",
-            "cubes cast off + post off + hdr off",
+            "baseline (soft high)",
+            "soft medium",
+            "soft low",
+            "hard",
+            "soft low + cubes receive off",
+            "soft low + post off",
+            "hard + post off + hdr off",
+            "soft low + post off + hdr off",
         };
 
         /// <summary>Whether the sweep runs at all. Off by default; on for a measurement build.</summary>
@@ -64,20 +61,23 @@ namespace Blast.Presentation
         /// <summary>The scene's main light, whose shadow type is toggled.</summary>
         Light _sun;
 
+        /// <summary>The main light's URP data, whose soft shadow quality is toggled.</summary>
+        UniversalAdditionalLightData _sunData;
+
         /// <summary>Every board cube's renderer, collected on the first variant that needs them.</summary>
         MeshRenderer[] _cubeRenderers;
 
         /// <summary>The distinct cube materials, for the receive-shadows keyword.</summary>
         readonly List<Material> _cubeMaterials = new List<Material>();
 
-        /// <summary>The asset's own shadow map size, restored between variants.</summary>
-        int _shadowMap;
-
         /// <summary>The asset's own HDR flag, restored between variants.</summary>
         bool _hdr;
 
         /// <summary>The light's own shadow type, restored between variants.</summary>
         LightShadows _lightShadows;
+
+        /// <summary>The light's own soft shadow quality, restored between variants.</summary>
+        SoftShadowQuality _softQuality;
 
         /// <summary>The camera's own post-processing flag, restored between variants.</summary>
         bool _post;
@@ -104,9 +104,10 @@ namespace Blast.Presentation
                 return;
             }
 
-            _shadowMap = _pipeline.mainLightShadowmapResolution;
+            _sunData = _sun.GetUniversalAdditionalLightData();
             _hdr = _pipeline.supportsHDR;
             _lightShadows = _sun.shadows;
+            _softQuality = _sunData.softShadowQuality;
             _post = _cameraData.renderPostProcessing;
         }
 
@@ -141,21 +142,24 @@ namespace Blast.Presentation
             Restore();
             switch (variant)
             {
-                case 1: _pipeline.mainLightShadowmapResolution = SmallShadowMap; break;
-                case 2: _sun.shadows = LightShadows.Hard; break;
-                case 3: SetCubesCast(false); break;
-                case 4: SetCubesReceive(false); break;
-                case 5:
-                    SetCubesCast(false);
-                    _sun.shadows = LightShadows.Hard;
-                    _pipeline.mainLightShadowmapResolution = SmallShadowMap;
+                case 1: _sunData.softShadowQuality = SoftShadowQuality.Medium; break;
+                case 2: _sunData.softShadowQuality = SoftShadowQuality.Low; break;
+                case 3: _sun.shadows = LightShadows.Hard; break;
+                case 4:
+                    _sunData.softShadowQuality = SoftShadowQuality.Low;
+                    SetCubesReceive(false);
                     break;
-                case 6:
-                    SetCubesCast(false);
+                case 5:
+                    _sunData.softShadowQuality = SoftShadowQuality.Low;
                     _cameraData.renderPostProcessing = false;
                     break;
+                case 6:
+                    _sun.shadows = LightShadows.Hard;
+                    _cameraData.renderPostProcessing = false;
+                    _pipeline.supportsHDR = false;
+                    break;
                 case 7:
-                    SetCubesCast(false);
+                    _sunData.softShadowQuality = SoftShadowQuality.Low;
                     _cameraData.renderPostProcessing = false;
                     _pipeline.supportsHDR = false;
                     break;
@@ -167,22 +171,12 @@ namespace Blast.Presentation
         /// <summary>Writes the baseline values back.</summary>
         void Restore()
         {
-            if (_pipeline == null) return;
-            _pipeline.mainLightShadowmapResolution = _shadowMap;
+            if (_pipeline == null || _sunData == null) return;
             _pipeline.supportsHDR = _hdr;
             _sun.shadows = _lightShadows;
+            _sunData.softShadowQuality = _softQuality;
             _cameraData.renderPostProcessing = _post;
-            SetCubesCast(true);
             SetCubesReceive(true);
-        }
-
-        /// <summary>Switches shadow casting on every board cube.</summary>
-        void SetCubesCast(bool cast)
-        {
-            foreach (MeshRenderer renderer in CubeRenderers())
-            {
-                if (renderer != null) renderer.shadowCastingMode = cast ? ShadowCastingMode.On : ShadowCastingMode.Off;
-            }
         }
 
         /// <summary>Switches shadow receiving on the cube materials through the shader's keyword.</summary>
