@@ -29,11 +29,6 @@ namespace Blast.Application
         /// <summary>The slot row seated shooters fire from.</summary>
         readonly SlotRow _slots;
 
-        /// <summary>Per board column: true while its cubes are still sliding into place on
-        /// screen. Targeting skips a held column; the fail verdict does not, because its
-        /// cubes are on their way and a shooter waiting on them is paused, not stuck.</summary>
-        readonly bool[] _held;
-
         #endregion
 
         #region Properties
@@ -58,16 +53,7 @@ namespace Blast.Application
             _board = board;
             _queue = queue;
             _slots = slots;
-            _held = new bool[board.Columns];
         }
-
-        /// <summary>Takes a column out of targeting while Presentation moves its cubes.</summary>
-        /// <param name="column">The board column that just lost its front.</param>
-        public void HoldColumn(int column) => _held[column] = true;
-
-        /// <summary>Puts a column back into targeting once its cubes stand still.</summary>
-        /// <param name="column">The board column whose survivors have landed.</param>
-        public void ReleaseColumn(int column) => _held[column] = false;
 
         /// <summary>Moves a column's front shooter into the first empty slot.</summary>
         /// <param name="column">The queue column the player tapped.</param>
@@ -105,7 +91,7 @@ namespace Blast.Application
 
         /// <summary>Fires one shot from a slot: one ammo for one cube.</summary>
         /// <param name="slot">The slot whose shooter is due to fire.</param>
-        /// <param name="hitColumn">The board column whose front cube died; -1 when held.</param>
+        /// <param name="hitColumn">The board column whose front cube died; -1 when the shooter holds fire.</param>
         /// <returns>True when a cube died; false when the shooter holds fire.</returns>
         public bool TryShoot(int slot, out int hitColumn)
         {
@@ -118,9 +104,7 @@ namespace Blast.Application
 
             Shooter shooter = _slots.ShooterAt(slot);
 
-            // Held columns are skipped here and ONLY here: the verdicts below read the
-            // unheld board, so a shooter waiting on a settling column is never "stuck".
-            if (!GameRules.TryFindTarget(_board, shooter.Color, _held, out hitColumn))
+            if (!GameRules.TryFindTarget(_board, shooter.Color, out hitColumn))
             {
                 return false;
             }

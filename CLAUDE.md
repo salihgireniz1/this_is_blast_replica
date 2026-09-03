@@ -756,6 +756,23 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   flight). Not seen by eye: the probe's screenshot landed on the frame the muzzle splash
   covers the bullet; the log is the evidence. **Probe trap:** `Level_01`'s front row is one
   colour, so seating a single front never fires - seat all five.
+- Held columns removed - done, 74/74 green, verified in Play (five fronts seated, 47 shots,
+  100 -> 53 cubes, zero gameplay errors). Salih checked the original: a shooter fires at the
+  next cube while the front one is still dying, it never waits for the row to settle, so the
+  hold from 2026-09-02 (his own earlier request) is reverted. Gone: `GameLoop._held` /
+  `HoldColumn` / `ReleaseColumn`, the `GameRules.TryFindTarget` overload with the mask, the
+  two `GameLoopTests` that pinned them, the director's hold / await-slide / release, and
+  `LevelSpawner.StackStillStands` is private again (only `FlowBoardColumn` reads it).
+  `FlowBoardColumn` still returns the slide but nothing awaits it. The stack-lock behaviour
+  ("a shooter finishes a stack before moving on") survives without the hold: the domain's
+  leftmost match is the same column shot after shot. **Measured the one risk:** a bullet
+  flies to the cube's position at fire time, and the cube can slide during the 0.12 s flight
+  - across 47 shots (50 samples with the target mid-slide) the tween's `endValue` sat at
+  most 0.28 units from the cube's centre, mean 0.04, inside a 0.9-wide cube; no retargeting
+  needed. **Probe trap:** an `EditorApplication.update` logger can tick every ~8 game frames
+  under load, so "last position while active" was mid-flight; read the DOTween
+  `TweenerCore.endValue` instead. Also: an `eval_file` that reports the 5 s main-thread
+  timeout may still have run - check the console before installing a second copy.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

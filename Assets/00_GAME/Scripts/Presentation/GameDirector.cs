@@ -206,21 +206,6 @@ namespace Blast.Presentation
             // removal order, or two in-flight shots at one column swap their victims.
             CubeView cube = _spawner.PopFrontCube(hitColumn);
 
-            // Held until the survivors have landed, but only when a row actually falls: the
-            // domain already sees the next cube as the front, and the player must not watch
-            // a shot land on a cube that is still sliding into place. While the stack still
-            // stands, the next cube is right there under the dying one, so no hold - and
-            // because the hold is what made TryFindTarget skip this column, skipping it here
-            // is what keeps a shooter on one stack until it is gone instead of hopping to
-            // the next matching column mid-stack (the original finishes a stack top-down).
-            // Synchronous, before the first await, so no other shooter's TryShoot in this
-            // frame can pick a falling column either.
-            bool rowFalls = !_spawner.StackStillStands(hitColumn);
-            if (rowFalls)
-            {
-                _loop.HoldColumn(hitColumn);
-            }
-
             shooter.TurnTo(cube.transform.position, _motion.TurnDuration);
 
             Vector3 muzzle = shooter.transform.position + Vector3.up * _firing.MuzzleHeight;
@@ -264,20 +249,10 @@ namespace Blast.Presentation
 
             // Death first, flow second - the original's order. The survivors only start
             // sliding once the dead cube is gone, so the eye reads two beats, not one blur.
-
-            if (!rowFalls)
-            {
-                return;
-            }
-
-            Tween slide = _spawner.FlowBoardColumn(
+            // Nothing waits for the slide: the next shot at this column is already in the
+            // air, as in the original, where a shooter never pauses for a settling row.
+            _spawner.FlowBoardColumn(
                 hitColumn, _cubeDeath.FlowDuration, _cubeDeath.SettleAngle, _cubeDeath.SettleDuration);
-            if (slide != null)
-            {
-                await slide.ToUniTask(cancellationToken: _destroyed);
-            }
-
-            _loop.ReleaseColumn(hitColumn);
         }
 
         /// <summary>Runs a drained shooter off the nearer side of the screen and despawns it.</summary>
