@@ -857,7 +857,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 1
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.25
@@ -942,7 +942,7 @@ MonoBehaviour:
   m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 0
+  m_SoftShadowQuality: 1
 --- !u!1001 &457418895
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2528,7 +2528,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _run: 0
   _camera: {fileID: 330585545}
-  _opaqueShader: {fileID: 0}
 --- !u!4 &2009988503
 Transform:
   m_ObjectHideFlags: 0

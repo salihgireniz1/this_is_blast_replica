@@ -985,6 +985,21 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   while already forward. Verified in Play: yaws swing 300-60 while firing, settle to 0
   when targetless, zero errors. Left alone with the reason recorded: `Leave`'s
   `Vector3[8]` per departing shooter (DOTween's path keeps the array reference).
+- **Performance pass, step 2g: Salih's look review** - done, 80/80 green. Salih saw "no
+  shadows and no particles". Checked with pictures, not argument (`Docs/PERFORMANCE.md`
+  2g): the floors never showed shadows (Apps' `GameArea_Floor.mat` has a pure white TCP2
+  `_SColor`, `Floor.mat` one equal to its base colour - a tall probe cube at strength 1
+  cast onto cubes and shooters only, at the pre-pass commit exactly as now); the splash
+  is there (phone screenshot mid-shot); the old profile held only a vignette, no bloom
+  (the "bloom" in earlier notes was a memory of an older profile). What he missed was the
+  soft cube-on-cube gradient. Meanwhile he had set the phone to Adaptive (90 Hz), and the
+  sweep at 90 Hz showed **soft Low is free** (11.1 ms, the cap) while vignette+HDR costs
+  2 ms and soft High 9 ms. **Shipped: light shadows Soft, per-light softShadowQuality
+  Low** (the scene's `m_SoftShadowQuality: 1`), post processing still out. Final on the
+  phone at 90 Hz: `Level_01` 90 fps locked idle and firing, `Level_03` 63-71 fps, 0 B/frame
+  except the seconds a shooter leaves. **Rule from this:** when Salih reports a look
+  regression, bisect with captures at the pre-change commit before touching anything -
+  two of the three "regressions" predated the pass.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

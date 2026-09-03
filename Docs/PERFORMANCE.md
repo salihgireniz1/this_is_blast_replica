@@ -47,7 +47,7 @@ Read off the assets, not guessed:
 | `Application.targetFrameRate` | -1 | Android's default is 30 fps |
 | URP asset | `Mobile_RPAsset` | MSAA 2x, HDR on, render scale 1, SRP Batcher on |
 | Main light shadows | on, 1024 map, soft, distance 30, 1 cascade | |
-| Post processing | Bloom (0.2, HQ filtering) + Vignette + Color Adjustments | bloom means an intermediate texture and a downsample chain |
+| Post processing | Vignette 0.15, the profile's only override (corrected in 2g; an earlier note remembered bloom) | any post means an intermediate texture and a blit |
 | Camera | orthographic 10.9, far 20 | |
 | Splash particle prefab | max 1000 particles, cast AND receive shadows | particles are drawn into the shadow map |
 | Cube shader | Apps `CustomShader` (TCP2 generated), specular + fresnel reflections + rim keywords | per-pixel cost on up to 600 cubes |
@@ -366,6 +366,52 @@ sits under 16.7 ms is unknown until the phone is put in its 90 Hz mode.
 | Shadow map | 1024 | 1024 (measured irrelevant) |
 | Render scale | 1.0 | 1.0 (worth 2.5 ms at most now; not spent) |
 | Optimized Frame Pacing | off | off (tried: +2 ms, no 90 Hz) |
+
+### 2g. Salih's look review, and the phone at 90 Hz
+
+Salih came back to a game that "had lost its shadows and its particles". Checked, with
+pictures rather than argument:
+
+- **Shadows were never on the floor.** Apps authored `GameArea_Floor.mat` with a pure
+  white TCP2 shadow colour and `Floor.mat` with one equal to its base colour, so a
+  shadow on either floor multiplies by white. A tall probe cube at shadow strength 1
+  cast onto cubes and shooters and onto nothing else, at the pre-pass commit exactly as
+  now. What the pass changed on screen is the cube-on-cube shadow: a soft 25%-strength
+  gradient at the base of each front face became a hard line.
+- **The splash particles are there** (a phone screenshot mid-shot shows the muzzle puff
+  and the bullet streak); they only stopped being drawn into the shadow map.
+- The old post profile held a vignette and nothing else; the "bloom" in the config
+  table above was CLAUDE.md's memory of an earlier profile, not the file. Corrected.
+
+Meanwhile the phone's display mode had been set to Adaptive, so the same sweep tool now
+reads above 60 for the first time. `Level_01`, idle, with the alpha clip already gone:
+
+| Variant | fps | frame ms |
+|---|---|---|
+| hard, no post, no HDR (the 2f state) | 90.0 | 11.11 (the 90 Hz cap) |
+| + vignette + HDR | 77.0 | 13.0 |
+| **soft Low** | 87-90 | 11.1-11.5 |
+| soft Low + vignette + HDR | 73.0 | 13.8 |
+| soft High + vignette + HDR | 49.0 | 20.4 |
+
+**Decided: soft shadows at Low quality, on the light as a per-light override** - free at
+90 Hz now that the clip is gone, and it is the gradient Salih missed. Post processing
+stays out (his words: it does not matter), 2 ms and 13 fps at 90 Hz say the same.
+Under 11.1 ms the frame is invisible again; the next ceiling is 120 Hz hardware.
+
+Shipped configuration, phone at 90 Hz, soft Low, no post, no HDR:
+
+| Scene | State | fps | frame ms | worst ms | GC B/frame |
+|---|---|---|---|---|---|
+| `Level_01` | idle | 90.0 | 11.11 | 11.1 | 0 |
+| `Level_01` | firing | 90.0 | 11.11 | 11.1 | 0 |
+| `Level_03` | idle | 68-71 | 14.1-14.7 | 22.2 | 0 |
+| `Level_03` | firing | 63-71 | 14.1-15.8 | 22.3 | 0, with 91-377 in the seconds a shooter leaves |
+
+The case level sits on the 90 Hz cap. The stress level runs 63-71 fps on a 90 Hz phone,
+i.e. 14-16 ms: above 60 fps everywhere, dropping the odd frame at 90. The only
+allocations left are the ones a leaving shooter makes (`Leave`'s path array and
+DOTween's path internals), once per departure, recorded under step 3.
 
 ## 3. Allocations
 
