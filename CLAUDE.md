@@ -883,6 +883,27 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   the scene (Salih's hand tune) and 0.22 in `Firing.Defaults`; both are 0.12 now, and the
   defaults also took the scene's `MuzzleHeight` 0.5 / `FlightDuration` 0.17, so a fresh
   director matches the scene (the rule from the spawner-settings chunk).
+- `CameraShake` (Presentation) - done, 80/80 green, verified in Play (five fronts seated,
+  camera offset logged per frame: peaks exactly 0.050, back to 0.000 in ~6 frames, restarts
+  cleanly on every impact at the 0.12 s rhythm, zero errors). The original's impact tick,
+  measured on the same clip: the untouched columns' edges move 1-2 px on a 37 px cell right
+  after a hit, i.e. ~0.03-0.05 world units for a frame or two. Salih's call, and his idea:
+  one `DOShakePosition(duration, amplitude, vibrato)` built on the first `Kick`, kept alive
+  with `SetAutoKill(false)`, and `Restart`ed on every impact - DOShake allocates its segment
+  arrays per CALL, so a shake per shot at ~40 impacts/s would be a steady allocation; the
+  reused tween costs nothing after the first kick, and Restart snaps to the rest before
+  shaking again so overlapping kicks never stack. Every shake follows the same pattern; at
+  a twentieth of a unit it cannot be told. Rejected: Cinemachine impulse (a Brain driving
+  the camera every frame plus a package for a 2 px wobble; Salih had added 3.1.7 to the
+  manifest, removed again - the removal cost a ~4 min "Hold on..." package resolve during
+  which every pipeline command timed out at 30 s, so it looked like the dialog trap but was
+  not) and a hand-written `LateUpdate` decay (more lines for the same zero allocation).
+  Lives on `Main Camera`; the director holds `_shake` and calls `Kick()` next to the impact
+  splash. Fields: `_amplitude` 0.05, `_duration` 0.12, `_vibrato` 20 (per second, so 2
+  segments). The start position is captured on the first kick, so the camera must be at
+  rest then - it always is, the rig is static. `CameraShakeTests`: a second kick after a
+  finished shake still plays (red first as a compile error, then red again with
+  `SetAutoKill(false)` removed: 79/80), and a finished shake leaves the camera at rest.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

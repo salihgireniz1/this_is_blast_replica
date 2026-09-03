@@ -51,6 +51,10 @@ namespace Blast.Presentation
         [Tooltip("The scene's ShotAudio object.")]
         [SerializeField] ShotAudio _audio;
 
+        /// <summary>The impact shake on the camera. Assigned in the inspector; owns its own tween.</summary>
+        [Tooltip("The CameraShake on the main camera.")]
+        [SerializeField] CameraShake _shake;
+
         /// <summary>How a shooter moves: to its slot, in place, off-screen.</summary>
         [Tooltip("How shooters move: to the slot, turning, stepping up, leaving.")]
         [SerializeField] ShooterMotion _motion = ShooterMotion.Defaults;
@@ -245,6 +249,7 @@ namespace Blast.Presentation
             // The impact splash sits on the cube, the muzzle one on the shooter: the
             // original shows both, and the pool does not care where a splash plays.
             _pools.Splashes.Take(cube.transform.position, Quaternion.LookRotation(aim));
+            _shake.Kick();
 
             // Death as the original plays it, measured frame by frame (see CLAUDE.md): the
             // cube shrinks to nothing in place, fast at first and slow at the end. No rock,
