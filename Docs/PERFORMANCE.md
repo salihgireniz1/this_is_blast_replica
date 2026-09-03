@@ -135,6 +135,83 @@ Vulkan phone means the CPU is waiting for the GPU or the swapchain, not working;
 the cost is submit (980 draws) or fill (two passes over 373k triangles, MSAA, bloom) is
 what 2b and 2c separate.
 
+### 2c. Where the GPU time goes: a runtime sweep
+
+Instrument: `PerfSweep` (Presentation, development builds only, off unless `_run` is
+ticked). One build; every six seconds it applies one render setting on top of the asset's
+own values, logs its name, and undoes it before the next, so each row below is one change
+against the same baseline in the same session, with no rebuild and no thermal drift
+between rows. Idle scene, nothing seated. Typical line per variant:
+
+`Level_03`, idle:
+
+| Variant | fps | frame ms | batches | shadow casters | vs baseline |
+|---|---|---|---|---|---|
+| baseline | 26.3 | 38.0 | 972 | 503 | |
+| MSAA off | 26.3 | 38.0 | 972 | 503 | 0 |
+| HDR off | 27.5 | 36.3 | 972 | 503 | -1.7 ms |
+| post processing off | 28.5 | 35.1 | 971 | 503 | -2.9 ms |
+| main light shadows off | 44.0 | 22.7 | 469 | 0 | **-15.3 ms** |
+| render scale 0.75 | 37.0 | 27.0 | 972 | 503 | -11 ms |
+| all four off | 47.0 | 21.3 | 467 | 0 | -16.7 ms |
+
+`Level_01`, idle:
+
+| Variant | fps | frame ms | batches | shadow casters | vs baseline |
+|---|---|---|---|---|---|
+| baseline | 34.0 | 29.4 | 311 | 143 | |
+| MSAA off | 34.0 | 29.4 | 311 | 143 | 0 |
+| HDR off | 33.4 | 29.9 | 311 | 143 | 0 |
+| post processing off | 38.0 | 26.3 | 310 | 143 | -3.1 ms |
+| main light shadows off | 56.0 | 17.9 | 168 | 0 | **-11.5 ms** |
+| render scale 0.75 | 53.0 | 18.9 | 311 | 143 | -10.5 ms |
+| all four off | 60.0 | 16.67 | 166 | 0 | **60 fps, locked** |
+
+Reading it:
+
+- **The shadow map is 40% of the frame.** It is a second geometry pass (503 of the 972
+  batches) over 373k triangles into a 1024 map, and then a soft-shadow sample on every
+  lit pixel of a screen the cubes fill edge to edge.
+- **The frame is fill-bound.** Dropping the resolution to 75% takes 11 ms off with no
+  change in draw count; the Mali-G57's pixel throughput is the wall, not the CPU's submit.
+- **MSAA is free.** Tile-based GPUs resolve it in tile memory; 2x costs nothing here and
+  stays.
+- HDR and post together are ~4 ms: an HDR colour target and bloom's downsample chain
+  are bandwidth, and on a 1080x2340 tile GPU bandwidth is the budget. Decided in step 5
+  with screenshots, not here.
+
+**Second sweep: which half of the shadow cost.** Same instrument, a new variant list.
+"Cubes receive off" needed the `_RECEIVE_SHADOWS_OFF` variant of the cube shader in the
+build, which a `shader_feature` only gets if some material uses it at build time, so
+`Cube_Hidden.mat` carried the keyword for this build alone (reverted after).
+
+| Variant | `Level_03` ms | `Level_01` ms | batches L03 / L01 |
+|---|---|---|---|
+| baseline (soft, High quality, 1024) | 36.3 | 27.0 | 972 / 311 |
+| shadow map 512 | 36.5 | 27.0 | 972 / 311 |
+| **hard shadows** | **27.6** | **18.9** | 972 / 311 |
+| cubes do not cast | 36.3 | 27.0 | 582 / 211 |
+| cubes do not receive | 29.4 | 22.7 | 972 / 311 |
+| cubes no cast + hard + 512 | 22.7 | 18.2 | 582 / 211 |
+| cubes no cast + post off | 34.5 | 27.0 | 581 / 210 |
+| cubes no cast + post off + HDR off | 34.5 | 25.4 | 580 / 209 |
+
+(The last two rows are noisier than the rest: by then the phone had been rendering for
+a minute and was warm. Read them as "post is worth ~2-3 ms", as the first sweep said.)
+
+Reading it, and it inverts the first guess:
+
+- **Drawing the shadow map is nearly free.** Taking 390 cube casters out of it removed
+  390 batches and 0 ms. The draw count was never the bottleneck; the map's size is not
+  either.
+- **Sampling it is the whole cost.** The light is set to soft shadows at High quality:
+  a 7x7 tent filter, 16 texture taps on every lit pixel, and the cubes cover the screen.
+  Hard shadows (one tap) give back 8 ms on both levels; letting the cubes skip the sample
+  entirely gives back most of that too.
+- So the lever is the filter, not the geometry. The third sweep measures the soft
+  quality tiers between High and hard, because a Low-quality soft shadow (4 taps) may
+  keep the look for a quarter of the price.
+
 ### 2b. Shadow and animator settings that change nothing on screen
 
 Three edits, all in assets, none visible:
