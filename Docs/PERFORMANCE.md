@@ -413,6 +413,32 @@ i.e. 14-16 ms: above 60 fps everywhere, dropping the odd frame at 90. The only
 allocations left are the ones a leaving shooter makes (`Leave`'s path array and
 DOTween's path internals), once per departure, recorded under step 3.
 
+### 2h. Salih's hand tuning, and the shadow map back on the table
+
+Salih retuned the light by hand (angle (60, 340, 0), hard, strength 1, bias 0) and asked
+whether it costs anything: no, and measured no - strength is one multiplier in the
+shader, the angle only decides which pixels come out shadowed. `Level_01` stayed a locked
+90 fps. The new angle puts shooter shadows on the dock floor, where the floor material's
+near-base shadow colour now shows them faintly.
+
+Hard shadows exposed stair-stepped edges: 1024 texels over the ~30 units the camera sees
+is ~1.3 screen pixels per texel, and a single-tap filter draws every texel as a step.
+The map went to 2048 (0.65 px per texel). Measured at 90 Hz:
+
+| Scene | 1024 | 2048 |
+|---|---|---|
+| `Level_01` idle / firing | 90 / 90 fps | 90 / 90 fps |
+| `Level_03` idle / firing | 14.1-14.7 / 14.1-15.8 ms | 14.3-14.5 / 14.5-16.1 ms |
+
+Free, as the first sweep's 512-vs-1024 result predicted; the shadow pass is cheap at
+any size on this GPU, the sampling is what costs and the sample count did not change.
+The steps are halved, not gone; soft Low (also free) removes them, Salih chose to stay
+hard.
+
+`PerfProbe` gained an optional on-screen readout (`PerfHud`, a TMP text at the top
+right of the Canvas, written once a second with `SetText(StringBuilder)`), so the phone
+shows fps, ms and GC bytes without a cable. Development builds only, like the probe.
+
 ## 3. Allocations
 
 Instrument: the editor's own profiler, driven from an eval. 120 frames of Play are
