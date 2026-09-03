@@ -41,7 +41,13 @@ version that actually resolves), three `com.unity.modules.*` entries that exist 
 6000.5 (backup at `Packages/manifest.json.pre-downgrade.bak`), and `Library` caches written
 by the newer editor that the older one cannot parse — `ApiUpdater/project-dependencies.graph`
 threw `OverflowException` on every import and `expandedItems` failed to load. Both deleted;
-Unity regenerates them. **If a package pin ever disagrees with `packages-lock.json` again,
+Unity regenerates them. A fourth, cleared 2026-09-03: `Assets/Settings/
+UniversalRenderPipelineGlobalSettings.asset` was serialized by URP 17.5 and carried nine
+settings types 17.0.4 does not have ("Missing types referenced from component
+...GlobalSettings" on every load). Deleted and regenerated through URP's own `Ensure`, moved
+back to `Assets/Settings`, default volume profile re-bound to the existing one. **Trap:**
+deleting the active global settings pops a URP confirmation dialog that freezes every
+pipeline command (5 s timeouts on a trivial eval) until Yes is clicked. **If a package pin ever disagrees with `packages-lock.json` again,
 the manifest is the thing that is wrong.**
 
 Stack: URP **17.0.4** linear, VContainer, R3, UniTask, DOTween, LeanTouch+, Addressables,
