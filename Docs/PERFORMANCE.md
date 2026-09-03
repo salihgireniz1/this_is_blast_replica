@@ -516,6 +516,21 @@ after. **Trap found by the red test:** `Tweener.ChangeEndValue(object, ...)` box
 `Vector3` (40 B per call); only the typed overload on `TweenerCore<T1,T2,TPlugOptions>`
 is allocation-free, and the shooter's yaw tween had the same boxing until now.
 
+On the phone, read in the seconds right after the taps this time (90 Hz, `Level_01`
+five 10-ammo shooters; `Level_03` five 9-ammo shooters):
+
+| Scene | Second 1 of the burst | Second 2 | Second 3 | After |
+|---|---|---|---|---|
+| `Level_01`, before | 3193 B/frame | 737 | ~0 | 0 |
+| `Level_01`, after | **349 B/frame (x4)** | 133 (x1) | 4 | 0 |
+| `Level_03`, after | 1982 (x14) | 1014 (x7) | 22 | 0 |
+
+`Level_01`'s burst garbage fell by ~85%. `Level_03`'s first seconds stay higher for a
+reason the pattern itself explains: every cube's tween is built on its **first** slide
+(two closures, ~250 B), and a fresh 900-cube board has hundreds of first slides in its
+first burst; after that each cube is free for the rest of its life. Plus four shooters
+leaving at once (`DOPath`, below). What remains per shot is listed next.
+
 Left, on purpose: the dying cube's `DOScale` (two closures per death, once per cube),
 the per-await `CancellationToken.Register` node (48 B; it is what stops a fast restart
 touching destroyed views, and the alternative is a hand-rolled destroy check on every
