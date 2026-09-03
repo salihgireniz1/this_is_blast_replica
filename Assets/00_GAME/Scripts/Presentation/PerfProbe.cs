@@ -13,6 +13,7 @@
 // GC sums: what the line reports is the game's allocation, not the probe's.
 
 using System.Text;
+using TMPro;
 using Unity.Profiling;
 using UnityEngine;
 
@@ -59,8 +60,15 @@ namespace Blast.Presentation
         /// <summary>Triangles drawn in the frame.</summary>
         ProfilerRecorder _triangles;
 
+        /// <summary>Optional on-screen readout, written once a second with the same numbers the log gets. Null means log only.</summary>
+        [Tooltip("Optional TMP text for an on-screen fps / ms / GC readout. Leave empty to log only.")]
+        [SerializeField] TMP_Text _hud;
+
         /// <summary>The line under construction, reused so the probe allocates only for number formatting.</summary>
         readonly StringBuilder _line = new StringBuilder(256);
+
+        /// <summary>The short form for the on-screen readout, reused the same way.</summary>
+        readonly StringBuilder _hudLine = new StringBuilder(64);
 
         /// <summary>Seconds accumulated in the current window.</summary>
         float _elapsed;
@@ -163,6 +171,14 @@ namespace Blast.Presentation
             _line.Append(" | batches ").Append(Count(_batches)).Append(" setpass ").Append(Count(_setPass)).Append(" draws ").Append(Count(_draws));
             _line.Append(" shadow ").Append(Count(_shadowCasters)).Append(" tris ").Append((Count(_triangles) / TrianglesPerK).ToString("F1")).Append('k');
             Debug.Log(_line.ToString());
+
+            if (_hud == null) return;
+            _hudLine.Clear();
+            _hudLine.Append((_frames / _elapsed).ToString("F0")).Append(" fps  ")
+                .Append((_elapsed / _frames * 1000f).ToString("F1")).Append(" ms  gc ")
+                .Append(_gcFrames > 0 ? _gcBytesTotal / _gcFrames : 0).Append(" B");
+            // SetText(StringBuilder): no string is built for the mesh update, and it lands on the frame the GC sum skips.
+            _hud.SetText(_hudLine);
         }
 
         /// <summary>The recorder's last frame value, or -1 where the counter does not exist on this platform.</summary>
