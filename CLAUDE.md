@@ -47,7 +47,13 @@ settings types 17.0.4 does not have ("Missing types referenced from component
 ...GlobalSettings" on every load). Deleted and regenerated through URP's own `Ensure`, moved
 back to `Assets/Settings`, default volume profile re-bound to the existing one. **Trap:**
 deleting the active global settings pops a URP confirmation dialog that freezes every
-pipeline command (5 s timeouts on a trivial eval) until Yes is clicked. **If a package pin ever disagrees with `packages-lock.json` again,
+pipeline command (5 s timeouts on a trivial eval) until Yes is clicked. A fifth, cleared
+2026-09-03 the first time a Player was built: both RP assets carried `k_AssetVersion: 13`
+(17.5's number) while 17.0.4's last version is 12, and URP's build validator refuses to
+build a Player over it ("is not at last version"; the editor itself never complained).
+Set to 12 by hand in `Mobile_RPAsset` and `PC_RPAsset` - version 12's fields are a subset of
+what the file holds, nothing else changed, and `IsAtLastVersion` reads true after a
+reimport. **If a package pin ever disagrees with `packages-lock.json` again,
 the manifest is the thing that is wrong.**
 
 Stack: URP **17.0.4** linear, VContainer, R3, UniTask, DOTween, LeanTouch+, Addressables,
@@ -910,6 +916,32 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   rest then - it always is, the rig is static. `CameraShakeTests`: a second kick after a
   finished shake still plays (red first as a compile error, then red again with
   `SetAutoKill(false)` removed: 79/80), and a finished shake leaves the camera at rest.
+- **Performance pass, step 1: baseline** - done, 80/80 green. The ledger is
+  `Docs/PERFORMANCE.md` (targets, device, config-as-found, plan, every step's before/after);
+  the case study's performance section is written from it, and each later step is recorded
+  there, not here. Instrument: `PerfProbe` (Presentation), a `ProfilerRecorder` logger, one
+  line per second (frame ms, main/render thread ms, GC B/frame, batches, SetPass, draws,
+  shadow casters, tris), `Debug.isDebugBuild`-gated so a release build never ticks it; scene
+  object `PerfProbe`. No test: diagnostics reading Unity counters, nothing reachable in
+  EditMode. Reference phone: Samsung Galaxy A16 (Helio G99, Mali-G57), driven over adb
+  (`input tap` seats shooters, `logcat` returns the lines). Stress level `Level_03` (10x30x3
+  = 900 cubes, 100 shooters, `Docs/Tools/generate_level_03.py`, no scramble, winnable by
+  construction) is the third `_levels` entry; **the game still boots `Level_01`**, the
+  stress level is reached by writing `LevelIndex` 2 into the ES3 file (on the phone: push
+  `SaveFile.es3` to `/sdcard/Android/data/com.APPS.CaseStudy/files/`). Findings: the phone
+  runs at **30 fps** (`targetFrameRate` -1), `Level_03` is 36 ms/frame with 50 ms drops
+  before anyone taps, one 16 B allocation every frame even idle, every cube is two draws
+  (main + shadow), SetPass 11-14 so the SRP Batcher is fine. **Editor counters are not
+  usable for render numbers** (they include the Scene view: 925 batches constant while
+  cubes died) nor for GC (28 KB/frame of editor UI); the phone is the instrument. **Two
+  traps:** the MCP `build` tool's `options: "Development"` was silently ignored (Build type
+  'Release' in logcat, no `[perf]` lines); build through `BuildPipeline.BuildPlayer` in an
+  eval with `--timeout 900` instead - it reports the 5 s main-thread timeout and builds
+  anyway, watch the APK's mtime. And an EditMode run that stays at "running" forever with
+  nothing in `Editor.log` (three times in a row, `cancel_tests` + reload did not help) came
+  back on its own after the Player build; cause not established. Found in passing and
+  fixed: `_levels` in the uncommitted scene had lost `Level_01` (Salih's hand edit), so a
+  fresh machine would have booted `Level_02`; written back as `[01, 02, 03]`.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.
