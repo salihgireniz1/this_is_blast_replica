@@ -1545,7 +1545,7 @@ MonoBehaviour:
     LandSquash: {x: 0.2, y: -0.25, z: 0.2}
     LandDuration: 0.3
   _firing:
-    Interval: 0.1
+    Interval: 0.12
     MuzzleHeight: 0.5
     FlightDuration: 0.17
   _cubeDeath:

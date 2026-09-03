@@ -380,7 +380,7 @@ namespace Blast.Presentation
             public float FlightDuration;
 
             /// <summary>The values a fresh director starts with.</summary>
-            public static Firing Defaults => new Firing { Interval = 0.22f, MuzzleHeight = 0.7f, FlightDuration = 0.12f };
+            public static Firing Defaults => new Firing { Interval = 0.12f, MuzzleHeight = 0.5f, FlightDuration = 0.17f };
         }
 
         /// <summary>What happens to the board when a cube is hit. One inspector heading.</summary>

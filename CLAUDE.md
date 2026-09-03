@@ -878,6 +878,11 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   explicit `DOKill` before `Destroy` went with it (nothing else tweens the cube), and
   `CubeDeath` is three fields: `CollapseDuration`, `FlowDuration`, `SettleOvershoot`. The
   original's one-frame lift stays recorded above as a fact, not a feature.
+- Fire interval 0.12 s, the original's rhythm - done, 78/78 green. Measured from the clip:
+  ammo ticks at 97 / 97 / 128 / 115 / 85 ms, mean ~114 ms. `_firing.Interval` was 0.1 in
+  the scene (Salih's hand tune) and 0.22 in `Firing.Defaults`; both are 0.12 now, and the
+  defaults also took the scene's `MuzzleHeight` 0.5 / `FlightDuration` 0.17, so a fresh
+  director matches the scene (the rule from the spawner-settings chunk).
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.
