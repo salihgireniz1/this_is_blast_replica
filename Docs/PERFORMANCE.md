@@ -64,8 +64,10 @@ and recorded as such.
    **Done.**
 2. Settings: `targetFrameRate`, shadows, post processing, HDR, the shader's alpha clip,
    splash shadows, Animator culling. **Done: both levels at a locked 60 fps.**
-3. Allocations: whatever the probe shows, closed one source at a time. **Done: 0 B/frame
-   idle and firing, on the phone.**
+3. Allocations: whatever the probe shows, closed one source at a time. **Idle: 0 B/frame
+   on the phone. Firing: ~2 KB per shot remains** (DOTween shortcut closures, mostly the
+   column slide), measured and listed under step 3; closing it is the reused-tween
+   pattern, not yet applied.
 4. Draw calls. **Closed without a change**: taking 390 casters out of the shadow pass
    removed 390 batches and 0 ms (2c); SetPass is 11-14 on every scene, so the SRP Batcher
    already does what GPU instancing or a master material would. Not built, with the
@@ -513,7 +515,10 @@ On the phone, same build configuration as 2f plus the two fixes:
 | `Level_03` | idle | 60.0 | 16.67 | 16.9 | **0** | **0** |
 | `Level_03` | firing | 60.0 | 16.67 | 17.0 | **0** | **0** |
 
-The gameplay allocation target from `PLAN.md`, 0 B per frame, is met on the device.
+The gameplay allocation target from `PLAN.md`, 0 B per frame, is met on the device
+**while idle and between bursts**. The "firing" rows above were read after the seated
+shooters had already emptied (see the correction under "Firing" earlier in this step):
+during a burst the phone shows 0.5-1 KB per frame.
 
 Left alone, on purpose: `GameDirector.Leave` allocates one `Vector3[8]` per shooter that
 leaves (fifteen per `Level_01`, once each, never per frame). DOTween's path keeps a
