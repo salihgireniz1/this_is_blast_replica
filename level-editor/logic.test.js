@@ -183,10 +183,11 @@ test("validate: a colour with less ammo than cubes is an error naming both numbe
   assert.match(issue.message, /1 /);
 });
 
-test("validate: no hidden shooter anywhere is an error", () => {
+test("validate: no hidden shooter anywhere is a warning, never an error", () => {
   const level = validLevel();
   level.columns[0][1].hidden = false;
-  assert.ok(errorCodes(level).includes("E_NO_HIDDEN"));
+  assert.ok(warningCodes(level).includes("W_NO_HIDDEN"));
+  assert.deepEqual(errorCodes(level), []); // a level with nothing hidden saves
 });
 
 test("validate: a sixth shooter column is an error", () => {

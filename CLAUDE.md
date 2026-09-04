@@ -1121,7 +1121,10 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   temporary `Level_98.json` with no manual refresh left Unity holding 1083 bytes = the disk
   file. Also on this day: the five-colour rule was scoped to the sample level (commit
   `cae11b9`) - `LevelFileTests` applies it to `Level_01` only and checks ammo against the
-  colours actually on each board; the editor's `E_MISSING_COLOUR` became `W_MISSING_COLOUR`.
+  colours actually on each board; the editor's `E_MISSING_COLOUR` became `W_MISSING_COLOUR`. The hidden-shooter rule followed the same day at Salih's
+  call: scoped to `Level_01` in `LevelFileTests`, `E_NO_HIDDEN` -> `W_NO_HIDDEN` in the
+  editor; autofill still hides one by default, the designer may untick it. Proven with a
+  two-colour, nothing-hidden temporary level in the folder: suite 84/84.
 - **Level editor, `serve.py`: the folder wired in by default** - done, Unity suite 84/84
   with `Level_06.json` (saved from the page itself) in the folder, and `Level_06` played to
   **Won** in the Editor (100 cubes, 9 shooters, 100 -> 24 -> 2 -> 0). Salih could not test

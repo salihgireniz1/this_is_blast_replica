@@ -7,10 +7,10 @@
 // NOT its responsibility: the parser's behaviour (LevelParserTests) or full solvability.
 //   Ammo >= cubes per colour is necessary, not sufficient - ordering deadlocks are proven
 //   away by playing the level, which the case expects anyway.
-// The five-colour assert is the case brief's requirement for the shipped sample level and
-// is scoped to it (SampleLevel): a three-colour level elsewhere is a design, not a mistake.
-// The hidden-shooter assert still runs on every file; drop it to the sample level too the
-// day a level legitimately has none.
+// The five-colour and hidden-shooter asserts are the case brief's requirements for the
+// shipped sample level and are scoped to it (SampleLevel): a three-colour level with nothing
+// hidden elsewhere is a design, not a mistake. Parsing, ammo >= cubes and the column cap
+// apply to every file - those break the game, not the brief.
 
 using System.Collections.Generic;
 using Blast.Domain;
@@ -71,8 +71,9 @@ namespace Blast.Tests
                 var cubes = CountCubes(level.Board);
                 var ammo = CountAmmo(level.Shooters, out bool anyHidden);
 
-                // All five colours is the brief's requirement for the sample level alone;
-                // a three-colour level is a legitimate design anywhere else.
+                // All five colours and a hidden shooter are the brief's requirements for the
+                // sample level alone; a three-colour level with nothing hidden is a
+                // legitimate design anywhere else.
                 if (System.IO.Path.GetFileName(path) == SampleLevel)
                 {
                     foreach (var color in RequiredColors)
@@ -80,6 +81,9 @@ namespace Blast.Tests
                         Assert.IsTrue(cubes.ContainsKey(color),
                             $"{path}: the board uses no {color} cube; the case requires all five colours in the sample level.");
                     }
+
+                    Assert.IsTrue(anyHidden,
+                        $"{path}: no hidden shooter; the case requires the feature in the sample level.");
                 }
 
                 foreach (var pair in cubes)
@@ -88,9 +92,6 @@ namespace Blast.Tests
                         $"{path}: {pair.Key} has {pair.Value} cubes but only " +
                         $"{ammo.GetValueOrDefault(pair.Key)} ammo; the level cannot be won.");
                 }
-
-                Assert.IsTrue(anyHidden,
-                    $"{path}: no hidden shooter; the case requires the feature in the sample level.");
 
                 Assert.LessOrEqual(level.Shooters.Columns, MaxQueueColumns,
                     $"{path}: {level.Shooters.Columns} shooter columns, and only {MaxQueueColumns} " +

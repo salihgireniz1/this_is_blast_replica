@@ -213,11 +213,6 @@ const Level = (() => {
       }
     }
 
-    // LevelFileTests: the hidden-shooter feature must be in the level.
-    if (!level.columns.some((shooters) => shooters.some((shooter) => shooter.hidden))) {
-      error("E_NO_HIDDEN", "No shooter is hidden; the case requires at least one.");
-    }
-
     // LevelFileTests: the dock is five columns wide.
     if (level.columns.length > MAX_QUEUE_COLUMNS) {
       error("E_TOO_MANY_COLUMNS", `${level.columns.length} shooter columns, and only ${MAX_QUEUE_COLUMNS} fit across the dock; the rest spawn off-screen where nobody can tap them.`);
@@ -235,11 +230,14 @@ const Level = (() => {
       warning("W_SLOTS", `Slot count is ${level.slotCount}; the case fixes it at ${BRIEF_SLOT_COUNT}.`);
     }
 
-    // All five colours is the brief's rule for the sample level only (LevelFileTests scopes
-    // it to Level_01); anywhere else a smaller palette is a design choice.
+    // All five colours and a hidden shooter are the brief's rules for the sample level only
+    // (LevelFileTests scopes both to Level_01); anywhere else they are design choices.
     const missing = [...COLOURS].filter((letter) => cubes[letter] === 0);
     if (missing.length > 0) {
       warning("W_MISSING_COLOUR", `Not on the board: ${missing.map(name).join(", ")}. The case's sample level needs all five colours; other levels may skip some.`);
+    }
+    if (!level.columns.some((shooters) => shooters.some((shooter) => shooter.hidden))) {
+      warning("W_NO_HIDDEN", "No shooter is hidden. The case's sample level needs one; other levels may have none.");
     }
 
     for (const letter of COLOURS) {
