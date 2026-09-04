@@ -602,6 +602,58 @@ await it. Do not save the scene when this happens; reopen it from disk
 (`EditorSceneManager.OpenScene`, Single). Check `scene.isDirty` after any eval-driven
 probing session.
 
+### 3f. Where the ceiling actually is (2026-09-04)
+
+Salih's question: is this as fast as it gets? The fps numbers could not answer it, because
+**90 fps is the display's limit, not the game's** - `targetFrameRate` is 120 and the panel
+is 90 Hz, so every capped frame reads 11.11 ms whether the work took 11 ms or 3.
+
+Two dead ends first, so nobody repeats them: **`QualitySettings.vSyncCount` is ignored on
+Android** and a Player cannot present faster than the panel, so there is no "vsync off"
+build to measure; and `adb shell dumpsys gfxinfo` returns no frame timings for a Unity app,
+which renders to its own SurfaceView rather than through the Android view system.
+
+What works: connect the editor's `ProfilerDriver` to the running development build over adb
+and read the player's own frame data. No new build needed.
+
+```
+adb forward tcp:34999 localabstract:Unity-com.APPS.CaseStudy
+ProfilerDriver.DirectIPConnect("127.0.0.1:34999")   // GetAvailableProfilers never lists it
+ProfilerDriver.enabled = true                        // then GetRawFrameDataView(frame, 0)
+```
+
+Per frame, work = `frameTimeMs` minus the **largest** wait marker. Summing the wait markers
+is wrong and gives a negative answer: `WaitForTargetFPS` (6.00 ms/f) and `WaitForLastPresent`
+(6.01 ms/f) are the same idle nested inside itself.
+
+`Level_01` on the Galaxy A16 at 90 Hz, 300 frames each:
+
+| State | Board on screen | Total frame | **Real work** | 95th | Max |
+|---|---|---|---|---|---|
+| Full board, idle | 308 batches | 11.11 ms | **4.24 ms** | 4.65 | 4.98 |
+| Late game | 104 batches | 11.11 ms | **3.57 ms** | 4.04 | 5.08 |
+
+The wait is named in the data: `TimeUpdate.WaitForLastPresentationAndUpdateTime`, **6.92 ms
+per frame** of the game standing still. Where the 4.24 ms goes:
+
+| ms/frame | Sample |
+|---|---|
+| 2.25 | `PostLateUpdate.FinishFrameRendering` |
+| 2.11 | `RenderPipelineManager.DoRenderLoop_Internal` (URP) |
+| 0.98 | `RenderSingleCameraInternal: Main Camera` |
+| 0.86 | `ScriptableRenderContext.Submit` |
+| 0.63 | `WaitForJobGroupID` |
+
+**No gameplay script appears in the list at all.** The cost is rendering, and it scales with
+the cubes still standing (308 batches -> 104 batches took 4.24 ms -> 3.57 ms).
+
+**The answer.** 4.24 ms against an 11.11 ms budget is **2.6x headroom**, and against
+`PLAN.md`'s own 120 FPS / 8.33 ms target it is still ~2x. The game is display-bound, not
+compute-bound: further optimisation would not change a single frame on screen at any
+refresh rate this phone can produce. That is the point at which the pass stops, and the
+measured-and-rejected table in 2f is the rest of the answer to "every optimisation, even
+where not thought necessary".
+
 ### 2b. Shadow and animator settings that change nothing on screen
 
 Three edits, all in assets, none visible:
