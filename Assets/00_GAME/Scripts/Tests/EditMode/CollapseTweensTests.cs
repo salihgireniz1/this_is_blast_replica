@@ -23,6 +23,9 @@ namespace Blast.Tests
         /// <summary>Any duration: every test completes its tweens by hand.</summary>
         const float Duration = 0.1f;
 
+        /// <summary>A swell large enough to read on a hit; the reuse tests do not care which.</summary>
+        const float Swell = 2.5f;
+
         /// <summary>The pool under test.</summary>
         CollapseTweens _collapses;
 
@@ -55,10 +58,10 @@ namespace Blast.Tests
         [Test]
         public void ACollapseAfterAFinishedOne_DoesNotAllocate()
         {
-            _collapses.Play(_first, Duration);
+            _collapses.Play(_first, Duration, Swell);
             DOTween.CompleteAll();
 
-            Assert.That(() => { _collapses.Play(_second, Duration); }, Is.Not.AllocatingGCMemory(),
+            Assert.That(() => { _collapses.Play(_second, Duration, Swell); }, Is.Not.AllocatingGCMemory(),
                 "The second collapse allocated: the finished tween was not reused.");
         }
 
@@ -66,8 +69,8 @@ namespace Blast.Tests
         [Test]
         public void TwoCollapsesAtOnce_BothReachZero()
         {
-            _collapses.Play(_first, Duration);
-            _collapses.Play(_second, Duration);
+            _collapses.Play(_first, Duration, Swell);
+            _collapses.Play(_second, Duration, Swell);
 
             DOTween.CompleteAll();
 
@@ -79,15 +82,40 @@ namespace Blast.Tests
         [Test]
         public void AReusedTween_CollapsesItsNewTarget()
         {
-            _collapses.Play(_first, Duration);
+            _collapses.Play(_first, Duration, Swell);
             DOTween.CompleteAll();
             _first.localScale = Vector3.one;
 
-            _collapses.Play(_second, Duration);
+            _collapses.Play(_second, Duration, Swell);
             DOTween.CompleteAll();
 
             Assert.That(_second.localScale, Is.EqualTo(Vector3.zero), "The reused tween did not collapse its new target.");
             Assert.That(_first.localScale, Is.EqualTo(Vector3.one), "The reused tween shrank the cube it served before.");
+        }
+
+        /// <summary>
+        /// The hit reads before the death: partway through, the cube is bigger than it
+        /// started, and only then does it go to nothing. A plain shrink never crosses its
+        /// start; a swell of zero must not either, so the knob really is the flinch.
+        /// </summary>
+        [Test]
+        public void ACollapseWithSwell_GrowsBeforeItShrinks()
+        {
+            // andPlay keeps the tween playing: Goto pauses by default, and the pool reads a
+            // paused tween as idle and would hand it to the second cube.
+            Tween swelling = _collapses.Play(_first, Duration, Swell);
+            swelling.Goto(Duration * 0.4f, andPlay: true);
+
+            Assert.That(_first.localScale.x, Is.GreaterThan(1f), "The cube never swelled: the hit does not read before the shrink.");
+
+            Tween plain = _collapses.Play(_second, Duration, swell: 0f);
+            plain.Goto(Duration * 0.4f, andPlay: true);
+
+            Assert.That(_second.localScale.x, Is.LessThan(1f), "A zero swell still grew the cube.");
+
+            DOTween.CompleteAll();
+
+            Assert.That(_first.localScale, Is.EqualTo(Vector3.zero), "The swelling cube did not end at nothing.");
         }
 
         #endregion

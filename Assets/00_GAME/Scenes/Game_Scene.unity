@@ -424,6 +424,7 @@ MonoBehaviour:
   _voices:
   - {fileID: 111357555}
   - {fileID: 111357554}
+  _pitchJitter: 0.1
 --- !u!4 &111357557
 Transform:
   m_ObjectHideFlags: 0
@@ -1662,6 +1663,7 @@ MonoBehaviour:
     ImpactPullback: 5
   _cubeDeath:
     CollapseDuration: 0.18
+    HitSwell: 2.5
     FlowDuration: 0.3
     SettleOvershoot: 1.7
 --- !u!1001 &1029992783

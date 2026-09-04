@@ -1297,3 +1297,16 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   sample eight times a second read as many shots instead of a buzzer. `Random.Range` is
   allocation-free. `ShotAudioTests` (red first: SetUp could not find the field) checks
   24 shots stay inside the band and do not all land on 1.
+- Hit swell on the dying cube - done, 88/88 green, verified in Play (two shooters, 20
+  kills, domain 80 / views 80, zero errors; voice pitches read 0.961 and 0.900 mid-burst).
+  `CollapseTweens.Play(target, duration, swell)` eases with `InBack` and the swell as its
+  overshoot: one tween is both the flinch (the overshoot pulls the scale past its start)
+  and the death, so nothing new is allocated per kill and the reuse tests still hold.
+  `CubeDeath.HitSwell` (2.5, written into the scene too) is the knob; 0 is the old plain
+  shrink. `ACollapseWithSwell_GrowsBeforeItShrinks` reads the scale at 40% through `Goto`
+  and expects it above the start with swell and below without. **Trap:** `Tween.Goto`
+  pauses the tween by default, and the pool reads a paused tween as idle and hands it to
+  the next cube - pass `andPlay: true` in a test that samples mid-tween. **Not
+  established:** a single mid-burst scale sample did not catch a cube over its rest size;
+  the rest size is the prefab's, not 1, so the probe's baseline was wrong. The unit test
+  is the proof; a slow-motion look in the Editor is the way to tune the number.
