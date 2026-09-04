@@ -556,6 +556,52 @@ leaves (fifteen per `Level_01`, once each, never per frame). DOTween's path keep
 reference to the array, so a shared buffer would corrupt a leave still in flight when a
 second shooter leaves; the allocation is the correct price.
 
+### 3e. Re-measured after 3b-3d (2026-09-04)
+
+The "Left, on purpose" list above was written before `CollapseTweens` (3c) and the reused
+counter punch (3d) closed two of its four entries. Re-measured with the same instrument on
+`Level_01`, five fronts seated, 300 recorded frames, **25 cubes actually destroyed in the
+window** (100 -> 75; an earlier run of this measurement reported 0 B while nothing was
+firing at all, which is why the cube count is now part of the record).
+
+Allocations were split by callstack into the game's own (`Blast.`, `DG.Tweening`,
+`Cysharp`, `Lean.`), logging, and everything else:
+
+| Bucket | Total over 300 frames |
+|---|---|
+| **The game** | **3570 B = 11 B/frame** |
+| `Debug.Log` machinery (`PerfProbe`'s own line, probe logs) | 13712 B |
+| Everything else | 1480 B |
+
+What the game's 3570 B is:
+
+| Bytes | Count | Source | Verdict |
+|---|---|---|---|
+| 1104 | 23 | `CancellationToken.Register`, 48 B per await | Keep. It is what stops a restart mid-flight touching destroyed views. |
+| 760 | 5 | UniTask `DelayPromise.TrySetResult`, the fire-interval delay | Keep. It is the await itself. |
+| 400 | 10 | `Component.get_gameObject` inside `Tween.DoGoto` - DOTween's safe-mode target check | A choice: `useSafeMode` is deliberately on (phase 0.9). |
+| 290 | 10 | TMP `InternalTextBackingArrayToString` | **Editor only**, the `#if UNITY_EDITOR` branch of `SetText`. Zero in a Player. |
+| 288 | 5 | `Leave`'s `DOPath` (`Path.Destroy`) | Keep, recorded above. |
+| 560 | 7 | LeanTouch / LeanSelect selection and destroy events | Third party, per tap. |
+
+At 120 fps that is ~1.3 KB per second. Nothing here is worth another pass.
+
+**The HUD number is not this.** `PerfProbe` reads `GC Allocated In Frame`, which is
+process-wide, so in the editor it shows ~28 KB/frame of Unity's own UI garbage. Over the
+same 300 frames the HUD implies ~8.5 MB while the profiler attributes 3.5 KB to the game.
+**In the editor, read the profiler's frame data, never the HUD; on the phone the HUD is
+the instrument** because a Player has no editor UI behind it.
+
+**Trap, cost an hour.** A compile triggered while Play is running (an eval with a syntax
+error is enough) can make Unity's exit-Play scene restore drop serialized references:
+`GameDirector`'s `_pools`, `_audio` and `_shake` all came back null while the scene FILE
+on disk was intact, and the in-memory scene was left dirty. The symptom looks like a
+gameplay bug - shooters fire, ammo drains to zero, no cube ever dies - because
+`ShotVisual` throws a `NullReferenceException` on its first line and `FireLoop` does not
+await it. Do not save the scene when this happens; reopen it from disk
+(`EditorSceneManager.OpenScene`, Single). Check `scene.isDirty` after any eval-driven
+probing session.
+
 ### 2b. Shadow and animator settings that change nothing on screen
 
 Three edits, all in assets, none visible:

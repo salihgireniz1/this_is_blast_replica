@@ -1110,6 +1110,26 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   simply did not appear in the run); the unwedge eval from `unity-mcp.md`
   (`UnlockReloadAssemblies` + `Refresh(ForceUpdate)` + `RequestScriptCompilation`) fixed it
   every time. Left: `Leave`'s path array (3e).
+- **Performance pass, step 3e: the burst re-measured** - done, ledger updated
+  (`Docs/PERFORMANCE.md` 3e). Salih saw `gc 28506 B` on the HUD and asked what happened to
+  "0 B". Two answers, both recorded there: the HUD reads `GC Allocated In Frame`, a
+  process-wide counter that in the editor is ~28 KB/frame of Unity's own UI, and my chat
+  summary of "0 B" was broader than the ledger ever claimed (idle 0, burst not 0).
+  Re-measured with allocation callstacks on a window where **25 cubes actually died**:
+  the game's own share is **3570 B over 300 frames = 11 B/frame**, against 13712 B of
+  `Debug.Log` machinery in the same window. Biggest game entry is the per-await
+  `CancellationToken.Register` (1104 B); nothing in the list is worth another pass.
+  **Two traps worth more than the numbers.** (1) The first two runs of this measurement
+  reported a clean `0 B` while **nothing was firing at all** - the shooters were seated but
+  the level had no matching target. An allocation measurement must prove the work happened;
+  the cube count is part of the record now. (2) A compile triggered while Play is running
+  (an eval with a syntax error will do it) can make Unity's exit-Play scene restore drop
+  serialized references. `GameDirector` lost `_pools`, `_audio` and `_shake` this way while
+  the scene file on disk stayed correct, and the in-memory scene was left **dirty**. It
+  reads as a gameplay bug - shooters fire, ammo drains to zero, no cube ever dies - because
+  `ShotVisual` throws a `NullReferenceException` on its first line and `FireLoop` does not
+  await it, so the loop keeps spending ammo. **Do not save the scene; reopen it from disk**,
+  and check `scene.isDirty` after any eval-driven probing.
 - Muzzle splash and bullet moved out in front of the shooter - done, 84/84 green,
   measured in Play (six sampled splashes, flat distance to the nearest seated shooter
   0.60 = `MuzzleReach`; it was 0.00 before, the splash sitting on the shooter's own
