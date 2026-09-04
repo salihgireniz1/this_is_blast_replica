@@ -654,6 +654,35 @@ refresh rate this phone can produce. That is the point at which the pass stops, 
 measured-and-rejected table in 2f is the rest of the answer to "every optimisation, even
 where not thought necessary".
 
+### 3g. Two techniques measured and not taken (2026-09-04)
+
+Both are standard, both were tried on `Level_04` (400 cubes) at a 512x1024 game view.
+
+**Deactivating cubes outside the camera.** A board taller than the frame leaves most of
+itself off screen, and switching those objects off is a common move. Measured how much is
+actually off screen first - `GeometryUtility.TestPlanesAABB` against the camera's frustum
+planes - and then the frame time with them on and off:
+
+| | Cubes drawn | Frame times | Mean |
+|---|---|---|---|
+| All 400 active | 130 in frustum, 270 outside | 10.85 / 10.97 / 12.45 / 12.67 | ~11.7 ms |
+| The 270 deactivated | same 130 | 11.73 / 11.56 / 11.18 / 11.85 / 13.05 | ~11.9 ms |
+
+**No gain.** Frustum culling already removes them: 400 cubes render as 378 batches, and
+130 visible x 2 passes plus the shooters and the environment is exactly that number - an
+uncalled 400 would be over 900. What deactivating removes is the culling test itself, 270
+jobified AABB checks per frame, which is far under the editor's +-1.5 ms noise. Doing it by
+hand moves work Unity does for free into C#. Note also that shadow casters are culled
+against the **light**, not the camera, so switching off-camera cubes off would drop shadows
+that are legitimately in frame.
+
+**Pooling the board cubes.** The bullets and the splashes are pooled because they churn -
+about forty of each per second. A board cube is instantiated once when the level loads and
+destroyed once when it dies; there is no churn to pool. A pool would move the cost from
+load time back to load time and add a lifetime to manage, and the allocation hunt in step
+3e already showed the death path contributing nothing measurable (the whole game allocates
+11 B/frame during a burst). Not taken.
+
 ### 2b. Shadow and animator settings that change nothing on screen
 
 Three edits, all in assets, none visible:
