@@ -118,7 +118,77 @@ const Level = (() => {
     return JSON.stringify(document, null, 2) + "\n";
   }
 
-  return { COLOURS, parse, serialize };
+  /**
+   * Counts the cubes on the board and the ammo in the queue, per colour. Every colour key
+   * is always present (zero when absent) so a table can render without guards.
+   * @param {{ rows: string[], columns: object[][] }} level The editor's level.
+   * @returns {{ cubes: object, ammo: object }} Letter -> count, for all five letters.
+   */
+  function stats(level) {
+    const perColour = () => Object.fromEntries([...COLOURS].map((letter) => [letter, 0]));
+    const cubes = perColour();
+    const ammo = perColour();
+    for (const row of level.rows) {
+      for (const letter of row) {
+        if (letter in cubes) cubes[letter] += 1;
+      }
+    }
+    for (const shooters of level.columns) {
+      for (const shooter of shooters) {
+        if (shooter.color in ammo) ammo[shooter.color] += shooter.ammo;
+      }
+    }
+    return { cubes, ammo };
+  }
+
+  /**
+   * Checks a level against the same rules the game enforces: first what LevelParser
+   * refuses (an error here is a FormatException there), then what LevelFileTests asserts
+   * per shipped file. Errors must block saving - the file would break Unity or the test
+   * suite; warnings are advice. Column and position numbers in messages are 1-based, the
+   * way the designer counts them on screen.
+   * @param {{ rows: string[], slotCount: number, columns: object[][] }} level The editor's level.
+   * @returns {{ severity: "error"|"warning", code: string, message: string }[]} Issues in rule order.
+   */
+  function validate(level) {
+    const issues = [];
+    const error = (code, message) => issues.push({ severity: "error", code, message });
+
+    // LevelParser: a board must have at least one row and one column.
+    if (level.rows.length === 0 || level.rows[0].length === 0) {
+      error("E_EMPTY_BOARD", "The board has no cells.");
+    }
+
+    // LevelParser: "The level has no shooterColumns."
+    if (level.columns.length === 0) {
+      error("E_NO_COLUMNS", "There are no shooter columns; add at least one.");
+    }
+
+    level.columns.forEach((shooters, columnIndex) => {
+      const column = columnIndex + 1;
+
+      // LevelParser: "shooterColumns[n] has no shooters."
+      if (shooters.length === 0) {
+        error("E_EMPTY_COLUMN", `Shooter column ${column} has no shooters.`);
+      }
+
+      // LevelParser: zero ammo would seat a shooter that SlotRow reads as an empty slot.
+      shooters.forEach((shooter, depth) => {
+        if (!Number.isInteger(shooter.ammo) || shooter.ammo < 1) {
+          error("E_AMMO", `The shooter at column ${column}, position ${depth + 1} has ammo ${shooter.ammo}; a shooter needs at least one shot.`);
+        }
+      });
+    });
+
+    // LevelParser: "slotCount is n; a level needs at least one slot."
+    if (!Number.isInteger(level.slotCount) || level.slotCount < 1) {
+      error("E_SLOTS", `Slot count is ${level.slotCount}; a level needs at least one slot.`);
+    }
+
+    return issues;
+  }
+
+  return { COLOURS, parse, serialize, stats, validate };
 })();
 
 if (typeof module !== "undefined") {

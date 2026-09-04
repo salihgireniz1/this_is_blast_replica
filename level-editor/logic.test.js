@@ -75,3 +75,82 @@ test("serialize: a multi-layer source writes one layer and leaves the queue unto
   assert.deepEqual(written.shooterColumns, raw.shooterColumns);
   assert.equal(written.slotCount, raw.slotCount);
 });
+
+// --- validate: the parser's rules, then LevelFileTests' ------------------------------
+
+/**
+ * The smallest level that passes every rule: all five colours once, ammo equal to cubes,
+ * one hidden shooter behind a front, five slots. Each validate test breaks exactly one
+ * thing in a copy of it.
+ */
+function validLevel() {
+  return {
+    rows: ["YRBGO"],
+    slotCount: 5,
+    columns: [
+      [{ color: "Y", ammo: 1, hidden: false }, { color: "R", ammo: 1, hidden: true }],
+      [{ color: "B", ammo: 1, hidden: false }],
+      [{ color: "G", ammo: 1, hidden: false }],
+      [{ color: "O", ammo: 1, hidden: false }],
+    ],
+  };
+}
+
+/** The error codes validate raises for a level, in order. */
+function errorCodes(level) {
+  return Level.validate(level).filter((issue) => issue.severity === "error").map((issue) => issue.code);
+}
+
+test("validate: the shipped levels and the minimal fixture raise no errors", () => {
+  assert.deepEqual(errorCodes(Level.parse(readLevel("Level_01.json")).level), []);
+  assert.deepEqual(errorCodes(Level.parse(readLevel("Level_04.json")).level), []);
+  assert.deepEqual(errorCodes(validLevel()), []);
+});
+
+test("validate: an empty board is an error, not a crash", () => {
+  const level = validLevel();
+  level.rows = [];
+  assert.ok(errorCodes(level).includes("E_EMPTY_BOARD"));
+});
+
+test("validate: no shooter columns at all is an error", () => {
+  const level = validLevel();
+  level.columns = [];
+  assert.ok(errorCodes(level).includes("E_NO_COLUMNS"));
+});
+
+test("validate: a column with no shooters is an error that names the column", () => {
+  const level = validLevel();
+  level.columns[2] = [];
+  const issue = Level.validate(level).find((i) => i.code === "E_EMPTY_COLUMN");
+  assert.ok(issue, "E_EMPTY_COLUMN was not raised");
+  assert.match(issue.message, /column 3/);
+});
+
+test("validate: a shooter with no ammo is an error that names its place", () => {
+  const level = validLevel();
+  level.columns[1][0].ammo = 0;
+  const issue = Level.validate(level).find((i) => i.code === "E_AMMO");
+  assert.ok(issue, "E_AMMO was not raised");
+  assert.match(issue.message, /column 2/);
+});
+
+test("validate: zero slots is an error", () => {
+  const level = validLevel();
+  level.slotCount = 0;
+  assert.ok(errorCodes(level).includes("E_SLOTS"));
+});
+
+// --- stats ---------------------------------------------------------------------------
+
+test("stats: counts cubes and ammo per colour with every colour present, zeros included", () => {
+  const level = {
+    rows: ["YYR", "BBG"],
+    slotCount: 5,
+    columns: [[{ color: "Y", ammo: 5, hidden: false }, { color: "O", ammo: 3, hidden: true }]],
+  };
+  assert.deepEqual(Level.stats(level), {
+    cubes: { Y: 2, R: 1, B: 2, G: 1, O: 0 },
+    ammo: { Y: 5, R: 0, B: 0, G: 0, O: 3 },
+  });
+});
