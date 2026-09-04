@@ -11,7 +11,7 @@ the sample level boots directly. There is no menu.
 
 | Suite | Count | Run |
 |---|---|---|
-| Unity EditMode (`Blast.Tests.EditMode`) | 88 | Test Runner window, or `unity cmd run_tests --mode editor --filter "Blast.Tests" --filter_type assembly --async_tests true` |
+| Unity EditMode (`Blast.Tests.EditMode`) | 87 | Test Runner window, or `unity cmd run_tests --mode editor --filter "Blast.Tests" --filter_type assembly --async_tests true` |
 | Level editor (`level-editor/logic.js`) | 41 | `node --test level-editor/logic.test.js` |
 
 Every rule of the game has a test. Two of the tests guard things that break silently:
