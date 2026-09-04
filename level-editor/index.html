@@ -76,6 +76,7 @@ script because Chromium refuses module scripts from file://.
   .issue.ok { background: rgba(77,209,122,.12); border-left: 3px solid var(--ok); }
   .actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .status { color: var(--muted); font-size: 12px; }
+  .hint { color: var(--error); font-size: 15px; font-weight: 600; user-select: text; }
   .banner { margin: 12px 16px 0; padding: 8px 12px; border-radius: 6px; background: rgba(255,184,77,.12); border-left: 3px solid var(--warning); }
   select#files { min-width: 150px; }
 </style>
@@ -93,6 +94,8 @@ script because Chromium refuses module scripts from file://.
   <button id="save" title="Overwrite the open file">Save</button>
   <button id="saveAs" title="Write under the name on the left">Save As</button>
   <span class="status" id="status"></span>
+  <span class="hint" id="hint" hidden></span>
+  <button id="copyPath" hidden title="Copy the folder path, then paste it into the picker's Folder field">Copy path</button>
 </header>
 <div class="banner" id="banner" hidden></div>
 
@@ -239,15 +242,27 @@ function render() {
   renderIssues(issues);
   renderFiles(issues.some((issue) => issue.severity === "error"));
   const status = state.message || (isDirty() ? "unsaved changes" : "");
-  el("status").textContent = status || (state.mode === "fs" && state.dirHandle === null ? levelsFolderHint() : "");
+  el("status").textContent = status;
   document.title = status ? `${status} — Blast Level Editor` : "Blast Level Editor";
+
+  // Until a folder is picked, say which one - loudly, this is the one step a newcomer needs.
+  const hint = state.mode === "fs" && state.dirHandle === null ? Level.levelsFolderFor(location.href) : "";
+  el("hint").textContent = hint ? `Pick this folder: ${hint}` : "";
+  el("hint").hidden = !hint;
+  el("copyPath").hidden = !hint;
 }
 
-/** Which folder to pick, said out loud until one is picked; the page cannot open it itself. */
-function levelsFolderHint() {
+/** Puts the Levels folder's path on the clipboard, to paste into the picker's Folder field. */
+async function copyLevelsPath() {
   const folder = Level.levelsFolderFor(location.href);
-  return folder ? `Pick this folder: ${folder}` : "";
+  try {
+    await navigator.clipboard.writeText(folder);
+    setStatus(`Copied ${folder} — paste it into the picker's Folder field.`);
+  } catch (error) {
+    setStatus(`Could not copy (${error.message}); the path is: ${folder}`);
+  }
 }
+el("copyPath").addEventListener("click", copyLevelsPath);
 
 /** The header's file controls: which folder, what can be opened, what may be saved. */
 function renderFiles(hasErrors) {
