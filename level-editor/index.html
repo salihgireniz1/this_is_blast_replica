@@ -76,16 +76,25 @@ script because Chromium refuses module scripts from file://.
   .issue.ok { background: rgba(77,209,122,.12); border-left: 3px solid var(--ok); }
   .actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .status { color: var(--muted); font-size: 12px; }
+  .banner { margin: 12px 16px 0; padding: 8px 12px; border-radius: 6px; background: rgba(255,184,77,.12); border-left: 3px solid var(--warning); }
+  select#files { min-width: 150px; }
 </style>
 </head>
 <body>
 
 <header>
   <h1>Blast Level Editor</h1>
+  <button id="pickFolder" title="The game's Assets/00_GAME/Levels folder">Choose Levels folder…</button>
+  <select id="files" title="Levels in the folder"></select>
+  <button id="open">Open</button>
+  <input type="file" id="fileInput" accept=".json" hidden>
   <input type="text" id="fileName" placeholder="Level_01.json" title="File name">
   <button id="new">New</button>
+  <button id="save" title="Overwrite the open file">Save</button>
+  <button id="saveAs" title="Write under the name on the left">Save As</button>
   <span class="status" id="status"></span>
 </header>
+<div class="banner" id="banner" hidden></div>
 
 <main>
   <div class="phone">
@@ -150,7 +159,16 @@ const state = {
   savedText: "",
   brush: "R",
   painting: false,
+  message: "",             // a one-shot status line (a save, an error); cleared by the next update
+  dirHandle: null,         // the Levels folder, once picked; null in the download fallback
+  needsPermission: false,  // a folder restored from a previous session still needs a click
+  fileNames: [],           // the .json files in the folder, sorted
+  fileHandle: null,        // the open file; null for a new level or the fallback
+  sourceLayerCount: 1,     // more than one means Save is refused: it would drop layers
 };
+
+/** Whether this browser can write into a folder at all; otherwise Save As downloads. */
+const FS_SUPPORTED = "showDirectoryPicker" in window;
 
 /** A fresh level: the brief's board of the brush colour, five empty columns. */
 function freshLevel() {
@@ -166,9 +184,16 @@ function isDirty() {
   return Level.serialize(state.level) !== state.savedText;
 }
 
-/** Applies a change and redraws everything. */
+/** Applies a change and redraws everything. Any one-shot message is gone by then. */
 function update(change) {
+  state.message = "";
   change(state);
+  render();
+}
+
+/** Shows a one-shot line in the header: what was saved, or what went wrong. */
+function setStatus(text) {
+  state.message = text;
   render();
 }
 
@@ -209,8 +234,37 @@ function render() {
     `<div class="brush ${letter === state.brush ? "on" : ""}" data-brush="${letter}" style="background:${PALETTE[letter]}" title="${Level.COLOUR_NAMES[letter]}"></div>`).join("");
 
   renderStats();
-  renderIssues();
-  el("status").textContent = isDirty() ? "unsaved changes" : "";
+  const issues = Level.validate(level);
+  renderIssues(issues);
+  renderFiles(issues.some((issue) => issue.severity === "error"));
+  el("status").textContent = state.message || (isDirty() ? "unsaved changes" : "");
+}
+
+/** The header's file controls: what the folder is, what can be opened, what may be saved. */
+function renderFiles(hasErrors) {
+  const folder = state.dirHandle;
+  const connected = folder !== null && !state.needsPermission;
+
+  el("pickFolder").hidden = !FS_SUPPORTED;
+  el("files").hidden = !FS_SUPPORTED;
+  el("pickFolder").textContent = folder === null ? "Choose Levels folder…"
+    : state.needsPermission ? `Reconnect "${folder.name}"` : `"${folder.name}" ✓`;
+
+  el("files").innerHTML = state.fileNames.map((name) =>
+    `<option ${name === state.fileName ? "selected" : ""}>${esc(name)}</option>`).join("");
+  el("files").disabled = !connected || state.fileNames.length === 0;
+  el("open").disabled = FS_SUPPORTED && (!connected || state.fileNames.length === 0);
+
+  // Save overwrites, so it needs a file, a single-layer source and a legal level.
+  el("save").disabled = hasErrors || state.fileHandle === null || state.sourceLayerCount > 1;
+  el("saveAs").disabled = hasErrors;
+  el("saveAs").textContent = FS_SUPPORTED ? "Save As" : "Download";
+
+  const banner = el("banner");
+  banner.hidden = state.sourceLayerCount <= 1;
+  if (!banner.hidden) {
+    banner.textContent = `This file has ${state.sourceLayerCount} layers. The editor shows the ground layer only; Save is off so nothing is dropped - Save As writes a single-layer copy under a new name.`;
+  }
 }
 
 /** One shooter card: colour, shots, hidden, and its place in the column. */
@@ -247,8 +301,7 @@ function renderStats() {
 }
 
 /** Every issue validate raised, errors first, or a green line when there are none. */
-function renderIssues() {
-  const issues = Level.validate(state.level);
+function renderIssues(issues) {
   const errors = issues.filter((i) => i.severity === "error");
   const items = issues.map((i) => `<li class="issue ${i.severity}">${esc(i.message)}</li>`);
   if (errors.length === 0) {
@@ -350,6 +403,9 @@ el("new").addEventListener("click", () => {
   if (isDirty() && !confirm("Discard unsaved changes?")) return;
   update((s) => {
     s.level = freshLevel();
+    s.fileName = Level.nextFreeName(s.fileNames);
+    s.fileHandle = null;
+    s.sourceLayerCount = 1;
     s.savedText = Level.serialize(s.level);
   });
 });
@@ -362,11 +418,221 @@ window.addEventListener("beforeunload", (e) => {
   if (isDirty()) e.preventDefault();
 });
 
+// --- Files: the Levels folder ---------------------------------------------------------
+//
+// The File System Access API: the designer picks Assets/00_GAME/Levels once, the editor
+// lists the files, opens one and writes it back in place. The picked handle is kept in
+// IndexedDB so the next session offers "Reconnect" instead of the picker. Browsers
+// without the API (Firefox, Safari) fall back to a file input and a download.
+
+const IDB_NAME = "level-editor";
+const IDB_STORE = "handles";
+const IDB_KEY = "levelsDir";
+
+/** Opens the tiny database that holds the folder handle. */
+function idb() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(IDB_NAME, 1);
+    request.onupgradeneeded = () => request.result.createObjectStore(IDB_STORE);
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+/** Reads one value from the handle store. */
+async function idbGet(key) {
+  const db = await idb();
+  return new Promise((resolve, reject) => {
+    const request = db.transaction(IDB_STORE, "readonly").objectStore(IDB_STORE).get(key);
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+/** Writes one value to the handle store; handles are structured-cloneable. */
+async function idbSet(key, value) {
+  const db = await idb();
+  return new Promise((resolve, reject) => {
+    const request = db.transaction(IDB_STORE, "readwrite").objectStore(IDB_STORE).put(value, key);
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
+  });
+}
+
+/** Remembers the folder for next time; a browser that refuses (file://, private mode) just forgets. */
+async function rememberFolder(handle) {
+  try { await idbSet(IDB_KEY, handle); } catch { /* re-picking is one click */ }
+}
+
+/** Lists the .json files in the folder into state.fileNames. */
+async function listFiles() {
+  const names = [];
+  for await (const [name, handle] of state.dirHandle.entries()) {
+    if (handle.kind === "file" && /\.json$/i.test(name)) names.push(name);
+  }
+  names.sort();
+  state.fileNames = names;
+}
+
+/** The picker, or a permission re-grant for a folder remembered from last time. Needs a click. */
+async function pickFolder() {
+  try {
+    if (state.dirHandle !== null && state.needsPermission) {
+      const permission = await state.dirHandle.requestPermission({ mode: "readwrite" });
+      if (permission !== "granted") return;
+      state.needsPermission = false;
+    } else {
+      state.dirHandle = await window.showDirectoryPicker({ id: "blast-levels", mode: "readwrite", startIn: "desktop" });
+      state.needsPermission = false;
+      await rememberFolder(state.dirHandle);
+    }
+    await listFiles();
+    render();
+  } catch (error) {
+    if (error.name === "AbortError") return; // the designer closed the picker
+    state.dirHandle = null;
+    state.fileNames = [];
+    setStatus(error.message);
+  }
+}
+
+/** On load: offer the folder from last session, if the browser kept it and still allows it. */
+async function reconnect() {
+  let handle = null;
+  try { handle = await idbGet(IDB_KEY); } catch { return; }
+  if (!handle) return;
+  try {
+    const permission = await handle.queryPermission({ mode: "readwrite" });
+    state.dirHandle = handle;
+    state.needsPermission = permission !== "granted";
+    if (!state.needsPermission) await listFiles();
+  } catch {
+    state.dirHandle = null; // moved or deleted since; the picker is one click away
+    await rememberFolder(null);
+  }
+  render();
+}
+
+/** Replaces the level with a file's contents. Throws if the file does not parse. */
+function loadText(text, name, handle) {
+  const { level, layerCount } = Level.parse(text);
+  update((s) => {
+    s.level = level;
+    s.fileName = name;
+    s.fileHandle = handle;
+    s.sourceLayerCount = layerCount;
+    s.savedText = Level.serialize(level);
+  });
+}
+
+/** Open: the selected file from the folder, or the file input when there is no folder API. */
+async function openSelected() {
+  if (!FS_SUPPORTED) {
+    el("fileInput").click();
+    return;
+  }
+  const name = el("files").value;
+  if (!name) return;
+  if (isDirty() && !confirm("Discard unsaved changes?")) return;
+  try {
+    const handle = await state.dirHandle.getFileHandle(name);
+    loadText(await (await handle.getFile()).text(), name, handle);
+  } catch (error) {
+    setStatus(`${name}: ${error.message}`);
+  }
+}
+
+/** Writes text into a file handle. Nothing reaches the disk until close(), so it is in finally. */
+async function writeTo(handle, text) {
+  const writable = await handle.createWritable();
+  try {
+    await writable.write(text);
+  } finally {
+    await writable.close();
+  }
+}
+
+/** Save: overwrite the open file. The button is only enabled when that is safe. */
+async function save() {
+  const text = Level.serialize(state.level);
+  try {
+    await writeTo(state.fileHandle, text);
+    update((s) => { s.savedText = text; });
+    setStatus(`Saved ${state.fileName}`);
+  } catch (error) {
+    setStatus(error.message);
+  }
+}
+
+/** Hands the browser a file to download; the fallback when no folder can be written. */
+function download(name, text) {
+  const url = URL.createObjectURL(new Blob([text], { type: "application/json" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = name;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+/** Save As: the name in the field, into the folder (or as a download). Asks before overwriting another file. */
+async function saveAs() {
+  let name = el("fileName").value.trim() || state.fileName;
+  if (!/\.json$/i.test(name)) name += ".json";
+  const text = Level.serialize(state.level);
+
+  if (!FS_SUPPORTED || state.dirHandle === null) {
+    download(name, text);
+    update((s) => { s.fileName = name; s.savedText = text; });
+    return;
+  }
+
+  const sameAsOpen = state.fileHandle !== null && name.toLowerCase() === state.fileName.toLowerCase();
+  if (sameAsOpen && state.sourceLayerCount > 1) {
+    setStatus(`${name} has ${state.sourceLayerCount} layers; choose a different name so they are not lost.`);
+    return;
+  }
+  const exists = state.fileNames.some((existing) => existing.toLowerCase() === name.toLowerCase());
+  if (exists && !sameAsOpen && !confirm(`${name} already exists. Overwrite it?`)) return;
+
+  try {
+    const handle = await state.dirHandle.getFileHandle(name, { create: true });
+    await writeTo(handle, text);
+    await listFiles();
+    update((s) => {
+      s.fileHandle = handle;
+      s.fileName = name;
+      s.sourceLayerCount = 1;
+      s.savedText = text;
+    });
+    setStatus(`Saved ${name}`);
+  } catch (error) {
+    setStatus(error.message);
+  }
+}
+
+el("pickFolder").addEventListener("click", pickFolder);
+el("open").addEventListener("click", openSelected);
+el("save").addEventListener("click", save);
+el("saveAs").addEventListener("click", saveAs);
+el("files").addEventListener("dblclick", openSelected);
+el("fileInput").addEventListener("change", async () => {
+  const file = el("fileInput").files[0];
+  if (!file) return;
+  try {
+    loadText(await file.text(), file.name, null);
+  } catch (error) {
+    setStatus(`${file.name}: ${error.message}`);
+  }
+  el("fileInput").value = "";
+});
+
 // --- Boot ----------------------------------------------------------------------------
 
 state.level = freshLevel();
 state.savedText = Level.serialize(state.level);
 render();
+if (FS_SUPPORTED) reconnect();
+else setStatus("This browser cannot write into folders; Download saves the file for you to copy into Assets/00_GAME/Levels.");
 </script>
 </body>
 </html>
