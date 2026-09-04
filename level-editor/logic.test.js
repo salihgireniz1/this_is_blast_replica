@@ -234,3 +234,27 @@ test("validate: a board that is not 10x10 and a slot count that is not 5 warn; t
   fourSlots.slotCount = 4;
   assert.ok(warningCodes(fourSlots).includes("W_SLOTS"));
 });
+
+// --- board helpers and file names ----------------------------------------------------
+
+test("resizeBoard: growing keeps every cell and fills the new ones with the given colour", () => {
+  assert.deepEqual(Level.resizeBoard(["YR", "BG"], 3, 3, "O"), ["YRO", "BGO", "OOO"]);
+});
+
+test("resizeBoard: shrinking drops the back rows and the rightmost columns, never the front", () => {
+  assert.deepEqual(Level.resizeBoard(["YRB", "GOY", "RBG"], 2, 2), ["YR", "GO"]);
+});
+
+test("paintCell: returns new rows with one cell changed and leaves the input alone", () => {
+  const before = ["YY", "YY"];
+  const after = Level.paintCell(before, 1, 0, "R");
+  assert.deepEqual(after, ["YY", "RY"]);
+  assert.deepEqual(before, ["YY", "YY"]);
+});
+
+test("nextFreeName: fills the first gap, counts from 01, and ignores case", () => {
+  assert.equal(Level.nextFreeName([]), "Level_01.json");
+  assert.equal(Level.nextFreeName(["Level_01.json", "Level_02.json"]), "Level_03.json");
+  assert.equal(Level.nextFreeName(["Level_01.json", "Level_03.json"]), "Level_02.json");
+  assert.equal(Level.nextFreeName(["level_01.JSON"]), "Level_02.json");
+});

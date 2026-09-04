@@ -261,7 +261,60 @@ const Level = (() => {
     return issues;
   }
 
-  return { COLOURS, COLOUR_NAMES, MAX_QUEUE_COLUMNS, parse, serialize, stats, validate };
+  /** How shipped levels are named: Level_ plus at least two digits. */
+  const LEVEL_NAME_PREFIX = "Level_";
+  const LEVEL_NAME_DIGITS = 2;
+
+  /**
+   * Returns the board at a new size. Every existing cell is kept; new cells take `fill`;
+   * surplus rows go from the BACK so rows[0] stays the front, surplus columns from the right.
+   * @param {string[]} rows The board, front row first.
+   * @param {number} width Columns wanted.
+   * @param {number} height Rows wanted.
+   * @param {string} [fill] The letter new cells take; the first colour when omitted.
+   * @returns {string[]} A new board; the input is not touched.
+   */
+  function resizeBoard(rows, width, height, fill = COLOURS[0]) {
+    const result = [];
+    for (let row = 0; row < height; row++) {
+      const source = row < rows.length ? rows[row] : "";
+      result.push((source + fill.repeat(width)).slice(0, width));
+    }
+    return result;
+  }
+
+  /**
+   * Returns the board with one cell recoloured. Rows are strings, so the change is one
+   * slice-concat and the input rows are never mutated - the page re-renders from the result.
+   * @param {string[]} rows The board, front row first.
+   * @param {number} row Which row.
+   * @param {number} column Which column.
+   * @param {string} letter The colour to paint.
+   * @returns {string[]} A new board.
+   */
+  function paintCell(rows, row, column, letter) {
+    return rows.map((cells, index) =>
+      index === row ? cells.slice(0, column) + letter + cells.slice(column + 1) : cells);
+  }
+
+  /**
+   * The first Level_NN.json not in the folder, counting from 01. Case-insensitive, because
+   * the file system the folder lives on is.
+   * @param {string[]} names The file names already in the folder.
+   * @returns {string} A free name.
+   */
+  function nextFreeName(names) {
+    const taken = new Set(names.map((name) => name.toLowerCase()));
+    for (let number = 1; ; number++) {
+      const name = `${LEVEL_NAME_PREFIX}${String(number).padStart(LEVEL_NAME_DIGITS, "0")}.json`;
+      if (!taken.has(name.toLowerCase())) return name;
+    }
+  }
+
+  return {
+    COLOURS, COLOUR_NAMES, MAX_QUEUE_COLUMNS,
+    parse, serialize, stats, validate, resizeBoard, paintCell, nextFreeName,
+  };
 })();
 
 if (typeof module !== "undefined") {
