@@ -113,7 +113,7 @@ def notify_unity(name):
         state = "reimported" if result.returncode == 0 else "not reachable"
     except (OSError, subprocess.TimeoutExpired):
         state = "not reachable"
-    print(f"unity: {asset} {state}")
+    print(f"unity: {asset} {state}", file=sys.stderr, flush=True)
 
 
 def _json_string(text):
