@@ -311,9 +311,64 @@ const Level = (() => {
     }
   }
 
+  /** The most shots one autofilled shooter carries; the remainder goes to the last one. */
+  const AUTOFILL_CHUNK = 20;
+
+  /**
+   * Builds a queue for a board. Every colour gets exactly as many shots as it has cubes,
+   * in chunks of AUTOFILL_CHUNK with the remainder last, so no shooter is ever left holding
+   * shots with nothing to hit. Colours the front rows need first are dealt first, and
+   * shooters are dealt round-robin across the columns, so the earliest-needed colours end
+   * up at the fronts. One shooter behind a front is hidden, when the queue is deep enough.
+   * @param {string[]} rows The board, front row first.
+   * @param {number} columnCount Columns wanted (clamped to 1..MAX_QUEUE_COLUMNS).
+   * @returns {object[][]} A new queue, columns of shooters front-first.
+   */
+  function autofill(rows, columnCount) {
+    const wanted = Math.max(1, Math.min(MAX_QUEUE_COLUMNS, columnCount || MAX_QUEUE_COLUMNS));
+
+    const cubes = {};
+    const firstRow = {};
+    rows.forEach((row, rowIndex) => {
+      for (const letter of row) {
+        if (!(letter in cubes)) {
+          cubes[letter] = 0;
+          firstRow[letter] = rowIndex;
+        }
+        cubes[letter] += 1;
+      }
+    });
+
+    // Needed first, then biggest, then the game's own colour order - fully deterministic.
+    const order = Object.keys(cubes).sort((a, b) =>
+      firstRow[a] - firstRow[b] || cubes[b] - cubes[a] || COLOURS.indexOf(a) - COLOURS.indexOf(b));
+
+    const dealt = [];
+    for (const letter of order) {
+      let left = cubes[letter];
+      while (left > 0) {
+        const ammo = Math.min(AUTOFILL_CHUNK, left);
+        dealt.push({ color: letter, ammo, hidden: false });
+        left -= ammo;
+      }
+    }
+
+    // Never more columns than shooters, or a column would be empty and the parser refuses it.
+    const columns = Array.from({ length: Math.min(wanted, dealt.length) }, () => []);
+    dealt.forEach((shooter, index) => columns[index % columns.length].push(shooter));
+
+    // The shooter at column 1, position 2: revealed the moment the first front is taken,
+    // so the feature shows early, and never a front, where hiding would be pointless.
+    if (dealt.length > columns.length) {
+      dealt[columns.length].hidden = true;
+    }
+
+    return columns;
+  }
+
   return {
-    COLOURS, COLOUR_NAMES, MAX_QUEUE_COLUMNS,
-    parse, serialize, stats, validate, resizeBoard, paintCell, nextFreeName,
+    COLOURS, COLOUR_NAMES, MAX_QUEUE_COLUMNS, AUTOFILL_CHUNK,
+    parse, serialize, stats, validate, resizeBoard, paintCell, nextFreeName, autofill,
   };
 })();
 

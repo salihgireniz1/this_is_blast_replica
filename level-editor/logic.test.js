@@ -258,3 +258,54 @@ test("nextFreeName: fills the first gap, counts from 01, and ignores case", () =
   assert.equal(Level.nextFreeName(["Level_01.json", "Level_03.json"]), "Level_02.json");
   assert.equal(Level.nextFreeName(["level_01.JSON"]), "Level_02.json");
 });
+
+// --- autofill ------------------------------------------------------------------------
+
+/** Ammo per colour summed over a queue, and the count of hidden shooters. */
+function queueTotals(columns) {
+  const ammo = {};
+  let hidden = 0;
+  for (const shooters of columns) {
+    for (const shooter of shooters) {
+      ammo[shooter.color] = (ammo[shooter.color] || 0) + shooter.ammo;
+      if (shooter.hidden) hidden += 1;
+    }
+  }
+  return { ammo, hidden };
+}
+
+test("autofill: 45 cubes become shooters of 20, 20 and 5 - the remainder last, never dropped", () => {
+  const rows = Array.from({ length: 5 }, () => "YYYYYYYYY"); // 45 yellow
+  const columns = Level.autofill(rows, 1);
+  assert.deepEqual(columns[0].map((s) => s.ammo), [20, 20, 5]);
+});
+
+test("autofill: every colour gets exactly as many shots as it has cubes, and no shooter is empty", () => {
+  const { level } = Level.parse(readLevel("Level_04.json"));
+  const columns = Level.autofill(level.rows, 5);
+  const { cubes } = Level.stats(level);
+  assert.deepEqual(queueTotals(columns).ammo, cubes);
+  assert.ok(columns.every((shooters) => shooters.every((s) => s.ammo >= 1)));
+});
+
+test("autofill: the colour the front row needs first is at the front of column 1", () => {
+  const columns = Level.autofill(["OOO", "RRR", "YYY"], 3); // orange in front, yellow at the back
+  assert.equal(columns[0][0].color, "O");
+  assert.notEqual(columns[0][0].color, "Y");
+});
+
+test("autofill: exactly one shooter is hidden and it sits behind a front; a one-deep queue gets none", () => {
+  const deep = Level.autofill(Level.parse(readLevel("Level_04.json")).level.rows, 5);
+  assert.equal(queueTotals(deep).hidden, 1);
+  assert.ok(deep.every((shooters) => !shooters[0].hidden), "a front shooter was hidden");
+
+  const shallow = Level.autofill(["YRBGO"], 5); // five single-shot shooters, five columns
+  assert.equal(queueTotals(shallow).hidden, 0);
+});
+
+test("autofill: uses the columns asked for, but never leaves one empty", () => {
+  const rows = Level.parse(readLevel("Level_04.json")).level.rows;
+  assert.equal(Level.autofill(rows, 3).length, 3);
+  assert.equal(Level.autofill(["YYRR"], 5).length, 2);
+  assert.ok(Level.autofill(["YYRR"], 5).every((shooters) => shooters.length > 0));
+});
