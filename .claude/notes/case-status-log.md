@@ -1242,3 +1242,39 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   whole overlay/juice list in the chunks between. They were quoted as outstanding work in
   a later session before anyone checked them against the entries above. Read the Status
   entries, not a parked to-do list; when the two disagree the entries are the record.
+- Review pass before delivery (2026-09-05): graphify installed (`uv tool install
+  graphifyy`, output kept out of `Assets/`, in the session scratchpad) and the whole
+  suite read file by file. Verdict in short: layering real and test-guarded, Domain and
+  Application clean, views humble; the three visible weaknesses were **JuiceConfig
+  registered and never read**, **VContainer built and never resolved from** (every
+  dependency was handed over by a manual `Construct` call in `Configure`, not one
+  `[Inject]`, `Resolve` or entry point in the repo), and **GameDirector untested** (left
+  as is: splitting the orchestrator two days out is a bug-free risk the case ranks above
+  architecture; say so in the README instead). Also noted for the README: reveal of a
+  hidden shooter fires when the step-up starts, not when it lands; comment density is
+  38% of production lines; `Protected Methods` is not one of the standard's regions.
+- JuiceConfig deleted - done, 83/83 green. Script, `Juice.asset`, `JuiceConfigTests`,
+  the scope field and property, and the scene's `_juice` line are gone. The scope test now
+  checks `Level` instead: an empty level field is the same silent null.
+- VContainer does the wiring - done, 84/84 green (the `[Inject]` guard replaces the
+  deleted juice test), verified in Play through the container itself: `Resolve(GameLoop)`
+  is the very instance `GameDirector._loop` holds, 100 cubes and 15 shooters spawned,
+  selecting column 0 fired all ten shots (domain 90 standing, 90 views, slot 0 freed at
+  ammo 0), `LevelEndViewModel.Restart.Execute` reloaded the scene into a fresh scope (one
+  scope, 100 cubes, Playing), zero console errors. `Configure` now registers instead of
+  constructing: the three parsed models as instances, `IColorMaterials ->
+  PaletteColorMaterials`, `GameLoop` and `LevelEndViewModel` as singletons, the three
+  scene components through `RegisterComponent` (its build callback resolves the component,
+  which is what runs the `[Inject] Construct` - confirmed in VContainer 1.19's source,
+  the comment there reads "Force inject execution"), and the restart as an entry point:
+  `SceneRestarter : IInitializable, IDisposable` subscribes to `Restart` and reloads the
+  active scene, disposed with the container. `Blast.Presentation` and `Blast.UI` reference
+  `VContainer` for the attribute only; `ArchitectureTests` ignores non-Blast references,
+  so the layer rule is untouched. **Rejected:** `autoInjectGameObjects` (inspector list,
+  invisible in a diff) and a `RegisterBuildCallback` lambda for the restart (works, shows
+  nothing). New test `GameScene_EveryRegisteredComponentHasAnInjectMethod`: a scene
+  component registered without the attribute builds fine and throws on the first tap, so
+  the mistake needs a test, and it was red before the attributes went in. **Trap:** in an
+  `eval`, `scope.Container.Resolve<T>()` does not compile - the generic overload is an
+  extension method in the `VContainer` namespace and eval drops usings; cast the
+  non-generic `Resolve(typeof(T))` instead.

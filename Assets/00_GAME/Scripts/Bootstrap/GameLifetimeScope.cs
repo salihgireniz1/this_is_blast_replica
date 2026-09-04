@@ -1,10 +1,11 @@
 // GameLifetimeScope - the composition root: the one place that knows how the game is wired.
 // Layer: Bootstrap.
-// Responsibility: registering the authored assets every later layer resolves, and the one
-//   engine setting that has no home in an asset file.
+// Responsibility: parsing the level, registering the models, the use case, the palette seam
+//   and the scene components, so that VContainer builds the object graph and calls every
+//   [Inject] Construct; plus the one engine setting that has no home in an asset file.
 // NOT its responsibility: any game logic, and any decision about what a dependency does.
-//   It only says which instance answers to which type; behaviour lives in the layer it belongs
-//   to. Nothing here is allowed to run gameplay code.
+//   It only says which type answers to which; behaviour lives in the layer it belongs to.
+//   Nothing here is allowed to run gameplay code.
 //
 // Why the assets arrive through the inspector rather than a Resources.Load or an asset path
 // constant: a path is a string nothing verifies, and it resolves at runtime in a build. A
@@ -15,9 +16,7 @@ using Blast.Infrastructure;
 using Blast.Presentation;
 using Blast.UI;
 using DG.Tweening;
-using R3;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using VContainer;
 using VContainer.Unity;
 
@@ -98,12 +97,10 @@ namespace Blast.Bootstrap
             DOTween.SetTweensCapacity(TweenersCapacity, SequencesCapacity);
             UnityEngine.Application.targetFrameRate = TargetFrameRate;
 
-            builder.RegisterInstance(_palette);
-
             // The level is parsed once, here, because this is the only layer that may see
-            // both the parser (Infrastructure) and the views (Presentation). The domain
-            // models are registered individually - the game loop will resolve them without
-            // ever learning a level file exists.
+            // both the parser (Infrastructure) and the views (Presentation). The three
+            // models are registered on their own: GameLoop and the views resolve them
+            // without ever learning a level file exists.
             //
             // One level, no stored progress: the brief ships a single sample level and
             // replays it after a win as well as a loss, so an index to remember would
@@ -113,20 +110,25 @@ namespace Blast.Bootstrap
             builder.RegisterInstance(level.Shooters);
             builder.RegisterInstance(level.Slots);
 
-            // The scene objects get their dependencies handed over directly; registering
-            // them in the container would only re-route the same handshake.
-            GameLoop loop = new GameLoop(level.Board, level.Shooters, level.Slots);
-            builder.RegisterInstance(loop);
+            // Presentation asks for IColorMaterials and never sees PaletteData; this is the
+            // one line where the seam meets the asset.
+            builder.RegisterInstance(_palette);
+            builder.Register<IColorMaterials, PaletteColorMaterials>(Lifetime.Singleton);
 
-            PaletteColorMaterials materials = new PaletteColorMaterials(_palette);
-            _spawner.Construct(level.Board, level.Shooters, level.Slots, materials);
-            _director.Construct(loop, level.Slots, _spawner);
+            builder.Register<GameLoop>(Lifetime.Singleton);
+            builder.Register<LevelEndViewModel>(Lifetime.Singleton);
+
+            // The scene components already exist, so they are registered as instances: the
+            // container calls each one's [Inject] Construct as it builds, in this order. The
+            // director asks for the spawner, so the level is spawned before the director
+            // holds it whichever way the order went.
+            builder.RegisterComponent(_spawner);
+            builder.RegisterComponent(_director);
+            builder.RegisterComponent(_levelEnd);
 
             // The overlay only raises the restart intent; that it means "reload this scene"
-            // is a composition decision, so it is decided here and nowhere else.
-            LevelEndViewModel levelEnd = new LevelEndViewModel(loop);
-            levelEnd.Restart.Subscribe(_ => SceneManager.LoadScene(gameObject.scene.buildIndex));
-            _levelEnd.Construct(levelEnd);
+            // is a composition decision, so the listener lives in this layer.
+            builder.RegisterEntryPoint<SceneRestarter>();
         }
 
         #endregion

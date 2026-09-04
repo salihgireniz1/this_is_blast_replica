@@ -10,10 +10,12 @@
 // deep inside gameplay - a phase away from the empty inspector field that caused it.
 
 using System.Linq;
+using System.Reflection;
 using Blast.Bootstrap;
 using NUnit.Framework;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using VContainer;
 
 namespace Blast.Tests
 {
@@ -50,9 +52,37 @@ namespace Blast.Tests
             Assert.IsNotNull(scope.Level, "The level field is empty, so there is nothing to parse.");
         }
 
+        /// <summary>
+        /// Fails when a scene component the scope registers has no [Inject] method. VContainer
+        /// injects an existing component only through a marked method; without the mark the
+        /// container builds, the scene loads, and the component's dependencies stay null until
+        /// the first tap throws.
+        /// </summary>
+        [Test]
+        public void GameScene_EveryRegisteredComponentHasAnInjectMethod()
+        {
+            var scope = ScopesInScene().Single();
+
+            foreach (Component component in new Component[] { scope.Spawner, scope.Director, scope.LevelEnd })
+            {
+                Assert.IsNotNull(component, "A scene component field on the scope is empty.");
+                Assert.IsTrue(HasInjectMethod(component.GetType()),
+                    $"{component.GetType().Name} has no [Inject] method; the container will never hand it its dependencies.");
+            }
+        }
+
         #endregion
 
         #region Private Methods
+
+        /// <summary>Whether a type declares at least one method VContainer will inject into.</summary>
+        /// <param name="type">The component type to inspect.</param>
+        static bool HasInjectMethod(System.Type type)
+        {
+            const BindingFlags Declared = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+
+            return type.GetMethods(Declared).Any(method => method.IsDefined(typeof(InjectAttribute), inherit: false));
+        }
 
         /// <summary>Opens the game scene and returns every composition root it contains.</summary>
         /// <returns>The scopes found in the scene, inactive objects included.</returns>

@@ -11,15 +11,16 @@
 // that extension lives in DOTween's UI module, which compiles into the Plugins assembly
 // an asmdef cannot reference. The core tween does the same job with no reference at all.
 //
-// Bound in Construct rather than Start because the scope hands the view model over from
-// its Configure, which runs before any Start; a decision cannot arrive before a tap, so
-// nothing is missed either way.
+// Bound in Construct rather than Start because the container injects the view model while
+// the scope builds, in its Awake, before any Start; a decision cannot arrive before a tap,
+// so nothing is missed either way.
 
 using DG.Tweening;
 using R3;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 namespace Blast.UI
 {
@@ -62,6 +63,7 @@ namespace Blast.UI
 
         /// <summary>Binds the overlay to the view model. Subscriptions die with this object.</summary>
         /// <param name="viewModel">The overlay's state.</param>
+        [Inject]
         public void Construct(LevelEndViewModel viewModel)
         {
             viewModel.IsShown.Subscribe(Show).AddTo(this);

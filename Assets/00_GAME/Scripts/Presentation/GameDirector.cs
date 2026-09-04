@@ -29,6 +29,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Lean.Common;
 using UnityEngine;
+using VContainer;
 
 namespace Blast.Presentation
 {
@@ -104,6 +105,7 @@ namespace Blast.Presentation
         /// <param name="loop">The use case every action goes through.</param>
         /// <param name="slots">The slot row, for ammo reads.</param>
         /// <param name="spawner">The view registry.</param>
+        [Inject]
         public void Construct(GameLoop loop, SlotRow slots, LevelSpawner spawner)
         {
             _loop = loop;

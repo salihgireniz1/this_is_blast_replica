@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using Blast.Domain;
 using DG.Tweening;
 using UnityEngine;
+using VContainer;
 
 namespace Blast.Presentation
 {
@@ -85,6 +86,7 @@ namespace Blast.Presentation
         /// <param name="shooters">The queue to spawn shooters for.</param>
         /// <param name="slots">The slot row, for how many slot positions to lay out.</param>
         /// <param name="materials">The colour table the views dress from.</param>
+        [Inject]
         public void Construct(BoardModel board, ShooterQueue shooters, SlotRow slots, IColorMaterials materials)
         {
             _board = board;

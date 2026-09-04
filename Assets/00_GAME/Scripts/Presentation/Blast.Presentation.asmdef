@@ -9,6 +9,7 @@
         "UniTask.DOTween",
         "LeanTouch",
         "LeanCommon",
-        "Unity.RenderPipelines.Universal.Runtime"
+        "Unity.RenderPipelines.Universal.Runtime",
+        "VContainer"
     ]
 }

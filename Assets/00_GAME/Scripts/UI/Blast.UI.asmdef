@@ -6,6 +6,7 @@
         "Blast.Application",
         "R3.Unity",
         "Unity.TextMeshPro",
-        "UnityEngine.UI"
+        "UnityEngine.UI",
+        "VContainer"
     ]
 }

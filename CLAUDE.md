@@ -110,7 +110,10 @@ editor 41/41 node tests.** What exists, by layer (details per component in the l
 - **UI** — `LevelEndViewModel` (R3, `IsShown` / `Title` WIN|LOST / `Restart` command),
   `LevelEndView` (humble, fade + title pop).
 - **Bootstrap** — `GameLifetimeScope`: parses `_level` (**boots `Level_01`**, the case's
-  level), registers the models, `Restart` = scene reload. No save system — deleted with
+  level) and registers everything in VContainer: the models as instances, `GameLoop` /
+  `LevelEndViewModel` / `IColorMaterials -> PaletteColorMaterials` as singletons, the
+  scene components via `RegisterComponent` (their `[Inject] Construct` runs at build), and
+  `SceneRestarter` (entry point: `Restart` = active scene reload). No save system — deleted with
   Easy Save 3 on 2026-09-04, do not reintroduce it for the case.
 
 **Facts that must hold when the case ships:** the scope's `_level` is `Level_01`; the
