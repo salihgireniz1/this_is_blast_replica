@@ -1110,11 +1110,13 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   simply did not appear in the run); the unwedge eval from `unity-mcp.md`
   (`UnlockReloadAssemblies` + `Refresh(ForceUpdate)` + `RequestScriptCompilation`) fixed it
   every time. Left: `Leave`'s path array (3e).
-- Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
-  not wired, no deck/dock visual and no room for one in the current framing (shooters run
-  into the queue-playarea gap), layout needs breathing room. Core loop first.
-- Next: win/fail overlay + restart button (UI layer), then juice (gun, shoot/run
-  animations, outline on selectables, splash particle, sound, deck visual + framing).
+- Salih's early playtest notes (unwired animator, missing dock visual, cramped framing)
+  and the "next: overlay, then juice" line that followed them are **deleted as of
+  2026-09-04: every item in them shipped** - the animator in "Shooter animator wired",
+  the dock in "Framing matched to the original", the framing in that same chunk, and the
+  whole overlay/juice list in the chunks between. They were quoted as outstanding work in
+  a later session before anyone checked them against the entries above. Read the Status
+  entries, not a parked to-do list; when the two disagree the entries are the record.
 
 The phase plan below is the **portfolio** plan. It resumes after the case ships; the case
 overrides it wherever they disagree (no merge feature, their art, 10x10 single layer).
