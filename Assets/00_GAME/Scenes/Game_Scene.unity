@@ -2146,7 +2146,6 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _palette: {fileID: 11400000, guid: e53a972901a90ef469636081d317fa58, type: 2}
-  _juice: {fileID: 11400000, guid: 4dba0608ddd49334cbdfe6935e948ecd, type: 2}
   _level: {fileID: 4900000, guid: 9ee776849efaae549aa0e62fe430680c, type: 3}
   _spawner: {fileID: 1900672655}
   _director: {fileID: 1024472675}

@@ -48,10 +48,6 @@ namespace Blast.Bootstrap
         [Tooltip("The colour table every cube and shooter renders from. Swap it for another palette to retheme the whole game.")]
         [SerializeField] PaletteData _palette;
 
-        /// <summary>The authored tween timings. Assigned in the inspector.</summary>
-        [Tooltip("The tween timings asset.")]
-        [SerializeField] JuiceConfig _juice;
-
         /// <summary>The level this scene boots. Assigned in the inspector.</summary>
         [Tooltip("The JSON level the scene boots. The case ships one; swap this field to play another. It must live in Assets/00_GAME/Levels so LevelFileTests checks it.")]
         [SerializeField] TextAsset _level;
@@ -74,9 +70,6 @@ namespace Blast.Bootstrap
 
         /// <summary>The palette this scope will register. Exposed so a test can see the wiring.</summary>
         public PaletteData Palette => _palette;
-
-        /// <summary>The juice config this scope will register. Exposed so a test can see the wiring.</summary>
-        public JuiceConfig Juice => _juice;
 
         /// <summary>The level this scope boots. Exposed so a test can see the wiring.</summary>
         public TextAsset Level => _level;
@@ -106,7 +99,6 @@ namespace Blast.Bootstrap
             UnityEngine.Application.targetFrameRate = TargetFrameRate;
 
             builder.RegisterInstance(_palette);
-            builder.RegisterInstance(_juice);
 
             // The level is parsed once, here, because this is the only layer that may see
             // both the parser (Infrastructure) and the views (Presentation). The domain

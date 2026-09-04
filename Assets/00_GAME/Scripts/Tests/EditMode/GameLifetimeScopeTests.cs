@@ -47,7 +47,7 @@ namespace Blast.Tests
             var scope = ScopesInScene().Single();
 
             Assert.IsNotNull(scope.Palette, "The palette field is empty, so it registers null.");
-            Assert.IsNotNull(scope.Juice, "The juice field is empty, so it registers null.");
+            Assert.IsNotNull(scope.Level, "The level field is empty, so there is nothing to parse.");
         }
 
         #endregion
