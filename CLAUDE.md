@@ -56,6 +56,48 @@ what the file holds, nothing else changed, and `IsAtLastVersion` reads true afte
 reimport. **If a package pin ever disagrees with `packages-lock.json` again,
 the manifest is the thing that is wrong.**
 
+**The whole upgrade happened again on 2026-09-04, and here is why — read this before
+opening the project from the Hub.** Salih opened it from the Hub UI and the Editor came up
+in Safe Mode. Cause chain, every step evidenced in the logs:
+
+1. The Hub reads a project's Editor version from **its own database**
+   (`%APPDATA%/UnityHub/projects-v1.json`), never from `ProjectVersion.txt`. The 2026-08-30
+   downgrade edited the file, so the Hub's record stayed at `6000.5.7f1` and every Hub
+   launch since would have gone there. It did not show until now only because the project
+   was always started from the command line with an explicit editor path.
+2. Unity normally stops at a modal — *"this project was last opened in a different version,
+   continuing may cause irreversible changes"*. It did not appear, because the Hub launches
+   this project with `cliArgs: "-automated"` (per-project, stored in
+   `%APPDATA%/UnityHub/projectsInfo.json`; our own `unity-mcp.md` asks for the flag so
+   dialogs cannot freeze pipeline commands). `-automated` gives `IsHumanControllingUs: 0`
+   in the log and auto-answers every dialog, the mismatch warning included. **The flag that
+   keeps the pipeline alive is the flag that removed the safety net.** It stays; the Hub
+   record being right is what prevents the trigger.
+3. 6000.5.7f1 then rewrote `ProjectVersion.txt` and re-resolved packages exactly as before
+   (URP 17.0.4 -> 17.5.0, test-framework 1.6 -> 1.7, ugui 2.0 -> 2.5, multiplayer.center
+   1.0.0 -> 1.0.1, plus three `com.unity.modules.*` that exist only in 6000.5) — the full
+   list is in `Logs/Packages-Update.log`.
+4. Safe Mode itself was one file: 6000.5 makes the `instanceId` APIs obsolete-**as-error**,
+   and `Assets/Plugins/Easy Save 3/Editor/ES3Postprocessor.cs` uses them at lines 112, 119,
+   132 and 147. Do not "fix" ES3 — the case brief fixes the editor at 6000.0.68f1, so the
+   wrong editor is the bug.
+
+Recovery, in this order: quit the Editor, `git checkout` the five files 6000.5 touched
+(`ProjectVersion.txt`, `manifest.json`, `packages-lock.json`, `ProjectSettings.asset`,
+`PackageManagerSettings.asset` — `Game_Scene.unity` is Salih's own uncommitted work, leave
+it), delete `Library/ApiUpdater`, `Library/ScriptAssemblies`, the URP 17.5 `PackageCache`
+folder and the Library assets the newer editor serialized (`ScriptMapper`,
+`BuildSettings.asset`, `EditorUserBuildSettings.asset`, `SpriteAtlasDatabase.asset`,
+`SceneVisibilityState.asset`, `expandedItems`, `InspectorExpandedItems.asset` — Unity
+recreates every one), then **quit the Hub from the tray** (`minimizeToTray` is on, closing
+the window leaves five processes alive that would overwrite the file) and set the project's
+`version` to `6000.0.68f1` and `changeset` to `e1e9baaf294b` in `projects-v1.json`. Done
+2026-09-04; 88/88 green afterwards, boot clean, no Safe Mode.
+
+**The standing check:** `ProjectVersion.txt` is in git, so a silent upgrade is the first
+line of `git status`. That is how this was caught both times — look there before anything
+else when the Editor behaves strangely after an open.
+
 Stack: URP **17.0.4** linear, VContainer, R3, UniTask, DOTween, LeanTouch+, Addressables,
 Toony Colors Pro 2 Hybrid Shader 2.
 
