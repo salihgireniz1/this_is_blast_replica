@@ -352,3 +352,12 @@ test("simulate: seats the front that can fire, not the leftmost one", () => {
   };
   assert.equal(Level.simulate(level).won, true);
 });
+
+test("autofill: when every chunk would sit at a front, one is split so a hidden shooter exists", () => {
+  const { level } = Level.parse(readLevel("Level_01.json")); // five colours, twenty cubes each
+  const columns = Level.autofill(level.rows, 5);
+  const totals = queueTotals(columns);
+  assert.equal(totals.hidden, 1);
+  assert.ok(columns.every((shooters) => !shooters[0].hidden), "a front shooter was hidden");
+  assert.deepEqual(totals.ammo, Level.stats(level).cubes); // the split changes no total
+});

@@ -363,7 +363,21 @@ const Level = (() => {
     }
 
     // Never more columns than shooters, or a column would be empty and the parser refuses it.
-    const columns = Array.from({ length: Math.min(wanted, dealt.length) }, () => []);
+    const columnsUsed = Math.min(wanted, dealt.length);
+
+    // When every shooter would be a front (five colours of twenty, say), nothing could be
+    // hidden without wasting it on a front. Split the last chunk so one shooter sits behind:
+    // the totals do not change, and the case's hidden requirement is met every time.
+    if (dealt.length > 0 && dealt.length <= columnsUsed) {
+      const last = dealt[dealt.length - 1];
+      if (last.ammo >= 2) {
+        const half = Math.floor(last.ammo / 2);
+        last.ammo -= half;
+        dealt.push({ color: last.color, ammo: half, hidden: false });
+      }
+    }
+
+    const columns = Array.from({ length: columnsUsed }, () => []);
     dealt.forEach((shooter, index) => columns[index % columns.length].push(shooter));
 
     // The shooter at column 1, position 2: revealed the moment the first front is taken,

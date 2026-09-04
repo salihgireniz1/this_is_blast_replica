@@ -393,10 +393,12 @@ el("fill").addEventListener("click", () => {
   update((s) => { s.level.rows = s.level.rows.map((row) => s.brush.repeat(row.length)); });
 });
 
+/** Autofill replaces the whole queue; the status line says how many shooters went, so nothing vanishes unnoticed. */
 el("autofill").addEventListener("click", () => {
-  const hasShooters = state.level.columns.some((shooters) => shooters.length > 0);
-  if (hasShooters && !confirm("Replace every shooter with an autofilled queue?")) return;
+  const replaced = state.level.columns.reduce((count, shooters) => count + shooters.length, 0);
   update((s) => { s.level.columns = Level.autofill(s.level.rows, s.level.columns.length); });
+  const dealt = state.level.columns.reduce((count, shooters) => count + shooters.length, 0);
+  setStatus(replaced > 0 ? `Autofill replaced ${replaced} shooters with ${dealt}.` : `Autofill dealt ${dealt} shooters.`);
 });
 
 el("new").addEventListener("click", () => {
