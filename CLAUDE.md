@@ -1110,6 +1110,25 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   simply did not appear in the run); the unwedge eval from `unity-mcp.md`
   (`UnlockReloadAssemblies` + `Refresh(ForceUpdate)` + `RequestScriptCompilation`) fixed it
   every time. Left: `Leave`'s path array (3e).
+- Impact splash pulled off the cube's centre - done, 84/84 green, verified in Play (fifteen
+  shooters seated on `Level_01`, board splashes sampled mid-fire: every one sat 0.30-0.34
+  on the shooter side of the front row it hit, zero errors). Salih's report: the impact
+  splash looked buried inside the cube. It was spawning at `cube.transform.position`, the
+  cube's exact centre, so half the effect rendered inside a 0.9-wide cube and read as a dim
+  flicker. `Firing.ImpactPullback` (0.45, half a cube) now moves it back along
+  `aim.normalized` - **back, not forward**: the splash's own forward IS the flight
+  direction, so offsetting along it would push the effect deeper in. Negative values do
+  that on purpose, which is what the tooltip says. The muzzle splash is untouched.
+  No test: one line of arithmetic on a humble visual, no branch, and pinning the number
+  would be pinning a choice.
+  **Correction to the trap this file repeats:** "a new field inside an existing serialized
+  struct arrives as 0" is only true when the struct FIELD has no initializer. `GameDirector`
+  declares `[SerializeField] Firing _firing = Firing.Defaults;`, so Unity deserialises the
+  scene's data over an already-constructed `Defaults` and a sub-field missing from the scene
+  keeps its default - `ImpactPullback` read 0.45 before anything was written. It was still
+  written through `SerializedObject` so the scene states it outright. Check the declaration
+  before assuming the eval is needed; the older chunks that hit the trap
+  (`ShooterMotion`, `CubeDeath`) are the ones whose fields had no initializer.
 - Salih's early playtest notes (unwired animator, missing dock visual, cramped framing)
   and the "next: overlay, then juice" line that followed them are **deleted as of
   2026-09-04: every item in them shipped** - the animator in "Shooter animator wired",

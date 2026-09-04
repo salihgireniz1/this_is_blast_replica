@@ -259,8 +259,11 @@ namespace Blast.Presentation
             _pools.Bullets.Return(bullet);
 
             // The impact splash sits on the cube, the muzzle one on the shooter: the
-            // original shows both, and the pool does not care where a splash plays.
-            _pools.Splashes.Take(cube.transform.position, Quaternion.LookRotation(aim));
+            // original shows both, and the pool does not care where a splash plays. Pulled
+            // back along the flight line so it plays on the face the bullet struck; at the
+            // cube's centre half of it is inside the cube and reads as a dim flicker.
+            Vector3 impact = cube.transform.position - aim.normalized * _firing.ImpactPullback;
+            _pools.Splashes.Take(impact, Quaternion.LookRotation(aim));
             _shake.Kick();
 
             // Death as the original plays it, measured frame by frame (see CLAUDE.md): the
@@ -398,8 +401,21 @@ namespace Blast.Presentation
             [Tooltip("Seconds a bullet takes to reach its cube. The cube dies on arrival.")]
             public float FlightDuration;
 
+            /// <summary>
+            /// How far back along the flight line the impact splash sits, so it plays on the
+            /// cube's near face instead of buried in its middle. Negative pushes it through.
+            /// </summary>
+            [Tooltip("World units the impact splash is pulled back from the cube's centre toward the shooter. Roughly half a cube puts it on the face; negative buries it deeper.")]
+            public float ImpactPullback;
+
             /// <summary>The values a fresh director starts with.</summary>
-            public static Firing Defaults => new Firing { Interval = 0.12f, MuzzleHeight = 0.5f, FlightDuration = 0.17f };
+            public static Firing Defaults => new Firing
+            {
+                Interval = 0.12f,
+                MuzzleHeight = 0.5f,
+                FlightDuration = 0.17f,
+                ImpactPullback = 0.45f,
+            };
         }
 
         /// <summary>What happens to the board when a cube is hit. One inspector heading.</summary>
