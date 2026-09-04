@@ -2,16 +2,16 @@
   "boardLayers": [
     {
       "rows": [
-        "RRRRRRRRRR",
-        "RRRRRRRRRR",
-        "RRRRRRRRRR",
-        "RRRRRRRRRR",
+        "BBBBGGBBBB",
+        "BBBBGGBBBB",
+        "RRRRROOOOO",
+        "OOOOORRRRR",
         "BBBBBBBBBB",
         "BBBBBBBBBB",
         "YYYYYYYYYY",
         "YYYYYGGGGG",
         "GGGGGGGGGG",
-        "OOOOOOOOOO"
+        "RRRRRRRRRR"
       ]
     }
   ],
@@ -20,13 +20,13 @@
     {
       "shooters": [
         {
-          "color": "R",
+          "color": "B",
           "ammo": 20,
           "hidden": false
         },
         {
-          "color": "O",
-          "ammo": 10,
+          "color": "Y",
+          "ammo": 15,
           "hidden": true
         }
       ]
@@ -34,26 +34,8 @@
     {
       "shooters": [
         {
-          "color": "R",
-          "ammo": 20,
-          "hidden": false
-        }
-      ]
-    },
-    {
-      "shooters": [
-        {
           "color": "B",
-          "ammo": 20,
-          "hidden": false
-        }
-      ]
-    },
-    {
-      "shooters": [
-        {
-          "color": "Y",
-          "ammo": 15,
+          "ammo": 16,
           "hidden": false
         }
       ]
@@ -62,7 +44,25 @@
       "shooters": [
         {
           "color": "G",
-          "ammo": 15,
+          "ammo": 19,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "shooters": [
+        {
+          "color": "R",
+          "ammo": 20,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "shooters": [
+        {
+          "color": "O",
+          "ammo": 10,
           "hidden": false
         }
       ]
