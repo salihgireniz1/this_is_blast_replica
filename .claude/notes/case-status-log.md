@@ -1310,3 +1310,17 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   established:** a single mid-burst scale sample did not catch a cube over its rest size;
   the rest size is the prefab's, not 1, so the probe's baseline was wrong. The unit test
   is the proof; a slow-motion look in the Editor is the way to tune the number.
+- Regions and README - done. `GameLifetimeScope`'s `Protected Methods` region (not one
+  of the standard's names) is `Public Methods`; `GameDirector`'s `Awake` / `OnDestroy`
+  moved from the Public region to Private, where every other file keeps its Unity
+  messages. `README.md` written for the evaluator: run, tests, the six assemblies and
+  what each knows, the level format, the performance summary, and the decisions list -
+  including, in the open, that `GameDirector` has no unit tests and why the split was
+  deferred.
+- Diagnostics assembly - done, 88/88 green. `PerfProbe` and `PerfSweep` moved to
+  `Scripts/Diagnostics/` under `Blast.Diagnostics` (namespace and asmdef), which
+  references TMP and URP only and no game layer; the URP reference left `Blast.Presentation`
+  with them. `git mv` kept the script GUIDs, so the scene's two components still resolve.
+  `ArchitectureTests` gained the row (red first: the table named an asmdef that did not
+  exist). Rationale: the two dev-only probes were compiling into the gameplay assembly
+  and pulling URP into it; a profiler tool is not Presentation.

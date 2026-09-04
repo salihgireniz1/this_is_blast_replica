@@ -1,0 +1,8 @@
+{
+    "name": "Blast.Diagnostics",
+    "rootNamespace": "Blast.Diagnostics",
+    "references": [
+        "Unity.TextMeshPro",
+        "Unity.RenderPipelines.Universal.Runtime"
+    ]
+}

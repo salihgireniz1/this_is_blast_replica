@@ -1,5 +1,5 @@
 // PerfSweep - one build, every render variant, for Docs/PERFORMANCE.md.
-// Layer: Presentation.
+// Layer: Diagnostics (development builds and the Editor only; references no game layer).
 // Responsibility: walk a fixed list of render settings on a timer and log which one is live,
 //   so PerfProbe's lines can be read per variant. Each variant is applied on top of the
 //   scene's own values and undone before the next, so every number is one change against
@@ -17,7 +17,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-namespace Blast.Presentation
+namespace Blast.Diagnostics
 {
     /// <summary>Cycles through render-setting variants on a timer and logs each one, development builds only.</summary>
     public sealed class PerfSweep : MonoBehaviour

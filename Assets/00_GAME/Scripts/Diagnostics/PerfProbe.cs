@@ -1,5 +1,5 @@
 // PerfProbe - the frame ledger behind Docs/PERFORMANCE.md.
-// Layer: Presentation.
+// Layer: Diagnostics (development builds and the Editor only; references no game layer).
 // Responsibility: read Unity's own frame counters through ProfilerRecorder and log one line per
 //   second: mean and worst frame time, main and render thread time, GC bytes and allocation
 //   count per frame, batches, SetPass calls, draw calls, shadow casters, triangles. The same
@@ -17,7 +17,7 @@ using TMPro;
 using Unity.Profiling;
 using UnityEngine;
 
-namespace Blast.Presentation
+namespace Blast.Diagnostics
 {
     /// <summary>Logs frame time, allocation and render counters once a second, in the editor and development builds only.</summary>
     public sealed class PerfProbe : MonoBehaviour

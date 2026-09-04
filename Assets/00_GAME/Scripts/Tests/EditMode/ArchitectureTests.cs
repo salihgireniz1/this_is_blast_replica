@@ -32,6 +32,7 @@ namespace Blast.Tests
         static readonly Dictionary<string, string[]> AllowedReferences = new()
         {
             ["Blast.Domain"]         = new string[0],
+            ["Blast.Diagnostics"]    = new string[0],
             ["Blast.Application"]    = new[] { "Blast.Domain" },
             ["Blast.Presentation"]   = new[] { "Blast.Domain", "Blast.Application" },
             ["Blast.UI"]             = new[] { "Blast.Domain", "Blast.Application" },

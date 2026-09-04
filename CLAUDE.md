@@ -45,6 +45,8 @@ Blast.Application     use cases, UniTask
 Presentation   UI (MVVM, R3)  Infrastructure
   ↑
 Blast.Bootstrap       VContainer composition root
+
+Blast.Diagnostics     PerfProbe / PerfSweep; dev-only, references no game layer
 ```
 
 `ArchitectureTests` (EditMode) verifies this from the asmdef files on disk. Adding a
@@ -87,7 +89,7 @@ level (solvable, all 5 colours, includes a hidden), WIN/LOST overlays with a res
 button that replays the same level, direct play on Editor Play, Unity 6000.0.68f1 + URP.
 Evaluation order: bug-free > juiciness > architecture > performance > git usage.
 
-**Where it stands (2026-09-04): the case is feature-complete. Unity suite 84/84, level
+**Where it stands (2026-09-04): the case is feature-complete. Unity suite 88/88, level
 editor 41/41 node tests.** What exists, by layer (details per component in the log):
 
 - **Domain** — `Cell`, `BlastColor` (byte, values pinned), `BoardModel` (nothing moves:
@@ -105,8 +107,9 @@ editor 41/41 node tests.** What exists, by layer (details per component in the l
   `GameDirector` (LeanTouch tap -> select -> UniTask fire loops; settings structs
   `ShooterMotion` / `Firing` / `CubeDeath`; every await cancels on destroy), `CubeView`,
   `ShooterView` (animator, yaw tween, outline as second material, counter punch),
-  `ComponentPool<T>` + `ShotPools`, `ShotAudio` (two voices round-robin), `CameraShake`,
-  `CollapseTweens`, `PerfProbe` / `PerfSweep` (dev-only).
+  `ComponentPool<T>` + `ShotPools`, `ShotAudio` (two voices round-robin, pitch jitter),
+  `CameraShake`, `CollapseTweens` (InBack swell, then the drop).
+- **Diagnostics** — `PerfProbe` / `PerfSweep`, its own asmdef, dev-only, no game references.
 - **UI** — `LevelEndViewModel` (R3, `IsShown` / `Title` WIN|LOST / `Restart` command),
   `LevelEndView` (humble, fade + title pop).
 - **Bootstrap** — `GameLifetimeScope`: parses `_level` (**boots `Level_01`**, the case's
