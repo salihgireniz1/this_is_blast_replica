@@ -92,7 +92,6 @@ script because Chromium refuses module scripts from file://.
   <button id="new">New</button>
   <button id="save" title="Overwrite the open file">Save</button>
   <button id="saveAs" title="Write under the name on the left">Save As</button>
-  <span class="status" id="folder"></span>
   <span class="status" id="status"></span>
 </header>
 <div class="banner" id="banner" hidden></div>
@@ -166,8 +165,7 @@ const state = {
   fileNames: [],           // the .json files in the folder, sorted
   fileHandle: null,        // the open file; null for a new level or the fallback
   sourceLayerCount: 1,     // more than one means Save is refused: it would drop layers
-  mode: "download",        // "server" (serve.py), "fs" (folder picker) or "download"; resolved at boot
-  folderLabel: "",         // where files go, for the header
+  mode: "download",        // "fs" (the folder picker) or "download"; resolved at boot
 };
 
 /** Whether this browser can write into a folder at all; otherwise Save As downloads. */
@@ -240,30 +238,35 @@ function render() {
   const issues = Level.validate(level);
   renderIssues(issues);
   renderFiles(issues.some((issue) => issue.severity === "error"));
-  el("status").textContent = state.message || (isDirty() ? "unsaved changes" : "");
+  const status = state.message || (isDirty() ? "unsaved changes" : "");
+  el("status").textContent = status;
+  document.title = status ? `${status} — Blast Level Editor` : "Blast Level Editor";
 }
 
-/** The header's file controls: where files go, what can be opened, what may be saved. */
+/** The header's file controls: which folder, what can be opened, what may be saved. */
 function renderFiles(hasErrors) {
-  const server = state.mode === "server";
   const fs = state.mode === "fs";
-  const connected = server || (fs && state.dirHandle !== null && !state.needsPermission);
+  const connected = fs && state.dirHandle !== null && !state.needsPermission;
 
   el("pickFolder").hidden = !fs;
   el("pickFolder").textContent = state.dirHandle === null ? "Choose Levels folder…"
     : state.needsPermission ? `Reconnect "${state.dirHandle.name}"` : `"${state.dirHandle.name}" ✓`;
-  el("folder").textContent = server ? state.folderLabel : "";
 
-  el("files").hidden = state.mode === "download";
+  el("files").hidden = !connected;
   el("files").innerHTML = state.fileNames.map((name) =>
     `<option ${name === state.fileName ? "selected" : ""}>${esc(name)}</option>`).join("");
-  el("files").disabled = !connected || state.fileNames.length === 0;
-  el("open").disabled = state.mode !== "download" && (!connected || state.fileNames.length === 0);
+  el("files").disabled = state.fileNames.length === 0;
 
-  // Save overwrites, so it needs an open file, a single-layer source and a legal level.
+  // Open always works: from the folder when there is one, from a file picker otherwise.
+  el("open").disabled = false;
+  el("open").title = connected ? "Open the selected level" : "Open a level file";
+
+  // Save overwrites, so it needs an open file in the folder, a single-layer source and a legal level.
+  el("save").hidden = !connected;
   el("save").disabled = hasErrors || state.fileHandle === null || state.sourceLayerCount > 1;
   el("saveAs").disabled = hasErrors;
-  el("saveAs").textContent = state.mode === "download" ? "Download" : "Save As";
+  el("saveAs").textContent = connected ? "Save As" : "Download";
+  el("saveAs").title = connected ? "Write under the name on the left" : "Download the file; drop it into Assets/00_GAME/Levels";
 
   const banner = el("banner");
   banner.hidden = state.sourceLayerCount <= 1;
@@ -427,32 +430,18 @@ window.addEventListener("beforeunload", (e) => {
 
 // --- Files: the Levels folder ---------------------------------------------------------
 //
-// Three ways to reach the folder, tried in this order at boot:
-//   server    serve.py is running: /api/levels lists, reads and writes the game's own
-//             Levels folder. No picker, no permission prompt, any browser.
-//   fs        the File System Access API: the designer picks the folder once; the handle
-//             is kept in IndexedDB so the next session offers "Reconnect".
-//   download  no folder at all: a file input to open, a download to save.
+// A page opened from disk cannot reach a folder by itself, so there are two ways:
+//   fs        the File System Access API (Edge, Chrome): the designer picks
+//             Assets/00_GAME/Levels once, the editor lists it, opens from it and writes
+//             back in place; the handle is kept in IndexedDB so the next session offers
+//             "Reconnect".
+//   download  everywhere else, or before a folder is picked: Open reads a file the
+//             designer chooses, Download hands back a file to drop into the folder.
+// Either way Unity picks a changed file up the moment its window regains focus.
 
-const API = "/api/levels";
 const IDB_NAME = "level-editor";
 const IDB_STORE = "handles";
 const IDB_KEY = "levelsDir";
-
-/** Server mode if serve.py answers the list request; the folder and its files come with it. */
-async function detectServer() {
-  try {
-    const response = await fetch(API, { cache: "no-store" });
-    if (!response.ok) return false;
-    const { folder, files } = await response.json();
-    state.mode = "server";
-    state.folderLabel = folder;
-    state.fileNames = files;
-    return true;
-  } catch {
-    return false; // file:// or a plain static server: no API here
-  }
-}
 
 /** Opens the tiny database that holds the folder handle. */
 function idb() {
@@ -489,46 +478,19 @@ async function rememberFolder(handle) {
   try { await idbSet(IDB_KEY, handle); } catch { /* re-picking is one click */ }
 }
 
-/** Refreshes state.fileNames from wherever the files live. */
+/** Whether a picked folder is usable right now. */
+function folderReady() {
+  return state.mode === "fs" && state.dirHandle !== null && !state.needsPermission;
+}
+
+/** Lists the .json files in the picked folder into state.fileNames. */
 async function listFiles() {
-  if (state.mode === "server") {
-    await detectServer();
-    return;
-  }
   const names = [];
   for await (const [name, handle] of state.dirHandle.entries()) {
     if (handle.kind === "file" && /\.json$/i.test(name)) names.push(name);
   }
   names.sort();
   state.fileNames = names;
-}
-
-/** Reads one level's text by name, from the server or the picked folder. */
-async function readFile(name) {
-  if (state.mode === "server") {
-    const response = await fetch(`${API}/${encodeURIComponent(name)}`, { cache: "no-store" });
-    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-    return response.text();
-  }
-  const handle = await state.dirHandle.getFileHandle(name);
-  return (await handle.getFile()).text();
-}
-
-/** Writes one level's text by name. Returns what Save should hold on to as the open file. */
-async function writeFile(name, text) {
-  if (state.mode === "server") {
-    const response = await fetch(`${API}/${encodeURIComponent(name)}`, { method: "PUT", body: text });
-    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-    return name;
-  }
-  const handle = await state.dirHandle.getFileHandle(name, { create: true });
-  const writable = await handle.createWritable();
-  try {
-    await writable.write(text); // nothing reaches the disk until close()
-  } finally {
-    await writable.close();
-  }
-  return handle;
 }
 
 /** The picker, or a permission re-grant for a folder remembered from last time. Needs a click. */
@@ -544,12 +506,12 @@ async function pickFolder() {
       await rememberFolder(state.dirHandle);
     }
     await listFiles();
-    render();
+    update((s) => { s.fileName = Level.nextFreeName(s.fileNames); s.savedText = Level.serialize(s.level); });
   } catch (error) {
     if (error.name === "AbortError") return; // the designer closed the picker
     state.dirHandle = null;
     state.fileNames = [];
-    setStatus(error.message);
+    setStatus(`Folder access failed: ${error.message}. Download still works.`);
   }
 }
 
@@ -582,9 +544,9 @@ function loadText(text, name, handle) {
   });
 }
 
-/** Open: the selected file, or the file input when there is no folder at all. */
+/** Open: the selected file from the folder, or a file the designer picks when there is no folder. */
 async function openSelected() {
-  if (state.mode === "download") {
+  if (!folderReady()) {
     el("fileInput").click();
     return;
   }
@@ -592,11 +554,20 @@ async function openSelected() {
   if (!name) return;
   if (isDirty() && !confirm("Discard unsaved changes?")) return;
   try {
-    const text = await readFile(name);
-    const handle = state.mode === "server" ? name : await state.dirHandle.getFileHandle(name);
-    loadText(text, name, handle);
+    const handle = await state.dirHandle.getFileHandle(name);
+    loadText(await (await handle.getFile()).text(), name, handle);
   } catch (error) {
     setStatus(`${name}: ${error.message}`);
+  }
+}
+
+/** Writes text into a file handle. Nothing reaches the disk until close(), so it is in finally. */
+async function writeTo(handle, text) {
+  const writable = await handle.createWritable();
+  try {
+    await writable.write(text);
+  } finally {
+    await writable.close();
   }
 }
 
@@ -604,7 +575,7 @@ async function openSelected() {
 async function save() {
   const text = Level.serialize(state.level);
   try {
-    await writeFile(state.fileName, text);
+    await writeTo(state.fileHandle, text);
     update((s) => { s.savedText = text; });
     setStatus(`Saved ${state.fileName}`);
   } catch (error) {
@@ -612,7 +583,7 @@ async function save() {
   }
 }
 
-/** Hands the browser a file to download; the fallback when no folder can be written. */
+/** Hands the browser a file to download; the way out when no folder can be written. */
 function download(name, text) {
   const url = URL.createObjectURL(new Blob([text], { type: "application/json" }));
   const link = document.createElement("a");
@@ -622,15 +593,16 @@ function download(name, text) {
   URL.revokeObjectURL(url);
 }
 
-/** Save As: the name in the field, into the folder (or as a download). Asks before overwriting another file. */
+/** Save As: the name in the field, into the folder, or as a download. Asks before overwriting another file. */
 async function saveAs() {
   let name = el("fileName").value.trim() || state.fileName;
   if (!/\.json$/i.test(name)) name += ".json";
   const text = Level.serialize(state.level);
 
-  if (state.mode === "download" || (state.mode === "fs" && state.dirHandle === null)) {
+  if (!folderReady()) {
     download(name, text);
     update((s) => { s.fileName = name; s.savedText = text; });
+    setStatus(`Downloaded ${name}; drop it into Assets/00_GAME/Levels.`);
     return;
   }
 
@@ -643,7 +615,8 @@ async function saveAs() {
   if (exists && !sameAsOpen && !confirm(`${name} already exists. Overwrite it?`)) return;
 
   try {
-    const handle = await writeFile(name, text);
+    const handle = await state.dirHandle.getFileHandle(name, { create: true });
+    await writeTo(handle, text);
     await listFiles();
     update((s) => {
       s.fileHandle = handle;
@@ -677,20 +650,9 @@ el("fileInput").addEventListener("change", async () => {
 
 state.level = freshLevel();
 state.savedText = Level.serialize(state.level);
+state.mode = FS_SUPPORTED ? "fs" : "download";
 render();
-(async () => {
-  if (await detectServer()) {
-    update((s) => { s.fileName = Level.nextFreeName(s.fileNames); s.savedText = Level.serialize(s.level); });
-    return;
-  }
-  if (FS_SUPPORTED) {
-    state.mode = "fs";
-    await reconnect();
-  } else {
-    state.mode = "download";
-    setStatus("This browser cannot write into folders; Download saves the file for you to copy into Assets/00_GAME/Levels.");
-  }
-})();
+if (FS_SUPPORTED) reconnect();
 </script>
 </body>
 </html>

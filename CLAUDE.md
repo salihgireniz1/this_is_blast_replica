@@ -1125,6 +1125,25 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   call: scoped to `Level_01` in `LevelFileTests`, `E_NO_HIDDEN` -> `W_NO_HIDDEN` in the
   editor; autofill still hides one by default, the designer may untick it. Proven with a
   two-colour, nothing-hidden temporary level in the folder: suite 84/84.
+- **Level editor: `serve.py` deleted again, the page is local-only** - done, node 35/35.
+  Salih's call, and the right one: the reviewers open the repo and double-click; nobody
+  installs Python for a case. What survives is what a page can do by itself: the **File
+  System Access API** in Edge/Chrome (pick `Assets/00_GAME/Levels` once, then Open/Save
+  write in place; the handle is kept in IndexedDB so the next session offers "Reconnect")
+  and, everywhere else or before a folder is picked, **Open reads a chosen file and
+  Download hands the JSON back** to drop into the folder. The Unity reimport hook went with
+  the server; the reviewer is in Unity anyway, and it refreshes on focus. **Proven in real
+  Edge from `file://` with Windows automation**, not the tool's pane (which suppresses every
+  native dialog): double-click, Choose Levels folder -> the native picker opens -> type the
+  path, Select Folder -> Edge's bubble *"Allow this site to edit files? file:/// will be
+  able to edit files in Levels"* -> Allow -> the button reads `"Levels" ✓`, the file list
+  appears, the name field jumps to `Level_07.json`. **The trap that ate an attempt:** that
+  bubble is dismissed the instant focus leaves Edge (the first run lost it to the Claude
+  window and returned a silent `AbortError`), so the picker step must be done in one
+  uninterrupted go. The status line now also goes into `document.title` ("Saved X — Blast
+  Level Editor"), which is how a native-window automation reads it, and a designer sees the
+  state in the tab. Two entries below this one describe the deleted server; they stay as
+  the record of why it was tried and why it went.
 - **Level editor, `serve.py`: the folder wired in by default** - done, Unity suite 84/84
   with `Level_06.json` (saved from the page itself) in the folder, and `Level_06` played to
   **Won** in the Editor (100 cubes, 9 shooters, 100 -> 24 -> 2 -> 0). Salih could not test
