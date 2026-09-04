@@ -154,3 +154,83 @@ test("stats: counts cubes and ammo per colour with every colour present, zeros i
     ammo: { Y: 5, R: 0, B: 0, G: 0, O: 3 },
   });
 });
+
+// --- validate: LevelFileTests' rules and the advisory warnings -----------------------
+
+/** The warning codes validate raises for a level, in order. */
+function warningCodes(level) {
+  return Level.validate(level).filter((issue) => issue.severity === "warning").map((issue) => issue.code);
+}
+
+test("validate: a board missing one of the five colours is an error that names it", () => {
+  const level = validLevel();
+  level.rows = ["YRBG"];
+  level.columns.pop(); // drop the orange shooter too, so only the board is at fault
+  const issue = Level.validate(level).find((i) => i.code === "E_MISSING_COLOUR");
+  assert.ok(issue, "E_MISSING_COLOUR was not raised");
+  assert.match(issue.message, /Orange/);
+});
+
+test("validate: a colour with less ammo than cubes is an error naming both numbers", () => {
+  const level = validLevel();
+  level.rows = ["YYRBGO"]; // two yellow cubes, one yellow shot
+  const issue = Level.validate(level).find((i) => i.code === "E_UNDER_AMMO");
+  assert.ok(issue, "E_UNDER_AMMO was not raised");
+  assert.match(issue.message, /Yellow/);
+  assert.match(issue.message, /2 cubes/);
+  assert.match(issue.message, /1 /);
+});
+
+test("validate: no hidden shooter anywhere is an error", () => {
+  const level = validLevel();
+  level.columns[0][1].hidden = false;
+  assert.ok(errorCodes(level).includes("E_NO_HIDDEN"));
+});
+
+test("validate: a sixth shooter column is an error", () => {
+  const level = validLevel();
+  while (level.columns.length < 6) level.columns.push([{ color: "Y", ammo: 1, hidden: false }]);
+  assert.ok(errorCodes(level).includes("E_TOO_MANY_COLUMNS"));
+});
+
+test("validate: one shot too many is a warning, one too few is an error - never both", () => {
+  const over = validLevel();
+  over.columns[0][0].ammo = 2; // yellow: 1 cube, 2 shots
+  assert.ok(warningCodes(over).includes("W_OVER_AMMO"));
+  assert.ok(!errorCodes(over).includes("E_UNDER_AMMO"));
+
+  const under = validLevel();
+  under.rows = ["YYRBGO"]; // yellow: 2 cubes, 1 shot
+  assert.ok(errorCodes(under).includes("E_UNDER_AMMO"));
+  assert.ok(!warningCodes(under).includes("W_OVER_AMMO"));
+});
+
+test("validate: a shooter whose colour has no cube is named once, not also as over-ammo", () => {
+  const level = validLevel();
+  level.rows = ["YRBG"]; // orange gone from the board; its shooter stays
+  const issues = Level.validate(level);
+  const orphan = issues.find((i) => i.code === "W_ORPHAN_COLOUR");
+  assert.ok(orphan, "W_ORPHAN_COLOUR was not raised");
+  assert.match(orphan.message, /Orange/);
+  assert.ok(!issues.some((i) => i.code === "W_OVER_AMMO" && /Orange/.test(i.message)));
+});
+
+test("validate: a hidden shooter at the front is a warning; behind the front it is not", () => {
+  const front = validLevel();
+  front.columns[0][0].hidden = true;
+  assert.ok(warningCodes(front).includes("W_HIDDEN_FRONT"));
+  assert.ok(!warningCodes(validLevel()).includes("W_HIDDEN_FRONT"));
+});
+
+test("validate: a board that is not 10x10 and a slot count that is not 5 warn; the brief's numbers do not", () => {
+  assert.ok(warningCodes(validLevel()).includes("W_SIZE"));
+  assert.ok(!warningCodes(validLevel()).includes("W_SLOTS"));
+
+  const brief = validLevel();
+  brief.rows = Array.from({ length: 10 }, () => "YRBGOYRBGO");
+  assert.ok(!warningCodes(brief).includes("W_SIZE"));
+
+  const fourSlots = validLevel();
+  fourSlots.slotCount = 4;
+  assert.ok(warningCodes(fourSlots).includes("W_SLOTS"));
+});

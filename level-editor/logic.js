@@ -31,6 +31,22 @@ const Level = (() => {
   /** The five colour letters the game knows, in BlastColor order. Case-sensitive. */
   const COLOURS = "YRBGO";
 
+  /** The colour each letter stands for, for messages a designer reads. */
+  const COLOUR_NAMES = { Y: "Yellow", R: "Red", B: "Blue", G: "Green", O: "Orange" };
+
+  /**
+   * How many shooter columns fit across the dock. The queue is centred on x = 0 at the
+   * slots' spacing, so a sixth column spawns off-screen where nobody can tap it
+   * (LevelFileTests.MaxQueueColumns).
+   */
+  const MAX_QUEUE_COLUMNS = 5;
+
+  /** The case brief fixes the board at 10x10 (slide 3, Not1). Other sizes parse; they warn. */
+  const BRIEF_BOARD_SIZE = 10;
+
+  /** The case brief fixes the slot row at five (slide 3, Not2). Other counts parse; they warn. */
+  const BRIEF_SLOT_COUNT = 5;
+
   /**
    * Parses the game's JSON into the editor's level shape. Throws only for what the editor
    * could not display; everything else is left for validate to flag.
@@ -181,14 +197,71 @@ const Level = (() => {
     });
 
     // LevelParser: "slotCount is n; a level needs at least one slot."
-    if (!Number.isInteger(level.slotCount) || level.slotCount < 1) {
+    const slotsValid = Number.isInteger(level.slotCount) && level.slotCount >= 1;
+    if (!slotsValid) {
       error("E_SLOTS", `Slot count is ${level.slotCount}; a level needs at least one slot.`);
     }
+
+    const { cubes, ammo } = stats(level);
+    const name = (letter) => `${COLOUR_NAMES[letter]} (${letter})`;
+
+    for (const letter of COLOURS) {
+      // LevelFileTests: the board uses all five colours.
+      if (cubes[letter] === 0) {
+        error("E_MISSING_COLOUR", `${name(letter)} is not on the board; the case requires all five colours.`);
+      }
+
+      // LevelFileTests: ammo >= cubes per colour. Under-ammo only shows at the very end of
+      // a playthrough, when the last shooter of that colour has left and cubes still stand.
+      if (cubes[letter] > 0 && ammo[letter] < cubes[letter]) {
+        error("E_UNDER_AMMO", `${name(letter)} has ${cubes[letter]} cubes but only ${ammo[letter]} shots; the level cannot be won.`);
+      }
+    }
+
+    // LevelFileTests: the hidden-shooter feature must be in the level.
+    if (!level.columns.some((shooters) => shooters.some((shooter) => shooter.hidden))) {
+      error("E_NO_HIDDEN", "No shooter is hidden; the case requires at least one.");
+    }
+
+    // LevelFileTests: the dock is five columns wide.
+    if (level.columns.length > MAX_QUEUE_COLUMNS) {
+      error("E_TOO_MANY_COLUMNS", `${level.columns.length} shooter columns, and only ${MAX_QUEUE_COLUMNS} fit across the dock; the rest spawn off-screen where nobody can tap them.`);
+    }
+
+    // --- Warnings: allowed, but the designer should know. ---
+    const warning = (code, message) => issues.push({ severity: "warning", code, message });
+
+    const width = level.rows.length > 0 ? level.rows[0].length : 0;
+    if (width !== BRIEF_BOARD_SIZE || level.rows.length !== BRIEF_BOARD_SIZE) {
+      warning("W_SIZE", `The board is ${width}x${level.rows.length}; the case fixes it at ${BRIEF_BOARD_SIZE}x${BRIEF_BOARD_SIZE}.`);
+    }
+
+    if (slotsValid && level.slotCount !== BRIEF_SLOT_COUNT) {
+      warning("W_SLOTS", `Slot count is ${level.slotCount}; the case fixes it at ${BRIEF_SLOT_COUNT}.`);
+    }
+
+    for (const letter of COLOURS) {
+      // A shooter whose colour never appears can never fire: it seats and sits forever.
+      if (cubes[letter] === 0 && ammo[letter] > 0) {
+        warning("W_ORPHAN_COLOUR", `${name(letter)} shooters have no cube to hit; a seated one never leaves its slot.`);
+      } else if (ammo[letter] > cubes[letter]) {
+        // Legal (the test only asks for >=), but the last shooter of this colour keeps its
+        // leftover shots and its slot until the level ends - the failure the brief describes.
+        warning("W_OVER_AMMO", `${name(letter)} has ${ammo[letter] - cubes[letter]} more shots than cubes; a shooter with shots left and nothing to hit stays in its slot.`);
+      }
+    }
+
+    // A hidden front is revealed the instant the level starts; the feature is wasted on it.
+    level.columns.forEach((shooters, columnIndex) => {
+      if (shooters.length > 0 && shooters[0].hidden) {
+        warning("W_HIDDEN_FRONT", `Column ${columnIndex + 1}'s front shooter is hidden; it is revealed the moment the level starts.`);
+      }
+    });
 
     return issues;
   }
 
-  return { COLOURS, parse, serialize, stats, validate };
+  return { COLOURS, COLOUR_NAMES, MAX_QUEUE_COLUMNS, parse, serialize, stats, validate };
 })();
 
 if (typeof module !== "undefined") {
