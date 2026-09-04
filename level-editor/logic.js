@@ -485,9 +485,30 @@ const Level = (() => {
     }
   }
 
+  /** Where this page lives inside the repo, and where the game's levels live relative to it. */
+  const PAGE_PATH = "/level-editor/index.html";
+  const LEVELS_PATH = "/Assets/00_GAME/Levels";
+
+  /**
+   * The Levels folder's path on disk, worked out from the page's own file:// URL. No browser
+   * lets a page open a folder by path, but the page can say which one to pick, and this
+   * pastes straight into the picker's folder field. Empty when the page is not a file in
+   * the repo (served over http, moved elsewhere).
+   * @param {string} href The page's URL.
+   * @returns {string} A Windows-style path, or "".
+   */
+  function levelsFolderFor(href) {
+    if (!href.startsWith("file:///")) return "";
+    const here = decodeURIComponent(href.slice("file:///".length));
+    if (!here.endsWith(PAGE_PATH)) return "";
+    const levels = here.slice(0, -PAGE_PATH.length) + LEVELS_PATH;
+    return levels.replace(/\//g, "\\");
+  }
+
   return {
     COLOURS, COLOUR_NAMES, MAX_QUEUE_COLUMNS, AUTOFILL_CHUNK,
     parse, serialize, stats, validate, resizeBoard, paintCell, nextFreeName, autofill, simulate,
+    levelsFolderFor,
   };
 })();
 

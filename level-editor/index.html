@@ -239,8 +239,14 @@ function render() {
   renderIssues(issues);
   renderFiles(issues.some((issue) => issue.severity === "error"));
   const status = state.message || (isDirty() ? "unsaved changes" : "");
-  el("status").textContent = status;
+  el("status").textContent = status || (state.mode === "fs" && state.dirHandle === null ? levelsFolderHint() : "");
   document.title = status ? `${status} — Blast Level Editor` : "Blast Level Editor";
+}
+
+/** Which folder to pick, said out loud until one is picked; the page cannot open it itself. */
+function levelsFolderHint() {
+  const folder = Level.levelsFolderFor(location.href);
+  return folder ? `Pick this folder: ${folder}` : "";
 }
 
 /** The header's file controls: which folder, what can be opened, what may be saved. */

@@ -364,3 +364,13 @@ test("autofill: when every chunk would sit at a front, one is split so a hidden 
   assert.ok(columns.every((shooters) => !shooters[0].hidden), "a front shooter was hidden");
   assert.deepEqual(totals.ammo, Level.stats(level).cubes); // the split changes no total
 });
+
+// --- the folder hint -----------------------------------------------------------------
+
+test("levelsFolderFor: names the repo's Levels folder from the page's own file URL, and nothing otherwise", () => {
+  const page = "file:///C:/Users/giren/Desktop/Projects/this_is_blast_replica/level-editor/index.html";
+  assert.equal(Level.levelsFolderFor(page), String.raw`C:\Users\giren\Desktop\Projects\this_is_blast_replica\Assets\00_GAME\Levels`);
+  assert.equal(Level.levelsFolderFor("file:///C:/Some%20Where/repo/level-editor/index.html"), String.raw`C:\Some Where\repo\Assets\00_GAME\Levels`);
+  assert.equal(Level.levelsFolderFor("http://localhost:8765/"), "");
+  assert.equal(Level.levelsFolderFor("file:///C:/Downloads/index.html"), "");
+});
