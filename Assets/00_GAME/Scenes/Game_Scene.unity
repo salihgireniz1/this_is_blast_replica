@@ -1663,7 +1663,6 @@ MonoBehaviour:
     ImpactPullback: 5
   _cubeDeath:
     CollapseDuration: 0.18
-    HitSwell: 2.5
     FlowDuration: 0.3
     SettleOvershoot: 1.7
 --- !u!1001 &1029992783

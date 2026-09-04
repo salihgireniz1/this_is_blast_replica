@@ -274,13 +274,14 @@ namespace Blast.Presentation
             _pools.Splashes.Take(impact, Quaternion.LookRotation(aim));
             _shake.Kick();
 
-            // Death in place: a short swell as the hit lands, then the drop to nothing (the
-            // original's plain shrink plus a flinch; its one-frame LIFT was tried and could
-            // not be seen, a swell can). Awaited because the column only flows once the
-            // cube is gone. The collapse comes from the shared pool: a DOScale here was two
-            // closures per death, and a cube dies once, so no per-cube tween could have
-            // saved them. A reused tween never kills, so AwaitForComplete, not ToUniTask.
-            await _collapses.Play(cube.transform, _cubeDeath.CollapseDuration, _cubeDeath.HitSwell)
+            // Death as the original plays it, measured frame by frame (see CLAUDE.md): the
+            // cube shrinks to nothing in place, fast at first and slow at the end. No rock,
+            // no jelly, no hop (the original's one-frame lift was tried and could not be
+            // seen). Awaited because the column only flows once the cube is gone. The
+            // collapse comes from the shared pool: a DOScale here was two closures per
+            // death, and a cube dies once, so no per-cube tween could have saved them.
+            // A reused tween never kills, so AwaitForComplete, not ToUniTask.
+            await _collapses.Play(cube.transform, _cubeDeath.CollapseDuration)
                 .AwaitForComplete(cancellationToken: _destroyed);
 
             // The hit has played out; from here on the column is a last resort.
@@ -437,13 +438,9 @@ namespace Blast.Presentation
         [Serializable]
         public struct CubeDeath
         {
-            /// <summary>How long the collapse takes, from impact to nothing, swell included.</summary>
-            [Tooltip("Seconds from impact until the cube is gone. InBack: the first ~40% is the swell, the rest is the drop.")]
+            /// <summary>How long the shrink to nothing takes, from impact. Eased out: fast at first, slow at the end.</summary>
+            [Tooltip("Seconds from impact until the cube has shrunk to nothing. OutQuad: most of the shrink happens in the first half.")]
             public float CollapseDuration;
-
-            /// <summary>How far the hit cube swells before it drops, as DOTween's InBack overshoot. 0 is a plain shrink.</summary>
-            [Tooltip("InBack overshoot of the collapse: how much the cube swells as the hit lands before it drops. 2.5 peaks about a quarter over size at 40% of the duration; 0 is the plain shrink.")]
-            public float HitSwell;
 
             /// <summary>How long a column's survivors take to flow one cell forward, overshoot and settle included.</summary>
             [Tooltip("Seconds a column's survivors take to slide one cell forward and settle, after the shrink has finished. OutBack: the rest is crossed at ~40%, the overshoot peaks at ~60%.")]
@@ -457,7 +454,6 @@ namespace Blast.Presentation
             public static CubeDeath Defaults => new CubeDeath
             {
                 CollapseDuration = 0.18f,
-                HitSwell = 2.5f,
                 FlowDuration = 0.3f,
                 SettleOvershoot = 1.7f,
             };

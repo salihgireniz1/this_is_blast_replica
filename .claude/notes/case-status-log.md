@@ -1324,3 +1324,15 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   `ArchitectureTests` gained the row (red first: the table named an asmdef that did not
   exist). Rationale: the two dev-only probes were compiling into the gameplay assembly
   and pulling URP into it; a profiler tool is not Presentation.
+- Hit swell REVERTED (2026-09-05) - 87/87 green. Salih could not see it, and the log
+  already said why: this death had been an `InBack` pop once and a jelly swell to 1.33
+  once, and both went when the original was measured frame by frame ("what it does NOT
+  do: no jelly swell"). At 0.18 s the swell is 5 frames under the impact splash and the
+  shake - the same threshold the hop failed. `CollapseTweens.Play` is back to the two-
+  argument `OutQuad` shrink, `CubeDeath.HitSwell` and its test are gone, and Salih's
+  02:41 experiment in the scene (`CollapseDuration` 0.27, `HitSwell` 1.5) was discarded
+  with it - the measured 0.18 stands. **Process failure, mine:** the change was made from
+  the `GameDirector` comment alone without grepping this log for the component, which is
+  the first line of CLAUDE.md's rule. Grep the log for `swell`, `hop`, `rock` before
+  proposing any cube-death juice again; the answer is already here. The pitch jitter
+  stays.

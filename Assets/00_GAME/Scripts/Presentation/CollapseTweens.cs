@@ -28,22 +28,16 @@ namespace Blast.Presentation
 
         #region Public Methods
 
-        /// <summary>Collapses a transform from its current scale to zero: a short swell first, the hit
-        /// landing, then the drop to nothing.</summary>
+        /// <summary>Shrinks a transform from its current scale to zero, fast at first and slow at the end.</summary>
         /// <param name="target">The transform to collapse.</param>
-        /// <param name="duration">How long the whole collapse takes, swell included.</param>
-        /// <param name="swell">How far the cube grows before it drops, as DOTween's InBack overshoot: 0 is a plain shrink, 2.5 peaks near a quarter over size.</param>
+        /// <param name="duration">How long the collapse takes.</param>
         /// <returns>The collapse; await it with AwaitForComplete, since a reused tween never kills.</returns>
-        public Tween Play(Transform target, float duration, float swell)
+        public Tween Play(Transform target, float duration)
         {
             // ponytail: linear scan; at most a handful of cubes die at once.
             Entry entry = FirstIdle() ?? Add();
             entry.Target = target;
-
-            // InBack is the whole flinch in one tween: its overshoot pulls the value PAST the
-            // start before heading for the end, which on a scale headed for zero is a swell.
-            // No second tween, no punch arrays, nothing allocated per death.
-            entry.Tween.ChangeValues(target.localScale, Vector3.zero, duration).SetEase(Ease.InBack, swell);
+            entry.Tween.ChangeValues(target.localScale, Vector3.zero, duration);
             entry.Tween.Restart();
             return entry.Tween;
         }
@@ -83,6 +77,7 @@ namespace Blast.Presentation
             var entry = new Entry();
             // The closures capture the entry, not a transform, so re-pointing Target re-aims them.
             entry.Tween = DOTween.To(() => entry.Target.localScale, scale => entry.Target.localScale = scale, Vector3.zero, 1f)
+                .SetEase(Ease.OutQuad)
                 .SetAutoKill(false)
                 .Pause();
             _entries.Add(entry);
