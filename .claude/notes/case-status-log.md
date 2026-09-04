@@ -1292,3 +1292,8 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   same completion trick anyway, and the spawner test could no longer see the reveal).
   **Trap:** a shooter's renderers are on children - in an eval read `_coloredParts[0]`,
   `GetComponent<Renderer>()` on the clone root throws.
+- Shot pitch jitter - done, 87/87 green. `ShotAudio.Play` sets the voice's pitch to
+  1 +/- `_pitchJitter` (0.1, inspector `Range`) before `Play`, so five slots firing the one
+  sample eight times a second read as many shots instead of a buzzer. `Random.Range` is
+  allocation-free. `ShotAudioTests` (red first: SetUp could not find the field) checks
+  24 shots stay inside the band and do not all land on 1.

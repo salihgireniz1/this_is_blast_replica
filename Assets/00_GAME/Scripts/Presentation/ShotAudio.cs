@@ -23,6 +23,10 @@ namespace Blast.Presentation
         [Tooltip("One AudioSource per shot sound that may overlap. Add one to allow one more; when all are busy the oldest shot is cut.")]
         [SerializeField] AudioSource[] _voices;
 
+        /// <summary>How far a shot's pitch may wander from 1, either way. Five slots firing the one sample eight times a second read as a buzzer without it.</summary>
+        [Tooltip("How far each shot's pitch may wander from 1, either way. 0.1 makes a burst read as many shots instead of one repeated sample; 0 disables it.")]
+        [SerializeField, Range(0f, 0.5f)] float _pitchJitter = 0.1f;
+
         /// <summary>Which voice the next shot takes.</summary>
         int _next;
 
@@ -30,10 +34,14 @@ namespace Blast.Presentation
 
         #region Public Methods
 
-        /// <summary>Sounds one shot, restarting the oldest voice when every voice is busy.</summary>
+        /// <summary>Sounds one shot at a slightly different pitch each time, restarting the oldest voice when every voice is busy.</summary>
         public void Play()
         {
-            _voices[_next].Play();
+            AudioSource voice = _voices[_next];
+
+            // Set before Play: a pitch changed on a playing source bends the sound mid-flight.
+            voice.pitch = 1f + Random.Range(-_pitchJitter, _pitchJitter);
+            voice.Play();
             _next = (_next + 1) % _voices.Length;
         }
 
