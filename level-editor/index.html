@@ -1,0 +1,372 @@
+<!doctype html>
+<!--
+index.html - the level editor's page: what the designer sees and touches.
+Layer: level editor (outside Assets/; Unity never sees it).
+Responsibility: drawing the level the way the player sees it (board on top with the
+  front row at its bottom edge, slots, then the queue with the tappable front at the
+  top of each column), turning clicks into calls on logic.js, and showing what
+  validate has to say after every one of them.
+NOT its responsibility: a single rule about levels. Every decision - what parses, what
+  is an error, how autofill deals - lives in logic.js, where node runs it against the
+  real level files. If an `if` about colours, ammo or columns appears in this file,
+  it has leaked out of the tested layer.
+
+Opened by double-click. No build, no dependencies, no server: logic.js is a classic
+script because Chromium refuses module scripts from file://.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blast Level Editor</title>
+<style>
+  :root {
+    --bg: #1b1e26; --panel: #262a35; --line: #3a4050; --text: #e8eaf0; --muted: #9aa1b3;
+    --error: #ff5c5c; --warning: #ffb84d; --ok: #4dd17a; --hidden: #7b7f8c; --slot: #3b4a63;
+    --cell: 28px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.4 system-ui, sans-serif; background: var(--bg); color: var(--text); user-select: none; }
+  header { display: flex; gap: 8px; align-items: center; padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  header h1 { font-size: 16px; margin: 0 12px 0 0; }
+  main { display: grid; grid-template-columns: auto 320px; gap: 16px; padding: 16px; align-items: start; }
+  button, select, input { font: inherit; color: var(--text); background: #323747; border: 1px solid var(--line); border-radius: 4px; padding: 4px 8px; }
+  button { cursor: pointer; }
+  button:disabled { opacity: .4; cursor: default; }
+  button.primary { background: #3d6ee0; border-color: #3d6ee0; }
+  input[type=number] { width: 64px; }
+  input[type=text] { width: 160px; }
+
+  /* The phone: board, slots, queue - in the player's order. */
+  .phone { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: inline-flex; flex-direction: column; gap: 14px; }
+  .board { display: flex; flex-direction: column-reverse; gap: 2px; }   /* rows[0] drawn at the bottom */
+  .row { display: flex; gap: 2px; }
+  .cell { width: var(--cell); height: var(--cell); border-radius: 4px; cursor: crosshair; }
+  .cell:hover { outline: 2px solid #fff; outline-offset: -2px; }
+  .slots { display: flex; gap: 8px; justify-content: center; padding: 6px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); }
+  .slot { width: 40px; height: 22px; border-radius: 6px; background: var(--slot); }
+  .queue { display: flex; gap: 10px; justify-content: center; align-items: flex-start; }
+  .column { display: flex; flex-direction: column; gap: 6px; min-width: 132px; }
+  .column h4 { margin: 0; font-size: 12px; color: var(--muted); text-align: center; }
+  .shooter { border-radius: 8px; padding: 6px; display: grid; grid-template-columns: 1fr auto; gap: 4px; align-items: center; border: 2px solid transparent; }
+  .shooter.front { border-color: #fff; }
+  .shooter.hidden { background: var(--hidden) !important; }
+  .shooter .mark { grid-column: 1 / -1; text-align: center; font-weight: 700; font-size: 18px; color: rgba(0,0,0,.55); }
+  .shooter .row-2 { display: flex; gap: 4px; align-items: center; grid-column: 1 / -1; }
+  .shooter select { width: 58px; padding: 2px 4px; }
+  .shooter input[type=number] { width: 52px; padding: 2px 4px; }
+  .shooter .tiny { padding: 2px 6px; }
+  .add { border-style: dashed; color: var(--muted); }
+
+  /* The side panel. */
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+  .panel h3 { margin: 0 0 6px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .fields { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; align-items: center; }
+  .brushes { display: flex; gap: 6px; }
+  .brush { width: 32px; height: 32px; border-radius: 6px; border: 3px solid transparent; cursor: pointer; }
+  .brush.on { border-color: #fff; }
+  table { border-collapse: collapse; width: 100%; }
+  td, th { padding: 3px 6px; text-align: right; border-bottom: 1px solid var(--line); }
+  th:first-child, td:first-child { text-align: left; }
+  .delta.bad { color: var(--error); } .delta.over { color: var(--warning); } .delta.ok { color: var(--ok); }
+  ul.issues { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+  .issue { padding: 6px 8px; border-radius: 6px; font-size: 13px; }
+  .issue.error { background: rgba(255,92,92,.15); border-left: 3px solid var(--error); }
+  .issue.warning { background: rgba(255,184,77,.12); border-left: 3px solid var(--warning); }
+  .issue.ok { background: rgba(77,209,122,.12); border-left: 3px solid var(--ok); }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .status { color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Blast Level Editor</h1>
+  <input type="text" id="fileName" placeholder="Level_01.json" title="File name">
+  <button id="new">New</button>
+  <span class="status" id="status"></span>
+</header>
+
+<main>
+  <div class="phone">
+    <div class="board" id="board"></div>
+    <div class="slots" id="slots"></div>
+    <div class="queue" id="queue"></div>
+  </div>
+
+  <aside class="panel">
+    <div>
+      <h3>Board</h3>
+      <div class="fields">
+        <label for="width">Width</label><input type="number" id="width" min="1" max="30">
+        <label for="height">Height</label><input type="number" id="height" min="1" max="60">
+        <label for="slotCount">Slots</label><input type="number" id="slotCount" min="1" max="9">
+        <label for="columnCount">Shooter columns</label><input type="number" id="columnCount" min="1" max="5">
+      </div>
+    </div>
+    <div>
+      <h3>Brush</h3>
+      <div class="brushes" id="brushes"></div>
+    </div>
+    <div class="actions">
+      <button id="fill">Fill board with brush</button>
+      <button id="autofill" class="primary">Autofill shooters</button>
+    </div>
+    <div>
+      <h3>Cubes vs shots</h3>
+      <table id="stats"></table>
+    </div>
+    <div>
+      <h3>Checks</h3>
+      <ul class="issues" id="issues"></ul>
+    </div>
+  </aside>
+</main>
+
+<script src="logic.js"></script>
+<script>
+"use strict";
+
+// --- Constants -----------------------------------------------------------------------
+
+/** The game's own tints, from Assets/00_GAME/Data/Palette.asset. */
+const PALETTE = { Y: "#FFD723", R: "#F13E46", B: "#1783FD", G: "#30D133", O: "#E08014" };
+
+/** What a fresh level looks like: the brief's board and slot row, five empty columns. */
+const NEW_WIDTH = 10;
+const NEW_HEIGHT = 10;
+const NEW_SLOTS = 5;
+const NEW_COLUMNS = 5;
+
+/** Shots a hand-added shooter starts with; the autofill chunk, so the two agree. */
+const NEW_SHOOTER_AMMO = Level.AUTOFILL_CHUNK;
+
+// --- State ---------------------------------------------------------------------------
+
+/** The one object the page renders from; every change goes through update(). */
+const state = {
+  level: null,
+  fileName: "Level_01.json",
+  savedText: "",
+  brush: "R",
+  painting: false,
+};
+
+/** A fresh level: the brief's board of the brush colour, five empty columns. */
+function freshLevel() {
+  return {
+    rows: Level.resizeBoard([], NEW_WIDTH, NEW_HEIGHT, state.brush),
+    slotCount: NEW_SLOTS,
+    columns: Array.from({ length: NEW_COLUMNS }, () => []),
+  };
+}
+
+/** Whether the level differs from what was last opened or saved. */
+function isDirty() {
+  return Level.serialize(state.level) !== state.savedText;
+}
+
+/** Applies a change and redraws everything. */
+function update(change) {
+  change(state);
+  render();
+}
+
+// --- Rendering -----------------------------------------------------------------------
+
+const el = (id) => document.getElementById(id);
+
+/** Escapes text for innerHTML; names and messages come from logic.js, not the user, but the habit is cheap. */
+function esc(text) {
+  return String(text).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+/** Redraws the whole page from state. Cheap at this size, and it cannot drift. */
+function render() {
+  const { level } = state;
+  const width = level.rows.length > 0 ? level.rows[0].length : 0;
+
+  el("board").innerHTML = level.rows.map((row, r) =>
+    `<div class="row">${[...row].map((letter, c) =>
+      `<div class="cell" data-row="${r}" data-col="${c}" style="background:${PALETTE[letter]}" title="row ${r + 1}, column ${c + 1}"></div>`).join("")}</div>`).join("");
+
+  el("slots").innerHTML = Array.from({ length: Math.max(0, level.slotCount) }, () => `<div class="slot"></div>`).join("");
+
+  el("queue").innerHTML = level.columns.map((shooters, c) => `
+    <div class="column">
+      <h4>Column ${c + 1}</h4>
+      ${shooters.map((s, d) => renderShooter(s, c, d, shooters.length)).join("")}
+      <button class="add" data-col="${c}" data-action="add">+ add</button>
+    </div>`).join("");
+
+  el("width").value = width;
+  el("height").value = level.rows.length;
+  el("slotCount").value = level.slotCount;
+  el("columnCount").value = level.columns.length;
+  el("fileName").value = state.fileName;
+
+  el("brushes").innerHTML = [...Level.COLOURS].map((letter) =>
+    `<div class="brush ${letter === state.brush ? "on" : ""}" data-brush="${letter}" style="background:${PALETTE[letter]}" title="${Level.COLOUR_NAMES[letter]}"></div>`).join("");
+
+  renderStats();
+  renderIssues();
+  el("status").textContent = isDirty() ? "unsaved changes" : "";
+}
+
+/** One shooter card: colour, shots, hidden, and its place in the column. */
+function renderShooter(shooter, column, depth, count) {
+  const options = [...Level.COLOURS].map((letter) =>
+    `<option value="${letter}" ${letter === shooter.color ? "selected" : ""}>${letter}</option>`).join("");
+  const at = `data-col="${column}" data-depth="${depth}"`;
+  return `
+    <div class="shooter ${depth === 0 ? "front" : ""} ${shooter.hidden ? "hidden" : ""}" style="background:${PALETTE[shooter.color]}">
+      <div class="mark">${shooter.hidden ? "?" : shooter.ammo}</div>
+      <div class="row-2">
+        <select ${at} data-action="color" title="Colour">${options}</select>
+        <input type="number" ${at} data-action="ammo" min="1" value="${shooter.ammo}" title="Shots">
+        <label title="Hidden until it reaches the front"><input type="checkbox" ${at} data-action="hidden" ${shooter.hidden ? "checked" : ""}> ?</label>
+      </div>
+      <div class="row-2">
+        <button class="tiny" ${at} data-action="up" ${depth === 0 ? "disabled" : ""} title="Move toward the front">▲</button>
+        <button class="tiny" ${at} data-action="down" ${depth === count - 1 ? "disabled" : ""} title="Move toward the back">▼</button>
+        <button class="tiny" ${at} data-action="remove" title="Remove">✕</button>
+      </div>
+    </div>`;
+}
+
+/** The cubes-versus-shots table, one row per colour, with the difference coloured. */
+function renderStats() {
+  const { cubes, ammo } = Level.stats(state.level);
+  const rows = [...Level.COLOURS].map((letter) => {
+    const delta = ammo[letter] - cubes[letter];
+    const cls = delta < 0 ? "bad" : delta > 0 ? "over" : "ok";
+    const sign = delta > 0 ? "+" : "";
+    return `<tr><td><span style="color:${PALETTE[letter]}">■</span> ${Level.COLOUR_NAMES[letter]}</td><td>${cubes[letter]}</td><td>${ammo[letter]}</td><td class="delta ${cls}">${sign}${delta}</td></tr>`;
+  }).join("");
+  el("stats").innerHTML = `<tr><th>Colour</th><th>Cubes</th><th>Shots</th><th>Δ</th></tr>${rows}`;
+}
+
+/** Every issue validate raised, errors first, or a green line when there are none. */
+function renderIssues() {
+  const issues = Level.validate(state.level);
+  const errors = issues.filter((i) => i.severity === "error");
+  const items = issues.map((i) => `<li class="issue ${i.severity}">${esc(i.message)}</li>`);
+  if (errors.length === 0) {
+    const played = Level.simulate(state.level);
+    if (played.won) items.unshift(`<li class="issue ok">No errors. A greedy simulation wins the level.</li>`);
+  }
+  el("issues").innerHTML = items.join("") || `<li class="issue ok">No issues.</li>`;
+}
+
+// --- Events --------------------------------------------------------------------------
+
+/** Paints the cell under a pointer event with the brush, if it is a cell. */
+function paintAt(target) {
+  const cell = target.closest && target.closest(".cell");
+  if (!cell) return;
+  const row = Number(cell.dataset.row);
+  const col = Number(cell.dataset.col);
+  if (state.level.rows[row][col] === state.brush) return;
+  update((s) => { s.level.rows = Level.paintCell(s.level.rows, row, col, s.brush); });
+}
+
+el("board").addEventListener("mousedown", (e) => {
+  if (e.button !== 0) return;
+  state.painting = true;
+  paintAt(e.target);
+});
+el("board").addEventListener("mouseover", (e) => {
+  if (state.painting && (e.buttons & 1)) paintAt(e.target);
+});
+window.addEventListener("mouseup", () => { state.painting = false; });
+
+el("brushes").addEventListener("click", (e) => {
+  const brush = e.target.closest(".brush");
+  if (brush) update((s) => { s.brush = brush.dataset.brush; });
+});
+
+/** Shooter cards: value changes commit on change, so typing in the ammo box is not interrupted by a redraw. */
+el("queue").addEventListener("change", (e) => {
+  const { col, depth, action } = e.target.dataset;
+  if (action === undefined) return;
+  update((s) => {
+    const shooter = s.level.columns[Number(col)][Number(depth)];
+    if (action === "color") shooter.color = e.target.value;
+    if (action === "ammo") shooter.ammo = Math.max(1, Math.trunc(Number(e.target.value)) || 1);
+    if (action === "hidden") shooter.hidden = e.target.checked;
+  });
+});
+
+el("queue").addEventListener("click", (e) => {
+  const button = e.target.closest("button");
+  if (!button) return;
+  const { col, depth, action } = button.dataset;
+  const c = Number(col);
+  const d = Number(depth);
+  update((s) => {
+    const shooters = s.level.columns[c];
+    if (action === "add") shooters.push({ color: s.brush, ammo: NEW_SHOOTER_AMMO, hidden: false });
+    if (action === "remove") shooters.splice(d, 1);
+    if (action === "up" && d > 0) [shooters[d - 1], shooters[d]] = [shooters[d], shooters[d - 1]];
+    if (action === "down" && d < shooters.length - 1) [shooters[d + 1], shooters[d]] = [shooters[d], shooters[d + 1]];
+  });
+});
+
+/** Board size, slot count and column count. Shrinking a column count that holds shooters asks first. */
+function onSizeChange() {
+  const width = Math.max(1, Number(el("width").value) || 1);
+  const height = Math.max(1, Number(el("height").value) || 1);
+  update((s) => { s.level.rows = Level.resizeBoard(s.level.rows, width, height, s.brush); });
+}
+el("width").addEventListener("change", onSizeChange);
+el("height").addEventListener("change", onSizeChange);
+el("slotCount").addEventListener("change", () => {
+  update((s) => { s.level.slotCount = Math.max(1, Math.trunc(Number(el("slotCount").value)) || 1); });
+});
+el("columnCount").addEventListener("change", () => {
+  const wanted = Math.max(1, Math.min(Level.MAX_QUEUE_COLUMNS, Math.trunc(Number(el("columnCount").value)) || 1));
+  const dropped = state.level.columns.slice(wanted);
+  if (dropped.some((shooters) => shooters.length > 0) && !confirm(`Remove ${dropped.length} column(s) and the shooters in them?`)) {
+    render();
+    return;
+  }
+  update((s) => {
+    while (s.level.columns.length > wanted) s.level.columns.pop();
+    while (s.level.columns.length < wanted) s.level.columns.push([]);
+  });
+});
+
+el("fill").addEventListener("click", () => {
+  update((s) => { s.level.rows = s.level.rows.map((row) => s.brush.repeat(row.length)); });
+});
+
+el("autofill").addEventListener("click", () => {
+  const hasShooters = state.level.columns.some((shooters) => shooters.length > 0);
+  if (hasShooters && !confirm("Replace every shooter with an autofilled queue?")) return;
+  update((s) => { s.level.columns = Level.autofill(s.level.rows, s.level.columns.length); });
+});
+
+el("new").addEventListener("click", () => {
+  if (isDirty() && !confirm("Discard unsaved changes?")) return;
+  update((s) => {
+    s.level = freshLevel();
+    s.savedText = Level.serialize(s.level);
+  });
+});
+
+el("fileName").addEventListener("change", () => {
+  update((s) => { s.fileName = el("fileName").value.trim() || s.fileName; });
+});
+
+window.addEventListener("beforeunload", (e) => {
+  if (isDirty()) e.preventDefault();
+});
+
+// --- Boot ----------------------------------------------------------------------------
+
+state.level = freshLevel();
+state.savedText = Level.serialize(state.level);
+render();
+</script>
+</body>
+</html>
