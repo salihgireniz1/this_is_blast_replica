@@ -40,6 +40,9 @@ namespace Blast.Tests
         /// <summary>The outline material the stand-in shooter wears while selectable.</summary>
         Material _outline;
 
+        /// <summary>The two-material colour table, built only by the tests that read what a shooter wears.</summary>
+        TwoMaterials _materials;
+
         #endregion
 
         #region Public Methods
@@ -69,6 +72,11 @@ namespace Blast.Tests
                 Object.DestroyImmediate(_shooterPrefab.gameObject);
                 Object.DestroyImmediate(_outline);
             }
+            if (_materials != null)
+            {
+                Object.DestroyImmediate(_materials.Colour);
+                Object.DestroyImmediate(_materials.Hidden);
+            }
         }
 
         /// <summary>
@@ -95,7 +103,72 @@ namespace Blast.Tests
             _spawner.StepQueueForward(0, duration: 0f);
 
             Assert.IsFalse(Wears(popped.GetComponent<Renderer>(), _outline), "A selected shooter kept its outline.");
-            Assert.IsTrue(Wears(second, _outline), "The shooter stepping up did not receive the outline.");
+            Assert.IsFalse(Wears(second, _outline), "The shooter stepping up was outlined before it arrived at the front.");
+
+            DOTween.CompleteAll(withCallbacks: true);
+
+            Assert.IsTrue(Wears(second, _outline), "The shooter that arrived at the front did not receive the outline.");
+        }
+
+        /// <summary>
+        /// The Hidden Shooter rule, as the brief words it: the colour shows when the shooter
+        /// reaches the front row, not when it starts walking there. A reveal at the start of
+        /// the step tells the player the colour a quarter second early.
+        /// </summary>
+        [Test]
+        public void AHiddenShooter_RevealsWhenItArrivesAtTheFront()
+        {
+            BuildShooterPrefab();
+            TwoMaterials materials = BuildMaterials();
+            var queue = new ShooterQueue(new[] { new[] { new Shooter(BlastColor.Red, 1, false), new Shooter(BlastColor.Red, 1, true) } });
+            _spawner.Construct(new BoardModel(1, 1, 1), queue, new SlotRow(1), materials);
+
+            Renderer second = _spawner.transform.Find("Shooters").GetChild(1).GetComponent<Renderer>();
+            Assert.AreEqual(materials.Hidden, second.sharedMaterial, "A hidden shooter spawned showing its colour.");
+
+            _spawner.PopFrontShooter(0);
+            _spawner.StepQueueForward(0, duration: 0f);
+
+            Assert.AreEqual(materials.Hidden, second.sharedMaterial, "The colour showed the moment the step began, before the shooter reached the front.");
+
+            DOTween.CompleteAll(withCallbacks: true);
+
+            Assert.AreEqual(materials.Colour, second.sharedMaterial, "The shooter reached the front and its colour never showed.");
+        }
+
+        /// <summary>
+        /// A shooter tapped while still stepping up must leave revealed and without the
+        /// outline: the arrival reveal that was pending has to land before the pop takes
+        /// effect, or a hidden shooter would sit in a slot wearing grey, and an outline would
+        /// land on it once it is already seated.
+        /// </summary>
+        [Test]
+        public void PoppingAShooterMidStep_RevealsItAndKeepsTheOutlineOffIt()
+        {
+            BuildShooterPrefab();
+            TwoMaterials materials = BuildMaterials();
+            var queue = new ShooterQueue(new[]
+            {
+                new[] { new Shooter(BlastColor.Red, 1, false), new Shooter(BlastColor.Red, 1, true), new Shooter(BlastColor.Red, 1, false) },
+            });
+            _spawner.Construct(new BoardModel(1, 1, 1), queue, new SlotRow(1), materials);
+            Transform shooters = _spawner.transform.Find("Shooters");
+            Renderer second = shooters.GetChild(1).GetComponent<Renderer>();
+            Renderer third = shooters.GetChild(2).GetComponent<Renderer>();
+
+            _spawner.PopFrontShooter(0);
+            _spawner.StepQueueForward(0, duration: 1f);
+            ShooterView poppedMidStep = _spawner.PopFrontShooter(0);
+            _spawner.StepQueueForward(0, duration: 1f);
+
+            Assert.AreEqual(second.GetComponent<ShooterView>(), poppedMidStep, "The pop did not hand out the stepping shooter.");
+            Assert.AreEqual(materials.Colour, second.sharedMaterial, "A shooter tapped mid-step left for its slot still concealed.");
+            Assert.IsFalse(Wears(second, _outline), "A shooter tapped mid-step kept the outline.");
+
+            DOTween.CompleteAll(withCallbacks: true);
+
+            Assert.IsFalse(Wears(second, _outline), "The pending arrival reveal outlined a shooter that had already left the queue.");
+            Assert.IsTrue(Wears(third, _outline), "The new front did not receive the outline on arrival.");
         }
 
         /// <summary>Two removals inside one flow duration shift the survivors two cells, not one.</summary>
@@ -259,6 +332,18 @@ namespace Blast.Tests
             AssignField(_spawner, "_prefabs.Shooter", _shooterPrefab);
         }
 
+        /// <summary>Builds a colour table with one material for every colour and another for concealment.</summary>
+        TwoMaterials BuildMaterials()
+        {
+            _materials = new TwoMaterials
+            {
+                Colour = new Material(Shader.Find("Hidden/InternalErrorShader")),
+                Hidden = new Material(Shader.Find("Hidden/InternalErrorShader")),
+            };
+
+            return _materials;
+        }
+
         /// <summary>Whether a renderer carries a material in any of its slots.</summary>
         /// <param name="renderer">The renderer to inspect.</param>
         /// <param name="material">The material to look for.</param>
@@ -299,6 +384,23 @@ namespace Blast.Tests
 
             /// <summary>No material for concealment either.</summary>
             public Material HiddenMaterial => null;
+        }
+
+        /// <summary>A colour table that tells revealed from concealed and nothing more.</summary>
+        sealed class TwoMaterials : IColorMaterials
+        {
+            /// <summary>What every revealed colour wears.</summary>
+            public Material Colour;
+
+            /// <summary>What a concealed shooter wears.</summary>
+            public Material Hidden;
+
+            /// <summary>The one colour material, whatever the colour.</summary>
+            /// <param name="color">Ignored.</param>
+            public Material MaterialOf(BlastColor color) => Colour;
+
+            /// <summary>The concealment material.</summary>
+            public Material HiddenMaterial => Hidden;
         }
 
         #endregion

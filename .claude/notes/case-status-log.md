@@ -1278,3 +1278,17 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   `eval`, `scope.Container.Resolve<T>()` does not compile - the generic overload is an
   extension method in the `VContainer` namespace and eval drops usings; cast the
   non-generic `Resolve(typeof(T))` instead.
+- Hidden shooter reveals on arrival - done, 86/86 green, verified in Play (column 4 on
+  `Level_01`: the hidden G at depth 1 still wore `Cube_Hidden` with one material slot in
+  the same frame the tap was processed, and `Cube_Green` with the outline slot and counter
+  5 two seconds later; zero errors). Slide 7 says the colour shows when the shooter
+  reaches the front row; `StepQueueForward` had been revealing it the instant the step
+  began. The reveal now rides on the front view's step tween (`OnComplete` ->
+  `RevealFront`, one closure per tap, the budget `SetOutlined` already spends), and
+  `PopFrontShooter` completes that tween WITH callbacks first, so a shooter tapped
+  mid-step leaves revealed and the outline comes off after the reveal put it on - the
+  case a fast player hits, guarded by `PoppingAShooterMidStep_RevealsItAndKeepsTheOutlineOffIt`.
+  **Rejected:** returning the tween for the director to await (the mid-step pop needs the
+  same completion trick anyway, and the spawner test could no longer see the reveal).
+  **Trap:** a shooter's renderers are on children - in an eval read `_coloredParts[0]`,
+  `GetComponent<Renderer>()` on the clone root throws.

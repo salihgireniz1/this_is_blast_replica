@@ -131,13 +131,19 @@ namespace Blast.Presentation
         public ShooterView PopFrontShooter(int column)
         {
             ShooterView front = _queueColumns[column][_queueFront[column]];
+
+            // A front tapped while still stepping up arrives now: its pending step lands,
+            // its arrival reveal fires with it, and only then is the outline taken off. So
+            // a hidden shooter never leaves for its slot in grey, and the reveal cannot
+            // outline a shooter that is already seated.
+            DOTween.Complete(front.transform, withCallbacks: true);
             _queueFront[column]++;
             front.SetOutlined(false);
 
             return front;
         }
 
-        /// <summary>Steps a column's waiting views one row up and reveals the new front.</summary>
+        /// <summary>Steps a column's waiting views one row up; the new front is revealed and outlined when it arrives.</summary>
         /// <param name="column">The column that just lost its front.</param>
         /// <param name="duration">How long the step takes.</param>
         public void StepQueueForward(int column, float duration)
@@ -152,18 +158,16 @@ namespace Blast.Presentation
                 // Same rule as the board's flow: an absolute target, and the previous
                 // step's tween killed so two selections in one breath cannot end short.
                 view.DOKill();
-                view.DOMove(QueueWorldPosition(column, depth), duration);
-            }
+                Tween step = view.DOMove(QueueWorldPosition(column, depth), duration);
 
-            // The domain's front has already advanced (the director selects before it
-            // steps the views), so depth 0 is the shooter arriving at the selectable row -
-            // the exact moment the Hidden Shooter rule says its colour may show.
-            bool columnStillHasShooters = _shooters.Remaining(column) > 0;
-            if (columnStillHasShooters)
-            {
-                Shooter front = _shooters.Peek(column, 0);
-                views[_queueFront[column]].ShowRevealed(_materials.MaterialOf(front.Color), front.Ammo);
-                views[_queueFront[column]].SetOutlined(true);
+                // The Hidden Shooter rule timed as the brief words it: the colour shows when
+                // the shooter REACHES the selectable row, so the reveal rides on the front's
+                // arrival rather than on the tap. One closure per selection - a tap, not a
+                // frame, the same budget SetOutlined spends.
+                if (depth == 0)
+                {
+                    step.OnComplete(() => RevealFront(column));
+                }
             }
         }
 
@@ -222,6 +226,19 @@ namespace Blast.Presentation
         #endregion
 
         #region Private Methods
+
+        /// <summary>Dresses a column's front view in its colour and outlines it: it has just arrived at the selectable row.</summary>
+        /// <param name="column">The column whose front finished stepping up.</param>
+        void RevealFront(int column)
+        {
+            // The domain's front advanced when the director selected, before the step
+            // began, so depth 0 is the shooter that has now arrived at the selectable row.
+            Shooter front = _shooters.Peek(column, 0);
+            ShooterView view = _queueColumns[column][_queueFront[column]];
+
+            view.ShowRevealed(_materials.MaterialOf(front.Color), front.Ammo);
+            view.SetOutlined(true);
+        }
 
         /// <summary>Makes an empty child to spawn one kind of view under, so the hierarchy reads by kind.</summary>
         /// <param name="name">What the child is called.</param>
