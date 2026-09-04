@@ -236,11 +236,17 @@ namespace Blast.Presentation
 
             shooter.TurnTo(cube.transform.position, _motion.TurnDuration);
 
-            Vector3 muzzle = shooter.transform.position + Vector3.up * _firing.MuzzleHeight;
+            Vector3 chest = shooter.transform.position + Vector3.up * _firing.MuzzleHeight;
 
             // The shooter is still mid-turn when the shot leaves, so the splash takes the
             // aim itself: yaw toward the cube, the same axis TurnTo constrains the body to.
-            Vector3 aim = Vector3.ProjectOnPlane(cube.transform.position - muzzle, Vector3.up);
+            Vector3 aim = Vector3.ProjectOnPlane(cube.transform.position - chest, Vector3.up);
+
+            // Out past the body, or the shot leaves from inside the shooter: MuzzleHeight
+            // only lifts, and a shooter is a whole cube wide, so at zero reach the splash
+            // and the bullet both spawn buried in the chest that fired them.
+            Vector3 muzzle = chest + aim.normalized * _firing.MuzzleReach;
+
             _pools.Splashes.Take(muzzle, Quaternion.LookRotation(aim));
             _audio.Play();
 
@@ -397,6 +403,13 @@ namespace Blast.Presentation
             [Tooltip("World units above the shooter's feet where the bullet and splash spawn.")]
             public float MuzzleHeight;
 
+            /// <summary>
+            /// How far in front of the shooter, along its aim, the shot leaves from. At zero
+            /// the splash and the bullet spawn inside the shooter's own body.
+            /// </summary>
+            [Tooltip("World units in front of the shooter, along its aim, where the muzzle splash and the bullet appear. Zero puts them inside the shooter's body; about half a cube clears it.")]
+            public float MuzzleReach;
+
             /// <summary>How long a bullet flies to its cube.</summary>
             [Tooltip("Seconds a bullet takes to reach its cube. The cube dies on arrival.")]
             public float FlightDuration;
@@ -413,6 +426,7 @@ namespace Blast.Presentation
             {
                 Interval = 0.12f,
                 MuzzleHeight = 0.5f,
+                MuzzleReach = 0.6f,
                 FlightDuration = 0.17f,
                 ImpactPullback = 0.45f,
             };

@@ -1110,6 +1110,21 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   simply did not appear in the run); the unwedge eval from `unity-mcp.md`
   (`UnlockReloadAssemblies` + `Refresh(ForceUpdate)` + `RequestScriptCompilation`) fixed it
   every time. Left: `Leave`'s path array (3e).
+- Muzzle splash and bullet moved out in front of the shooter - done, 84/84 green,
+  measured in Play (six sampled splashes, flat distance to the nearest seated shooter
+  0.60 = `MuzzleReach`; it was 0.00 before, the splash sitting on the shooter's own
+  origin). Salih's report, repeated three times before it was heard: splashes were
+  spawning "inside the cube". The cube he meant was the SHOOTER, not the target. Two
+  splashes exist per shot and only the impact one had an offset (`ImpactPullback`);
+  the muzzle one had `MuzzleHeight` alone, which lifts but never reaches forward, so
+  the shot left from inside the body that fired it. `Firing.MuzzleReach` (0.6) now
+  offsets the spawn point along `aim.normalized`, and the bullet leaves from the same
+  point - the local is named `chest` before the reach and `muzzle` after, so the two
+  cannot be confused again. **The lesson, and it cost hours:** when a report says a
+  visual is in the wrong place, read the reported Transform values first and find which
+  object that coordinate belongs to. The pile of splashes at z=-10 was explained as
+  "by design, that is the muzzle" three times while -10 was in fact the shooter's own
+  centre, which is not where a muzzle is.
 - Splash lifetime cut to the fire rhythm - done, 84/84 green. Salih's report: with the
   pullback set high, one splash flew away as asked but "ten more" stayed piled at the
   front, and he read that as a bug in the offset. It was not. Measured, seating every

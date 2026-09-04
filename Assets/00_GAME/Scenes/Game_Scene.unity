@@ -1652,9 +1652,10 @@ MonoBehaviour:
     LandDuration: 0.3
   _firing:
     Interval: 0.12
-    MuzzleHeight: 0.5
+    MuzzleHeight: 1.5
+    MuzzleReach: 0.6
     FlightDuration: 0.17
-    ImpactPullback: 0.45
+    ImpactPullback: 5
   _cubeDeath:
     CollapseDuration: 0.18
     FlowDuration: 0.3
