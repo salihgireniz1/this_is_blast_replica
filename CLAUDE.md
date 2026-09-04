@@ -1031,6 +1031,23 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   uncommitted scene's `_levels` holds only `Level_03` (Salih's hand edit for the perf
   screenshots); `ES3` index is -1 on this machine, so Play boots the stress level. Restore
   `[Level_01, Level_02, Level_03]` before the case ships.
+- **Performance pass, step 3d: the counter punch reused** - done, 88/88 green, verified in
+  Play (`Level_03`, five seated, a per-frame logger over every counter: peak scale exactly
+  1.300, every counter back at 1.000 at rest, zero errors). `ShooterView.SetAmmo`'s
+  `DOPunchScale` per shot (segment arrays per call) became one punch per view, built on the
+  first tick with `SetAutoKill(false)` + `Pause`, `Restart`ed after (the `CameraShake`
+  pattern); `Restart` snaps the counter to the rest scale first, which replaces the old
+  `DOKill(complete: true)` drift guard. The punch is its own public `PunchCounter()`,
+  called by `SetAmmo`, **because of a measured trap:** TMP's `SetText(string, float)` is
+  allocation-free in a Player but ends with `#if UNITY_EDITOR m_text =
+  InternalTextBackingArrayToString()` - a string per call in the Editor - so an EditMode
+  `AllocatingGCMemory` assert on `SetAmmo` can never pass; `ShooterViewTests` measures the
+  punch through `PunchCounter` and pins the rest scale through `SetAmmo`. Probe: building the
+  punch on every call turned exactly the allocation test red. **Runner trap, hit three times
+  here:** `recompile` reported `completed` while the test assembly stayed stale (new tests
+  simply did not appear in the run); the unwedge eval from `unity-mcp.md`
+  (`UnlockReloadAssemblies` + `Refresh(ForceUpdate)` + `RequestScriptCompilation`) fixed it
+  every time. Left: `Leave`'s path array (3e).
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

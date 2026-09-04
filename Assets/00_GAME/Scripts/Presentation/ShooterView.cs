@@ -62,6 +62,13 @@ namespace Blast.Presentation
         /// </summary>
         TweenerCore<Quaternion, Vector3, QuaternionOptions> _turn;
 
+        /// <summary>
+        /// The one counter punch, built on the first ammo update and restarted by every one
+        /// after it: DOPunchScale builds its segment arrays per call, and a counter ticks on
+        /// every shot (the CameraShake pattern).
+        /// </summary>
+        Tween _punch;
+
         /// <summary>True while the body faces the board straight on, so a targetless tick does not restart a turn it already made.</summary>
         bool _facingForward = true;
 
@@ -107,15 +114,28 @@ namespace Blast.Presentation
         /// <param name="ammo">The shots remaining.</param>
         public void SetAmmo(int ammo)
         {
+            // SetText with a numeric argument writes into TMP's own buffer: no string per
+            // shot in a Player. (In the Editor TMP also rebuilds its inspector string, an
+            // #if UNITY_EDITOR line, which is why ShooterViewTests measures the punch alone.)
             _ammoText.SetText("{0}", ammo);
+            PunchCounter();
+        }
 
-            // A punch returns to the scale it started from, so a punch still running is
-            // completed first - otherwise the next one would start from a swollen scale
-            // and the counter would drift larger shot by shot.
-            Transform counter = _ammoText.transform;
-            counter.DOKill(complete: true);
-            // vibrato is per second: 2 x 0.15 s rounds to one segment, out and back - a tick, not a wobble.
-            counter.DOPunchScale(Vector3.one * _ammoPunchScale, _ammoPunchDuration, vibrato: 2);
+        /// <summary>Ticks the counter: a quick swell and back. Public so the punch's reuse can be measured apart from the text.</summary>
+        public void PunchCounter()
+        {
+            if (_punch == null)
+            {
+                // The rest scale is captured here, so this must run with the counter at rest.
+                // vibrato is per second: 2 x 0.15 s rounds to one segment, out and back - a tick, not a wobble.
+                _punch = _ammoText.transform.DOPunchScale(Vector3.one * _ammoPunchScale, _ammoPunchDuration, vibrato: 2)
+                    .SetAutoKill(false)
+                    .Pause();
+            }
+
+            // Restart snaps the counter back to the rest scale before punching again, so a
+            // punch cut short by the next shot never starts from a swollen scale and drifts.
+            _punch.Restart();
         }
 
         /// <summary>Runs or stands: the two booleans are always each other's opposite.</summary>
@@ -182,6 +202,7 @@ namespace Blast.Presentation
         void OnDestroy()
         {
             _turn?.Kill();
+            _punch?.Kill();
         }
 
         /// <summary>Puts one material on every coloured part.</summary>
