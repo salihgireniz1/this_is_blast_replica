@@ -1110,6 +1110,29 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   simply did not appear in the run); the unwedge eval from `unity-mcp.md`
   (`UnlockReloadAssemblies` + `Refresh(ForceUpdate)` + `RequestScriptCompilation`) fixed it
   every time. Left: `Leave`'s path array (3e).
+- **Level editor, `serve.py`: the folder wired in by default** - done, Unity suite 84/84
+  with `Level_06.json` (saved from the page itself) in the folder, and `Level_06` played to
+  **Won** in the Editor (100 cubes, 9 shooters, 100 -> 24 -> 2 -> 0). Salih could not test
+  the folder picker: the desktop app's browser pane **suppresses every native dialog** -
+  `confirm()` returns false and `showDirectoryPicker` never opens (the console says so:
+  "Page dialog suppressed"). That is also why Autofill "did nothing" for him: its confirm
+  was auto-answered no. And he wanted a default path, which no browser page can have - the
+  File System Access API exists precisely so a page cannot open an arbitrary folder. Both
+  answered by the plan's escape hatch: **`python level-editor/serve.py`** serves the page
+  and three requests - `GET /api/levels` (the folder path and its files), `GET` /
+  `PUT /api/levels/<name>.json` - against `<repo>/Assets/00_GAME/Levels`, the path
+  `LevelFileTests` walks. No picker, no permission prompt, works in the pane. The page
+  detects it at boot (`fetch("/api/levels")`) and falls through to the picker, then to a
+  download, when it is absent; the header shows the folder path in server mode. The one
+  guard worth a test is `safe_level_name` (one plain `.json` name, no `..`, no separators):
+  `python -m unittest level-editor/serve_test.py`, four cases. **Verified in the pane:**
+  Level_01 opened (20/20, its queue verbatim), New -> paint -> Autofill -> Save As wrote
+  `Level_06.json` (LF, indent 2, byte-identical after a round trip). Autofill lost its
+  confirm and reports "replaced N shooters" instead; when every dealt shooter would be a
+  front, the last chunk is split so one can be hidden. **Still `confirm()`-guarded, and so
+  silently cancelled in the pane:** New/Open while dirty, shrinking a column count that
+  holds shooters, Save As over another file - fine in Edge, where the dialogs show.
+  `.claude/launch.json` (untracked) runs `serve.py` for the tool's preview pane.
 - **HTML level editor** - done, `level-editor/` at the repo root (outside `Assets/`, so
   Unity never imports it), 34 node tests green, Unity suite 84/84 with the editor's own
   `Level_05.json` in the folder, and `Level_05` played to **Won** in the Editor (100 cubes,

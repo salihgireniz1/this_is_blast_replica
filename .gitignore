@@ -127,3 +127,6 @@ Docs/Screenshots/
 /extracted_levels/
 /third_party_python/
 /.tools/
+
+# Python bytecode (level-editor/serve.py, Docs/Tools)
+__pycache__/
