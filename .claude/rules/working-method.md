@@ -20,10 +20,12 @@ Never batch several files into one turn.
 
 ## Recording progress
 
-When a chunk turns green, tick it off in the `Status` section of `CLAUDE.md` in the same
-turn - done marker, test count, and what is next. That section is the only place a new
-session learns where the work stands, so a phase that is finished but unrecorded is a
-phase the next session will start over.
+When a chunk turns green, append its entry to `.claude/notes/case-status-log.md` in the
+same turn - done marker, test count, what Play verified, what was rejected, any trap -
+and refresh the short "Where it stands" summary in `CLAUDE.md` only when the summary
+itself changes. That log is the only place a new session learns where the work stands,
+so a phase that is finished but unrecorded is a phase the next session will start over.
+`CLAUDE.md` stays a map under the 150k-char load limit; history goes in the notes.
 
 ## Questions
 
