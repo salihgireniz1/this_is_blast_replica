@@ -1,0 +1,171 @@
+{
+  "boardLayers": [
+    {
+      "rows": [
+        "YYYYYYYYYY",
+        "YYYYYYYYYY",
+        "YYYYYYYYYY",
+        "YYYYYYYYYY",
+        "YYYYYYYYYY",
+        "YYYYYYYYYY",
+        "YYYYYYYYYY",
+        "YYYYYYYYYY",
+        "RRRRRRRRRR",
+        "RRRRRRRRRR",
+        "RRRRRRRRRR",
+        "RRRRRRRRRR",
+        "RRRRRRRRRR",
+        "RRRRRRRRRR",
+        "RRRRRRRRRR",
+        "RRRRRRRRRR",
+        "BBBBBBBBBB",
+        "BBBBBBBBBB",
+        "BBBBBBBBBB",
+        "BBBBBBBBBB",
+        "BBBBBBBBBB",
+        "BBBBBBBBBB",
+        "BBBBBBBBBB",
+        "BBBBBBBBBB",
+        "GGGGGGGGGG",
+        "GGGGGGGGGG",
+        "GGGGGGGGGG",
+        "GGGGGGGGGG",
+        "GGGGGGGGGG",
+        "GGGGGGGGGG",
+        "GGGGGGGGGG",
+        "GGGGGGGGGG",
+        "OOOOOOOOOO",
+        "OOOOOOOOOO",
+        "OOOOOOOOOO",
+        "OOOOOOOOOO",
+        "OOOOOOOOOO",
+        "OOOOOOOOOO",
+        "OOOOOOOOOO",
+        "OOOOOOOOOO"
+      ]
+    }
+  ],
+  "slotCount": 5,
+  "shooterColumns": [
+    {
+      "shooters": [
+        {
+          "color": "Y",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 20,
+          "hidden": true
+        }
+      ]
+    },
+    {
+      "shooters": [
+        {
+          "color": "R",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 20,
+          "hidden": true
+        }
+      ]
+    },
+    {
+      "shooters": [
+        {
+          "color": "B",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 20,
+          "hidden": true
+        }
+      ]
+    },
+    {
+      "shooters": [
+        {
+          "color": "G",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 20,
+          "hidden": true
+        }
+      ]
+    },
+    {
+      "shooters": [
+        {
+          "color": "O",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "O",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "O",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "O",
+          "ammo": 20,
+          "hidden": true
+        }
+      ]
+    }
+  ]
+}

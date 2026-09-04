@@ -1110,6 +1110,16 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   simply did not appear in the run); the unwedge eval from `unity-mcp.md`
   (`UnlockReloadAssemblies` + `Refresh(ForceUpdate)` + `RequestScriptCompilation`) fixed it
   every time. Left: `Leave`'s path array (3e).
+- `Level_04`, the mid-size benchmark - done, 84/84 green. The ledger had 100 cubes
+  (`Level_01`), then jumped to 600 and 900, with nothing in between;
+  `Docs/Tools/generate_level_04.py` fills the gap with **400 cubes and 20 shooters** - a
+  10x40 board and 5 queue columns x 4 at 20 ammo, one colour per column, winnable by
+  construction. Measured in the editor at a 512x1024 game view with vsync off and a 8.33 ms
+  target, so nothing was capped: **11.0-11.3 ms (89-92 fps), 376 batches, 183 shadow
+  casters, 137.8k tris, and 10 SetPass calls.** The SetPass number is the one worth
+  keeping - 376 batches collapsing into 10 state changes is the SRP Batcher doing its job,
+  the same check `Docs/PERFORMANCE.md` step 1 recorded as "SetPass 11-14 so the SRP Batcher
+  is fine". It holds at four times the shipped level's cube count.
 - `Level_03` cut from ten queue columns to five - done, 84/84 green, verified in Play
   (booted `Level_03`: 100 shooters spanning x -4..4 against a camera half-width of 5.45,
   **zero off-screen**, columns at x -4/-2/0/2/4, 900 cubes). Salih spotted it on the
