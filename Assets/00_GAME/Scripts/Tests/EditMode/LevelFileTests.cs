@@ -7,9 +7,10 @@
 // NOT its responsibility: the parser's behaviour (LevelParserTests) or full solvability.
 //   Ammo >= cubes per colour is necessary, not sufficient - ordering deadlocks are proven
 //   away by playing the level, which the case expects anyway.
-// The five-colour and hidden-shooter asserts are the case brief's explicit requirements
-// for the shipped sample level. If a post-case level legitimately drops one, scope these
-// two asserts to the sample level rather than deleting them.
+// The five-colour assert is the case brief's requirement for the shipped sample level and
+// is scoped to it (SampleLevel): a three-colour level elsewhere is a design, not a mistake.
+// The hidden-shooter assert still runs on every file; drop it to the sample level too the
+// day a level legitimately has none.
 
 using System.Collections.Generic;
 using Blast.Domain;
@@ -35,6 +36,9 @@ namespace Blast.Tests
         /// (Not3); the dock's width is what caps it.
         /// </summary>
         const int MaxQueueColumns = 5;
+
+        /// <summary>The level the scene boots and the case delivers; the only file the five-colour rule applies to.</summary>
+        const string SampleLevel = "Level_01.json";
 
         /// <summary>The five colours the case requires the sample level to use.</summary>
         static readonly BlastColor[] RequiredColors =
@@ -67,13 +71,22 @@ namespace Blast.Tests
                 var cubes = CountCubes(level.Board);
                 var ammo = CountAmmo(level.Shooters, out bool anyHidden);
 
-                foreach (var color in RequiredColors)
+                // All five colours is the brief's requirement for the sample level alone;
+                // a three-colour level is a legitimate design anywhere else.
+                if (System.IO.Path.GetFileName(path) == SampleLevel)
                 {
-                    Assert.IsTrue(cubes.ContainsKey(color),
-                        $"{path}: the board uses no {color} cube; the case requires all five colours.");
-                    Assert.GreaterOrEqual(ammo.GetValueOrDefault(color), cubes[color],
-                        $"{path}: {color} has {cubes[color]} cubes but only " +
-                        $"{ammo.GetValueOrDefault(color)} ammo; the level cannot be won.");
+                    foreach (var color in RequiredColors)
+                    {
+                        Assert.IsTrue(cubes.ContainsKey(color),
+                            $"{path}: the board uses no {color} cube; the case requires all five colours in the sample level.");
+                    }
+                }
+
+                foreach (var pair in cubes)
+                {
+                    Assert.GreaterOrEqual(ammo.GetValueOrDefault(pair.Key), pair.Value,
+                        $"{path}: {pair.Key} has {pair.Value} cubes but only " +
+                        $"{ammo.GetValueOrDefault(pair.Key)} ammo; the level cannot be won.");
                 }
 
                 Assert.IsTrue(anyHidden,

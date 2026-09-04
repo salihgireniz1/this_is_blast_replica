@@ -206,11 +206,6 @@ const Level = (() => {
     const name = (letter) => `${COLOUR_NAMES[letter]} (${letter})`;
 
     for (const letter of COLOURS) {
-      // LevelFileTests: the board uses all five colours.
-      if (cubes[letter] === 0) {
-        error("E_MISSING_COLOUR", `${name(letter)} is not on the board; the case requires all five colours.`);
-      }
-
       // LevelFileTests: ammo >= cubes per colour. Under-ammo only shows at the very end of
       // a playthrough, when the last shooter of that colour has left and cubes still stand.
       if (cubes[letter] > 0 && ammo[letter] < cubes[letter]) {
@@ -238,6 +233,13 @@ const Level = (() => {
 
     if (slotsValid && level.slotCount !== BRIEF_SLOT_COUNT) {
       warning("W_SLOTS", `Slot count is ${level.slotCount}; the case fixes it at ${BRIEF_SLOT_COUNT}.`);
+    }
+
+    // All five colours is the brief's rule for the sample level only (LevelFileTests scopes
+    // it to Level_01); anywhere else a smaller palette is a design choice.
+    const missing = [...COLOURS].filter((letter) => cubes[letter] === 0);
+    if (missing.length > 0) {
+      warning("W_MISSING_COLOUR", `Not on the board: ${missing.map(name).join(", ")}. The case's sample level needs all five colours; other levels may skip some.`);
     }
 
     for (const letter of COLOURS) {

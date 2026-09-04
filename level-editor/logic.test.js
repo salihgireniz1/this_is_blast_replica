@@ -162,13 +162,15 @@ function warningCodes(level) {
   return Level.validate(level).filter((issue) => issue.severity === "warning").map((issue) => issue.code);
 }
 
-test("validate: a board missing one of the five colours is an error that names it", () => {
+test("validate: a board missing one of the five colours is a warning naming it, never an error", () => {
   const level = validLevel();
   level.rows = ["YRBG"];
   level.columns.pop(); // drop the orange shooter too, so only the board is at fault
-  const issue = Level.validate(level).find((i) => i.code === "E_MISSING_COLOUR");
-  assert.ok(issue, "E_MISSING_COLOUR was not raised");
+  const issue = Level.validate(level).find((i) => i.code === "W_MISSING_COLOUR");
+  assert.ok(issue, "W_MISSING_COLOUR was not raised");
+  assert.equal(issue.severity, "warning");
   assert.match(issue.message, /Orange/);
+  assert.deepEqual(errorCodes(level), []); // a three-colour level saves
 });
 
 test("validate: a colour with less ammo than cubes is an error naming both numbers", () => {
