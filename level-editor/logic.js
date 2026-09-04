@@ -32,7 +32,7 @@ const Level = (() => {
   const COLOURS = "YRBGO";
 
   /** The colour each letter stands for, for messages a designer reads. */
-  const COLOUR_NAMES = { Y: "Yellow", R: "Red", B: "Blue", G: "Green", O: "Orange" };
+  const COLOUR_NAMES = { Y: "Sarı", R: "Kırmızı", B: "Mavi", G: "Yeşil", O: "Turuncu" };
 
   /**
    * How many shooter columns fit across the dock. The queue is centred on x = 0 at the
@@ -180,18 +180,18 @@ const Level = (() => {
 
     // LevelParser: a board must have at least one row and one column.
     if (level.rows.length === 0 || level.rows[0].length === 0) {
-      error("E_EMPTY_BOARD", "The board has no cells.");
+      error("E_EMPTY_BOARD", "Tahtada hücre yok.");
     }
 
     // LevelParser: "The level has no boardLayers."
     const layers = level.layers ?? 1;
     if (!Number.isInteger(layers) || layers < 1) {
-      error("E_LAYERS", `Layers is ${layers}; a board needs at least one.`);
+      error("E_LAYERS", `Katman sayısı ${layers}; en az bir katman gerekir.`);
     }
 
     // LevelParser: "The level has no shooterColumns."
     if (level.columns.length === 0) {
-      error("E_NO_COLUMNS", "There are no shooter columns; add at least one.");
+      error("E_NO_COLUMNS", "Hiç shooter sütunu yok; en az bir tane ekle.");
     }
 
     level.columns.forEach((shooters, columnIndex) => {
@@ -199,13 +199,13 @@ const Level = (() => {
 
       // LevelParser: "shooterColumns[n] has no shooters."
       if (shooters.length === 0) {
-        error("E_EMPTY_COLUMN", `Shooter column ${column} has no shooters.`);
+        error("E_EMPTY_COLUMN", `Shooter sütunu ${column} boş.`);
       }
 
       // LevelParser: zero ammo would seat a shooter that SlotRow reads as an empty slot.
       shooters.forEach((shooter, depth) => {
         if (!Number.isInteger(shooter.ammo) || shooter.ammo < 1) {
-          error("E_AMMO", `The shooter at column ${column}, position ${depth + 1} has ammo ${shooter.ammo}; a shooter needs at least one shot.`);
+          error("E_AMMO", `Sütun ${column}, sıra ${depth + 1}'deki shooter'ın mermisi ${shooter.ammo}; bir shooter'ın en az bir mermisi olmalı.`);
         }
       });
     });
@@ -213,7 +213,7 @@ const Level = (() => {
     // LevelParser: "slotCount is n; a level needs at least one slot."
     const slotsValid = Number.isInteger(level.slotCount) && level.slotCount >= 1;
     if (!slotsValid) {
-      error("E_SLOTS", `Slot count is ${level.slotCount}; a level needs at least one slot.`);
+      error("E_SLOTS", `Slot sayısı ${level.slotCount}; en az bir slot gerekir.`);
     }
 
     const { cubes, ammo } = stats(level);
@@ -223,13 +223,13 @@ const Level = (() => {
       // LevelFileTests: ammo >= cubes per colour. Under-ammo only shows at the very end of
       // a playthrough, when the last shooter of that colour has left and cubes still stand.
       if (cubes[letter] > 0 && ammo[letter] < cubes[letter]) {
-        error("E_UNDER_AMMO", `${name(letter)} has ${cubes[letter]} cubes but only ${ammo[letter]} shots; the level cannot be won.`);
+        error("E_UNDER_AMMO", `${name(letter)}: ${cubes[letter]} küp var ama sadece ${ammo[letter]} mermi; level kazanılamaz.`);
       }
     }
 
     // LevelFileTests: the dock is five columns wide.
     if (level.columns.length > MAX_QUEUE_COLUMNS) {
-      error("E_TOO_MANY_COLUMNS", `${level.columns.length} shooter columns, and only ${MAX_QUEUE_COLUMNS} fit across the dock; the rest spawn off-screen where nobody can tap them.`);
+      error("E_TOO_MANY_COLUMNS", `${level.columns.length} shooter sütunu var, dock'a en fazla ${MAX_QUEUE_COLUMNS} sığar; fazlası ekran dışında doğar, kimse dokunamaz.`);
     }
 
     // --- Warnings: allowed, but the designer should know. ---
@@ -237,42 +237,42 @@ const Level = (() => {
 
     const width = level.rows.length > 0 ? level.rows[0].length : 0;
     if (width !== BRIEF_BOARD_SIZE || level.rows.length !== BRIEF_BOARD_SIZE) {
-      warning("W_SIZE", `The board is ${width}x${level.rows.length}; the case fixes it at ${BRIEF_BOARD_SIZE}x${BRIEF_BOARD_SIZE}.`);
+      warning("W_SIZE", `Tahta ${width}x${level.rows.length}; case ${BRIEF_BOARD_SIZE}x${BRIEF_BOARD_SIZE} istiyor.`);
     }
 
     if (slotsValid && level.slotCount !== BRIEF_SLOT_COUNT) {
-      warning("W_SLOTS", `Slot count is ${level.slotCount}; the case fixes it at ${BRIEF_SLOT_COUNT}.`);
+      warning("W_SLOTS", `Slot sayısı ${level.slotCount}; case ${BRIEF_SLOT_COUNT} istiyor.`);
     }
 
     if (layers > 1) {
-      warning("W_LAYERS", `${layers} layers of cubes on every cell; the case's sample level is a single layer.`);
+      warning("W_LAYERS", `Her hücrede ${layers} katman küp; case'in örnek leveli tek katman.`);
     }
 
     // All five colours and a hidden shooter are the brief's rules for the sample level only
     // (LevelFileTests scopes both to Level_01); anywhere else they are design choices.
     const missing = [...COLOURS].filter((letter) => cubes[letter] === 0);
     if (missing.length > 0) {
-      warning("W_MISSING_COLOUR", `Not on the board: ${missing.map(name).join(", ")}. The case's sample level needs all five colours; other levels may skip some.`);
+      warning("W_MISSING_COLOUR", `Tahtada yok: ${missing.map(name).join(", ")}. Case'in örnek levelinde beş renk de olmalı; diğer leveller atlayabilir.`);
     }
     if (!level.columns.some((shooters) => shooters.some((shooter) => shooter.hidden))) {
-      warning("W_NO_HIDDEN", "No shooter is hidden. The case's sample level needs one; other levels may have none.");
+      warning("W_NO_HIDDEN", "Hiç hidden shooter yok. Case'in örnek levelinde bir tane olmalı; diğer levellerde şart değil.");
     }
 
     for (const letter of COLOURS) {
       // A shooter whose colour never appears can never fire: it seats and sits forever.
       if (cubes[letter] === 0 && ammo[letter] > 0) {
-        warning("W_ORPHAN_COLOUR", `${name(letter)} shooters have no cube to hit; a seated one never leaves its slot.`);
+        warning("W_ORPHAN_COLOUR", `${name(letter)} shooter'ların vuracak küpü yok; slota oturan bir daha çıkmaz.`);
       } else if (ammo[letter] > cubes[letter]) {
         // Legal (the test only asks for >=), but the last shooter of this colour keeps its
         // leftover shots and its slot until the level ends - the failure the brief describes.
-        warning("W_OVER_AMMO", `${name(letter)} has ${ammo[letter] - cubes[letter]} more shots than cubes; a shooter with shots left and nothing to hit stays in its slot.`);
+        warning("W_OVER_AMMO", `${name(letter)}: küpten ${ammo[letter] - cubes[letter]} fazla mermi; mermisi kalan ama hedefi olmayan shooter slotta kalır.`);
       }
     }
 
     // A hidden front is revealed the instant the level starts; the feature is wasted on it.
     level.columns.forEach((shooters, columnIndex) => {
       if (shooters.length > 0 && shooters[0].hidden) {
-        warning("W_HIDDEN_FRONT", `Column ${columnIndex + 1}'s front shooter is hidden; it is revealed the moment the level starts.`);
+        warning("W_HIDDEN_FRONT", `Sütun ${columnIndex + 1}'in öndeki shooter'ı hidden; level başlar başlamaz açığa çıkar.`);
       }
     });
 
@@ -281,7 +281,7 @@ const Level = (() => {
     if (!issues.some((issue) => issue.severity === "error")) {
       const played = simulate(level);
       if (!played.won) {
-        warning("W_SIM_STUCK", `A greedy simulation got stuck with ${played.cubesLeft} cubes left; a careful player may still win, but check the order.`);
+        warning("W_SIM_STUCK", `Açgözlü simülasyon ${played.cubesLeft} küp kala takıldı; dikkatli bir oyuncu yine kazanabilir, sırayı kontrol et.`);
       }
     }
 

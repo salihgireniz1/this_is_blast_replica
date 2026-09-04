@@ -1125,6 +1125,16 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   call: scoped to `Level_01` in `LevelFileTests`, `E_NO_HIDDEN` -> `W_NO_HIDDEN` in the
   editor; autofill still hides one by default, the designer may untick it. Proven with a
   two-colour, nothing-hidden temporary level in the folder: suite 84/84.
+- **Level editor: on-screen strings in Turkish** - done, node 41/41, verified in the pane
+  (labels, buttons, tooltips, statuses, the hint and every `validate` message; no console
+  errors; `<html lang="tr">`). Salih's call, and the one exception to the English-only rule,
+  now written into `.claude/rules/code-standard.md`: the editor's users are Turkish
+  designers, so what they read is Turkish; domain words stay (shooter, slot, hidden, dock,
+  level); code, comments, tests and commit messages stay English. `COLOUR_NAMES` are
+  Sarı / Kırmızı / Mavi / Yeşil / Turuncu with the file letters unchanged; the tests match
+  the Turkish fragments (`/sütunu 3/`, `/Turuncu/`, `/2 küp/`). A designer-facing string
+  belongs in the page or in `validate`'s messages and nowhere else - the engine and its
+  parser never learned a Turkish word.
 - **Unity does not auto-refresh in this session, even when focused** - measured 2026-09-04.
   Salih saved `Level_06` from the editor; the file on disk changed (1055 bytes, his queue)
   and Unity kept playing the old import (1083 bytes). Auto Refresh is Enabled

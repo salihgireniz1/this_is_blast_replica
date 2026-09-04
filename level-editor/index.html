@@ -14,7 +14,7 @@ NOT its responsibility: a single rule about levels. Every decision - what parses
 Opened by double-click. No build, no dependencies, no server: logic.js is a classic
 script because Chromium refuses module scripts from file://.
 -->
-<html lang="en">
+<html lang="tr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -85,17 +85,17 @@ script because Chromium refuses module scripts from file://.
 
 <header>
   <h1>Blast Level Editor</h1>
-  <button id="pickFolder" title="The game's Assets/00_GAME/Levels folder">Choose Levels folder…</button>
-  <select id="files" title="Levels in the folder"></select>
-  <button id="open">Open</button>
+  <button id="pickFolder" title="Oyunun Assets/00_GAME/Levels klasörü">Levels klasörünü seç…</button>
+  <select id="files" title="Klasördeki leveller"></select>
+  <button id="open">Aç</button>
   <input type="file" id="fileInput" accept=".json" hidden>
-  <input type="text" id="fileName" placeholder="Level_01.json" title="File name">
-  <button id="new">New</button>
-  <button id="save" title="Overwrite the open file">Save</button>
-  <button id="saveAs" title="Write under the name on the left">Save As</button>
+  <input type="text" id="fileName" placeholder="Level_01.json" title="Dosya adı">
+  <button id="new">Yeni</button>
+  <button id="save" title="Açık dosyanın üstüne yaz">Kaydet</button>
+  <button id="saveAs" title="Soldaki adla yaz">Farklı Kaydet</button>
   <span class="status" id="status"></span>
   <span class="hint" id="hint" hidden></span>
-  <button id="copyPath" hidden title="Copy the folder path. In the picker: paste it into the Folder field, press Enter to go inside, then Select Folder.">Copy path</button>
+  <button id="copyPath" hidden title="Klasör yolunu kopyala. Dosya penceresinde: Klasör alanına yapıştır, Enter ile içine gir, sonra Select Folder.">Yolu kopyala</button>
 </header>
 <div class="banner" id="banner" hidden></div>
 
@@ -108,29 +108,29 @@ script because Chromium refuses module scripts from file://.
 
   <aside class="panel">
     <div>
-      <h3>Board</h3>
+      <h3>Tahta</h3>
       <div class="fields">
-        <label for="width">Width</label><input type="number" id="width" min="1" max="30">
-        <label for="height">Height</label><input type="number" id="height" min="1" max="60">
-        <label for="layers" title="Cubes stacked on every cell, all of that cell's colour">Layers</label><input type="number" id="layers" min="1" max="5">
-        <label for="slotCount">Slots</label><input type="number" id="slotCount" min="1" max="9">
-        <label for="columnCount">Shooter columns</label><input type="number" id="columnCount" min="1" max="5">
+        <label for="width">Genişlik</label><input type="number" id="width" min="1" max="30">
+        <label for="height">Yükseklik</label><input type="number" id="height" min="1" max="60">
+        <label for="layers" title="Her hücrede üst üste küp sayısı, hepsi o hücrenin rengi">Katman</label><input type="number" id="layers" min="1" max="5">
+        <label for="slotCount">Slot sayısı</label><input type="number" id="slotCount" min="1" max="9">
+        <label for="columnCount">Shooter sütun sayısı</label><input type="number" id="columnCount" min="1" max="5">
       </div>
     </div>
     <div>
-      <h3>Brush</h3>
+      <h3>Fırça</h3>
       <div class="brushes" id="brushes"></div>
     </div>
     <div class="actions">
-      <button id="fill">Fill board with brush</button>
-      <button id="autofill" class="primary">Autofill shooters</button>
+      <button id="fill">Tahtayı fırçayla doldur</button>
+      <button id="autofill" class="primary">Shooter'ları otomatik doldur</button>
     </div>
     <div>
-      <h3>Cubes vs shots</h3>
+      <h3>Küp / mermi</h3>
       <table id="stats"></table>
     </div>
     <div>
-      <h3>Checks</h3>
+      <h3>Kontroller</h3>
       <ul class="issues" id="issues"></ul>
     </div>
   </aside>
@@ -219,15 +219,15 @@ function render() {
 
   el("board").innerHTML = level.rows.map((row, r) =>
     `<div class="row">${[...row].map((letter, c) =>
-      `<div class="cell" data-row="${r}" data-col="${c}" style="background:${PALETTE[letter]}" title="row ${r + 1}, column ${c + 1}"></div>`).join("")}</div>`).join("");
+      `<div class="cell" data-row="${r}" data-col="${c}" style="background:${PALETTE[letter]}" title="sıra ${r + 1}, sütun ${c + 1}"></div>`).join("")}</div>`).join("");
 
   el("slots").innerHTML = Array.from({ length: Math.max(0, level.slotCount) }, () => `<div class="slot"></div>`).join("");
 
   el("queue").innerHTML = level.columns.map((shooters, c) => `
     <div class="column">
-      <h4>Column ${c + 1}</h4>
+      <h4>Sütun ${c + 1}</h4>
       ${shooters.map((s, d) => renderShooter(s, c, d, shooters.length)).join("")}
-      <button class="add" data-col="${c}" data-action="add">+ add</button>
+      <button class="add" data-col="${c}" data-action="add">+ ekle</button>
     </div>`).join("");
 
   el("width").value = width;
@@ -244,13 +244,13 @@ function render() {
   const issues = Level.validate(level);
   renderIssues(issues);
   renderFiles(issues.some((issue) => issue.severity === "error"));
-  const status = state.message || (isDirty() ? "unsaved changes" : "");
+  const status = state.message || (isDirty() ? "kaydedilmemiş değişiklik" : "");
   el("status").textContent = status;
   document.title = status ? `${status} — Blast Level Editor` : "Blast Level Editor";
 
   // Until a folder is picked, say which one - loudly, this is the one step a newcomer needs.
   const hint = state.mode === "fs" && state.dirHandle === null ? Level.levelsFolderFor(location.href) : "";
-  el("hint").textContent = hint ? `Pick this folder: ${hint}` : "";
+  el("hint").textContent = hint ? `Bu klasörü seç: ${hint}` : "";
   el("hint").hidden = !hint;
   el("copyPath").hidden = !hint;
 }
@@ -260,9 +260,9 @@ async function copyLevelsPath() {
   const folder = Level.levelsFolderFor(location.href);
   try {
     await navigator.clipboard.writeText(folder);
-    setStatus("Copied. In the picker: paste into the Folder field, press Enter to go inside, then Select Folder. (Edge refuses your user folder itself, so it must be the Levels folder.)");
+    setStatus("Kopyalandı. Dosya penceresinde: Klasör alanına yapıştır, Enter ile içine gir, sonra Select Folder. (Edge kullanıcı klasörünün kendisini reddeder; Levels klasörü olmalı.)");
   } catch (error) {
-    setStatus(`Could not copy (${error.message}); the path is: ${folder}`);
+    setStatus(`Kopyalanamadı (${error.message}); yol: ${folder}`);
   }
 }
 el("copyPath").addEventListener("click", copyLevelsPath);
@@ -273,8 +273,8 @@ function renderFiles(hasErrors) {
   const connected = fs && state.dirHandle !== null && !state.needsPermission;
 
   el("pickFolder").hidden = !fs;
-  el("pickFolder").textContent = state.dirHandle === null ? "Choose Levels folder…"
-    : state.needsPermission ? `Reconnect "${state.dirHandle.name}"` : `"${state.dirHandle.name}" ✓`;
+  el("pickFolder").textContent = state.dirHandle === null ? "Levels klasörünü seç…"
+    : state.needsPermission ? `"${state.dirHandle.name}" yeniden bağlan` : `"${state.dirHandle.name}" ✓`;
 
   el("files").hidden = !connected;
   el("files").innerHTML = state.fileNames.map((name) =>
@@ -283,19 +283,19 @@ function renderFiles(hasErrors) {
 
   // Open always works: from the folder when there is one, from a file picker otherwise.
   el("open").disabled = false;
-  el("open").title = connected ? "Open the selected level" : "Open a level file";
+  el("open").title = connected ? "Seçili leveli aç" : "Bir level dosyası aç";
 
   // Save overwrites, so it needs an open file in the folder, a source the page shows faithfully, and a legal level.
   el("save").hidden = !connected;
   el("save").disabled = hasErrors || state.fileHandle === null || !state.sourceUniform;
   el("saveAs").disabled = hasErrors;
-  el("saveAs").textContent = connected ? "Save As" : "Download";
-  el("saveAs").title = connected ? "Write under the name on the left" : "Download the file; drop it into Assets/00_GAME/Levels";
+  el("saveAs").textContent = connected ? "Farklı Kaydet" : "İndir";
+  el("saveAs").title = connected ? "Soldaki adla yaz" : "Dosyayı indir; Assets/00_GAME/Levels klasörüne at";
 
   const banner = el("banner");
   banner.hidden = state.sourceUniform;
   if (!banner.hidden) {
-    banner.textContent = "This file's upper layers differ from its ground layer, which the editor cannot show. Save is off so nothing is dropped - Save As writes every layer as the ground layer under a new name.";
+    banner.textContent = "Bu dosyanın üst katmanları zemin katmanından farklı; editör bunu gösteremez. Bir şey kaybolmasın diye Kaydet kapalı - Farklı Kaydet her katmanı zemin katmanı olarak yeni bir adla yazar.";
   }
 }
 
@@ -308,14 +308,14 @@ function renderShooter(shooter, column, depth, count) {
     <div class="shooter ${depth === 0 ? "front" : ""} ${shooter.hidden ? "hidden" : ""}" style="background:${PALETTE[shooter.color]}">
       <div class="mark">${shooter.hidden ? "?" : shooter.ammo}</div>
       <div class="row-2">
-        <select ${at} data-action="color" title="Colour">${options}</select>
-        <input type="number" ${at} data-action="ammo" min="1" value="${shooter.ammo}" title="Shots">
-        <label title="Hidden until it reaches the front"><input type="checkbox" ${at} data-action="hidden" ${shooter.hidden ? "checked" : ""}> ?</label>
+        <select ${at} data-action="color" title="Renk">${options}</select>
+        <input type="number" ${at} data-action="ammo" min="1" value="${shooter.ammo}" title="Mermi">
+        <label title="Öne gelene kadar hidden"><input type="checkbox" ${at} data-action="hidden" ${shooter.hidden ? "checked" : ""}> ?</label>
       </div>
       <div class="row-2">
-        <button class="tiny" ${at} data-action="up" ${depth === 0 ? "disabled" : ""} title="Move toward the front">▲</button>
-        <button class="tiny" ${at} data-action="down" ${depth === count - 1 ? "disabled" : ""} title="Move toward the back">▼</button>
-        <button class="tiny" ${at} data-action="remove" title="Remove">✕</button>
+        <button class="tiny" ${at} data-action="up" ${depth === 0 ? "disabled" : ""} title="Öne al">▲</button>
+        <button class="tiny" ${at} data-action="down" ${depth === count - 1 ? "disabled" : ""} title="Arkaya al">▼</button>
+        <button class="tiny" ${at} data-action="remove" title="Sil">✕</button>
       </div>
     </div>`;
 }
@@ -329,7 +329,7 @@ function renderStats() {
     const sign = delta > 0 ? "+" : "";
     return `<tr><td><span style="color:${PALETTE[letter]}">■</span> ${Level.COLOUR_NAMES[letter]}</td><td>${cubes[letter]}</td><td>${ammo[letter]}</td><td class="delta ${cls}">${sign}${delta}</td></tr>`;
   }).join("");
-  el("stats").innerHTML = `<tr><th>Colour</th><th>Cubes</th><th>Shots</th><th>Δ</th></tr>${rows}`;
+  el("stats").innerHTML = `<tr><th>Renk</th><th>Küp</th><th>Mermi</th><th>Δ</th></tr>${rows}`;
 }
 
 /** Every issue validate raised, errors first, or a green line when there are none. */
@@ -338,9 +338,9 @@ function renderIssues(issues) {
   const items = issues.map((i) => `<li class="issue ${i.severity}">${esc(i.message)}</li>`);
   if (errors.length === 0) {
     const played = Level.simulate(state.level);
-    if (played.won) items.unshift(`<li class="issue ok">No errors. A greedy simulation wins the level.</li>`);
+    if (played.won) items.unshift(`<li class="issue ok">Hata yok. Açgözlü simülasyon leveli kazanıyor.</li>`);
   }
-  el("issues").innerHTML = items.join("") || `<li class="issue ok">No issues.</li>`;
+  el("issues").innerHTML = items.join("") || `<li class="issue ok">Sorun yok.</li>`;
 }
 
 // --- Events --------------------------------------------------------------------------
@@ -414,7 +414,7 @@ el("slotCount").addEventListener("change", () => {
 el("columnCount").addEventListener("change", () => {
   const wanted = Math.max(1, Math.min(Level.MAX_QUEUE_COLUMNS, Math.trunc(Number(el("columnCount").value)) || 1));
   const dropped = state.level.columns.slice(wanted);
-  if (dropped.some((shooters) => shooters.length > 0) && !confirm(`Remove ${dropped.length} column(s) and the shooters in them?`)) {
+  if (dropped.some((shooters) => shooters.length > 0) && !confirm(`${dropped.length} sütun ve içindeki shooter'lar silinsin mi?`)) {
     render();
     return;
   }
@@ -433,11 +433,11 @@ el("autofill").addEventListener("click", () => {
   const replaced = state.level.columns.reduce((count, shooters) => count + shooters.length, 0);
   update((s) => { s.level.columns = Level.autofill(s.level.rows, s.level.columns.length, s.level.layers); });
   const dealt = state.level.columns.reduce((count, shooters) => count + shooters.length, 0);
-  setStatus(replaced > 0 ? `Autofill replaced ${replaced} shooters with ${dealt}.` : `Autofill dealt ${dealt} shooters.`);
+  setStatus(replaced > 0 ? `Otomatik doldurma ${replaced} shooter'ı ${dealt} shooter'la değiştirdi.` : `Otomatik doldurma ${dealt} shooter dağıttı.`);
 });
 
 el("new").addEventListener("click", () => {
-  if (isDirty() && !confirm("Discard unsaved changes?")) return;
+  if (isDirty() && !confirm("Kaydedilmemiş değişiklikler silinsin mi?")) return;
   update((s) => {
     s.level = freshLevel();
     s.fileName = Level.nextFreeName(s.fileNames);
@@ -538,7 +538,7 @@ async function pickFolder() {
     if (error.name === "AbortError") return; // the designer closed the picker
     state.dirHandle = null;
     state.fileNames = [];
-    setStatus(`Folder access failed: ${error.message}. Download still works.`);
+    setStatus(`Klasöre erişilemedi: ${error.message}. İndir yine çalışır.`);
   }
 }
 
@@ -579,7 +579,7 @@ async function openSelected() {
   }
   const name = el("files").value;
   if (!name) return;
-  if (isDirty() && !confirm("Discard unsaved changes?")) return;
+  if (isDirty() && !confirm("Kaydedilmemiş değişiklikler silinsin mi?")) return;
   try {
     const handle = await state.dirHandle.getFileHandle(name);
     loadText(await (await handle.getFile()).text(), name, handle);
@@ -604,7 +604,7 @@ async function save() {
   try {
     await writeTo(state.fileHandle, text);
     update((s) => { s.savedText = text; });
-    setStatus(`Saved ${state.fileName}`);
+    setStatus(`Kaydedildi: ${state.fileName}`);
   } catch (error) {
     setStatus(error.message);
   }
@@ -629,17 +629,17 @@ async function saveAs() {
   if (!folderReady()) {
     download(name, text);
     update((s) => { s.fileName = name; s.savedText = text; });
-    setStatus(`Downloaded ${name}; drop it into Assets/00_GAME/Levels.`);
+    setStatus(`İndirildi: ${name}; Assets/00_GAME/Levels klasörüne at.`);
     return;
   }
 
   const sameAsOpen = state.fileHandle !== null && name.toLowerCase() === state.fileName.toLowerCase();
   if (sameAsOpen && !state.sourceUniform) {
-    setStatus(`${name} has layers the editor cannot show; choose a different name so they are not lost.`);
+    setStatus(`${name} dosyasının editörün gösteremediği katmanları var; kaybolmasın diye başka bir ad seç.`);
     return;
   }
   const exists = state.fileNames.some((existing) => existing.toLowerCase() === name.toLowerCase());
-  if (exists && !sameAsOpen && !confirm(`${name} already exists. Overwrite it?`)) return;
+  if (exists && !sameAsOpen && !confirm(`${name} zaten var. Üstüne yazılsın mı?`)) return;
 
   try {
     const handle = await state.dirHandle.getFileHandle(name, { create: true });
@@ -651,7 +651,7 @@ async function saveAs() {
       s.sourceUniform = true;
       s.savedText = text;
     });
-    setStatus(`Saved ${name}`);
+    setStatus(`Kaydedildi: ${name}`);
   } catch (error) {
     setStatus(error.message);
   }

@@ -11,7 +11,12 @@ belongs nowhere in it.
 
 **Everything inside the repository is English** — identifiers, file header blocks, XML
 doc comments, in-method comments, test names, assert messages, commit messages, README,
-ADRs. No exceptions. Turkish belongs in chat, never in a file.
+ADRs. Turkish belongs in chat, never in a file. **One exception, Salih's call on
+2026-09-04:** the level editor's on-screen strings (`level-editor/index.html` labels,
+tooltips, statuses, and the check messages `validate` builds in `logic.js`) are Turkish,
+because its users are Turkish designers. Domain words stay as they are (shooter, slot,
+hidden, dock, level). The code around those strings, its comments and its tests stay
+English.
 
 ## Documentation
 

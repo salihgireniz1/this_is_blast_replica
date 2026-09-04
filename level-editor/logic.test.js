@@ -130,7 +130,7 @@ test("validate: a column with no shooters is an error that names the column", ()
   level.columns[2] = [];
   const issue = Level.validate(level).find((i) => i.code === "E_EMPTY_COLUMN");
   assert.ok(issue, "E_EMPTY_COLUMN was not raised");
-  assert.match(issue.message, /column 3/);
+  assert.match(issue.message, /sütunu 3/);
 });
 
 test("validate: a shooter with no ammo is an error that names its place", () => {
@@ -138,7 +138,7 @@ test("validate: a shooter with no ammo is an error that names its place", () => 
   level.columns[1][0].ammo = 0;
   const issue = Level.validate(level).find((i) => i.code === "E_AMMO");
   assert.ok(issue, "E_AMMO was not raised");
-  assert.match(issue.message, /column 2/);
+  assert.match(issue.message, /Sütun 2/);
 });
 
 test("validate: zero slots is an error", () => {
@@ -175,7 +175,7 @@ test("validate: a board missing one of the five colours is a warning naming it, 
   const issue = Level.validate(level).find((i) => i.code === "W_MISSING_COLOUR");
   assert.ok(issue, "W_MISSING_COLOUR was not raised");
   assert.equal(issue.severity, "warning");
-  assert.match(issue.message, /Orange/);
+  assert.match(issue.message, /Turuncu/);
   assert.deepEqual(errorCodes(level), []); // a three-colour level saves
 });
 
@@ -184,8 +184,8 @@ test("validate: a colour with less ammo than cubes is an error naming both numbe
   level.rows = ["YYRBGO"]; // two yellow cubes, one yellow shot
   const issue = Level.validate(level).find((i) => i.code === "E_UNDER_AMMO");
   assert.ok(issue, "E_UNDER_AMMO was not raised");
-  assert.match(issue.message, /Yellow/);
-  assert.match(issue.message, /2 cubes/);
+  assert.match(issue.message, /Sarı/);
+  assert.match(issue.message, /2 küp/);
   assert.match(issue.message, /1 /);
 });
 
@@ -220,8 +220,8 @@ test("validate: a shooter whose colour has no cube is named once, not also as ov
   const issues = Level.validate(level);
   const orphan = issues.find((i) => i.code === "W_ORPHAN_COLOUR");
   assert.ok(orphan, "W_ORPHAN_COLOUR was not raised");
-  assert.match(orphan.message, /Orange/);
-  assert.ok(!issues.some((i) => i.code === "W_OVER_AMMO" && /Orange/.test(i.message)));
+  assert.match(orphan.message, /Turuncu/);
+  assert.ok(!issues.some((i) => i.code === "W_OVER_AMMO" && /Turuncu/.test(i.message)));
 });
 
 test("validate: a hidden shooter at the front is a warning; behind the front it is not", () => {
