@@ -12,7 +12,9 @@ Run from anywhere:  python level-editor/serve.py   (opens the browser at localho
 Without it, index.html still works by double-click, with the folder picker or a download.
 """
 
+import subprocess
 import sys
+import threading
 import webbrowser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -22,6 +24,9 @@ ROOT = Path(__file__).resolve().parent
 LEVELS = ROOT.parent / "Assets" / "00_GAME" / "Levels"
 PORT = 8765
 API = "/api/levels"
+
+# How long to wait for the Unity Editor to reimport a saved file before giving up on it.
+UNITY_TIMEOUT_SECONDS = 30
 
 
 def safe_level_name(request_path):
@@ -73,6 +78,7 @@ class Handler(SimpleHTTPRequestHandler):
         (LEVELS / name).write_bytes(self.rfile.read(length))
         self.send_response(204)
         self.end_headers()
+        threading.Thread(target=notify_unity, args=(name,), daemon=True).start()
 
     def _send(self, status, content_type, text):
         body = text.encode("utf-8")
@@ -87,6 +93,27 @@ class Handler(SimpleHTTPRequestHandler):
         """Only the level requests are worth a line; static file noise (and the favicon 404) is not."""
         if API in (fmt % args):
             super().log_message(fmt, *args)
+
+
+def notify_unity(name):
+    """Asks a running Unity Editor to reimport the file just written, through the `unity` CLI.
+
+    Unity does not notice a file changed on disk until its window regains focus, and a
+    designer working beside it never gives it focus - Play would run the old level. Best
+    effort: no CLI on the PATH, no editor listening, or a slow main thread all just mean
+    Unity picks the file up the next time it refreshes on its own.
+    """
+    asset = f"Assets/00_GAME/Levels/{name}"
+    code = (f'UnityEditor.AssetDatabase.ImportAsset("{asset}", '
+            'UnityEditor.ImportAssetOptions.ForceUpdate); return "reimported";')
+    try:
+        result = subprocess.run(["unity", "cmd", "eval", "--code", code],
+                                capture_output=True, text=True, timeout=UNITY_TIMEOUT_SECONDS,
+                                shell=(sys.platform == "win32"))
+        state = "reimported" if result.returncode == 0 else "not reachable"
+    except (OSError, subprocess.TimeoutExpired):
+        state = "not reachable"
+    print(f"unity: {asset} {state}")
 
 
 def _json_string(text):

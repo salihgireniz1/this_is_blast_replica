@@ -1110,6 +1110,18 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   simply did not appear in the run); the unwedge eval from `unity-mcp.md`
   (`UnlockReloadAssemblies` + `Refresh(ForceUpdate)` + `RequestScriptCompilation`) fixed it
   every time. Left: `Leave`'s path array (3e).
+- **Level editor: Save reaches Unity without a focus change** - done. Salih edited
+  `Level_06` in the page, pressed Save, and Play ran the old level: the file on disk was new
+  (three PUTs, 204 each) but Unity's imported `TextAsset` was still the old 1358 bytes - the
+  editor-does-not-reimport-until-focused trap (CLAUDE.md line 186), and a designer working
+  in the desktop app's pane never gives Unity focus. `serve.py` now runs
+  `unity cmd eval AssetDatabase.ImportAsset(<file>, ForceUpdate)` in a daemon thread after
+  every PUT, best effort (no CLI on the PATH, no editor, or a 30 s timeout all just fall
+  back to Unity's own next refresh) and logs `unity: <asset> reimported`. Proven: a PUT of a
+  temporary `Level_98.json` with no manual refresh left Unity holding 1083 bytes = the disk
+  file. Also on this day: the five-colour rule was scoped to the sample level (commit
+  `cae11b9`) - `LevelFileTests` applies it to `Level_01` only and checks ammo against the
+  colours actually on each board; the editor's `E_MISSING_COLOUR` became `W_MISSING_COLOUR`.
 - **Level editor, `serve.py`: the folder wired in by default** - done, Unity suite 84/84
   with `Level_06.json` (saved from the page itself) in the folder, and `Level_06` played to
   **Won** in the Editor (100 cubes, 9 shooters, 100 -> 24 -> 2 -> 0). Salih could not test
