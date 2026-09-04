@@ -156,6 +156,56 @@
           "color": "Y",
           "ammo": 9,
           "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 9,
+          "hidden": true
+        },
+        {
+          "color": "Y",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 9,
+          "hidden": false
         }
       ]
     },
@@ -210,6 +260,56 @@
           "color": "R",
           "ammo": 9,
           "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 9,
+          "hidden": true
+        },
+        {
+          "color": "R",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 9,
+          "hidden": false
         }
       ]
     },
@@ -264,6 +364,56 @@
           "color": "B",
           "ammo": 9,
           "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 9,
+          "hidden": true
+        },
+        {
+          "color": "B",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 9,
+          "hidden": true
         }
       ]
     },
@@ -318,6 +468,56 @@
           "color": "G",
           "ammo": 9,
           "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 9,
+          "hidden": true
+        },
+        {
+          "color": "G",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 9,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 9,
+          "hidden": true
+        },
+        {
+          "color": "G",
+          "ammo": 9,
+          "hidden": false
         }
       ]
     },
@@ -372,227 +572,17 @@
           "color": "O",
           "ammo": 9,
           "hidden": false
-        }
-      ]
-    },
-    {
-      "shooters": [
-        {
-          "color": "Y",
-          "ammo": 9,
-          "hidden": false
         },
         {
-          "color": "Y",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "Y",
+          "color": "O",
           "ammo": 9,
           "hidden": true
         },
         {
-          "color": "Y",
+          "color": "O",
           "ammo": 9,
           "hidden": false
         },
-        {
-          "color": "Y",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "Y",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "Y",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "Y",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "Y",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "Y",
-          "ammo": 9,
-          "hidden": true
-        }
-      ]
-    },
-    {
-      "shooters": [
-        {
-          "color": "R",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "R",
-          "ammo": 9,
-          "hidden": true
-        },
-        {
-          "color": "R",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "R",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "R",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "R",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "R",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "R",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "R",
-          "ammo": 9,
-          "hidden": true
-        },
-        {
-          "color": "R",
-          "ammo": 9,
-          "hidden": false
-        }
-      ]
-    },
-    {
-      "shooters": [
-        {
-          "color": "B",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "B",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "B",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "B",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "B",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "B",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "B",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "B",
-          "ammo": 9,
-          "hidden": true
-        },
-        {
-          "color": "B",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "B",
-          "ammo": 9,
-          "hidden": false
-        }
-      ]
-    },
-    {
-      "shooters": [
-        {
-          "color": "G",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "G",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "G",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "G",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "G",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "G",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "G",
-          "ammo": 9,
-          "hidden": true
-        },
-        {
-          "color": "G",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "G",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "G",
-          "ammo": 9,
-          "hidden": false
-        }
-      ]
-    },
-    {
-      "shooters": [
         {
           "color": "O",
           "ammo": 9,
@@ -622,16 +612,6 @@
           "color": "O",
           "ammo": 9,
           "hidden": true
-        },
-        {
-          "color": "O",
-          "ammo": 9,
-          "hidden": false
-        },
-        {
-          "color": "O",
-          "ammo": 9,
-          "hidden": false
         },
         {
           "color": "O",

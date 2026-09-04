@@ -1,13 +1,18 @@
 """Level_03 generator: the stress level behind Docs/PERFORMANCE.md, not a level anyone plays
-for fun. 10x30x3 = 900 cubes, one colour per stack, 10 queue columns x 10 shooters = 100
+for fun. 10x30x3 = 900 cubes, one colour per stack, 5 queue columns x 20 shooters = 100
 shooters at 9 ammo each (ammo == cubes per colour). No scramble: every queue column is one
-colour and each colour has two, so every colour is always at a front and the level is
-winnable by construction. Hidden shooters sit at depth 1 and beyond, as the brief wants."""
+colour and there is one column per colour, so every colour is always at a front and the
+level is winnable by construction. Hidden shooters sit at depth 1 and beyond, as the brief
+wants.
+
+Five columns, not ten: the queue is centred on x=0 at 2 units apart, the same spacing as
+the five slots, so a sixth column starts leaving the frame. An earlier cut used ten and
+half of its shooters spawned off-screen where nobody could tap them."""
 import json, random
 
 COLS, ROWS, LAYERS, SLOTS = 10, 30, 3, 5
 COLORS = "YRBGO"
-QCOLS, QDEPTH = 10, 10
+QCOLS, QDEPTH = 5, 20
 AMMO = COLS * ROWS * LAYERS // (QCOLS * QDEPTH)
 HIDDEN_EVERY = 7
 

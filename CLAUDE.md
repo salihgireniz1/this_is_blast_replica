@@ -1110,6 +1110,20 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   simply did not appear in the run); the unwedge eval from `unity-mcp.md`
   (`UnlockReloadAssemblies` + `Refresh(ForceUpdate)` + `RequestScriptCompilation`) fixed it
   every time. Left: `Leave`'s path array (3e).
+- `Level_03` cut from ten queue columns to five - done, 84/84 green, verified in Play
+  (booted `Level_03`: 100 shooters spanning x -4..4 against a camera half-width of 5.45,
+  **zero off-screen**, columns at x -4/-2/0/2/4, 900 cubes). Salih spotted it on the
+  screenshots: the level declared 10 shooter columns and the queue is centred on x = 0 at
+  2 units apart - the same spacing as the five slots - so it spanned x -9..9 and four whole
+  columns sat outside the frame where nobody could tap them. Depth off-screen is fine and
+  intended (the brief wants exactly two rows visible behind the selectable one); width is
+  not. `Docs/Tools/generate_level_03.py` is now `QCOLS, QDEPTH = 5, 20`: still 100 shooters,
+  still 9 ammo each, still 900 = 900, and the winnability argument survives unchanged
+  because each colour now owns exactly one column instead of two, so its front is always
+  that colour. `LevelFileTests` gained `MaxQueueColumns = 5` inside the existing per-file
+  loop - red first against the old file with the right message ("10 shooter columns, and
+  only 5 fit across the dock"). The brief leaves the column count to the level (Not3); what
+  caps it is the dock's width, and that is what the constant's comment says.
 - **Performance pass, step 3e: the burst re-measured** - done, ledger updated
   (`Docs/PERFORMANCE.md` 3e). Salih saw `gc 28506 B` on the HUD and asked what happened to
   "0 B". Two answers, both recorded there: the HUD reads `GC Allocated In Frame`, a

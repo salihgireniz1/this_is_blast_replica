@@ -28,6 +28,14 @@ namespace Blast.Tests
         /// <summary>Where shipped level files live - also the future HTML editor's export target.</summary>
         const string LevelsFolder = "Assets/00_GAME/Levels";
 
+        /// <summary>
+        /// How many shooter columns fit on screen. The queue is centred on x = 0 at the same
+        /// spacing as the five slots, so a sixth column starts leaving the frame and its
+        /// shooters spawn where nobody can tap them. The brief leaves the count to the level
+        /// (Not3); the dock's width is what caps it.
+        /// </summary>
+        const int MaxQueueColumns = 5;
+
         /// <summary>The five colours the case requires the sample level to use.</summary>
         static readonly BlastColor[] RequiredColors =
         {
@@ -70,6 +78,10 @@ namespace Blast.Tests
 
                 Assert.IsTrue(anyHidden,
                     $"{path}: no hidden shooter; the case requires the feature in the sample level.");
+
+                Assert.LessOrEqual(level.Shooters.Columns, MaxQueueColumns,
+                    $"{path}: {level.Shooters.Columns} shooter columns, and only {MaxQueueColumns} " +
+                    "fit across the dock; the rest spawn off-screen where nobody can tap them.");
             }
         }
 
