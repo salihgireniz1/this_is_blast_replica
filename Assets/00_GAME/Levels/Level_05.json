@@ -1,0 +1,71 @@
+{
+  "boardLayers": [
+    {
+      "rows": [
+        "RRRRRRRRRR",
+        "RRRRRRRRRR",
+        "RRRRRRRRRR",
+        "RRRRRRRRRR",
+        "BBBBBBBBBB",
+        "BBBBBBBBBB",
+        "YYYYYYYYYY",
+        "YYYYYGGGGG",
+        "GGGGGGGGGG",
+        "OOOOOOOOOO"
+      ]
+    }
+  ],
+  "slotCount": 5,
+  "shooterColumns": [
+    {
+      "shooters": [
+        {
+          "color": "R",
+          "ammo": 20,
+          "hidden": false
+        },
+        {
+          "color": "O",
+          "ammo": 10,
+          "hidden": true
+        }
+      ]
+    },
+    {
+      "shooters": [
+        {
+          "color": "R",
+          "ammo": 20,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "shooters": [
+        {
+          "color": "B",
+          "ammo": 20,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "shooters": [
+        {
+          "color": "Y",
+          "ammo": 15,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "shooters": [
+        {
+          "color": "G",
+          "ammo": 15,
+          "hidden": false
+        }
+      ]
+    }
+  ]
+}

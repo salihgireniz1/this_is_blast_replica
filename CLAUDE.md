@@ -1110,6 +1110,58 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   simply did not appear in the run); the unwedge eval from `unity-mcp.md`
   (`UnlockReloadAssemblies` + `Refresh(ForceUpdate)` + `RequestScriptCompilation`) fixed it
   every time. Left: `Leave`'s path array (3e).
+- **HTML level editor** - done, `level-editor/` at the repo root (outside `Assets/`, so
+  Unity never imports it), 34 node tests green, Unity suite 84/84 with the editor's own
+  `Level_05.json` in the folder, and `Level_05` played to **Won** in the Editor (100 cubes,
+  6 shooters, 100 -> 30 -> 0). Three files, no dependencies, no build, no server:
+  `index.html` (the page), `logic.js` (pure functions: `parse`, `serialize`, `validate`,
+  `stats`, `autofill`, `simulate`, `resizeBoard`, `paintCell`, `nextFreeName`),
+  `logic.test.js` (`node --test level-editor/logic.test.js`; the fixtures are the real
+  files in `Assets/00_GAME/Levels`, so the tests fail the day the two formats disagree).
+  Salih's spec: portable for designers and PMs, adjustable grid / columns / shooters,
+  guards that refuse a broken export, an autofill that deals shooters from the board's
+  colour counts, JSON straight into the Levels folder with the right name.
+  **What it encodes:** the page draws the level the way the player sees it - board on top
+  with `rows[0]` at its bottom edge (`flex-direction: column-reverse`), slot strip, queue
+  with depth 0 at the top of each column; a hidden shooter draws grey "?" but keeps its
+  colour select visible. Every click is a call into `logic.js` and a full re-render (400
+  cells is nothing); ammo inputs commit on `change`, or the re-render steals focus per
+  keystroke. **Validation mirrors the game exactly:** the nine parser refusals and the
+  four `LevelFileTests` rules are ERRORS that disable Save/Save As, so nothing the editor
+  writes can turn the suite red; five WARNINGS are advice (not 10x10, slots != 5, a shooter
+  colour with no cube, more shots than cubes - the shooter keeps its slot to the end -,
+  hidden at the front). **Autofill:** per colour, cubes in chunks of 20 with the remainder
+  last, so total ammo == cubes and no shooter is ever stranded; colours the front rows need
+  first are dealt first, round-robin across columns, which puts them at the fronts in one
+  modulo; column 1 position 2 is hidden. **Simulation:** the generator's greedy player
+  (`Docs/Tools/generate_level_02.py`, `Sim` + `play(smart=True)`) ported with the random
+  firing order made deterministic, run on every change of a legal level, a loss reported
+  as a warning. **Serialisation** is `JSON.stringify(doc, null, 2)` + LF: byte-identical to
+  the Python generators' `indent=2` (a test pins `serialize(parse(Level_04)) === Level_04`);
+  `Level_01` would re-flow on its first editor save - do not re-save it before the case
+  ships. **Folder access** is the File System Access API: pick `Assets/00_GAME/Levels`
+  once, the handle is kept in IndexedDB so the next session offers "Reconnect"; Save is
+  enabled only for a legal single-layer level with an open file, a multi-layer file (02, 03)
+  opens with a banner and can only be Saved As under a new name; browsers without the API
+  fall back to a file input and a download. `logic.js` is a classic script with a CommonJS
+  guard because **Chromium refuses `<script type=module>` from `file://`**, and the page is
+  opened by double-click. **Verified by automation:** paint, autofill, stats, checks, button
+  states, no console errors (via a `python -m http.server` preview; the file:// path renders
+  as a data: snapshot in the tool's pane and cannot load the sibling script - the real
+  double-click works, the pane does not). `Level_05.json` was produced through the same
+  `autofill -> validate -> serialize` path under node, force-imported, and won in Play.
+  **Not automatable, Salih tests by hand once:** the native folder picker - double-click
+  `index.html` in Edge, Choose Levels folder -> `Assets/00_GAME/Levels`, open `Level_01`
+  (20/20 per colour, zero errors), open `Level_02` (banner, Save off), New -> paint ->
+  Autofill -> Save As `Level_06.json`, then switch to Unity (it reimports on focus) and Play
+  it. **Runner trap, hit hard here:** the EditMode runner stayed at "running" through four
+  attempts (cancel, the unwedge eval, `RequestScriptReload`), starting right after a
+  `run_tests` was issued while an eval had just force-imported a level; the planned
+  negative probe (under-ammo file -> `LevelFileTests` red) was dropped on that account - the
+  same assertion was shown red earlier the same day on the ten-column `Level_03`. A Player
+  build is the one fix the ledger has seen work every time. Skipped on purpose: undo, layer
+  UI, drag-reorder, random-interleaving robustness; `.claude/launch.json` (the preview
+  server config) is left untracked.
 - `Level_04`, the mid-size benchmark - done, 84/84 green. The ledger had 100 cubes
   (`Level_01`), then jumped to 600 and 900, with nothing in between;
   `Docs/Tools/generate_level_04.py` fills the gap with **400 cubes and 20 shooters** - a
