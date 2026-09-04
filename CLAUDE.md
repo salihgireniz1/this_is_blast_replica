@@ -787,9 +787,29 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   `LevelEndViewModel.ButtonLabel` is always `RestartLabel` (`NextLabel` deleted). The
   progression stack (`LevelProgression`, `ISaveStore`, `Es3SaveStore`, `TextAsset[]
   _levels`) is still built and read at boot but nothing ever advances it, so it is dormant:
-  a fresh machine always boots `_levels[0]` = `Level_01`. **Salih's decision 2026-09-03:
-  the stack stays** - it is the seam a level select will be stitched onto. Do not
-  propose deleting it again.
+  a fresh machine always boots `_levels[0]` = `Level_01`. Salih's decision on 2026-09-03
+  was that the stack stays as the seam a level select would be stitched onto.
+  **Reversed by Salih on 2026-09-04 and the whole stack is deleted - see the next entry.**
+- **Save/load deleted, 84/84 green** (88 minus `LevelProgressionTests`), verified in Play
+  (`Level_01`, 100 cubes, 15 shooters, zero errors). Salih reopened his own 2026-09-03
+  decision after weighing a NEXT button for the win overlay and rejecting it: with one
+  shipped level the stored index can never leave zero, so `LevelProgression`, `ISaveStore`,
+  `Es3SaveStore` and Easy Save 3 were 194 files and 2.1 MB serving **two lines** that
+  always answered 0 - "no config for a value that never changes". The new evidence that
+  settled it: ES3 is the only code in the project that does not compile on a newer editor,
+  and it was the sole cause of the Safe Mode that morning. Gone with it: the `EasySave3`
+  asmdef reference, the `ES3_TMPRO` / `ES3_UGUI` defines on all 16 platforms, and the
+  plugin patch that fixed its 16 B/frame idle coroutine (`Docs/PERFORMANCE.md` step 3
+  keeps the finding; the allocation itself left with the plugin). `GameLifetimeScope`
+  holds one `TextAsset _level` now instead of `TextAsset[] _levels` - **a serialized path
+  change, so the scene reference was rewritten through `SerializedObject`** (the same trap
+  as every struct-field move). Side benefit: the scene's `_levels` had been hand-edited
+  down to `Level_03` alone for the perf screenshots, which would have shipped the 900-cube
+  stress level to the reviewer; it now boots `Level_01` and cannot drift again. To profile
+  on `Level_02` / `Level_03`, swap that one field - no ES3 file to push to the phone. Both
+  files stay in `Assets/00_GAME/Levels`, still checked by `LevelFileTests`, still the
+  evidence behind the performance ledger. **Do not reintroduce a save system for the
+  case:** the brief ships one level and replays it after a win as well as a loss.
 - Bullet is Apps' `Gun_Sprite` streak, aimed on Take - done, 76/76 green, verified in Play
   (five fronts seated, 100 -> 50 cubes; per-frame log of two in-flight bullets:
   dot(forward, velocity) 1.000 on every sample, the sprite's up along the velocity, its

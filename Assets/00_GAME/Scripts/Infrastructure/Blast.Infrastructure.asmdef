@@ -3,7 +3,6 @@
     "rootNamespace": "Blast.Infrastructure",
     "references": [
         "Blast.Domain",
-        "Blast.Application",
-        "EasySave3"
+        "Blast.Application"
     ]
 }
