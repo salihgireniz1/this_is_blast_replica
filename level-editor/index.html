@@ -112,6 +112,7 @@ script because Chromium refuses module scripts from file://.
       <div class="fields">
         <label for="width">Width</label><input type="number" id="width" min="1" max="30">
         <label for="height">Height</label><input type="number" id="height" min="1" max="60">
+        <label for="layers" title="Cubes stacked on every cell, all of that cell's colour">Layers</label><input type="number" id="layers" min="1" max="5">
         <label for="slotCount">Slots</label><input type="number" id="slotCount" min="1" max="9">
         <label for="columnCount">Shooter columns</label><input type="number" id="columnCount" min="1" max="5">
       </div>
@@ -167,7 +168,7 @@ const state = {
   needsPermission: false,  // a folder restored from a previous session still needs a click
   fileNames: [],           // the .json files in the folder, sorted
   fileHandle: null,        // the open file; null for a new level or the fallback
-  sourceLayerCount: 1,     // more than one means Save is refused: it would drop layers
+  sourceUniform: true,     // false when the open file's upper layers differ from its ground layer: Save is refused
   mode: "download",        // "fs" (the folder picker) or "download"; resolved at boot
 };
 
@@ -178,6 +179,7 @@ const FS_SUPPORTED = "showDirectoryPicker" in window;
 function freshLevel() {
   return {
     rows: Level.resizeBoard([], NEW_WIDTH, NEW_HEIGHT, state.brush),
+    layers: 1,
     slotCount: NEW_SLOTS,
     columns: Array.from({ length: NEW_COLUMNS }, () => []),
   };
@@ -230,6 +232,7 @@ function render() {
 
   el("width").value = width;
   el("height").value = level.rows.length;
+  el("layers").value = level.layers;
   el("slotCount").value = level.slotCount;
   el("columnCount").value = level.columns.length;
   el("fileName").value = state.fileName;
@@ -282,17 +285,17 @@ function renderFiles(hasErrors) {
   el("open").disabled = false;
   el("open").title = connected ? "Open the selected level" : "Open a level file";
 
-  // Save overwrites, so it needs an open file in the folder, a single-layer source and a legal level.
+  // Save overwrites, so it needs an open file in the folder, a source the page shows faithfully, and a legal level.
   el("save").hidden = !connected;
-  el("save").disabled = hasErrors || state.fileHandle === null || state.sourceLayerCount > 1;
+  el("save").disabled = hasErrors || state.fileHandle === null || !state.sourceUniform;
   el("saveAs").disabled = hasErrors;
   el("saveAs").textContent = connected ? "Save As" : "Download";
   el("saveAs").title = connected ? "Write under the name on the left" : "Download the file; drop it into Assets/00_GAME/Levels";
 
   const banner = el("banner");
-  banner.hidden = state.sourceLayerCount <= 1;
+  banner.hidden = state.sourceUniform;
   if (!banner.hidden) {
-    banner.textContent = `This file has ${state.sourceLayerCount} layers. The editor shows the ground layer only; Save is off so nothing is dropped - Save As writes a single-layer copy under a new name.`;
+    banner.textContent = "This file's upper layers differ from its ground layer, which the editor cannot show. Save is off so nothing is dropped - Save As writes every layer as the ground layer under a new name.";
   }
 }
 
@@ -402,6 +405,9 @@ function onSizeChange() {
 }
 el("width").addEventListener("change", onSizeChange);
 el("height").addEventListener("change", onSizeChange);
+el("layers").addEventListener("change", () => {
+  update((s) => { s.level.layers = Math.max(1, Math.trunc(Number(el("layers").value)) || 1); });
+});
 el("slotCount").addEventListener("change", () => {
   update((s) => { s.level.slotCount = Math.max(1, Math.trunc(Number(el("slotCount").value)) || 1); });
 });
@@ -425,7 +431,7 @@ el("fill").addEventListener("click", () => {
 /** Autofill replaces the whole queue; the status line says how many shooters went, so nothing vanishes unnoticed. */
 el("autofill").addEventListener("click", () => {
   const replaced = state.level.columns.reduce((count, shooters) => count + shooters.length, 0);
-  update((s) => { s.level.columns = Level.autofill(s.level.rows, s.level.columns.length); });
+  update((s) => { s.level.columns = Level.autofill(s.level.rows, s.level.columns.length, s.level.layers); });
   const dealt = state.level.columns.reduce((count, shooters) => count + shooters.length, 0);
   setStatus(replaced > 0 ? `Autofill replaced ${replaced} shooters with ${dealt}.` : `Autofill dealt ${dealt} shooters.`);
 });
@@ -436,7 +442,7 @@ el("new").addEventListener("click", () => {
     s.level = freshLevel();
     s.fileName = Level.nextFreeName(s.fileNames);
     s.fileHandle = null;
-    s.sourceLayerCount = 1;
+    s.sourceUniform = true;
     s.savedText = Level.serialize(s.level);
   });
 });
@@ -555,12 +561,12 @@ async function reconnect() {
 
 /** Replaces the level with a file's contents. Throws if the file does not parse. */
 function loadText(text, name, handle) {
-  const { level, layerCount } = Level.parse(text);
+  const { level, uniform } = Level.parse(text);
   update((s) => {
     s.level = level;
     s.fileName = name;
     s.fileHandle = handle;
-    s.sourceLayerCount = layerCount;
+    s.sourceUniform = uniform;
     s.savedText = Level.serialize(level);
   });
 }
@@ -628,8 +634,8 @@ async function saveAs() {
   }
 
   const sameAsOpen = state.fileHandle !== null && name.toLowerCase() === state.fileName.toLowerCase();
-  if (sameAsOpen && state.sourceLayerCount > 1) {
-    setStatus(`${name} has ${state.sourceLayerCount} layers; choose a different name so they are not lost.`);
+  if (sameAsOpen && !state.sourceUniform) {
+    setStatus(`${name} has layers the editor cannot show; choose a different name so they are not lost.`);
     return;
   }
   const exists = state.fileNames.some((existing) => existing.toLowerCase() === name.toLowerCase());
@@ -642,7 +648,7 @@ async function saveAs() {
     update((s) => {
       s.fileHandle = handle;
       s.fileName = name;
-      s.sourceLayerCount = 1;
+      s.sourceUniform = true;
       s.savedText = text;
     });
     setStatus(`Saved ${name}`);

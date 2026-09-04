@@ -44,19 +44,29 @@ test("parse: an unknown letter is refused, and so is a lowercase one", () => {
   assert.throws(() => Level.parse(lower), /'r'/);
 });
 
-test("parse: a multi-layer file reports its layer count and returns the ground layer verbatim", () => {
+test("parse: a layered file keeps its layer count, the ground rows, and knows the layers match", () => {
   const text = readLevel("Level_02.json");
   const raw = JSON.parse(text);
-  const { level, layerCount } = Level.parse(text);
-  assert.equal(layerCount, 3);
+  const { level, uniform } = Level.parse(text);
+  assert.equal(level.layers, 3);
+  assert.equal(uniform, true);
   assert.deepEqual(level.rows, raw.boardLayers[0].rows);
+});
+
+test("parse: layers that differ from the ground layer are flagged, since the editor cannot show them", () => {
+  const text = JSON.stringify({ boardLayers: [{ rows: ["YY"] }, { rows: ["YR"] }], slotCount: 5, shooterColumns: [] });
+  const { level, uniform } = Level.parse(text);
+  assert.equal(level.layers, 2);
+  assert.equal(uniform, false);
 });
 
 // --- serialize -----------------------------------------------------------------------
 
-test("serialize: a generated level round-trips byte for byte", () => {
-  const text = readLevel("Level_04.json");
-  assert.equal(Level.serialize(Level.parse(text).level), text);
+test("serialize: every generated level round-trips byte for byte, layered ones included", () => {
+  for (const name of ["Level_02.json", "Level_03.json", "Level_04.json"]) {
+    const text = readLevel(name);
+    assert.equal(Level.serialize(Level.parse(text).level), text, name);
+  }
 });
 
 test("serialize: the hand-written sample level survives a parse-serialize-parse round trip", () => {
@@ -66,14 +76,10 @@ test("serialize: the hand-written sample level survives a parse-serialize-parse 
   assert.deepEqual(twice, once);
 });
 
-test("serialize: a multi-layer source writes one layer and leaves the queue untouched", () => {
-  const text = readLevel("Level_02.json");
-  const raw = JSON.parse(text);
-  const written = JSON.parse(Level.serialize(Level.parse(text).level));
-  assert.equal(written.boardLayers.length, 1);
-  assert.deepEqual(written.boardLayers[0].rows, raw.boardLayers[0].rows);
-  assert.deepEqual(written.shooterColumns, raw.shooterColumns);
-  assert.equal(written.slotCount, raw.slotCount);
+test("serialize: a layered level writes the ground rows once per layer", () => {
+  const written = JSON.parse(Level.serialize({ rows: ["YR"], layers: 3, slotCount: 5, columns: [] }));
+  assert.equal(written.boardLayers.length, 3);
+  assert.ok(written.boardLayers.every((layer) => layer.rows[0] === "YR"));
 });
 
 // --- validate: the parser's rules, then LevelFileTests' ------------------------------
@@ -373,4 +379,34 @@ test("levelsFolderFor: names the repo's Levels folder from the page's own file U
   assert.equal(Level.levelsFolderFor("file:///C:/Some%20Where/repo/level-editor/index.html"), String.raw`C:\Some Where\repo\Assets\00_GAME\Levels`);
   assert.equal(Level.levelsFolderFor("http://localhost:8765/"), "");
   assert.equal(Level.levelsFolderFor("file:///C:/Downloads/index.html"), "");
+});
+
+// --- layers: every cube on a cell shares its colour, so a layer is a count, not a grid --
+
+test("stats: a layered board counts every layer's cubes", () => {
+  const level = { rows: ["YYR"], layers: 2, slotCount: 5, columns: [] };
+  assert.deepEqual(Level.stats(level).cubes, { Y: 4, R: 2, B: 0, G: 0, O: 0 });
+});
+
+test("validate: a shipped layered level is legal; zero layers is an error; more than one warns", () => {
+  const shipped = Level.parse(readLevel("Level_02.json")).level;
+  assert.deepEqual(errorCodes(shipped), []);
+  assert.ok(warningCodes(shipped).includes("W_LAYERS"));
+
+  const none = validLevel();
+  none.layers = 0;
+  assert.ok(errorCodes(none).includes("E_LAYERS"));
+  assert.ok(!warningCodes(validLevel()).includes("W_LAYERS"));
+});
+
+test("autofill: deals shots for every layer, not just the ground one", () => {
+  const columns = Level.autofill(["YY"], 1, 2);
+  assert.deepEqual(queueTotals(columns).ammo, { Y: 4 });
+});
+
+test("simulate: a layered stack takes one shot per layer before the row moves", () => {
+  const won = { rows: ["RR"], layers: 2, slotCount: 1, columns: [[{ color: "R", ammo: 4, hidden: false }]] };
+  assert.deepEqual(Level.simulate(won), { won: true, cubesLeft: 0 });
+  const short = { rows: ["RR"], layers: 2, slotCount: 1, columns: [[{ color: "R", ammo: 3, hidden: false }]] };
+  assert.deepEqual(Level.simulate(short), { won: false, cubesLeft: 1 });
 });

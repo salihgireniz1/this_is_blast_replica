@@ -1125,6 +1125,19 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   call: scoped to `Level_01` in `LevelFileTests`, `E_NO_HIDDEN` -> `W_NO_HIDDEN` in the
   editor; autofill still hides one by default, the designer may untick it. Proven with a
   two-colour, nothing-hidden temporary level in the folder: suite 84/84.
+- **Level editor: layers as a count** - done, node 41/41. Salih's observation: every cube
+  on a cell shares its colour (the rule `Level_02`/`03` were generated under and the one
+  the game plays best), so a layer needs no grid of its own - it is a number. `level.layers`
+  replaces the old multi-layer banner: `parse` keeps the count and reports `uniform` (every
+  upper layer equal to the ground layer), `serialize` writes the ground rows once per layer
+  (**`Level_02` and `Level_03` now round-trip byte for byte**, pinned), `stats` counts cubes
+  x layers, `autofill(rows, columns, layers)` deals for every layer, `simulate` erodes a
+  cell's stack one shot at a time before the row behind becomes the front (the generator's
+  `living` counter), `validate` adds `E_LAYERS` (< 1) and `W_LAYERS` (> 1: the sample level
+  is single-layer). The page has a Layers input next to Width/Height; Save is refused only
+  for a file whose upper layers differ from its ground layer (`sourceUniform`), which none
+  of the shipped files do. Verified in the pane: layers 3 on a fresh board reads 300 red
+  cubes and raises `W_LAYERS`.
 - **Level editor: `serve.py` deleted again, the page is local-only** - done, node 35/35.
   Salih's call, and the right one: the reviewers open the repo and double-click; nobody
   installs Python for a case. What survives is what a page can do by itself: the **File

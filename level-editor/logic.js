@@ -109,7 +109,14 @@ const Level = (() => {
 
     const slotCount = Number.isInteger(raw.slotCount) ? raw.slotCount : 0;
 
-    return { level: { rows, slotCount, columns }, layerCount: layers.length };
+    // Every cube on a cell shares its colour (the rule the generators follow, and what the
+    // game plays best), so a layer is a count and the board shown is the ground layer. A
+    // file whose upper layers differ cannot be shown faithfully; the page refuses to
+    // overwrite such a file in place.
+    const uniform = layers.every((layer) => layer && Array.isArray(layer.rows)
+      && layer.rows.length === rows.length && layer.rows.every((row, index) => row === rows[index]));
+
+    return { level: { rows, layers: layers.length, slotCount, columns }, uniform };
   }
 
   /**
@@ -121,7 +128,7 @@ const Level = (() => {
    */
   function serialize(level) {
     const document = {
-      boardLayers: [{ rows: level.rows }],
+      boardLayers: Array.from({ length: level.layers ?? 1 }, () => ({ rows: level.rows })),
       slotCount: level.slotCount,
       shooterColumns: level.columns.map((shooters) => ({
         shooters: shooters.map((shooter) => ({
@@ -144,9 +151,10 @@ const Level = (() => {
     const perColour = () => Object.fromEntries([...COLOURS].map((letter) => [letter, 0]));
     const cubes = perColour();
     const ammo = perColour();
+    const layers = level.layers ?? 1; // a cell holds one cube per layer, all the same colour
     for (const row of level.rows) {
       for (const letter of row) {
-        if (letter in cubes) cubes[letter] += 1;
+        if (letter in cubes) cubes[letter] += layers;
       }
     }
     for (const shooters of level.columns) {
@@ -173,6 +181,12 @@ const Level = (() => {
     // LevelParser: a board must have at least one row and one column.
     if (level.rows.length === 0 || level.rows[0].length === 0) {
       error("E_EMPTY_BOARD", "The board has no cells.");
+    }
+
+    // LevelParser: "The level has no boardLayers."
+    const layers = level.layers ?? 1;
+    if (!Number.isInteger(layers) || layers < 1) {
+      error("E_LAYERS", `Layers is ${layers}; a board needs at least one.`);
     }
 
     // LevelParser: "The level has no shooterColumns."
@@ -228,6 +242,10 @@ const Level = (() => {
 
     if (slotsValid && level.slotCount !== BRIEF_SLOT_COUNT) {
       warning("W_SLOTS", `Slot count is ${level.slotCount}; the case fixes it at ${BRIEF_SLOT_COUNT}.`);
+    }
+
+    if (layers > 1) {
+      warning("W_LAYERS", `${layers} layers of cubes on every cell; the case's sample level is a single layer.`);
     }
 
     // All five colours and a hidden shooter are the brief's rules for the sample level only
@@ -331,9 +349,10 @@ const Level = (() => {
    * up at the fronts. One shooter behind a front is hidden, when the queue is deep enough.
    * @param {string[]} rows The board, front row first.
    * @param {number} columnCount Columns wanted (clamped to 1..MAX_QUEUE_COLUMNS).
+   * @param {number} [layers] Cubes per cell, all of the cell's colour; one when omitted.
    * @returns {object[][]} A new queue, columns of shooters front-first.
    */
-  function autofill(rows, columnCount) {
+  function autofill(rows, columnCount, layers = 1) {
     const wanted = Math.max(1, Math.min(MAX_QUEUE_COLUMNS, columnCount || MAX_QUEUE_COLUMNS));
 
     const cubes = {};
@@ -344,7 +363,7 @@ const Level = (() => {
           cubes[letter] = 0;
           firstRow[letter] = rowIndex;
         }
-        cubes[letter] += 1;
+        cubes[letter] += layers;
       }
     });
 
@@ -407,12 +426,24 @@ const Level = (() => {
   function simulate(level) {
     const width = level.rows.length > 0 ? level.rows[0].length : 0;
     const height = level.rows.length;
+    const layers = Math.max(1, level.layers | 0);
     const front = new Array(width).fill(0);
-    let left = width * height;
+    const living = new Array(width).fill(layers); // cubes still standing on the front cell
+    let left = width * height * layers;
     const slots = new Array(Math.max(0, level.slotCount | 0)).fill(null);
     const queueFront = level.columns.map(() => 0);
 
+    // Every cube on a cell shares its colour, so the front cell's colour holds until its
+    // last cube goes; only then does the row behind become the front.
     const exposed = (column) => (front[column] >= height ? null : level.rows[front[column]][column]);
+    const remove = (column) => {
+      living[column] -= 1;
+      if (living[column] === 0) {
+        front[column] += 1;
+        living[column] = layers;
+      }
+      left -= 1;
+    };
     const target = (color) => {
       for (let column = 0; column < width; column++) {
         if (exposed(column) === color) return column;
@@ -436,8 +467,7 @@ const Level = (() => {
           if (seated === null) continue;
           const hit = target(seated.color);
           if (hit < 0) continue;
-          front[hit] += 1;
-          left -= 1;
+          remove(hit);
           seated.ammo -= 1;
           progress = true;
           if (seated.ammo === 0) slots[slot] = null;
