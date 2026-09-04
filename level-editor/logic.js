@@ -258,6 +258,15 @@ const Level = (() => {
       }
     });
 
+    // Ammo >= cubes is necessary, not sufficient: the order can still deadlock. Only a
+    // legal level is worth simulating - a broken one's result would mean nothing.
+    if (!issues.some((issue) => issue.severity === "error")) {
+      const played = simulate(level);
+      if (!played.won) {
+        warning("W_SIM_STUCK", `A greedy simulation got stuck with ${played.cubesLeft} cubes left; a careful player may still win, but check the order.`);
+      }
+    }
+
     return issues;
   }
 
@@ -366,9 +375,105 @@ const Level = (() => {
     return columns;
   }
 
+  /** Seat scores for the greedy player, ported from Docs/Tools/generate_level_02.py's smart player. */
+  const SCORE_EXPOSED_AND_NEW = 1000;
+  const SCORE_EXPOSED = 500;
+  const SCORE_NEXT_USEFUL = 100;
+
+  /**
+   * Plays the level as a greedy but colour-aware player would, ported from the generator's
+   * `Sim` + `play(smart=True)` with the random firing order made deterministic: fire every
+   * seated shooter that has a target (leftmost front cube of its colour, as GameRules does),
+   * then seat the queue front that scores best - exposed and not already seated first, then
+   * exposed, then one whose successor would be useful. Advisory only: Level_02 is designed so
+   * the naive player loses, and a careful human may win what this player cannot.
+   * @param {{ rows: string[], slotCount: number, columns: object[][] }} level The editor's level.
+   * @returns {{ won: boolean, cubesLeft: number }} Whether the board emptied, and what remained.
+   */
+  function simulate(level) {
+    const width = level.rows.length > 0 ? level.rows[0].length : 0;
+    const height = level.rows.length;
+    const front = new Array(width).fill(0);
+    let left = width * height;
+    const slots = new Array(Math.max(0, level.slotCount | 0)).fill(null);
+    const queueFront = level.columns.map(() => 0);
+
+    const exposed = (column) => (front[column] >= height ? null : level.rows[front[column]][column]);
+    const target = (color) => {
+      for (let column = 0; column < width; column++) {
+        if (exposed(column) === color) return column;
+      }
+      return -1;
+    };
+    const exposedCount = (color) => {
+      let count = 0;
+      for (let column = 0; column < width; column++) {
+        if (exposed(column) === color) count += 1;
+      }
+      return count;
+    };
+
+    const fireAll = () => {
+      let progress = true;
+      while (progress) {
+        progress = false;
+        for (let slot = 0; slot < slots.length; slot++) {
+          const seated = slots[slot];
+          if (seated === null) continue;
+          const hit = target(seated.color);
+          if (hit < 0) continue;
+          front[hit] += 1;
+          left -= 1;
+          seated.ammo -= 1;
+          progress = true;
+          if (seated.ammo === 0) slots[slot] = null;
+        }
+      }
+    };
+
+    const stuck = () => left > 0 && slots.every((seated) => seated !== null && target(seated.color) < 0);
+
+    for (;;) {
+      fireAll();
+      if (left === 0) return { won: true, cubesLeft: 0 };
+      const freeSlot = slots.indexOf(null);
+      if (stuck() || freeSlot < 0) return { won: false, cubesLeft: left };
+
+      const fronts = queueFront.map((depth, column) => column).filter((column) => queueFront[column] < level.columns[column].length);
+      if (fronts.length === 0) return { won: false, cubesLeft: left };
+
+      const seatedColours = new Set(slots.filter(Boolean).map((seated) => seated.color));
+      const score = (column) => {
+        const shooters = level.columns[column];
+        const shooter = shooters[queueFront[column]];
+        const count = exposedCount(shooter.color);
+        const next = queueFront[column] + 1 < shooters.length ? shooters[queueFront[column] + 1].color : null;
+        return (count > 0 && !seatedColours.has(shooter.color) ? SCORE_EXPOSED_AND_NEW : 0)
+          + (count > 0 ? SCORE_EXPOSED : 0)
+          + (next !== null && exposedCount(next) > 0 && !seatedColours.has(next) ? SCORE_NEXT_USEFUL : 0)
+          + count;
+      };
+
+      // First maximum wins, so ties go to the lowest column - the same tie-break as Python's max.
+      let best = fronts[0];
+      let bestScore = score(best);
+      for (const column of fronts.slice(1)) {
+        const candidate = score(column);
+        if (candidate > bestScore) {
+          best = column;
+          bestScore = candidate;
+        }
+      }
+
+      const chosen = level.columns[best][queueFront[best]];
+      queueFront[best] += 1;
+      slots[freeSlot] = { color: chosen.color, ammo: chosen.ammo };
+    }
+  }
+
   return {
     COLOURS, COLOUR_NAMES, MAX_QUEUE_COLUMNS, AUTOFILL_CHUNK,
-    parse, serialize, stats, validate, resizeBoard, paintCell, nextFreeName, autofill,
+    parse, serialize, stats, validate, resizeBoard, paintCell, nextFreeName, autofill, simulate,
   };
 })();
 

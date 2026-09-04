@@ -309,3 +309,46 @@ test("autofill: uses the columns asked for, but never leaves one empty", () => {
   assert.equal(Level.autofill(["YYRR"], 5).length, 2);
   assert.ok(Level.autofill(["YYRR"], 5).every((shooters) => shooters.length > 0));
 });
+
+// --- simulate ------------------------------------------------------------------------
+
+/**
+ * A level every rule accepts that the greedy player still loses: one slot, one column,
+ * and the only front shooter is a colour the front row does not expose.
+ */
+function stuckLevel() {
+  return {
+    rows: ["RRRRR", "YBGOY"],
+    slotCount: 1,
+    columns: [[
+      { color: "Y", ammo: 2, hidden: false },
+      { color: "R", ammo: 5, hidden: true },
+      { color: "B", ammo: 1, hidden: false },
+      { color: "G", ammo: 1, hidden: false },
+      { color: "O", ammo: 1, hidden: false },
+    ]],
+  };
+}
+
+test("simulate: the shipped sample level is won with nothing left", () => {
+  const { level } = Level.parse(readLevel("Level_01.json"));
+  assert.deepEqual(Level.simulate(level), { won: true, cubesLeft: 0 });
+  assert.ok(!warningCodes(level).includes("W_SIM_STUCK"));
+});
+
+test("simulate: a legal level the greedy player cannot finish is reported stuck, and validate warns", () => {
+  const result = Level.simulate(stuckLevel());
+  assert.equal(result.won, false);
+  assert.ok(result.cubesLeft > 0);
+  assert.deepEqual(errorCodes(stuckLevel()), []);
+  assert.ok(warningCodes(stuckLevel()).includes("W_SIM_STUCK"));
+});
+
+test("simulate: seats the front that can fire, not the leftmost one", () => {
+  const level = {
+    rows: ["RR"],
+    slotCount: 1,
+    columns: [[{ color: "Y", ammo: 1, hidden: false }], [{ color: "R", ammo: 2, hidden: false }]],
+  };
+  assert.equal(Level.simulate(level).won, true);
+});
