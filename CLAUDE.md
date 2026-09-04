@@ -1125,6 +1125,17 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   call: scoped to `Level_01` in `LevelFileTests`, `E_NO_HIDDEN` -> `W_NO_HIDDEN` in the
   editor; autofill still hides one by default, the designer may untick it. Proven with a
   two-colour, nothing-hidden temporary level in the folder: suite 84/84.
+- **Unity does not auto-refresh in this session, even when focused** - measured 2026-09-04.
+  Salih saved `Level_06` from the editor; the file on disk changed (1055 bytes, his queue)
+  and Unity kept playing the old import (1083 bytes). Auto Refresh is Enabled
+  (`kAutoRefreshMode=1`; the legacy `kAutoRefresh` was False and is now True), yet a temp
+  `Level_98.json` dropped on disk stayed invisible to `AssetDatabase` **after the Editor was
+  given focus** (`isApplicationActive=True`). Most likely the `-automated` flag the Hub
+  passes for the pipeline: Unity treats the session as unattended and skips focus-driven
+  refresh. Not proven (that needs a relaunch without the flag); the rule that follows is
+  proven: **after saving a level, press Ctrl+R in Unity (Assets > Refresh) before Play**,
+  or run `AssetDatabase.Refresh(ForceUpdate)` through the CLI. A reviewer launching Unity
+  normally gets the standard focus refresh. The deleted `serve.py` hook had masked this.
 - **Level editor: layers as a count** - done, node 41/41. Salih's observation: every cube
   on a cell shares its colour (the rule `Level_02`/`03` were generated under and the one
   the game plays best), so a layer needs no grid of its own - it is a number. `level.layers`
