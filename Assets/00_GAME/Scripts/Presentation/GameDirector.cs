@@ -89,18 +89,6 @@ namespace Blast.Presentation
 
         #region Public Methods
 
-        /// <summary>Takes the token every async flow below is tied to.</summary>
-        void Awake()
-        {
-            _destroyed = this.GetCancellationTokenOnDestroy();
-        }
-
-        /// <summary>Kills the reused collapse tweens with the director: they never auto-kill, and a reload builds a new set.</summary>
-        void OnDestroy()
-        {
-            _collapses.KillAll();
-        }
-
         /// <summary>Receives the loop, the slots and the registry this director drives.</summary>
         /// <param name="loop">The use case every action goes through.</param>
         /// <param name="slots">The slot row, for ammo reads.</param>
@@ -135,6 +123,18 @@ namespace Blast.Presentation
         #endregion
 
         #region Private Methods
+
+        /// <summary>Takes the token every async flow below is tied to.</summary>
+        void Awake()
+        {
+            _destroyed = this.GetCancellationTokenOnDestroy();
+        }
+
+        /// <summary>Kills the reused collapse tweens with the director: they never auto-kill, and a reload builds a new set.</summary>
+        void OnDestroy()
+        {
+            _collapses.KillAll();
+        }
 
         /// <summary>Runs one selection: seat in the domain, then animate the consequences.</summary>
         /// <param name="column">The queue column the player tapped.</param>

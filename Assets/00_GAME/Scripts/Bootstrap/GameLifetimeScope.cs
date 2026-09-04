@@ -84,7 +84,7 @@ namespace Blast.Bootstrap
 
         #endregion
 
-        #region Protected Methods
+        #region Public Methods
 
         /// <summary>Registers the authored assets and prepares the tween engine.</summary>
         /// <param name="builder">The container being built.</param>
