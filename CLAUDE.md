@@ -1017,6 +1017,20 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   prewarm 5 -> 10 (flight 0.17 s is longer than the 0.12 s interval, so more than five
   are in the air). Left with reasons in the ledger: death `DOScale`, the per-await
   cancellation node, the counter punch, `Leave`'s path (~15% of the old garbage).
+- **Performance pass, step 3c: `CollapseTweens`** - done, 86/86 green, verified in Play
+  (`Level_03`, five seated: 30 deaths went through 6 pooled entries, every entry complete
+  with a destroyed target afterwards, lock/settling counters all 0, verdict Lost by the
+  rule, zero errors). Closing the per-shot garbage the ledger left: the dying cube's
+  `DOScale` was two closures per death. A reused tween PER CUBE saves nothing (a cube dies
+  once, the closures would be built at the death anyway), so the pool is shared: each entry
+  owns one `DOTween.To` whose closures read an `Entry.Target` field, and a death re-points
+  the field, `ChangeValues` + `Restart`. Grow-only, "not playing" is the free signal (the
+  `ComponentPool` shape), `KillAll` from the director's `OnDestroy` because nothing
+  auto-kills. Awaited with `AwaitForComplete` (the reused-tween trap from 3b). Probe:
+  always-`Add` turned exactly the allocation test red. **Found in passing, NOT fixed:** the
+  uncommitted scene's `_levels` holds only `Level_03` (Salih's hand edit for the perf
+  screenshots); `ES3` index is -1 on this machine, so Play boots the stress level. Restore
+  `[Level_01, Level_02, Level_03]` before the case ships.
 - Salih's playtest notes, parked for the polish days: shooter animator (Idle/Run/Shoot)
   not wired, no deck/dock visual and no room for one in the current framing (shooters run
   into the queue-playarea gap), layout needs breathing room. Core loop first.

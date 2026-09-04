@@ -81,6 +81,9 @@ namespace Blast.Presentation
         /// waking up to touch a destroyed view.</summary>
         CancellationToken _destroyed;
 
+        /// <summary>The shared collapse tweens every cube death shrinks through; a DOScale per death was two closures per shot.</summary>
+        readonly CollapseTweens _collapses = new CollapseTweens();
+
         #endregion
 
         #region Public Methods
@@ -89,6 +92,12 @@ namespace Blast.Presentation
         void Awake()
         {
             _destroyed = this.GetCancellationTokenOnDestroy();
+        }
+
+        /// <summary>Kills the reused collapse tweens with the director: they never auto-kill, and a reload builds a new set.</summary>
+        void OnDestroy()
+        {
+            _collapses.KillAll();
         }
 
         /// <summary>Receives the loop, the slots and the registry this director drives.</summary>
@@ -156,7 +165,7 @@ namespace Blast.Presentation
             // hitch the first shot causes on this same frame (measured 56 ms in the editor:
             // a 0.067 s segment vanished inside it). Low elasticity keeps the swing back
             // through the opposite stretch small, so what reads is the squash.
-            view.transform.DOPunchScale(_motion.LandSquash, _motion.LandDuration, vibrato: 10, elasticity: 0.3f);
+            view.transform.DOPunchScale(_motion.LandSquash, _motion.LandDuration, vibrato: 10, elasticity: 0.3f).ToUniTask().Forget();
 
             FireLoop(slot, view, ammo).Forget();
         }
@@ -257,11 +266,12 @@ namespace Blast.Presentation
             // Death as the original plays it, measured frame by frame (see CLAUDE.md): the
             // cube shrinks to nothing in place, fast at first and slow at the end. No rock,
             // no jelly, no hop (the original's one-frame lift was tried and could not be
-            // seen). Awaited because the column only flows once the cube is gone.
-            Transform dying = cube.transform;
-            await dying.DOScale(Vector3.zero, _cubeDeath.CollapseDuration)
-                .SetEase(Ease.OutQuad)
-                .ToUniTask(cancellationToken: _destroyed);
+            // seen). Awaited because the column only flows once the cube is gone. The
+            // collapse comes from the shared pool: a DOScale here was two closures per
+            // death, and a cube dies once, so no per-cube tween could have saved them.
+            // A reused tween never kills, so AwaitForComplete, not ToUniTask.
+            await _collapses.Play(cube.transform, _cubeDeath.CollapseDuration)
+                .AwaitForComplete(cancellationToken: _destroyed);
 
             // The hit has played out; from here on the column is a last resort.
             if (rowFalls)
