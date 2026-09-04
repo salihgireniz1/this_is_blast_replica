@@ -95,7 +95,7 @@ script because Chromium refuses module scripts from file://.
   <button id="saveAs" title="Write under the name on the left">Save As</button>
   <span class="status" id="status"></span>
   <span class="hint" id="hint" hidden></span>
-  <button id="copyPath" hidden title="Copy the folder path, then paste it into the picker's Folder field">Copy path</button>
+  <button id="copyPath" hidden title="Copy the folder path. In the picker: paste it into the Folder field, press Enter to go inside, then Select Folder.">Copy path</button>
 </header>
 <div class="banner" id="banner" hidden></div>
 
@@ -257,7 +257,7 @@ async function copyLevelsPath() {
   const folder = Level.levelsFolderFor(location.href);
   try {
     await navigator.clipboard.writeText(folder);
-    setStatus(`Copied ${folder} — paste it into the picker's Folder field.`);
+    setStatus("Copied. In the picker: paste into the Folder field, press Enter to go inside, then Select Folder. (Edge refuses your user folder itself, so it must be the Levels folder.)");
   } catch (error) {
     setStatus(`Could not copy (${error.message}); the path is: ${folder}`);
   }
