@@ -1110,6 +1110,28 @@ Evaluation order: bug-free > juiciness > architecture > performance > git usage.
   simply did not appear in the run); the unwedge eval from `unity-mcp.md`
   (`UnlockReloadAssemblies` + `Refresh(ForceUpdate)` + `RequestScriptCompilation`) fixed it
   every time. Left: `Leave`'s path array (3e).
+- Splash lifetime cut to the fire rhythm - done, 84/84 green. Salih's report: with the
+  pullback set high, one splash flew away as asked but "ten more" stayed piled at the
+  front, and he read that as a bug in the offset. It was not. Measured, seating every
+  front on `Level_01` and bucketing the active splashes by z: **12 sat at z = -10 exactly
+  (the slot row) and 8 at z < -11 (pulled back)** - the pile is the MUZZLE splash, a
+  separate spawn at the shooter that the pullback does not govern and should not.
+  Two things were cleared on the way, both by measurement, both worth not re-investigating:
+  the pool does **not** leak (0 of 48 active in four samples once firing stops, and it
+  never grew past its prewarm), and there is no third splash source (two `Splashes.Take`
+  calls in the whole project, zero `SplashEffect` objects in the scene outside the pool).
+  The real defect the pile exposed: a shot happens every 0.12 s and every splash lived
+  **1.7 s** (`duration` 1 + particle lifetime 0.7), so ~14 copies stacked at one fixed
+  world point per muzzle - a constant white glow instead of a per-shot puff. Fixed on
+  `AppsAssets/Prefabs/SplashEffect.prefab` (Apps' asset, tuned not replaced): root
+  `duration` 1 -> 0.25 and lifetime 0.3-0.7 -> 0.15-0.35 (total **0.6 s**), `InnerSplash`
+  1 -> 0.25 and 0.25-0.35 -> 0.12-0.2. Stacking is now `0.6 / 0.12 = 5`. Verified live by
+  reading a pooled clone's own `main` (total 0.6 s), and the same-phase sample fell from
+  12-13 to 4. **Measurement note:** counting active splashes is phase-dependent - firing
+  on `Level_01` comes in one- to two-second bursts, and a CLI round trip is ~1 s, so a
+  snapshot lands wherever it lands. Read the clone's lifetime and do the arithmetic;
+  do not trust a single active-count sample. Salih's own tuning of `MuzzleHeight` and
+  `ImpactPullback` in the scene is his, left alone.
 - Impact splash pulled off the cube's centre - done, 84/84 green, verified in Play (fifteen
   shooters seated on `Level_01`, board splashes sampled mid-fire: every one sat 0.30-0.34
   on the shooter side of the front row it hit, zero errors). Salih's report: the impact
