@@ -1472,7 +1472,7 @@ MonoBehaviour:
     Prefab: {fileID: 6742646012057801151, guid: 88e744a18b2a4cf4ba0713e8e60308a3, type: 3}
     Prewarm: 10
   _splashes:
-    Prefab: {fileID: 9115013375107063508, guid: 9098df64dbd0a4e9f9f57f73d8d31bc1, type: 3}
+    Prefab: {fileID: 6572029275886050707, guid: c9bb8d4571f1b1343b165343b0081f45, type: 3}
     Prewarm: 48
 --- !u!4 &921700893
 Transform:

@@ -22,9 +22,9 @@ namespace Blast.Presentation
         [Tooltip("The bullet prefab and how many are made on Awake. One per slot is enough: a flight ends before the next shot.")]
         [SerializeField] PoolSettings<CubeView> _bullets = new PoolSettings<CubeView> { Prewarm = 10 };
 
-        /// <summary>The muzzle flash and how many to make up front: enough for five slots chain-firing. Its Stop Action is Disable, which is how the pool sees it finish.</summary>
+        /// <summary>The splash (muzzle and impact) and how many to make up front: enough for five slots chain-firing. Its Stop Action is Disable, which is how the pool sees it finish.</summary>
         [Tooltip("The splash prefab (played at the muzzle AND on the hit cube) and how many are made on Awake. Its Stop Action must be Disable. Prewarm = slots x 2 x (splash life / fire interval); 41 peaked in Play at a 0.1 s interval.")]
-        [SerializeField] PoolSettings<ParticleSystem> _splashes = new PoolSettings<ParticleSystem> { Prewarm = 48 };
+        [SerializeField] PoolSettings<SplashView> _splashes = new PoolSettings<SplashView> { Prewarm = 48 };
 
         #endregion
 
@@ -34,7 +34,7 @@ namespace Blast.Presentation
         public ComponentPool<CubeView> Bullets { get; private set; }
 
         /// <summary>The muzzle splashes, reused across shots.</summary>
-        public ComponentPool<ParticleSystem> Splashes { get; private set; }
+        public ComponentPool<SplashView> Splashes { get; private set; }
 
         #endregion
 
