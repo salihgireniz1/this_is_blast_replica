@@ -1660,7 +1660,7 @@ MonoBehaviour:
     MuzzleHeight: 1.5
     MuzzleReach: 0.6
     FlightDuration: 0.17
-    ImpactPullback: 5
+    ImpactPullback: 0.45
   _cubeDeath:
     CollapseDuration: 0.18
     FlowDuration: 0.3
