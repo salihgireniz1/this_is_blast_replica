@@ -683,6 +683,51 @@ load time back to load time and add a lifetime to manage, and the allocation hun
 3e already showed the death path contributing nothing measurable (the whole game allocates
 11 B/frame during a burst). Not taken.
 
+### 3h. Coloured shots: an A/B on the phone (2026-09-05)
+
+The shot now wears the shooter's colour end to end: the bullet body (`sharedMaterial`,
+the palette material the cubes already use), its trail (`SpriteRenderer.color`), and
+both splashes (`ParticleSystem.main.startColor` on the burst and its inner core, through
+`SplashView`). Every one of those is a native setter on an object the pools already hold:
+no material instance, no property block, no new tween. The editor test
+`SplashViewTests.ASecondTint_DoesNotAllocate` says 0 B for the splash; this entry is the
+phone saying the same for the whole shot.
+
+**Method.** Two Development APKs from the same machine ten minutes apart: `before` is
+`15305b5` (the last commit before the colour work, game assets checked out in place and
+the scene reopened from disk), `after` is `1aaf523`. Identical script for both:
+force-stop, `logcat -c`, launch, 9 s idle, five `input tap`s on the front row 0.5 s
+apart (the **cold** burst: five 10-ammo shooters, 50 cubes, a fresh process), 12 s, then
+`logcat -c` and five more taps at once (the **warm** burst: five 5-ammo shooters, ~30
+cubes, every pool already grown). `Level_01`, phone at 90 Hz, `[perf]` lines per second.
+
+| Build | Second | fps | frame ms | GC B/frame | allocs/frame | batches |
+|---|---|---|---|---|---|---|
+| before | idle | 90.0 | 11.11 | 0 | 0 | 308 |
+| after | idle | 90.0 | 11.11 | 0 | 0 | 308 |
+| before | cold burst, s1..s6 | 90.0 | 11.11 | 2465, 672, 468, 125, 52, 4 | 20, 5, 4, 1, 0, 0 | 317 -> 183 |
+| after | cold burst, s1..s5 | 90.0 | 11.11 | 2641, 785, 234, 120, 43 | 21, 6, 2, 1, 0 | 313 -> 183 |
+| before | warm burst, s1..s4 | 90.0 | 11.11 | 153, 186, 90, 3 | 2, 1, 0, 0 | 192 -> 108 |
+| after | warm burst, s1..s4 | 90.0 | 11.11 | 155, 216, 91, 3 | 2, 2, 0, 0 | 190 -> 108 |
+| both | after the burst | 90.0 | 11.11 | 0 | 0 | 183 / 108 |
+
+Summed over the burst, before vs after: cold 3786 vs 3823 B/frame-seconds, warm 432 vs
+465. The difference is one second's worth of tap timing, not a new allocation: the shape
+of both bursts is the one 3e and 2g already explain - the seat second carries the five
+taps (LeanTouch events, the run and land tweens' closures), the tail carries the five
+departures (`Leave`'s path, 91-377 B/frame in 2g), and the cold burst on top of that
+pays every once-only pool growth of a fresh process (bullet tweens, collapse entries,
+UniTask's delay promises). Frame time never left the 90 Hz cap in either build, and the
+draw count is unchanged: the bullet's palette material is the cubes' TCP2 shader, so it
+sits in the same SRP batch `Gun.mat` did, and a tinted particle is the same draw as a
+white one.
+
+**What was not done.** Milliseconds between the two builds are not compared beyond
+"both on the cap": ten minutes of thermal drift is bigger than any effect this change
+could have, and the cap hides it anyway. The `before` APK is kept next to the shipped
+one in `Builds/Android/` (ignored by git) for as long as another A/B on this phone is
+plausible.
+
 ### 2b. Shadow and animator settings that change nothing on screen
 
 Three edits, all in assets, none visible:

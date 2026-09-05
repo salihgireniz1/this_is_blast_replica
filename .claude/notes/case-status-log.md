@@ -1376,3 +1376,18 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   the scene pointing at the prefab's ParticleSystem component; retyping the pool leaves
   that reference null until it is re-pointed at the new component type. Editor probe
   numbers were read and ignored as always; the phone sweep is the ledger's job.
+- Coloured shots measured on the phone - done (2026-09-05), `Docs/PERFORMANCE.md` 3h. Two
+  Development APKs (`15305b5` before, `1aaf523` after) through the identical adb script:
+  idle 0 B, cold burst ~3.8 KB/frame-seconds in both, warm burst 432 vs 465, 90 fps /
+  11.11 ms and identical batch counts throughout; the difference is tap timing, the
+  shape is 2g/3e's seats and departures. Phone screenshot mid-burst: red bullet, red
+  trail, red splash next to a blue one. **Recipe notes:** the `before` build came from
+  `git checkout <commit> -- Assets/00_GAME` in place, then `AssetDatabase.Refresh` +
+  `RequestScriptCompilation` AND `EditorSceneManager.OpenScene` - the refresh recompiles
+  but does not reload the open scene, so `_splashes.Prefab` read null (new component type
+  in memory against the old field type) until the scene was reopened from disk; same
+  again on the way back to `main`. `recompile` said `up_to_date` after the restore while
+  the DLLs were in fact fresh - checked by mtime, as the rule says. The launcher activity
+  is `UnityPlayerGameActivity`; `monkey -p com.APPS.CaseStudy 1` launches without
+  knowing it. **Lesson:** `adb pull` the installed APK before overwriting it; the A/B
+  cost a second build because the old one had been deleted "so the new file is proof".
