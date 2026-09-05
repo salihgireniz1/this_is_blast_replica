@@ -1391,3 +1391,12 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   is `UnityPlayerGameActivity`; `monkey -p com.APPS.CaseStudy 1` launches without
   knowing it. **Lesson:** `adb pull` the installed APK before overwriting it; the A/B
   cost a second build because the old one had been deleted "so the new file is proof".
+- Impact splash on the cube's top face - done (2026-09-05), 92/92, verified in Play (paused
+  at the frame the impact splash appeared: y 0.95 on a cube centred at 0.5, the red burst
+  opening on the front-left cube's top). Salih: the splash was "staying inside the cubes".
+  `Firing.ImpactLift` (default 0.5, half a cube; written into the scene) lifts the impact
+  point along +Y; `ImpactPullback` still pulls it toward the shooter, so the two together
+  put it on the near edge of the top face. The struct field's `= Defaults` initializer
+  delivered 0.5 to the already-serialized scene struct without a hand write (checked:
+  `arrivedAs=0.5`), the trap from the CLAUDE.md list not biting when the initializer is
+  there. Tune in Play: a bigger lift floats it, a smaller pullback centres it on the face.

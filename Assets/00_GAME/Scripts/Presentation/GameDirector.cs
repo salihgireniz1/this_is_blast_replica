@@ -284,9 +284,10 @@ namespace Blast.Presentation
 
             // The impact splash sits on the cube, the muzzle one on the shooter: the
             // original shows both, and the pool does not care where a splash plays. Pulled
-            // back along the flight line so it plays on the face the bullet struck; at the
-            // cube's centre half of it is inside the cube and reads as a dim flicker.
-            Vector3 impact = cube.transform.position - aim.normalized * _firing.ImpactPullback;
+            // back along the flight line toward the face the bullet struck and lifted to the
+            // top face: at the cube's centre the neighbours hide most of it and it reads as
+            // a dim flicker between the cubes.
+            Vector3 impact = cube.transform.position - aim.normalized * _firing.ImpactPullback + Vector3.up * _firing.ImpactLift;
             _pools.Splashes.Take(impact, Quaternion.LookRotation(aim)).Tint(tint);
             _shake.Kick();
 
@@ -438,6 +439,13 @@ namespace Blast.Presentation
             [Tooltip("World units the impact splash is pulled back from the cube's centre toward the shooter. Roughly half a cube puts it on the face; negative buries it deeper.")]
             public float ImpactPullback;
 
+            /// <summary>
+            /// How far above the cube's centre the impact splash sits. At zero it plays inside
+            /// the cube, where the neighbours hide most of it; half a cube puts it on the top face.
+            /// </summary>
+            [Tooltip("World units the impact splash is lifted above the cube's centre. Zero plays it inside the cube; about half a cube puts it on the top face, in view.")]
+            public float ImpactLift;
+
             /// <summary>The values a fresh director starts with.</summary>
             public static Firing Defaults => new Firing
             {
@@ -446,6 +454,7 @@ namespace Blast.Presentation
                 MuzzleReach = 0.6f,
                 FlightDuration = 0.17f,
                 ImpactPullback = 0.45f,
+                ImpactLift = 0.5f,
             };
         }
 
