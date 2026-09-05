@@ -188,6 +188,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _renderer: {fileID: 8837773970190286910}
+  _trail: {fileID: 2372650664504341895}
 --- !u!4 &7704876408089951057 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: eab0157c2fb8d4c8e99dc03a517bc3f3, type: 3}

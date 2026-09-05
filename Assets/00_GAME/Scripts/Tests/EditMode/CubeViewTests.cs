@@ -5,6 +5,7 @@
 //   second between them) and that a flight still lands exactly on its target.
 // NOT its responsibility: how a flight looks, or the board slide (LevelSpawnerTests).
 
+using System.Reflection;
 using Blast.Presentation;
 using DG.Tweening;
 using NUnit.Framework;
@@ -51,6 +52,21 @@ namespace Blast.Tests
 
             Assert.That(() => { _view.FlyTo(new Vector3(2f, 0f, 0f), 0.1f); }, Is.Not.AllocatingGCMemory(),
                 "The second flight allocated: the bullet's tween is being rebuilt per shot.");
+        }
+
+        /// <summary>The trail sprite wears the tint it is given; the bullet body is not the trail's business.</summary>
+        [Test]
+        public void Tint_ColoursTheTrail()
+        {
+            var trail = new GameObject("Trail").AddComponent<SpriteRenderer>();
+            trail.transform.SetParent(_view.transform, false);
+            typeof(CubeView)
+                .GetField("_trail", BindingFlags.NonPublic | BindingFlags.Instance)
+                .SetValue(_view, trail);
+
+            _view.Tint(Color.red);
+
+            Assert.AreEqual(Color.red, trail.color, "The trail did not take the tint.");
         }
 
         /// <summary>A reused tween still lands on the new target, not the old one.</summary>

@@ -1,8 +1,8 @@
 // CubeView - a cube-shaped visual that wears one colour material: a board cube, or the
 //   bullet a shooter fires (the same mesh at bullet size, plus a trail).
 // Layer: Presentation (humble: holds references and applies what it is told, decides nothing).
-// Responsibility: wearing the material its colour resolves to, and sliding to the rest
-//   position it is told to reach when its column flows.
+// Responsibility: wearing the material its colour resolves to (and, as a bullet, tinting its
+//   trail to match), and sliding to the rest position it is told to reach when its column flows.
 // NOT its responsibility: knowing its colour's meaning, its cell, where its rest is, or when
 //   it dies. The spawner places it and computes every rest; the game loop tells it to leave;
 //   this type never reads the domain.
@@ -22,6 +22,10 @@ namespace Blast.Presentation
         /// <summary>The renderer that wears the colour material. Assigned in the prefab.</summary>
         [Tooltip("The renderer Wear recolours: the cube body, or the bullet body on the bullet prefab.")]
         [SerializeField] MeshRenderer _renderer;
+
+        /// <summary>The streak behind a bullet. Assigned on the bullet prefab only; a board cube has none and is never tinted.</summary>
+        [Tooltip("The bullet's trail sprite, tinted to the shooter's colour per shot. Leave empty on the board cube.")]
+        [SerializeField] SpriteRenderer _trail;
 
         /// <summary>
         /// The one movement tween, built on the first slide or flight and re-targeted by every one after it.
@@ -43,6 +47,14 @@ namespace Blast.Presentation
             // sharedMaterial on purpose: assigning .material clones the material per cube,
             // which is 100 hidden instances on a full board for no visual difference.
             _renderer.sharedMaterial = material;
+        }
+
+        /// <summary>Tints the trail to the colour the bullet is carrying.</summary>
+        /// <param name="tint">The flat tint of the shooter's colour.</param>
+        public void Tint(Color tint)
+        {
+            // A SpriteRenderer's color is per-renderer vertex colour: no material instance, no allocation.
+            _trail.color = tint;
         }
 
         /// <summary>Slides to an absolute rest position from wherever the cube is now.</summary>
