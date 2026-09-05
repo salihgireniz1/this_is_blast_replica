@@ -1352,3 +1352,27 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   the pool exists to avoid). Also closes: `ImpactPullback` had been 5 in the scene since
   `aaedd05`, putting the impact splash on the shooter's side of the room; back to 0.45
   (`cb23da6`), which is why "no particle at the cube" was true.
+- Shots in the shooter's colour - done (2026-09-05), 92/92 green, verified in Play (a blue
+  shooter: blue bullet, blue trail, blue muzzle splash, blue impact splash; five active
+  splashes all reporting `startColor` = the palette's blue; no console errors). Salih
+  asked whether the death particle could be coloured without allocating; it could, and
+  the bullet and its trail came with it so one shot reads as one colour. Five commits:
+  scene curve tuning pushed first so it did not sit orphaned; `IColorMaterials.TintOf`
+  (forwards to `PaletteData.ColorOf`, the `Tint` field the palette already carried "for
+  particles"; untested like the adapter's `MaterialOf`, no branch); `CubeView.Tint` sets
+  the trail `SpriteRenderer.color` (per-renderer vertex colour on URP's
+  `Sprite-Unlit-Default`, `Gun_Sprite.png` is white + alpha) and `Bullet.prefab` wires
+  the `Trail` child; `SplashView` (`_systems[]`, `Tint` sets `main.startColor` on the
+  burst and `InnerSplash` - both render through URP `Particles/Unlit`, which multiplies
+  vertex colour in; `ASecondTint_DoesNotAllocate` green) on `Splash.prefab`, a variant of
+  Apps' `SplashEffect` the way `Bullet.prefab` wraps their model; `ShotPools` pools
+  `SplashView` and the scene points at the variant (written through `SerializedObject`,
+  saved, `isDirty` false); `GameDirector.FireLoop` resolves `SlotRow.ShooterAt(slot).Color`
+  once per seating into material + tint and `ShotVisual` applies `Wear` on the bullet
+  body (`sharedMaterial`, same TCP2 shader as the cubes, so the SRP batch is unchanged),
+  `Tint` on trail and both splashes. **Skipped:** a `SlotRow.ColorAt` reader - `ShooterAt`
+  already exists; a `GetComponentsInChildren` per play (allocates; the serialized array
+  is why `SplashView` exists). **Trap:** a `Take` on a `ComponentPool<ParticleSystem>` had
+  the scene pointing at the prefab's ParticleSystem component; retyping the pool leaves
+  that reference null until it is re-pointed at the new component type. Editor probe
+  numbers were read and ignored as always; the phone sweep is the ledger's job.

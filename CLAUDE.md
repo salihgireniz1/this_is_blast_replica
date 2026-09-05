@@ -89,7 +89,7 @@ level (solvable, all 5 colours, includes a hidden), WIN/LOST overlays with a res
 button that replays the same level, direct play on Editor Play, Unity 6000.0.68f1 + URP.
 Evaluation order: bug-free > juiciness > architecture > performance > git usage.
 
-**Where it stands (2026-09-04): the case is feature-complete. Unity suite 89/89, level
+**Where it stands (2026-09-05): the case is feature-complete. Unity suite 92/92, level
 editor 41/41 node tests.** What exists, by layer (details per component in the log):
 
 - **Domain** — `Cell`, `BlastColor` (byte, values pinned), `BoardModel` (nothing moves:
@@ -105,9 +105,11 @@ editor 41/41 node tests.** What exists, by layer (details per component in the l
   (the trust boundary: every refusal is a FormatException naming the location), `PaletteData`.
 - **Presentation** — `LevelSpawner` (view registry + every layout number as structs),
   `GameDirector` (LeanTouch tap -> select -> UniTask fire loops; settings structs
-  `ShooterMotion` / `Firing` / `CubeDeath`; every await cancels on destroy), `CubeView`,
+  `ShooterMotion` / `Firing` / `CubeDeath`; every await cancels on destroy), `CubeView` (board cube or bullet; `Tint` colours the bullet trail), `SplashView`
+  (`Tint` pushes `startColor` into both particle systems; on `Splash.prefab`, a variant of
+  Apps' `SplashEffect`),
   `ShooterView` (animator, yaw tween, outline as second material, counter punch),
-  `ComponentPool<T>` + `ShotPools`, `ShotAudio` (two voices round-robin, pitch jitter),
+  `ComponentPool<T>` + `ShotPools` (bullets as `CubeView`, splashes as `SplashView`), `ShotAudio` (two voices round-robin, pitch jitter),
   `CameraShake`, `CollapseTweens` (shape = `CubeDeath.CollapseCurve`, scale over time, default is the measured OutQuad shrink; swell/hop/rock as code were tried and removed, grep the log).
 - **Diagnostics** — `PerfProbe` / `PerfSweep`, its own asmdef, dev-only, no game references.
 - **UI** — `LevelEndViewModel` (R3, `IsShown` / `Title` WIN|LOST / `Restart` command),
