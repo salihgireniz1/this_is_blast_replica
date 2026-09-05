@@ -1,4 +1,4 @@
-// CollapseTweens - a grow-only pool of scale-to-zero tweens whose target can change.
+// CollapseTweens - a grow-only pool of scale-to-zero tweens whose target and shape can change.
 // Layer: Presentation.
 // Responsibility: shrinking any transform to nothing without building a tween per death.
 //   A cube dies exactly once, so a reused tween PER CUBE would save nothing: the closures
@@ -28,15 +28,21 @@ namespace Blast.Presentation
 
         #region Public Methods
 
-        /// <summary>Shrinks a transform from its current scale to zero, fast at first and slow at the end.</summary>
+        /// <summary>Collapses a transform along a curve, from its current scale to nothing.</summary>
         /// <param name="target">The transform to collapse.</param>
-        /// <param name="duration">How long the collapse takes.</param>
+        /// <param name="duration">How long the whole collapse takes.</param>
+        /// <param name="curve">The death's shape: x is the fraction of the duration, y is the scale as a
+        /// multiple of the scale at impact - 1 at the start, 0 at the end, above 1 wherever a flinch is wanted.</param>
         /// <returns>The collapse; await it with AwaitForComplete, since a reused tween never kills.</returns>
-        public Tween Play(Transform target, float duration)
+        public Tween Play(Transform target, float duration, AnimationCurve curve)
         {
             // ponytail: linear scan; at most a handful of cubes die at once.
             Entry entry = FirstIdle() ?? Add();
             entry.Target = target;
+
+            // A reference, never wrapped: the ease built in Add reads it every frame, so a
+            // death allocates nothing and a curve edited in the inspector is picked up live.
+            entry.Curve = curve;
             entry.Tween.ChangeValues(target.localScale, Vector3.zero, duration);
             entry.Tween.Restart();
             return entry.Tween;
@@ -77,7 +83,9 @@ namespace Blast.Presentation
             var entry = new Entry();
             // The closures capture the entry, not a transform, so re-pointing Target re-aims them.
             entry.Tween = DOTween.To(() => entry.Target.localScale, scale => entry.Target.localScale = scale, Vector3.zero, 1f)
-                .SetEase(Ease.OutQuad)
+                // DOTween's ease answers "how far from start to end"; the curve answers "how big
+                // is the cube". With the end at zero the two are one minus the other.
+                .SetEase((time, duration, _, _) => 1f - entry.Curve.Evaluate(time / duration))
                 .SetAutoKill(false)
                 .Pause();
             _entries.Add(entry);
@@ -96,6 +104,9 @@ namespace Blast.Presentation
 
             /// <summary>The tween, built once and restarted per death.</summary>
             public TweenerCore<Vector3, Vector3, VectorOptions> Tween;
+
+            /// <summary>The shape the tween's ease reads right now: scale over normalised time.</summary>
+            public AnimationCurve Curve;
         }
 
         #endregion

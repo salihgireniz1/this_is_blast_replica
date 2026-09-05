@@ -1336,3 +1336,19 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   the first line of CLAUDE.md's rule. Grep the log for `swell`, `hop`, `rock` before
   proposing any cube-death juice again; the answer is already here. The pitch jitter
   stays.
+- Cube death shaped by an AnimationCurve - done, 89/89 green, verified in Play (default
+  curve arrived from the struct initializer with 2 keys, y(0)=1, y(0.5)=0.25, y(1)=0; the
+  first cube traced 0.76 -> 0.01 over 13 frames; ten kills, domain 90 / views 90, zero
+  errors). Salih's call after the swell experiments: none of the ease presets was what he
+  wanted, he wants to draw it. `CubeDeath.CollapseCurve`: x = fraction of
+  `CollapseDuration`, y = scale as a multiple of the scale at impact (1 at start, 0 at the
+  end, above 1 for a flinch), editable in Play. `CollapseTweens.Play(target, duration,
+  curve)` stores the reference on the entry and the ease built once in `Add` is a custom
+  `EaseFunction` reading `1 - entry.Curve.Evaluate(t)`, so a death still allocates nothing
+  (`ACollapseWithTheSameCurve_DoesNotAllocate`) and an inspector edit is picked up on the
+  next death. Default curve = (1 - t)^2, the measured OutQuad shrink, keyed with tangents
+  (0, -2) and (0, 0); written into the scene as well. **Rejected:** `SetEase(AnimationCurve)`
+  per Play (DOTween wraps the curve in a new EaseCurve object per call - the allocation
+  the pool exists to avoid). Also closes: `ImpactPullback` had been 5 in the scene since
+  `aaedd05`, putting the impact splash on the shooter's side of the room; back to 0.45
+  (`cb23da6`), which is why "no particle at the cube" was true.

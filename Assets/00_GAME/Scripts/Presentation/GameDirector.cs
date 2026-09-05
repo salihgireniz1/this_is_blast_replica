@@ -274,14 +274,13 @@ namespace Blast.Presentation
             _pools.Splashes.Take(impact, Quaternion.LookRotation(aim));
             _shake.Kick();
 
-            // Death as the original plays it, measured frame by frame (see CLAUDE.md): the
-            // cube shrinks to nothing in place, fast at first and slow at the end. No rock,
-            // no jelly, no hop (the original's one-frame lift was tried and could not be
-            // seen). Awaited because the column only flows once the cube is gone. The
-            // collapse comes from the shared pool: a DOScale here was two closures per
-            // death, and a cube dies once, so no per-cube tween could have saved them.
-            // A reused tween never kills, so AwaitForComplete, not ToUniTask.
-            await _collapses.Play(cube.transform, _cubeDeath.CollapseDuration)
+            // Death in place, shaped by the designer's curve (scale over time; the default is
+            // the original's shrink, measured frame by frame: fast at first, slow at the end).
+            // Awaited because the column only flows once the cube is gone. The collapse
+            // comes from the shared pool: a DOScale here was two closures per death, and a
+            // cube dies once, so no per-cube tween could have saved them. A reused tween
+            // never kills, so AwaitForComplete, not ToUniTask.
+            await _collapses.Play(cube.transform, _cubeDeath.CollapseDuration, _cubeDeath.CollapseCurve)
                 .AwaitForComplete(cancellationToken: _destroyed);
 
             // The hit has played out; from here on the column is a last resort.
@@ -438,9 +437,13 @@ namespace Blast.Presentation
         [Serializable]
         public struct CubeDeath
         {
-            /// <summary>How long the shrink to nothing takes, from impact. Eased out: fast at first, slow at the end.</summary>
-            [Tooltip("Seconds from impact until the cube has shrunk to nothing. OutQuad: most of the shrink happens in the first half.")]
+            /// <summary>How long the collapse takes, from impact until the cube is gone.</summary>
+            [Tooltip("Seconds from impact until the cube is gone. The curve below spends this time.")]
             public float CollapseDuration;
+
+            /// <summary>The death's shape: x is the fraction of CollapseDuration, y is the cube's scale as a multiple of its scale at impact.</summary>
+            [Tooltip("The cube's scale over the collapse. X: 0 at impact, 1 at the end. Y: multiple of the scale at impact - start at 1, end at 0, go above 1 for a flinch. Editable in Play.")]
+            public AnimationCurve CollapseCurve;
 
             /// <summary>How long a column's survivors take to flow one cell forward, overshoot and settle included.</summary>
             [Tooltip("Seconds a column's survivors take to slide one cell forward and settle, after the shrink has finished. OutBack: the rest is crossed at ~40%, the overshoot peaks at ~60%.")]
@@ -454,6 +457,8 @@ namespace Blast.Presentation
             public static CubeDeath Defaults => new CubeDeath
             {
                 CollapseDuration = 0.18f,
+                // (1 - t)^2: the original's OutQuad shrink, as a curve the inspector can reshape.
+                CollapseCurve = new AnimationCurve(new Keyframe(0f, 1f, 0f, -2f), new Keyframe(1f, 0f, 0f, 0f)),
                 FlowDuration = 0.3f,
                 SettleOvershoot = 1.7f,
             };
