@@ -382,6 +382,10 @@ namespace Blast.Tests
             /// <param name="color">Ignored.</param>
             public Material MaterialOf(BlastColor color) => null;
 
+            /// <summary>No tint for any colour.</summary>
+            /// <param name="color">Ignored.</param>
+            public Color TintOf(BlastColor color) => default;
+
             /// <summary>No material for concealment either.</summary>
             public Material HiddenMaterial => null;
         }
@@ -398,6 +402,10 @@ namespace Blast.Tests
             /// <summary>The one colour material, whatever the colour.</summary>
             /// <param name="color">Ignored.</param>
             public Material MaterialOf(BlastColor color) => Colour;
+
+            /// <summary>No tint; the spawner never asks for one.</summary>
+            /// <param name="color">Ignored.</param>
+            public Color TintOf(BlastColor color) => default;
 
             /// <summary>The concealment material.</summary>
             public Material HiddenMaterial => Hidden;

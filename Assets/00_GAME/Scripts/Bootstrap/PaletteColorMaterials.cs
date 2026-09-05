@@ -42,6 +42,9 @@ namespace Blast.Bootstrap
         /// <inheritdoc />
         public Material MaterialOf(BlastColor color) => _palette.MaterialOf(color);
 
+        /// <inheritdoc />
+        public Color TintOf(BlastColor color) => _palette.ColorOf(color);
+
         #endregion
     }
 }
