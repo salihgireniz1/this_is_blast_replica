@@ -724,9 +724,8 @@ white one.
 
 **What was not done.** Milliseconds between the two builds are not compared beyond
 "both on the cap": ten minutes of thermal drift is bigger than any effect this change
-could have, and the cap hides it anyway. The `before` APK is kept next to the shipped
-one in `Builds/Android/` (ignored by git) for as long as another A/B on this phone is
-plausible.
+could have, and the cap hides it anyway. The `before` APK was deleted once the table was written; `Builds/Android/` holds one
+APK, the shipped state, and that file is the proof of what the phone last ran.
 
 ### 2b. Shadow and animator settings that change nothing on screen
 
