@@ -77,6 +77,9 @@ namespace Blast.Presentation
         /// <summary>The view registry: who stands where. Handed in by Construct.</summary>
         LevelSpawner _spawner;
 
+        /// <summary>The colour table, read once per seated shooter for what its shots wear. Handed in by Construct.</summary>
+        IColorMaterials _materials;
+
         /// <summary>Cancelled when this director is destroyed - a restart reloads the scene
         /// while shots are still in flight, and every await below stops here instead of
         /// waking up to touch a destroyed view.</summary>
@@ -93,12 +96,14 @@ namespace Blast.Presentation
         /// <param name="loop">The use case every action goes through.</param>
         /// <param name="slots">The slot row, for ammo reads.</param>
         /// <param name="spawner">The view registry.</param>
+        /// <param name="materials">The colour table a shot's bullet and splashes are dressed from.</param>
         [Inject]
-        public void Construct(GameLoop loop, SlotRow slots, LevelSpawner spawner)
+        public void Construct(GameLoop loop, SlotRow slots, LevelSpawner spawner, IColorMaterials materials)
         {
             _loop = loop;
             _slots = slots;
             _spawner = spawner;
+            _materials = materials;
         }
 
         /// <summary>Turns a LeanSelectByFinger selection of a front-row shooter into a play.</summary>
@@ -178,6 +183,12 @@ namespace Blast.Presentation
         /// <param name="ammo">Its own shots - see the header for why the slot is not read.</param>
         async UniTaskVoid FireLoop(int slot, ShooterView view, int ammo)
         {
+            // Resolved once per seating, not per shot: the slot holds this shooter until its
+            // last shot, and a hidden shooter is revealed by the time it can be selected.
+            BlastColor color = _slots.ShooterAt(slot).Color;
+            Material bulletMaterial = _materials.MaterialOf(color);
+            Color tint = _materials.TintOf(color);
+
             while (ammo > 0)
             {
                 if (_loop.Verdict != GameVerdict.Playing)
@@ -195,7 +206,7 @@ namespace Blast.Presentation
                     ammo--;
                     view.SetAmmo(ammo);
                     view.PlayShoot();
-                    ShotVisual(view, hitColumn).Forget();
+                    ShotVisual(view, hitColumn, bulletMaterial, tint).Forget();
                 }
                 else
                 {
@@ -215,7 +226,9 @@ namespace Blast.Presentation
         /// <summary>One shot on screen: the bullet flies, the cube dies, the column flows.</summary>
         /// <param name="shooter">The visual that fired.</param>
         /// <param name="hitColumn">The board column the domain says was hit.</param>
-        async UniTaskVoid ShotVisual(ShooterView shooter, int hitColumn)
+        /// <param name="bulletMaterial">What the bullet wears: the shooter's colour material.</param>
+        /// <param name="tint">The flat tint of the shooter's colour, for the splashes and the trail.</param>
+        async UniTaskVoid ShotVisual(ShooterView shooter, int hitColumn, Material bulletMaterial, Color tint)
         {
             // Popped now, not at impact - the registry must hand views out in domain
             // removal order, or two in-flight shots at one column swap their victims.
@@ -249,13 +262,16 @@ namespace Blast.Presentation
             // and the bullet both spawn buried in the chest that fired them.
             Vector3 muzzle = chest + aim.normalized * _firing.MuzzleReach;
 
-            _pools.Splashes.Take(muzzle, Quaternion.LookRotation(aim));
+            _pools.Splashes.Take(muzzle, Quaternion.LookRotation(aim)).Tint(tint);
             _audio.Play();
 
-            // The bullet keeps the prefab's own material (one bullet colour for every shooter)
-            // and takes the same aim as the splash: its head is +Z and the streak sprite
-            // trails behind it, so a bullet spawned in the prefab's rotation would fly sideways.
+            // The bullet is dressed per shot, since the pool hands the same five out to every
+            // colour: sharedMaterial on the body, vertex colour on the trail, nothing
+            // instanced. It takes the same aim as the splash: its head is +Z and the streak
+            // sprite trails behind it, so a bullet spawned in the prefab's rotation would fly sideways.
             CubeView bullet = _pools.Bullets.Take(muzzle, Quaternion.LookRotation(aim));
+            bullet.Wear(bulletMaterial);
+            bullet.Tint(tint);
 
             // FlyTo re-targets the bullet's one tween: five pooled bullets fly forty times a
             // second between them, and a DOMove per flight was two closures each. A reused
@@ -271,7 +287,7 @@ namespace Blast.Presentation
             // back along the flight line so it plays on the face the bullet struck; at the
             // cube's centre half of it is inside the cube and reads as a dim flicker.
             Vector3 impact = cube.transform.position - aim.normalized * _firing.ImpactPullback;
-            _pools.Splashes.Take(impact, Quaternion.LookRotation(aim));
+            _pools.Splashes.Take(impact, Quaternion.LookRotation(aim)).Tint(tint);
             _shake.Kick();
 
             // Death in place, shaped by the designer's curve (scale over time; the default is
