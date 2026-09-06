@@ -1,0 +1,326 @@
+{
+  "boardLayers": [
+    {
+      "rows": [
+        "OYOYOYBBBB",
+        "BBBBBBBBBB",
+        "OYOYOYBBBB",
+        "BBRRRRBBBB",
+        "OYOYOYBBBB",
+        "BBRBBRBBBB",
+        "OYOYOYBBBG",
+        "GRRRRRRRBB",
+        "OYOYOYBBGG",
+        "GGYYYYOORB",
+        "OYOYOYBBGG",
+        "GGYYOOOORB",
+        "OYOYOYBBGG",
+        "GGYOOOOORB",
+        "OYOYOYBBGG",
+        "GGOOOOOORB",
+        "OYOYOYBBBG",
+        "GRRRRRRRBB",
+        "OYOYOYBBBB",
+        "BBBBBBBBBB"
+      ]
+    }
+  ],
+  "slotCount": 5,
+  "shooterColumns": [
+    {
+      "shooters": [
+        {
+          "color": "O",
+          "ammo": 5,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 4,
+          "hidden": true
+        },
+        {
+          "color": "B",
+          "ammo": 6,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 3,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 2,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 6,
+          "hidden": true
+        },
+        {
+          "color": "Y",
+          "ammo": 3,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 2,
+          "hidden": true
+        },
+        {
+          "color": "G",
+          "ammo": 2,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 2,
+          "hidden": true
+        },
+        {
+          "color": "O",
+          "ammo": 4,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "shooters": [
+        {
+          "color": "O",
+          "ammo": 5,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 4,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 2,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 2,
+          "hidden": true
+        },
+        {
+          "color": "G",
+          "ammo": 2,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 2,
+          "hidden": false
+        },
+        {
+          "color": "O",
+          "ammo": 5,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 3,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 3,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 2,
+          "hidden": true
+        },
+        {
+          "color": "B",
+          "ammo": 6,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "shooters": [
+        {
+          "color": "Y",
+          "ammo": 4,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 2,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 6,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 2,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 3,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 6,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 6,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 2,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 2,
+          "hidden": true
+        },
+        {
+          "color": "B",
+          "ammo": 6,
+          "hidden": true
+        },
+        {
+          "color": "O",
+          "ammo": 4,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "shooters": [
+        {
+          "color": "Y",
+          "ammo": 4,
+          "hidden": false
+        },
+        {
+          "color": "O",
+          "ammo": 5,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 2,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 3,
+          "hidden": true
+        },
+        {
+          "color": "R",
+          "ammo": 2,
+          "hidden": false
+        },
+        {
+          "color": "O",
+          "ammo": 5,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 6,
+          "hidden": false
+        },
+        {
+          "color": "O",
+          "ammo": 5,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 2,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 2,
+          "hidden": true
+        },
+        {
+          "color": "O",
+          "ammo": 4,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "shooters": [
+        {
+          "color": "B",
+          "ammo": 6,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 6,
+          "hidden": true
+        },
+        {
+          "color": "O",
+          "ammo": 5,
+          "hidden": false
+        },
+        {
+          "color": "Y",
+          "ammo": 3,
+          "hidden": false
+        },
+        {
+          "color": "G",
+          "ammo": 2,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 2,
+          "hidden": true
+        },
+        {
+          "color": "R",
+          "ammo": 2,
+          "hidden": false
+        },
+        {
+          "color": "R",
+          "ammo": 2,
+          "hidden": true
+        },
+        {
+          "color": "G",
+          "ammo": 2,
+          "hidden": false
+        },
+        {
+          "color": "B",
+          "ammo": 6,
+          "hidden": true
+        },
+        {
+          "color": "B",
+          "ammo": 6,
+          "hidden": false
+        }
+      ]
+    }
+  ]
+}

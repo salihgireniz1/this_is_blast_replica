@@ -171,8 +171,10 @@ def main():
     hidden = sum(s["hidden"] for column in columns for s in column)
     print(f"board {len(board[0])}x{len(board)} cubes={dict(cubes)} columns={len(columns)} "
           f"shooters={sum(map(len, columns))} hidden={hidden}")
-    if set(cubes) != CASE_COLORS or hidden == 0 or len(columns) > 5:
-        sys.exit("does not meet the case: five colours, a hidden shooter, at most five columns")
+    # Five colours and a hidden shooter are the sample level's rules and LevelFileTests
+    # enforces them on Level_01; any level must still fit the dock and the palette.
+    if not set(cubes) <= CASE_COLORS or len(columns) > 5:
+        sys.exit("does not fit the game: unknown colour letter or more than five columns")
 
     taps = solve(board, columns)
     if taps is None:
