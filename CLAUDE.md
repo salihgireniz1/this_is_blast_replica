@@ -29,7 +29,7 @@ demand** with `Read`/`grep` when a task touches that area:
 | `.claude/notes/colour-space-and-original-game.md` | Materials, tints, TCP2 ramp values, or reading numbers from the shipped APK (UnityPy recipe, measured values). |
 | `.claude/notes/portfolio-phases.md` | After the case ships. Phases 0-1 of the portfolio plan, naming decisions, deferred triggers. |
 | `Docs/PERFORMANCE.md` | Any performance work. The ledger: targets, device, every step's before/after, what was measured and not taken. |
-| `Docs/ORIGINAL_GAME_ANALYSIS.md` | Anything about the shipped APK: what was measured, the level schema, the converted `Level_Original_18`, and why `Level_01` stays hand-authored. Tools in `Docs/Tools/` (`extract_levels.py`, `convert_original_level.py`); output `extracted_levels/` is gitignored. |
+| `Docs/ORIGINAL_GAME_ANALYSIS.md` | Anything about the shipped APK: what was measured, the level schema, the converted `Level_Original_04`, why the dense levels do not ship, and why `Level_01` stays hand-authored. Tools in `Docs/Tools/` (`extract_levels.py`, `convert_original_level.py`); output `extracted_levels/` is gitignored. |
 
 Auto-memory (`~/.claude/projects/.../memory/`) holds user preferences and the case spec
 digest; it is loaded separately.
@@ -125,9 +125,10 @@ editor 41/41 node tests.** What exists, by layer (details per component in the l
 **Facts that must hold when the case ships:** the scope's `_level` is `Level_01`; the
 `Dock`'s five slot markers are Salih's hand-tuned numbers, do not touch; `Level_01.json`
 is not re-saved from the level editor (it would re-flow); `Level_02`/`03`/`04` stay as
-the stress levels behind the performance ledger; `Level_Original_04` and `Level_Original_18` are the
-original's levels 4 and 18 taken whole through `convert_original_level.py` (4: 10x12, its own colours; 18:
-10x20, 55 shooters, 14 hidden); the oracle won both in the real game. Neither is in the boot path. House rule from Salih: chain tweens with
+the stress levels behind the performance ledger; `Level_Original_04` is the original's level 4 taken whole
+through `convert_original_level.py` (10x12, its own colours, deck and front row checked against the running
+APK); the oracle won it in the real game. Not in the boot path. The original's dense levels are NOT shipped: under
+our rules (exact-fit ammo, no merge) they are unsolvable or path-dependent, measured three times; see the analysis. House rule from Salih: chain tweens with
 `.ToUniTask()` + `await` or `.Forget()`, never `Sequence`/`Append`.
 
 The portfolio phase plan (`portfolio-phases.md`) resumes after the case ships; the case

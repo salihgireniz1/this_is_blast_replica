@@ -1448,3 +1448,21 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   not clear it. Not chased: the level's file checks (ammo == cubes, five columns) hold by
   construction and the in-game run is the stronger verification. Salih runs the suite from
   the Test Runner window; if the hang persists, the Player build has cleared it every time.
+- Board reading corrected, `Level_Original_18` withdrawn - done (2026-09-06). Salih compared
+  our level 4 with the APK's: same deck, different board. The board is **column-major**
+  like the deck (cell = column * height + row) and the file's **last row faces the
+  shooters**; read row-major it was noise that happened to be solvable, and read the wrong
+  way up level 18 was solvable while the real level 18 is not. Both facts checked against
+  the running APK (front row `YYBBYYRRYY`, deck Y R Y B Y / R Y Y Y B). Also read off its
+  HUD: ammo is `requiredCount` = 20 per shooter (520 = 26 x 20), not exact fit; the merge
+  feature is what lets surplus ammo not clog the slots. Converter fixed; `Level_Original_04`
+  regenerated (blind random 70%, in-game oracle won again, 26 taps, screenshot for the
+  README). **Dense levels re-scanned with the corrected reading:** 18 and 650 unsolvable in
+  the sim; 868 (10x20, 50 shooters, 18 hidden) oracle 100% in the sim and **lost the real
+  game at tap 12** (three blue shooters seated 1/4/4). Same mechanism as the cropped 21:
+  exact-fit ammo makes same-colour races decide slot frees. **Decision:** only level 4
+  ships; 18 removed; 868 not added; no more dense candidates chased (968, 299 are the same
+  class). **Trap:** `AssetDatabase.Refresh(ForceUpdate)` right after
+  `ApplyModifiedPropertiesWithoutUndo` saved the scene to disk with the swapped `_level`;
+  `git checkout -- Game_Scene.unity` + reopen fixed it. Swap, Play, then reopen from disk;
+  never Refresh in between.

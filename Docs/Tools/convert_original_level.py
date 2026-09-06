@@ -1,10 +1,12 @@
 """Convert a level extracted from the original game into this project's JSON, and prove it.
 
-The original stores a level as a ScriptableObject: `myStack` is the board (row-major, `width`
-across), `myStage` the shooter deck (column-major, depth 0 is the selectable row), a cell's
-`Value` is a palette index and `SecretItem` marks a hidden shooter. Ammo is not authored:
-the game derives it, so here each colour's cubes are split evenly over that colour's
-shooters, front-most shooters taking the remainder (exact fit, like `trimSurplusAmmo`).
+The original stores a level as a ScriptableObject: `myStack` is the board and `myStage` the
+shooter deck, both column-major (cell = column * height + row); the board's last row faces
+the shooters, the deck's depth 0 is the selectable row. A cell's `Value` is a palette index
+and `SecretItem` marks a hidden shooter. Ammo is `requiredCount` per shooter in the original
+(20, which its merge feature can afford); here each colour's cubes are split evenly over
+that colour's shooters, front-most taking the remainder, because without merge a shooter
+with surplus ammo would hold its slot forever.
 
 The case fixes 10x10 and five named colours, so the board is cropped to its front `--rows`
 rows and every palette index is renamed through `--map`. Then the level is played: a DFS
@@ -27,8 +29,12 @@ def read_original(path, rows, flip, color_map):
     level = json.load(open(path, encoding="utf-8"))
     stack, stage = level["myStack"], level["myStage"]
     width, height, cells = stack["width"], stack["height"], stack["customCellDrawingList"]
-    board = [[color_map[cells[r * width + c]["Value"]] for c in range(width)] for r in range(height)]
-    if flip:
+    # Column-major like the deck (cell = column * height + row), and the file's LAST row is
+    # the one facing the shooters: both checked against the running original on level 4,
+    # whose front row reads YYBBYYRRYY. Read row-major the board is noise; read the other
+    # way up it is the mirror of what the player sees.
+    board = [[color_map[cells[c * height + r]["Value"]] for c in range(width)] for r in range(height)]
+    if not flip:
         board.reverse()
     board = board[:rows]
     dw, dh, deck = stage["width"], stage["height"], stage["customCellDrawingList"]
@@ -161,7 +167,7 @@ def main():
     p.add_argument("--output", required=True)
     p.add_argument("--map", required=True, help="palette index to case letter, e.g. 2=Y,3=B")
     p.add_argument("--rows", type=int, default=10)
-    p.add_argument("--flip", action="store_true", help="the file's last row is the front")
+    p.add_argument("--flip", action="store_true", help="read the file's first row as the front instead")
     p.add_argument("--trials", type=int, default=500)
     args = p.parse_args()
     color_map = {int(k): v for k, v in (pair.split("=") for pair in args.map.split(","))}

@@ -2,18 +2,18 @@
   "boardLayers": [
     {
       "rows": [
-        "YYYRYYYYYB",
-        "YYYYRRRYYY",
-        "BBBYYRRYRR",
-        "YBBYBBRRYY",
-        "YRBBYYYBRY",
-        "YYYYBYYYYY",
-        "BYYYYYRYYY",
-        "YYBBYYYBRR",
-        "YYYRYBBYBB",
-        "YRRYRRYYBB",
-        "BYYYRRRYYY",
-        "YBYYYYYRYY"
+        "YYBBYYRRYY",
+        "YBBYYYYRRY",
+        "BBYYYYYYRR",
+        "YBBYYYYRRY",
+        "YYBBYYRRYY",
+        "YYYBBRRYYY",
+        "YYRRYYBBYY",
+        "YRRYYYYBBY",
+        "RRYYYYYYBB",
+        "YRRYYYYBBY",
+        "YYRRYYBBYY",
+        "YYYRRBBYYY"
       ]
     }
   ],

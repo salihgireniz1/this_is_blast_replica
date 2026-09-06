@@ -34,7 +34,7 @@ come back as `(key, value)` tuples as well as dicts. Tools, all in `Docs/Tools/`
 | Colour slots | 16, unit and shooter material sets identical in 12 | One palette serves cubes and shooters; `BlastColor` is a byte because colours get appended. |
 | Board size | width always 10; heights 11-20 (1308 of 2447 levels are 10x20, one is 10x10) | The case's 10x10 keeps the original's width; depth is where the original scales difficulty. |
 | Hidden shooter | a `SecretItem` flag on a deck cell | Our `hidden` flag, revealed on reaching the selectable row. |
-| Ammo | not authored; derived at load (`ignoreExtraAmmoFromConfig`, `trimSurplusAmmo`) | We author ammo in the file so the parser can refuse an unwinnable level up front (`LevelFileTests`). |
+| Ammo | not per shooter: `requiredCount` = 20 for every shooter, confirmed on the HUD (520 = 26 x 20 on level 4) | We author ammo per shooter and exact-fit, so the parser can refuse an unwinnable level up front (`LevelFileTests`) and no shooter outlives its colour without merge. |
 | Level cohorts | 6 Addressables folders: Control Cohort 2000, Control Loop 332, FTUE Flow 51, D7 29, Bigger Boards 27, Early Churn Reduce 8 | Nothing to build; it shows the level set is an A/B surface (onboarding, day-7 retention, churn). |
 | Post-processing | not established (URP or Built-in unreadable from the boot bundle) | Ours was measured instead: vignette + HDR cost 2 ms on the Galaxy A16 and were removed (`PERFORMANCE.md` 2f/2g). |
 
@@ -50,50 +50,53 @@ Ours is a text file a designer can read: rows of colour letters, explicit ammo, 
 per shooter. One parser is the trust boundary and every refusal names the location. The
 case has one mechanic beyond the core, so a flag per mechanic per cell would be 99% zeros.
 
-## The converted levels
+## The converted level
 
-`convert_original_level.py` turned two of the original's levels into ours, whole.
-**Control Cohort level 4** (`Level_Original_04.json`): 10x12, 120 cubes in the original's
-own yellow, blue and red, 26 shooters in 5 columns, an early level a blind player wins
-93% of the time. **Control Cohort level 18** (`Level_Original_18.json`): 10x20, 200 cubes,
-55 shooters in 5 columns, 14 of them hidden, the level the original itself marks
-`difficultyLevel` 2. Both were won by the solver driving the real game, in 26 and 55 taps.
+`convert_original_level.py` turned **Control Cohort level 4** into `Level_Original_04.json`,
+whole: 10x12, 120 cubes in the original's own yellow, blue and red, so no colour was
+renamed, 26 shooters in 5 columns. Checked against the running original side by side: the
+deck matches row for row and the front row of cubes reads `YYBBYYRRYY` in both.
 
 ```
 python Docs/Tools/convert_original_level.py --source "extracted_levels/levels/Control Cohort VO/4.json" \
     --map 2=Y,3=B,5=R --rows 12 --output Assets/00_GAME/Levels/Level_Original_04.json
-python Docs/Tools/convert_original_level.py --source "extracted_levels/levels/Control Cohort VO/18.json" \
-    --map 2=Y,3=B,6=O,9=R,11=G --rows 20 --output Assets/00_GAME/Levels/Level_Original_18.json
 ```
 
-What changed on the way in, and nothing else:
+The one thing that changed on the way in is **ammo**. The original gives every shooter
+`requiredCount` = 20 (the 520 on its HUD is 26 x 20). With 72 yellow cubes over 16 yellow
+shooters most of them would never empty and would hold their slots; the original's merge
+feature absorbs that, and the case forbids merge. So the file carries exact-fit ammo: each
+colour's cubes split over its shooters, front-most taking the remainder.
 
-- **Colour names.** Their indices 2/3/5/6 are our Yellow/Blue/Red/Orange, so level 4
-  needed no renaming at all; in level 18, 9 (dark grey) and 11 (brown) have no case colour
-  and are written as Red and Green. The pattern is theirs.
-- **Ammo,** which the original derives at load, is written exact-fit: each colour's cubes
-  split over its shooters, front-most taking the remainder.
-- **Orientation.** The file does not say which end faces the shooters. Row 0 read as the
-  front is the level the designer meant: the winning line drains the five columns one after
-  another, and the other reading collapses the oracle to 2%.
+Two readings of the data were wrong at first, and the running game caught both: the board
+is **column-major** like the deck (cell = column x height + row), and the file's **last row
+faces the shooters**. Read row-major the board was noise that still happened to be
+solvable; read the wrong way up, level 18 was solvable while the real level 18 is not.
 
-Measured, and the reason it ships whole:
+| Player | Level_Original_04 | Level_01 (hand-authored) |
+|---|---|---|
+| Oracle, sees hidden shooters, replans every tap, random firing order | 100% | 100% |
+| Blind random taps | 70% | 60% |
+| Oracle driving the real game through `GameDirector` | won, 26 taps | wins |
 
-| Player | Level_Original_04 | Level_Original_18 | Level_01 (hand-authored) |
-|---|---|---|---|
-| Oracle, sees hidden shooters, replans every tap, random firing order | 100% | 100% | 100% |
-| Blind random taps | 93% | 6% | 60% |
-| Oracle driving the real game through `GameDirector` | won, 26 taps | won, 55 taps | wins |
+## The dense levels, and why none ships
 
-The first attempt was level 21 cropped from 10x12 to the case's 10x10. It passed the same
-simulator and then lost in the real game at tap 12: with exact-fit ammo, *which* same-colour
-shooter fires a cube decides whether a slot frees, and cropping had broken the balance that
-made the answer not matter. The original also leans on merge and surplus ammo, both
-forbidden here. So a level is taken whole or not at all, `Level_01` stays hand-authored as
-the sample the case asks for, and the two original levels are the test levels: point the
-scope's `_level` at one of them (neither is in the boot path). Level 4 is the original's
-own early game in our rules; level 18 is a 10x20 of its own making, the size the
-performance ledger's stress numbers were taken at.
+The original's hard levels were tried as test levels with the corrected reading. Levels 18
+and 650 are unsolvable under our rules in the simulator. Level 868 (10x20, 50 shooters,
+18 hidden) passes the simulator with a 100% oracle and **lost the real game at tap 12**,
+three blue shooters seated with 1, 4 and 4 ammo and no line left; level 21 cropped to 10x10
+had done the same earlier. The mechanism is the same each time: with exact-fit ammo,
+*which* same-colour shooter fires a cube decides whether a slot frees, and in the real game
+column locks and run-in timing settle that, not the simulator's slot order. The original
+does not have the problem because 20 ammo per shooter plus merge frees slots by merging,
+not by emptying.
+
+So a level of theirs is consistent under our rules only when a blind player wins most of
+the time, which their early levels do and their dense ones do not. Level 4 ships as the
+test level (point the scope's `_level` at it; it is not in the boot path), the dense ones
+do not, and `Level_01` stays hand-authored as the sample the case asks for. This is the
+concrete form of the brief's consistency rule: a level authored for different rules is not
+consistent under ours until it is measured, in the real game.
 
 ## Not taken
 
