@@ -128,10 +128,7 @@ def build():
               Spacer(1, 4 * mm)]
     story.append(shots_row(["level_01_idle.png", "level_01_burst_frame.png", "level_01_win.png"], 92,
                            ["Açılış: örnek level, iki gizli shooter", "Üç shooter ateşte: mermi, iz ve sıçrama shooter'ın renginde", "WIN ekranı ve aynı leveli yeniden başlatan buton"]))
-    story += [Spacer(1, 4 * mm),
-              P("Depo: <font name='Mono'>github.com/salihgireniz1/this_is_blast_replica</font> (özel; info@apps.com.tr davetli). "
-                "Bu rapor README'nin Türkçe özetidir; ayrıntı için depodaki <font name='Mono'>Docs/</font> klasörü ve README.", "cap"),
-              PageBreak()]
+    story += [PageBreak()]
 
     # 1 Brief -> implementation
     story += [P("1. Brief'te istenenler ve karşılıkları", "h1"),
@@ -207,34 +204,73 @@ def build():
                 "gerçek oyunda 12. dokunuşta takıldı, çünkü aynı renkten hangi shooter'ın ateş edeceğini kolon kilitleri ve koşu süresi belirler. Ölçüm üç kez aynı sonucu verdi; "
                 "o yüzden örnek level elle yazılmış <font name='Mono'>Level_01</font> olarak kaldı. Brief'in \"tutarlı level\" kuralının somut hali budur: başka kurallar için yazılmış bir level, gerçek oyunda ölçülmeden tutarlı sayılmaz. Hiçbir mesh, doku, ses veya kod alınmadı.")]
 
-    # 5 Performance
-    story += [P("5. Performans", "h1"),
-              P("Hedef: 120 FPS ve oyun sırasında kare başına 0 B GC. Ölçüm Samsung Galaxy A16 üzerinde adb ile, çalışma zamanı probu ile yapıldı; editör sayıları kullanılmadı. "
-                "Her adımın öncesi ve sonrası, ölçülüp <i>alınmayan</i> her optimizasyon dahil, <font name='Mono'>Docs/PERFORMANCE.md</font>'de."),
+    # 5 Level editor
+    story += [P("5. Level editörü", "h1"),
+              P("<font name='Mono'>level-editor/index.html</font>, bağımlılığı olmayan tek sayfalık bir HTML uygulaması: çift tıkla açılır, kurulum yok, sunucu yok. Kartı fırçayla boyar, "
+                "shooter kuyruğunu kolon kolon düzenler ve JSON'u doğrudan Unity'nin okuduğu klasöre yazar. Kullanıcıları tasarımcılar olduğu için arayüzü Türkçe. "
+                "Kafa karıştırabilecek üç noktayı burada açıkça yazıyoruz: klasör seçimi, kaydetme ve Unity'nin dosyayı görmesi."),
+              P("1. Klasör seçimi", "h2"),
+              P("Editör dosyaları tarayıcının klasör erişimi (File System Access API) ile yazar; bu yalnız Chrome ve Edge'de vardır. Açılışta üstte kırmızı bir uyarı, seçilmesi gereken klasörün tam yolunu gösterir "
+                "(<font name='Mono'>…\\Assets\\00_GAME\\Levels</font>) ve yanında <b>Yolu kopyala</b> düğmesi vardır. <b>Levels klasörünü seç…</b> düğmesine basınca tarayıcının klasör penceresi açılır; "
+                "yolu üstteki adres alanına yapıştırıp Enter'a basın, klasörün <i>içine</i> girin ve <b>Select Folder</b> deyin. Tarayıcı bir kez izin ister, sonraki açılışlarda klasörü hatırlar. "
+                "Dikkat: Edge kullanıcı klasörünün kendisini (Masaüstü, Belgeler) reddeder; seçilen klasör Levels'ın kendisi olmalı. Klasör seçildikten sonra üstteki liste klasördeki levelleri gösterir; "
+                "<b>Aç</b> ile ya da çift tıkla yüklenir. Klasör erişimi olmayan bir tarayıcıda editör yine çalışır: <b>Aç</b> bir dosya penceresi açar, <b>İndir</b> JSON'u indirir, dosyayı Levels klasörüne elle atarsınız."),
+              P("2. Yeni level ve var olanı güncelleme", "h2"),
+              P("<b>Yeni</b>, listede boş olan ilk adla (Level_07.json gibi) 10x10, tek katman, beş slot, beş kolonluk boş bir level açar. Sağdaki panelden genişlik, yükseklik, katman ve kolon sayısı değişir; "
+                "fırçadan renk seçip hücrelere tıklayarak ya da <b>Tahtayı fırçayla doldur</b> ile kart boyanır. Her kolonun altındaki <b>+ ekle</b> shooter ekler; her shooter'ın rengi, mermisi, "
+                "gizli (?) kutusu ve yukarı/aşağı oklarıyla kuyruk sırası vardır. <b>Shooter'ları otomatik doldur</b> karttaki renk sayımına göre kuyruğu tam-uyumlu mühimmatla dağıtır; sağdaki Küp / Mermi tablosu "
+                "renk başına farkı (Δ) anında gösterir, kırmızı bir Δ kazanılamaz bir level demektir. Kontroller bölümü Unity testleriyle aynı kuralları uygular ve her birini yerini söyleyerek yazar: boş tahta, boş kolon, mermisiz shooter, küpünden az mermisi olan renk (\"level kazanılamaz\"), beşten fazla kolon (dock'a sığmaz). Üstüne bir de açgözlü bir simülasyon oynar: hep en soldaki hedefe ateş eden basit bir oyuncu leveli bitiriyorsa \"Hata yok\" der, takılıyorsa kaç küp kala takıldığını uyarı olarak gösterir; dikkatli bir oyuncu yine kazanabilir, ama kuyruk sırasına bakmak gerekir."),
+              P("<b>Kaydet</b> açık dosyanın üstüne yazar; <b>Farklı Kaydet</b> soldaki ad alanındaki adla yazar ve var olan bir dosyanın üstüne yazmadan önce sorar. Var olan bir leveli güncellemek için listeden açın, "
+                "değiştirin, Kaydet. Kaydedilmemiş değişiklik varken başka dosya açmak sorar. Editörün gösteremediği bir şey içeren dosya (farklı renkli katmanlar gibi) açılırsa üstüne yazmaz, başka ad ister."),
+              P("3. Unity'nin dosyayı görmesi", "h2"),
+              P("Editör JSON'u diske yazar; Unity ise değişen bir dosyayı kendi penceresi odak aldığında içe aktarır. Çoğu zaman bu yeterlidir: editörden kaydedip Unity'ye geçin, Play'e basın. Ama Unity'nin "
+                "otomatik yenilemesi kapalıysa ya da odak değişimini yakalamazsa eski level oynanır ve \"kaydettim ama değişmedi\" hissi doğar. O durumda iki yol var: Unity penceresinde <b>Ctrl+R</b> "
+                "(Assets → Refresh), ya da Project panelinde <font name='Mono'>Level_XX.json</font> dosyasına sağ tık → <b>Reimport</b>. Level_01 Play'de doğrudan açıldığı için onu düzenledikten sonra Play'i durdurup "
+                "yeniden başlatmak gerekir; başka bir leveli oynamak için sahnedeki <font name='Mono'>GameLifetimeScope</font> bileşeninin <font name='Mono'>_level</font> alanına o dosyayı sürükleyin."),
+              ]
+    story.append(KeepTogether([shots_row(["editor_empty.png"], 100, ["Açılış: kırmızı uyarı seçilecek klasörün yolunu gösterir, Yolu kopyala düğmesi yanında; sağda kart ayarları, fırça, Küp / Mermi tablosu ve kontroller"])]))
+    story.append(KeepTogether([shots_row(["editor_loaded.png"], 104, ["Level_01 açık: kart boyalı, beş kolonda shooter'lar (renk, mermi, gizli kutusu, sıra), Küp / Mermi tablosunda her Δ sıfır, Kontroller yeşil"])]))
+
+    # 6 Performance
+    story += [P("6. Performans", "h1"),
+              P("Hedef: 120 FPS ve oyun sırasında kare başına 0 B GC. Her ölçüm Samsung Galaxy A16 üzerinde, adb ile yüklenen development build'de, saniyede bir satır yazan bir çalışma zamanı probuyla alındı "
+                "(fps, kare süresi, GC bayt, batch, SetPass, draw, gölge kaynağı, üçgen). Editör sayıları render ve GC için kullanılmadı; yalnız yanıltırlar. "
+                "Yöntem hep aynıydı: önce ölç, tek bir şeyi değiştir, tekrar ölç, sonucu deftere yaz. Defter <font name='Mono'>Docs/PERFORMANCE.md</font>, alınmayanlar da sayısıyla orada."),
               frame_chart(),
               P("Kare süresi, ms (düşük iyi). Son iki çubuk ekranın tazeleme sınırında; kapağın altındaki gerçek iş adb üzerinden okundu: Level_01'de 4.24 ms.", "cap"),
+              P("Nereye gitti, ne yapıldı", "h2"),
+              P("İlk okuma varsayımı tersine çevirdi: darboğaz draw sayısı değil, gölge <i>örnekleme</i>siydi. Yumuşak gölge High kalitede piksel başına 16 doku okuması yapıyor ve küpler ekranı kaplıyor; "
+                "sert gölge tek başına iki levelde de 8 ms geri verdi. İkinci büyük kalem küp shader'ıydı: TCP2'nin ürettiği <font name='Mono'>CustomShader</font> TransparentCutout'tu ve her pikselde <font name='Mono'>clip</font> çağırıyordu; "
+                "oyunda alfası olan tek doku yok, ve Mali GPU'da bir fragment clip early-Z'yi öldürür. Opak yapılıp clip'ler silindi: 900 küplük levelde 7 ms. Post-process (vignette) ve HDR bir ara doku ve blit demekti, "
+                "ölçüldü ve 2-3 ms için kaldırıldı. <font name='Mono'>targetFrameRate</font> Android'in varsayılan 30'undan 120'ye alındı; telefon ekranı 90 Hz olduğu için gerçek tavan 11.1 ms."),
+              P("CPU tarafında hedef sıfır tahsisti. Kaynaklar tek tek kapatıldı: hareket eden her view için her hamlede yeni bir DOTween kısayolu yerine bir kez kurulan ve yeniden hedeflenen tek tween "
+                "(<font name='Mono'>SetAutoKill(false)</font> + <font name='Mono'>ChangeEndValue</font>), küp ölümleri için paylaşılan bir çökme tween havuzu, mermi ve sıçrama havuzları, iki sesli sabit bir ses kanalı halkası, "
+                "her yerde <font name='Mono'>sharedMaterial</font> (renk değişimi materyal örneği değil, paletin hazır materyaline geçiş). Boşta 16 B/kare bulunan tek tahsis Easy Save'in bir coroutine'iydi; eklenti silindi. "
+                "Sonuç: boşta 0 B, ateş ederken salvo başına ~11 B/kare oyun tahsisi, o da <font name='Mono'>CancellationToken.Register</font>'ın restart güvenliği için bilerek bırakılan 48 baytları."),
               table([["", "Bulunduğu hal", "Teslim edilen"],
                      ["Level_01 kare süresi", "33.3 ms (30 fps)", "11.1 ms, telefonun 90 Hz sınırı; altında 4.24 ms gerçek iş"],
                      ["Level_03 (900 küp) kare süresi", "36.3 ms", "14.4 ms"],
+                     ["SetPass call", "11-14, her sahnede", "11-14, değişmedi"],
                      ["GC, boşta", "16 B/kare", "0 B"],
                      ["GC, ateş ederken", "78 B/kare", "0 B; bir salvo içinde ~11 B/kare oyun tahsisi"]],
                     [W * 0.3, W * 0.25, W * 0.45]),
               Spacer(1, 3 * mm),
-              P("Farkı yaratanlar, ağırlık sırasıyla: küp shader'ından piksel başına alfa kesmesinin çıkması, sert gölge, post-process ve HDR'ın kapanması, kare hızı kapağı; sonra hareket eden her view için "
-                "DOTween kısayolu yerine tek bir yeniden kullanılan tween, paylaşılan çökme tween havuzu, havuzlanmış mermi ve sıçramalar, sabit ses kanalı halkası, her yerde <font name='Mono'>sharedMaterial</font>. "
-                "Fark yaratmayan ve bu yüzden alınmayanlar: GPU instancing, küçük gölge haritası, küplerin havuzlanması, render scale, Optimized Frame Pacing.")]
-
-    # 6 Decisions
-    story += [P("6. Kararlar ve bırakılanlar", "h1")]
-    story += bullets([
-        "<b>Merge yok.</b> Brief yasaklıyor; kancası da yok.",
-        "<b>Kayıt sistemi yok.</b> Tek level, kazanınca da kaybedince de aynı level yeniden oynanır.",
-        "<b>Küpler bir kez yaratılır, ölümde yok edilir; havuzlanmaz.</b> Havuzlamak cihazda hiçbir şey değiştirmedi.",
-        "<b><font name='Mono'>GameDirector</font>'ün birim testi yok.</b> Karar verdiği her şey bir <font name='Mono'>GameLoop</font> çağrısıdır ve o tamamen test edilmiştir; kalan asenkron koreografi her değişiklikte Play'de doğrulandı. Presenter'lara bölmek ertelendi: vaka bug-free'yi mimarinin üstüne koyuyor.",
-        "<b>Statik <font name='Mono'>GameRules</font>, domain tiplerinde arayüz yok.</b> Hiçbir şey onların yerine geçmiyor.",
-        "<b>Her ayar sayısı <font name='Mono'>Defaults</font> başlatıcılı serileştirilmiş bir struct'ta.</b> Ayar değişikliği derleme gerektirmez, yeni alan sıfır yerine değerle gelir.",
-        "<b>Orijinalin leveli ya bütün alındı ya hiç.</b> 10x10'a kırpılan level simülatörü geçti, gerçek oyunda kaybetti; örnek level elle yazılmış kaldı.",
-    ])
+              P("Neden SRP Batcher'a güvenildi", "h2"),
+              P("İlk ölçümde SetPass sayısı küp sayısından bağımsız 11'de duruyordu: 100 küp de 900 küp de aynı. Bu, URP'nin SRP Batcher'ının işini yaptığının kanıtıdır. Batcher, aynı shader varyantını kullanan "
+                "her renderer'ı materyali farklı olsa bile tek bir batch'te toplar ve materyal verilerini GPU'da kalıcı tutar; küplerin hepsi aynı TCP2 shader'ının aynı varyantı olduğu için beş renk beş SetPass etmiyor. "
+                "Mermi de küplerin palet materyalini giyer, o yüzden atış sırasında draw sayısı artmaz; renkli parçacık da beyaz parçacıkla aynı draw'dur. Buna güvenmenin şartı, batcher'ı kıran şeyleri yapmamaktı: "
+                "MaterialPropertyBlock yok, çalışma zamanında materyal örneği yok, per-renderer keyword yok."),
+              P("Neden GPU instancing yapılmadı", "h2"),
+              P("Instancing ile SRP Batcher birbirini dışlar; instancing'e geçmek batcher'dan vazgeçmek demektir. Karar tahminle değil ölçümle verildi: draw sayısının maliyetini görmek için 390 küp gölge geçişinden çıkarıldı, "
+                "390 batch gitti ve kare süresi 0 ms değişti. Draw sayısı hiçbir zaman darboğaz olmadı; SetPass zaten 11-14'te. Instancing'in kazandıracağı şeyi batcher zaten kazandırıyordu, "
+                "üstüne bir de kendi shader desteğini ve per-instance veri yönetimini getirecekti. Yapılmadı, gerekçesi sayısıyla defterde."),
+              P("Neden küpler havuzlanmadı", "h2"),
+              P("Havuz, dönen (churn eden) nesneler için vardır: mermi ve sıçrama saniyede kırk kez doğup ölür, bu yüzden havuzlandılar. Bir küp level yüklenirken bir kez yaratılır, ölürken bir kez yok edilir; "
+                "dönme yok. Havuz maliyeti yükleme anından yükleme anına taşır ve yönetilecek bir ömür ekler; tahsis avında ölüm yolu ölçülebilir hiçbir şey katmıyordu (salvoda toplam 11 B/kare). "
+                "Aynı şekilde ekran dışı küpleri kapatmak da ölçüldü: 400 küpün 130'u frustum içindeydi ve Unity zaten 378 batch çiziyordu, yani frustum culling işi yapıyordu; elle kapatmak sadece "
+                "Unity'nin bedava yaptığı testi C#'a taşımak olurdu ve ışığa göre kesilen gölge kaynaklarını yanlışlıkla düşürürdü. İkisi de alınmadı."),
+              P("Ölçülüp alınmayan diğerleri: 512'lik gölge haritası (0 ms), MSAA'yı kapatmak (0 ms), render scale 0.75 (2.5 ms ama bulanık), Optimized Frame Pacing (+2 ms, 90 Hz'e geçirmedi). "
+                "Kapağın altındaki gerçek iş adb üzerinden profiler ile okundu: Level_01'de kare başına 4.24 ms, tamamı render; listede hiçbir gameplay script'i yok. 11.1 ms'lik bütçeye karşı 2.6 kat pay; oyun ekrana bağlı, hesaba değil, ve iş burada bitti.")]
 
     # 7 Process
     story += [P("7. Süreç ve git", "h1"),
