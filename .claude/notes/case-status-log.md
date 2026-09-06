@@ -1400,3 +1400,29 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   delivered 0.5 to the already-serialized scene struct without a hand write (checked:
   `arrivedAs=0.5`), the trap from the CLAUDE.md list not biting when the initializer is
   there. Tune in Play: a bigger lift floats it, a smaller pullback centres it on the face.
+- Original game read, level converter - done (2026-09-06), 92/92 green, `Docs/ORIGINAL_GAME_ANALYSIS.md`.
+  Salih wanted the APK extraction shown off; the honest form is the tool plus the numbers
+  it produced, not the content. `extract_levels.py` / `verify_extracted_levels.py` moved
+  from the root `ExtractionTools/` into `Docs/Tools/` (output `extracted_levels/` stays
+  gitignored: 2447 levels, 6 A/B cohorts). New `convert_original_level.py`: their
+  ScriptableObject (board row-major with 15 flags per cell, deck column-major with depth 0
+  selectable, `SecretItem` = hidden, ammo NOT authored) -> our JSON, crop to 10 rows, palette
+  remap, exact-fit ammo, then a DFS planner under GameRules (leftmost target, five slots,
+  no merge) plus an adaptive replay under random firing order. **Findings:** no level in
+  the 2447 is 10x10 with our five colours (widths are all 10, heights 11-20); the closest is
+  Control Cohort 21 (10x12, 3 columns, 27 shooters, 18 hidden). Converted as
+  `Level_07.json` (`--flip`: the file's last row read as the front, because the other
+  reading takes a blind player from 55% to 9%). Oracle 100% in the sim, blind random 55%
+  (hand-made `Level_01`: 100% / 60%). **Then the real game disagreed:** an in-game driver
+  (eval hook calling `GameDirector.OnShooterSelected` on the selectable view, replanning
+  from the live domain state before every tap) lost at tap 12 with no winning line left.
+  Column locks and same-colour run-in races decide which shooter drains, and with exact-fit
+  ammo that decides whether a slot frees; the original covers this with merge and surplus
+  ammo, both forbidden here. **Decision:** `Level_01` stays hand-authored and boots; the
+  converted level ships as `Level_07` (proof of the tool, hard extra level), and the doc says
+  why. **Rejected:** shipping their level 21 as the sample (the tester loses on the
+  original's balance, rubric 1); surplus ammo (a shooter with ammo and no colour left holds
+  its slot, worse); reading the original's mesh or post-process (the mesh is Apps' asset
+  by the brief, post-processing was removed on measurement in 2f/2g). **Trap, mine:**
+  `cp` to `Level_05.json` overwrote Salih's editor-reworked level (`9714b0e`) for a minute,
+  restored from git; look before naming a file into `Levels/`.
