@@ -29,7 +29,7 @@ demand** with `Read`/`grep` when a task touches that area:
 | `.claude/notes/colour-space-and-original-game.md` | Materials, tints, TCP2 ramp values, or reading numbers from the shipped APK (UnityPy recipe, measured values). |
 | `.claude/notes/portfolio-phases.md` | After the case ships. Phases 0-1 of the portfolio plan, naming decisions, deferred triggers. |
 | `Docs/PERFORMANCE.md` | Any performance work. The ledger: targets, device, every step's before/after, what was measured and not taken. |
-| `Docs/ORIGINAL_GAME_ANALYSIS.md` | Anything about the shipped APK: what was measured, the level schema, the converted `Level_07`, and why `Level_01` stays hand-authored. Tools in `Docs/Tools/` (`extract_levels.py`, `convert_original_level.py`); output `extracted_levels/` is gitignored. |
+| `Docs/ORIGINAL_GAME_ANALYSIS.md` | Anything about the shipped APK: what was measured, the level schema, the converted `Level_Original_18`, and why `Level_01` stays hand-authored. Tools in `Docs/Tools/` (`extract_levels.py`, `convert_original_level.py`); output `extracted_levels/` is gitignored. |
 
 Auto-memory (`~/.claude/projects/.../memory/`) holds user preferences and the case spec
 digest; it is loaded separately.
@@ -125,8 +125,9 @@ editor 41/41 node tests.** What exists, by layer (details per component in the l
 **Facts that must hold when the case ships:** the scope's `_level` is `Level_01`; the
 `Dock`'s five slot markers are Salih's hand-tuned numbers, do not touch; `Level_01.json`
 is not re-saved from the level editor (it would re-flow); `Level_02`/`03`/`04` stay as
-the stress levels behind the performance ledger; `Level_07` is the original's level 21 through
-`convert_original_level.py` (proof of the tool, not the sample: it lost the in-game oracle run). House rule from Salih: chain tweens with
+the stress levels behind the performance ledger; `Level_Original_18` is the original's level 18 taken
+whole (10x20, 55 shooters, 14 hidden) through `convert_original_level.py`; the oracle won it in the real game.
+Not in the boot path. House rule from Salih: chain tweens with
 `.ToUniTask()` + `await` or `.Forget()`, never `Sequence`/`Append`.
 
 The portfolio phase plan (`portfolio-phases.md`) resumes after the case ships; the case

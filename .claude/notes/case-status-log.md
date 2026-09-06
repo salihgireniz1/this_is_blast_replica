@@ -1426,3 +1426,16 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   by the brief, post-processing was removed on measurement in 2f/2g). **Trap, mine:**
   `cp` to `Level_05.json` overwrote Salih's editor-reworked level (`9714b0e`) for a minute,
   restored from git; look before naming a file into `Levels/`.
+- Converted level taken whole - done (2026-09-06), 92/92 green. Salih: no `Level_07`, no
+  crop; take a dense hard level of theirs as a test level, the game supports full boards.
+  Only five clean levels use just our five colour indices and all are easy 10x12s, so colour
+  renaming is unavoidable for a dense one; the pattern is what matters. Ranked the clean
+  10x20s with at most five colours and five columns: Control Loop 299 (60 shooters) is
+  fragile in both orientations (oracle 24% / 36%); **Control Cohort 18** (55 shooters, 14
+  hidden, their `difficultyLevel` 2) is oracle 100% with row 0 as the front (2% flipped),
+  blind random 6%. Shipped as `Level_Original_18.json`; `Level_07` removed. **In-game
+  oracle drive won in 55 taps** (scene `_level` swapped through `SerializedObject` without
+  saving, `drive.py` replanning from the live domain state before each tap, then the scene
+  reopened from disk). Converter's five-colour/hidden gate dropped: those are `Level_01`'s
+  rules and `LevelFileTests` owns them. Lesson recorded in the doc: crop a level and the
+  exact-fit balance goes with it; take it whole or not at all.
