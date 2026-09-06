@@ -218,15 +218,18 @@ def build():
                 "aynı kuralları (renk başına mühimmat, kolon sayısı, boş kolon) JavaScript'te uygular ve bunlar <font name='Mono'>node --test</font> ile ayrı bir test takımında tutulur. "
                 "Tek gerçek bedel, tarayıcının klasöre yazma izni: o da aşağıda."),
               P("Nasıl açılır", "h2"),
-              P("Windows Gezgini'nde <font name='Mono'>level-editor/index.html</font> dosyasına çift tıklayın; varsayılan tarayıcı Chrome veya Edge olmalı (klasöre yazma yalnız onlarda var). "
-                "Ya da dosyayı açık bir tarayıcı sekmesine sürükleyin; adres çubuğunda <font name='Mono'>file:///…/level-editor/index.html</font> görünür. Sayfa açıldığında kırmızı bir uyarı "
+              P("Dosya yöneticisinde (Windows'ta Gezgin, macOS'te Finder) <font name='Mono'>level-editor/index.html</font> dosyasına çift tıklayın ya da dosyayı açık bir tarayıcı sekmesine sürükleyin; "
+                "adres çubuğunda <font name='Mono'>file:///…/level-editor/index.html</font> görünür. Her tarayıcıda açılır ve level yapılır. Klasöre doğrudan yazma yalnız Chromium tabanlı tarayıcılarda vardır "
+                "(Chrome, Edge, Opera, Brave); Safari ve Firefox'ta dosya <b>İndir</b> ile iner ya da level <b>JSON kopyala / JSON yapıştır</b> ile pano üzerinden taşınır. Sayfa açıldığında kırmızı bir uyarı "
                 "hangi klasörün seçileceğini söyler; ilk iş o. Kafa karıştırabilecek üç noktayı sırayla yazıyoruz: klasör seçimi, kaydetme ve Unity'nin dosyayı görmesi."),
               P("1. Klasör seçimi", "h2"),
-              P("Editör dosyaları tarayıcının klasör erişimi (File System Access API) ile yazar; bu yalnız Chrome ve Edge'de vardır. Açılışta üstte kırmızı bir uyarı, seçilmesi gereken klasörün tam yolunu gösterir "
+              P("Editör dosyaları tarayıcının klasör erişimi (File System Access API) ile yazar; bu yalnız Chromium tabanlı tarayıcılarda vardır (Chrome, Edge, Opera, Brave), Safari ve Firefox'ta yoktur. Açılışta üstte kırmızı bir uyarı, seçilmesi gereken klasörün tam yolunu gösterir "
                 "(<font name='Mono'>…\\Assets\\00_GAME\\Levels</font>) ve yanında <b>Yolu kopyala</b> düğmesi vardır. <b>Levels klasörünü seç…</b> düğmesine basınca tarayıcının klasör penceresi açılır; "
                 "yolu üstteki adres alanına yapıştırıp Enter'a basın, klasörün <i>içine</i> girin ve <b>Select Folder</b> deyin. Tarayıcı bir kez izin ister, sonraki açılışlarda klasörü hatırlar. "
                 "Dikkat: Edge kullanıcı klasörünün kendisini (Masaüstü, Belgeler) reddeder; seçilen klasör Levels'ın kendisi olmalı. Klasör seçildikten sonra üstteki liste klasördeki levelleri gösterir; "
-                "<b>Aç</b> ile ya da çift tıkla yüklenir. Klasör erişimi olmayan bir tarayıcıda editör yine çalışır: <b>Aç</b> bir dosya penceresi açar, <b>İndir</b> JSON'u indirir, dosyayı Levels klasörüne elle atarsınız."),
+                "<b>Aç</b> ile ya da çift tıkla yüklenir. Klasör erişimi olmayan bir tarayıcıda editör yine çalışır: <b>Aç</b> bir dosya penceresi açar, <b>İndir</b> JSON'u indirir, dosyayı Levels klasörüne elle atarsınız. "
+                "İki düğme de her tarayıcıda çalışır: <b>JSON kopyala</b> levelin JSON'unu panoya alır (bir .json dosyasına yapıştırmak ya da bir leveli mesajla göndermek için), <b>JSON yapıştır</b> "
+                "panodaki ya da elle yapıştırılan JSON'u level olarak açar ve aynı kontrollerden geçirir."),
               P("2. Yeni level ve var olanı güncelleme", "h2"),
               P("<b>Yeni</b>, listede boş olan ilk adla (Level_07.json gibi) 10x10, tek katman, beş slot, beş kolonluk boş bir level açar. Sağdaki panelden genişlik, yükseklik, katman ve kolon sayısı değişir; "
                 "fırçadan renk seçip hücrelere tıklayarak ya da <b>Tahtayı fırçayla doldur</b> ile kart boyanır. Her kolonun altındaki <b>+ ekle</b> shooter ekler; her shooter'ın rengi, mermisi, "

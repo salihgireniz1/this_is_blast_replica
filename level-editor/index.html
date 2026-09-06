@@ -77,6 +77,10 @@ script because Chromium refuses module scripts from file://.
   .actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .status { color: var(--muted); font-size: 12px; }
   .hint { color: var(--error); font-size: 15px; font-weight: 600; user-select: text; }
+  dialog { background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 16px; width: min(640px, 90vw); }
+  dialog::backdrop { background: rgba(0, 0, 0, .6); }
+  dialog textarea { width: 100%; font: 12px/1.4 ui-monospace, Consolas, monospace; color: var(--text); background: #14171e; border: 1px solid var(--line); border-radius: 4px; padding: 8px; user-select: text; }
+  .dialogButtons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; }
   .banner { margin: 12px 16px 0; padding: 8px 12px; border-radius: 6px; background: rgba(255,184,77,.12); border-left: 3px solid var(--warning); }
   select#files { min-width: 150px; }
 </style>
@@ -93,11 +97,23 @@ script because Chromium refuses module scripts from file://.
   <button id="new">Yeni</button>
   <button id="save" title="Açık dosyanın üstüne yaz">Kaydet</button>
   <button id="saveAs" title="Soldaki adla yaz">Farklı Kaydet</button>
+  <button id="copyJson" title="Levelin JSON'unu panoya kopyala; klasöre yazamayan tarayıcılarda ve mesajla paylaşmak için">JSON kopyala</button>
+  <button id="pasteJson" title="Panodaki ya da yapıştıracağın JSON'u level olarak aç">JSON yapıştır</button>
   <span class="status" id="status"></span>
   <span class="hint" id="hint" hidden></span>
   <button id="copyPath" hidden title="Klasör yolunu kopyala. Dosya penceresinde: Klasör alanına yapıştır, Enter ile içine gir, sonra Select Folder.">Yolu kopyala</button>
 </header>
 <div class="banner" id="banner" hidden></div>
+<dialog id="pasteDialog">
+  <form method="dialog">
+    <p>Level JSON'unu buraya yapıştır:</p>
+    <textarea id="pasteText" rows="14" spellcheck="false"></textarea>
+    <div class="dialogButtons">
+      <button value="cancel">Vazgeç</button>
+      <button value="load" class="primary">Yükle</button>
+    </div>
+  </form>
+</dialog>
 
 <main>
   <div class="phone">
@@ -657,6 +673,42 @@ async function saveAs() {
   }
 }
 
+/** Copy: the level as the file would be written, onto the clipboard. Works in every browser and needs no folder. */
+async function copyJson() {
+  const text = Level.serialize(state.level);
+  try {
+    await navigator.clipboard.writeText(text);
+    setStatus("JSON kopyalandı; Assets/00_GAME/Levels içinde bir .json dosyasına yapıştır ya da mesajla gönder.");
+  } catch (error) {
+    setStatus(`Panoya yazılamadı (${error.message}); JSON yapıştır penceresinden elle kopyalayabilirsin.`);
+  }
+}
+
+/** Paste: a dialog with a textarea, prefilled from the clipboard when the browser allows reading it. */
+async function pasteJson() {
+  const box = el("pasteText");
+  box.value = "";
+  try { box.value = await navigator.clipboard.readText(); } catch { /* Safari and Firefox ask the designer to paste by hand */ }
+  el("pasteDialog").showModal();
+  box.focus();
+}
+
+/** The dialog's Yükle: parse the text the way Open parses a file; refuse with the parser's own message. */
+el("pasteDialog").addEventListener("close", () => {
+  if (el("pasteDialog").returnValue !== "load") return;
+  const text = el("pasteText").value.trim();
+  if (!text) return;
+  if (isDirty() && !confirm("Kaydedilmemiş değişiklikler silinsin mi?")) return;
+  try {
+    loadText(text, state.fileName, null);
+    setStatus("JSON yüklendi; Farklı Kaydet ile klasöre yaz.");
+  } catch (error) {
+    setStatus(`JSON okunamadı: ${error.message}`);
+  }
+});
+
+el("copyJson").addEventListener("click", copyJson);
+el("pasteJson").addEventListener("click", pasteJson);
 el("pickFolder").addEventListener("click", pickFolder);
 el("open").addEventListener("click", openSelected);
 el("save").addEventListener("click", save);

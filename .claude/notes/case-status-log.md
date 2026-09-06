@@ -1466,3 +1466,15 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   `ApplyModifiedPropertiesWithoutUndo` saved the scene to disk with the swapped `_level`;
   `git checkout -- Game_Scene.unity` + reopen fixed it. Swap, Play, then reopen from disk;
   never Refresh in between.
+- Level editor: JSON kopyala / JSON yapıştır - done (2026-09-06), node 41/41 (UI glue over the
+  tested `parse` / `serialize`, no new logic). Salih: the editor only wrote into one folder,
+  which leaves Safari and Firefox (no File System Access API) with downloads only, and
+  there was no way to hand a level to someone in a message. `copyJson` puts
+  `Level.serialize(state.level)` on the clipboard; `pasteJson` opens a `<dialog>` with a
+  textarea (prefilled from the clipboard where reading is allowed) and its Yükle runs the
+  text through `loadText`, so a bad paste is refused with the parser's own message and the
+  dirty check applies. Verified headlessly (Edge `--headless --dump-dom` on a copy that
+  calls the dialog): status "JSON yüklendi", 120 cells for level 4. The Browser pane
+  renders file:// pages as static snapshots (no scripts), so it cannot test this editor.
+  Report and README now say where the editor is, why HTML, how it opens on Windows and
+  macOS, and which browsers write to the folder (Chromium ones) versus copy/paste.

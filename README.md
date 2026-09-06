@@ -93,7 +93,9 @@ Blast.Diagnostics     PerfProbe / PerfSweep, development builds only, references
 Rows are listed front row first, one letter per column (`Y R B G O`); each shooter column
 front first; `hidden` conceals the colour until the shooter reaches the front row.
 `level-editor/index.html` (no dependencies, double-click) paints a board, autofills a
-queue and runs the same checks as the tests.
+queue and runs the same checks as the tests. It writes straight into the Levels folder in
+Chromium browsers; everywhere else it downloads the file, and *JSON kopyala* / *JSON
+yapıştır* move a level through the clipboard.
 
 **The original game was read, not copied.** The shipped APK was opened with UnityPy to
 measure what the look is made of (colour space, tints, ramp, shadow flags) and how its
