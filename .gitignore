@@ -117,8 +117,9 @@ InitTestScene*.unity*
 *.xapk
 *.apk
 
-# Local comparison screenshots — not for the remote
-Docs/Screenshots/
+# Local comparison screenshots are not for the remote; the README's captures are
+Docs/Screenshots/*
+!Docs/Screenshots/readme/
 /Builds/
 
 # Workspace for reading the original game: its assets and levels never enter the repo

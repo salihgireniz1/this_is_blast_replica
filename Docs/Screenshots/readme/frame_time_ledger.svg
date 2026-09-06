@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13">
+<rect width="960" height="420" fill="#ffffff"/>
+<text x="70" y="22" font-size="15" font-weight="600" fill="#222">Frame time on the Samsung Galaxy A16, ms per frame (lower is better)</text>
+<line x1="70" x2="930" y1="310.0" y2="310.0" stroke="#e5e5e5"/>
+<text x="62" y="314.0" text-anchor="end" fill="#666">0</text>
+<line x1="70" x2="930" y1="242.5" y2="242.5" stroke="#e5e5e5"/>
+<text x="62" y="246.5" text-anchor="end" fill="#666">10</text>
+<line x1="70" x2="930" y1="175.0" y2="175.0" stroke="#e5e5e5"/>
+<text x="62" y="179.0" text-anchor="end" fill="#666">20</text>
+<line x1="70" x2="930" y1="107.5" y2="107.5" stroke="#e5e5e5"/>
+<text x="62" y="111.5" text-anchor="end" fill="#666">30</text>
+<line x1="70" x2="930" y1="40.0" y2="40.0" stroke="#e5e5e5"/>
+<text x="62" y="44.0" text-anchor="end" fill="#666">40</text>
+<line x1="70" x2="930" y1="253.8" y2="253.8" stroke="#2a9d8f" stroke-dasharray="5 4"/>
+<text x="928" y="249.8" text-anchor="end" fill="#2a9d8f"> 8.33 ms = 120 fps</text>
+<line x1="70" x2="930" y1="197.5" y2="197.5" stroke="#999" stroke-dasharray="5 4"/>
+<text x="928" y="193.5" text-anchor="end" fill="#999"> 16.67 ms = 60 fps</text>
+<rect x="101.4" y="85.2" width="51.6" height="224.8" rx="3" fill="#e76f51"/>
+<text x="127.2" y="79.2" text-anchor="middle" fill="#333" font-size="12">33.3</text>
+<rect x="159.0" y="65.0" width="51.6" height="245.0" rx="3" fill="#457b9d"/>
+<text x="184.8" y="59.0" text-anchor="middle" fill="#333" font-size="12">36.3</text>
+<text x="156.0" y="332" text-anchor="middle" fill="#444">As found</text>
+<text x="156.0" y="348" text-anchor="middle" fill="#444">(Android default 30 fps)</text>
+<rect x="273.4" y="124.4" width="51.6" height="185.6" rx="3" fill="#e76f51"/>
+<text x="299.2" y="118.4" text-anchor="middle" fill="#333" font-size="12">27.5</text>
+<rect x="331.0" y="65.0" width="51.6" height="245.0" rx="3" fill="#457b9d"/>
+<text x="356.8" y="59.0" text-anchor="middle" fill="#333" font-size="12">36.3</text>
+<text x="328.0" y="332" text-anchor="middle" fill="#444">targetFrameRate 60</text>
+<rect x="445.4" y="197.3" width="51.6" height="112.7" rx="3" fill="#e76f51"/>
+<text x="471.2" y="191.3" text-anchor="middle" fill="#333" font-size="12">16.7</text>
+<rect x="503.0" y="152.7" width="51.6" height="157.3" rx="3" fill="#457b9d"/>
+<text x="528.8" y="146.7" text-anchor="middle" fill="#333" font-size="12">23.3</text>
+<text x="500.0" y="332" text-anchor="middle" fill="#444">Hard shadows,</text>
+<text x="500.0" y="348" text-anchor="middle" fill="#444">no post, no HDR</text>
+<rect x="617.4" y="197.3" width="51.6" height="112.7" rx="3" fill="#e76f51"/>
+<text x="643.2" y="191.3" text-anchor="middle" fill="#333" font-size="12">16.7</text>
+<rect x="675.0" y="197.3" width="51.6" height="112.7" rx="3" fill="#457b9d"/>
+<text x="700.8" y="191.3" text-anchor="middle" fill="#333" font-size="12">16.7</text>
+<text x="672.0" y="332" text-anchor="middle" fill="#444">Opaque cube shader</text>
+<text x="672.0" y="348" text-anchor="middle" fill="#444">(60 Hz cap)</text>
+<rect x="789.4" y="235.1" width="51.6" height="74.9" rx="3" fill="#e76f51"/>
+<text x="815.2" y="229.1" text-anchor="middle" fill="#333" font-size="12">11.1</text>
+<rect x="847.0" y="212.8" width="51.6" height="97.2" rx="3" fill="#457b9d"/>
+<text x="872.8" y="206.8" text-anchor="middle" fill="#333" font-size="12">14.4</text>
+<text x="844.0" y="332" text-anchor="middle" fill="#444">Phone at 90 Hz,</text>
+<text x="844.0" y="348" text-anchor="middle" fill="#444">soft Low shadows</text>
+<rect x="70" y="380" width="12" height="12" fill="#e76f51"/><text x="88" y="391" fill="#333">Level_01, the case level (100 cubes)</text>
+<rect x="360" y="380" width="12" height="12" fill="#457b9d"/><text x="378" y="391" fill="#333">Level_03, the stress level (900 cubes, 100 shooters)</text>
+<text x="70" y="412" fill="#666" font-size="12">Both final bars sit on the display cap. Real work under the cap, read from the player over adb: 4.24 ms per frame on Level_01 (2.6x headroom). GC: 16 B/frame idle as found, 0 B shipped.</text>
+</svg>

@@ -1,24 +1,48 @@
-# This Is Blast — case study
+# This Is Blast, a case study
 
 A from-scratch build of the *This is Blast!* core loop for the Apps game developer case:
 a 10x10 cube grid, five slots, a shooter queue whose front row is tappable, hidden
 shooters, WIN / LOST overlays with a restart, one JSON-driven sample level, no merge.
 
-Unity **6000.0.68f1**, URP. Open `Assets/00_GAME/Scenes/Game_Scene.unity` and press Play;
-the sample level boots directly. There is no menu.
+<p align="center">
+  <img src="Docs/Screenshots/readme/level_01_idle.png" width="215" alt="The sample level as it boots">
+  <img src="Docs/Screenshots/readme/level_01_burst.gif" width="215" alt="Three shooters firing">
+  <img src="Docs/Screenshots/readme/level_01_win.png" width="215" alt="The WIN overlay">
+</p>
+
+Unity **6000.0.68f1**, URP 17. Open `Assets/00_GAME/Scenes/Game_Scene.unity` and press
+Play; the sample level boots directly. There is no menu.
+
+## What is in it
+
+| The brief asks for | Where it lives |
+|---|---|
+| 10x10 grid, 5 slots, level-driven shooter columns, 2 queue rows visible | `LevelSpawner`, layout numbers as serialized structs |
+| Tap the front row; the shooter runs to the next free slot and fires at front cubes of its colour | `GameDirector` -> `GameLoop.TrySelect` / `TryShoot` |
+| Cubes behind a destroyed one flow toward the shooter | `BoardModel` front index + `CollapseTweens` |
+| Out of ammo: leave and free the slot. Ammo but no target: stay | `SlotRow`, occupancy *is* the ammo |
+| Hidden shooter, revealed on reaching the selectable row | `ShooterQueue.IsRevealed`, `LevelSpawner` |
+| WIN / LOST overlay with a restart of the same level | `LevelEndViewModel` (R3) + `LevelEndView`, `SceneRestarter` |
+| One JSON sample level: all five colours, a hidden shooter, solvable | `Assets/00_GAME/Levels/Level_01.json`, guarded by `LevelFileTests` |
+| No merge | Not built, no hooks for it |
+
+Juice, all measured from the original and then tuned by hand: the shooter's run, land
+squash and counter punch, the yaw toward the target, the bullet with a trail in the
+shooter's colour, the impact splash on the cube's top face, the cube's drawn death curve,
+camera shake, two-voice audio with pitch jitter.
 
 ## Tests
 
 | Suite | Count | Run |
 |---|---|---|
-| Unity EditMode (`Blast.Tests.EditMode`) | 89 | Test Runner window, or `unity cmd run_tests --mode editor --filter "Blast.Tests" --filter_type assembly --async_tests true` |
-| Level editor (`level-editor/logic.js`) | 41 | `node --test level-editor/logic.test.js` |
+| Unity EditMode, assembly `Blast.Tests` | 92 | Test Runner window, or `unity cmd run_tests --mode editor --filter "Blast.Tests" --filter_type assembly --async_tests true` |
+| Level editor, `level-editor/logic.js` | 41 | `node --test level-editor/logic.test.js` |
 
-Every rule of the game has a test. Two of the tests guard things that break silently:
-`ArchitectureTests` reads the `.asmdef` files on disk and fails when a layer references a
-layer above it, and `LevelFileTests` parses every level in `Assets/00_GAME/Levels/` and
-fails when a colour has fewer shots than cubes, which is the unwinnable level the brief
-warns about.
+Every rule of the game has a test; MonoBehaviours are tested through the Humble Object
+pattern. Two tests guard things that break silently: `ArchitectureTests` reads the
+`.asmdef` files on disk and fails when a layer references a layer above it, and
+`LevelFileTests` parses every level in `Assets/00_GAME/Levels/` and fails when a colour
+has fewer shots than cubes, the unwinnable level the brief warns about.
 
 ## Architecture
 
@@ -33,38 +57,30 @@ Blast.Application     GameLoop, the one use case: TrySelect / TryShoot, verdict,
 Presentation   UI (MVVM, R3)  Infrastructure (LevelParser, PaletteData)
   ^
 Blast.Bootstrap       GameLifetimeScope: the VContainer composition root
+
+Blast.Diagnostics     PerfProbe / PerfSweep, development builds only, references no game layer
 ```
 
-`Blast.Diagnostics` (PerfProbe, PerfSweep) sits beside these, references none of them,
-and only runs in development builds.
+- **Domain** knows nothing about Unity, and nothing in it moves: the board keeps its
+  authored colours and a per-column front index walks through them; the queue does the
+  same. A slot is occupied exactly while its shooter has ammo, so "free slot" and "out of
+  ammo" cannot disagree. `GameRules` is three pure functions: leftmost matching front,
+  won, failed.
+- **Application** is `GameLoop`. One call trades one shot for one cube and re-reads the
+  verdict in the same call, so the overlay is never a move late. It asks *won* before
+  *failed*, because an emptied board with a full slot row satisfies both. It has no notion
+  of time; Presentation paces it.
+- **Presentation** dresses the loop's answers. `GameDirector` turns a tap into `TrySelect`
+  and runs each seated shooter's fire loop with UniTask; `LevelSpawner` owns every world
+  position; views are humble and decide nothing. The column-state handshake
+  (`LockColumn` / `MarkSettling` / `MarkSettled`) exists because the domain removes a cube
+  the instant it is shot, while the bullet is still in the air on screen.
+- **UI** is one MVVM pair on R3 streams. **Infrastructure** is the trust boundary: the
+  parser refuses every malformed file with a `FormatException` that names the location.
+- **Bootstrap** registers the parsed models, `GameLoop`, the palette adapter and the scene
+  components; VContainer builds the graph and calls each component's `[Inject] Construct`.
 
-**Domain** knows nothing about Unity. Nothing in it moves: the board keeps its authored
-colours and a per-column front index walks backwards through them; the queue does the
-same forwards. A slot is occupied exactly while its shooter has ammo, so "free slot" and
-"out of ammo" cannot disagree. `GameRules` is three pure functions: leftmost matching
-front, won, failed.
-
-**Application** is `GameLoop`. One call trades one shot for one cube and re-reads the
-verdict in the same call, so the overlay can never be a move late. It asks *won* before
-*failed*, because an emptied board with a full slot row satisfies both. It has no notion
-of time; Presentation paces it.
-
-**Presentation** dresses the loop's answers. `GameDirector` turns a tap into `TrySelect`
-and runs each seated shooter's fire loop with UniTask; `LevelSpawner` owns every world
-position and hands out views in the order the domain removed cubes; the views themselves
-are humble, they apply what they are told and decide nothing. The column-state handshake
-(`LockColumn` / `MarkSettling` / `MarkSettled`) exists because the domain removes a cube
-the instant it is shot, while the bullet is still in the air on screen.
-
-**UI** is one MVVM pair on R3 streams. **Infrastructure** is the trust boundary: the
-parser refuses every malformed file with a `FormatException` that names the location.
-
-**Bootstrap** registers the parsed models, `GameLoop`, the palette adapter behind
-Presentation's `IColorMaterials`, and the scene components; VContainer builds the graph
-and calls each component's `[Inject] Construct`. What *restart* means is decided here, in
-a `SceneRestarter` entry point.
-
-## The level file
+## Levels
 
 ```json
 {
@@ -74,47 +90,73 @@ a `SceneRestarter` entry point.
 }
 ```
 
-Rows are listed front row first, one letter per column (`Y R B G O`). Each shooter column
-is listed front first. `hidden` conceals the colour until the shooter reaches the front
-row. The shipped level is `Assets/00_GAME/Levels/Level_01.json`; the others are stress
-levels used for the performance work. `level-editor/index.html` (no dependencies,
-double-click) paints a board, autofills a queue and runs the same checks as the tests.
+Rows are listed front row first, one letter per column (`Y R B G O`); each shooter column
+front first; `hidden` conceals the colour until the shooter reaches the front row.
+`level-editor/index.html` (no dependencies, double-click) paints a board, autofills a
+queue and runs the same checks as the tests.
+
+**The original game was read, not copied.** The shipped APK was opened with UnityPy to
+measure what the look is made of (colour space, tints, ramp, shadow flags) and how its
+2447 levels are stored. `Docs/Tools/convert_original_level.py` maps that schema onto this
+one and proves the result under our rules with a search over the player's choices, and the
+original's own hard level 18 ships whole as `Level_Original_18.json`: 10x20, 55 shooters,
+14 hidden, won by the solver in the real game in 55 taps. No mesh, texture, sound or code
+came across. The reading, the numbers and the one cropped attempt that failed are in
+[`Docs/ORIGINAL_GAME_ANALYSIS.md`](Docs/ORIGINAL_GAME_ANALYSIS.md).
+
+<p align="center">
+  <img src="Docs/Screenshots/readme/level_original_18.png" width="260" alt="The original's level 18 running in this project">
+</p>
 
 ## Performance
 
-Target: 120 FPS, 0 B of GC allocation per frame during play, worst case 360 cubes.
-Measured on a Samsung Galaxy A16 over adb with `PerfProbe`, not in the Editor. The
-ledger with every step's before and after is `Docs/PERFORMANCE.md`. The shipped level
-runs at the phone's refresh rate with 0 B/frame idle and about 11 B/frame during a burst.
-The things that made the difference: one reused tween per moving view instead of a
-DOTween shortcut per move, a shared pool of collapse tweens, pooled bullets and splashes,
-a fixed ring of audio voices, `sharedMaterial` everywhere.
+Target: 120 FPS, 0 B of GC allocation per frame during play. Measured on a Samsung
+Galaxy A16 over adb with a runtime probe, never in the Editor. Every step's before and
+after, and every optimisation measured and *not* taken, is in
+[`Docs/PERFORMANCE.md`](Docs/PERFORMANCE.md).
+
+![Frame time per optimisation step](Docs/Screenshots/readme/frame_time_ledger.svg)
+
+| | As found | Shipped |
+|---|---|---|
+| `Level_01` frame time | 33.3 ms (30 fps) | 11.1 ms, the phone's 90 Hz cap; 4.24 ms of real work under it |
+| `Level_03` (900 cubes) frame time | 36.3 ms | 14.4 ms |
+| GC allocation, idle | 16 B/frame | 0 B |
+| GC allocation, firing | 78 B/frame | 0 B, about 11 B/frame of game allocation inside a burst |
+
+What made the difference, in order of weight: removing the per-pixel alpha clip from the
+cube shader, hard shadows, no post-processing or HDR, the frame-rate cap; then one reused
+tween per moving view instead of a DOTween shortcut per move, a shared pool of collapse
+tweens, pooled bullets and splashes, a fixed ring of audio voices, `sharedMaterial`
+everywhere. What did not, and was therefore not taken: GPU instancing, a smaller shadow
+map, pooling the cubes, render scale, Optimized Frame Pacing.
 
 ## Decisions, including what was left out
 
 - **No merge.** The brief forbids it; there are no hooks for it either.
-- **No save system.** One level replays after a win as after a loss, so a stored index
-  would never move.
-- **Cubes are instantiated once and destroyed on death, not pooled.** Measured: pooling
-  them changed nothing on the device, so it was not taken.
+- **No save system.** One level replays after a win as after a loss.
+- **Cubes are instantiated once and destroyed on death, not pooled.** Pooling them changed
+  nothing on the device.
 - **`GameDirector` has no unit tests.** Everything it decides is a `GameLoop` call, and
-  `GameLoop` is fully tested; what remains is async choreography over DOTween and UniTask,
-  verified in Play for every change (the record is `.claude/notes/case-status-log.md`).
-  Splitting it into testable presenters was considered and deferred: the case ranks
-  bug-free above architecture, and a rewrite of the orchestrator days before delivery is
-  the wrong trade.
-- **Static `GameRules` and no interfaces on the domain types.** Nothing ever substitutes
-  them; an interface would be a seam nothing swaps.
-- **Every tuning number is a serialized struct on the component that uses it**, with a
-  `Defaults` initializer, so a retune never recompiles and a new field arrives with a
-  value instead of a zero.
+  `GameLoop` is fully tested; what remains is async choreography, verified in Play for
+  every change. Splitting it into presenters was deferred: the case ranks bug-free above
+  architecture.
+- **Static `GameRules`, no interfaces on the domain types.** Nothing ever substitutes them.
+- **Every tuning number is a serialized struct with a `Defaults` initializer**, so a retune
+  never recompiles and a new field arrives with a value instead of a zero.
+- **The original's level was taken whole or not at all.** Cropped to 10x10 it passed the
+  simulator and lost in the real game; the sample level stays hand-authored.
 
 ## Repository map
 
 ```
 Assets/00_GAME/Scripts/<Layer>/    one asmdef per layer, tests in Scripts/Tests/EditMode
-Assets/00_GAME/Levels/             the JSON levels
+Assets/00_GAME/Levels/             the JSON levels: Level_01 is the case, 02-04 stress, Level_Original_18
 Assets/00_GAME/Scenes/Game_Scene   the one scene
 level-editor/                      the HTML level editor and its node tests
-Docs/PLAN.md, Docs/PERFORMANCE.md  the design plan and the performance ledger
+Docs/PLAN.md                       the design plan: mechanics, art and animation bibles, architecture
+Docs/PERFORMANCE.md                the performance ledger
+Docs/ORIGINAL_GAME_ANALYSIS.md     what was measured in the original and what it decided
+Docs/Tools/                        level generators, the APK extraction and conversion tools
+.claude/notes/case-status-log.md   the build record, chunk by chunk
 ```
