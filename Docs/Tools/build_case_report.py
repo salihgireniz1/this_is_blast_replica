@@ -206,9 +206,21 @@ def build():
 
     # 5 Level editor
     story += [P("5. Level editörü", "h1"),
-              P("<font name='Mono'>level-editor/index.html</font>, bağımlılığı olmayan tek sayfalık bir HTML uygulaması: çift tıkla açılır, kurulum yok, sunucu yok. Kartı fırçayla boyar, "
-                "shooter kuyruğunu kolon kolon düzenler ve JSON'u doğrudan Unity'nin okuduğu klasöre yazar. Kullanıcıları tasarımcılar olduğu için arayüzü Türkçe. "
-                "Kafa karıştırabilecek üç noktayı burada açıkça yazıyoruz: klasör seçimi, kaydetme ve Unity'nin dosyayı görmesi."),
+              P("Levelleri elle JSON yazarak değil, bir editörle yapıyoruz. Bu editör Unity'nin içinde değil; deponun kökünde, tarayıcıda çalışan bir HTML sayfası. "
+                "Kartı fırçayla boyar, shooter kuyruğunu kolon kolon düzenler ve JSON'u doğrudan Unity'nin okuduğu klasöre yazar. Kullanıcıları tasarımcılar olduğu için arayüzü Türkçe."),
+              P("Nerede", "h2"),
+              P("Depo kökünde <font name='Mono'>level-editor/</font> klasörü, üç dosya: <font name='Mono'>index.html</font> (arayüz), <font name='Mono'>logic.js</font> (level mantığı: okuma, yazma, doğrulama, "
+                "otomatik doldurma, simülasyon) ve <font name='Mono'>logic.test.js</font> (41 test). <font name='Mono'>Assets/</font> dışındadır, Unity onu hiç görmez ve derlemez; oyuna tek dokunuşu, "
+                "<font name='Mono'>Assets/00_GAME/Levels/</font> klasörüne yazdığı JSON dosyalarıdır. Oyun o dosyaları kendi parser'ından geçirir; editör ne yazmış olsa da son söz oyunun."),
+              P("Neden HTML", "h2"),
+              P("Alternatif bir Unity Editor penceresiydi: C# editör script'i, derleme, domain reload, ve level yapmak isteyen herkesin Unity'yi açıp projeyi yüklemesi. HTML'in maliyeti sıfır: kurulum yok, "
+                "paket yok, sunucu yok, internet gerekmez; dosya çift tıkla açılır ve Unity kapalıyken de level yapılır. Level formatı zaten düz JSON olduğu için editörün Unity'den bir şey bilmesi gerekmiyor; "
+                "aynı kuralları (renk başına mühimmat, kolon sayısı, boş kolon) JavaScript'te uygular ve bunlar <font name='Mono'>node --test</font> ile ayrı bir test takımında tutulur. "
+                "Tek gerçek bedel, tarayıcının klasöre yazma izni: o da aşağıda."),
+              P("Nasıl açılır", "h2"),
+              P("Windows Gezgini'nde <font name='Mono'>level-editor/index.html</font> dosyasına çift tıklayın; varsayılan tarayıcı Chrome veya Edge olmalı (klasöre yazma yalnız onlarda var). "
+                "Ya da dosyayı açık bir tarayıcı sekmesine sürükleyin; adres çubuğunda <font name='Mono'>file:///…/level-editor/index.html</font> görünür. Sayfa açıldığında kırmızı bir uyarı "
+                "hangi klasörün seçileceğini söyler; ilk iş o. Kafa karıştırabilecek üç noktayı sırayla yazıyoruz: klasör seçimi, kaydetme ve Unity'nin dosyayı görmesi."),
               P("1. Klasör seçimi", "h2"),
               P("Editör dosyaları tarayıcının klasör erişimi (File System Access API) ile yazar; bu yalnız Chrome ve Edge'de vardır. Açılışta üstte kırmızı bir uyarı, seçilmesi gereken klasörün tam yolunu gösterir "
                 "(<font name='Mono'>…\\Assets\\00_GAME\\Levels</font>) ve yanında <b>Yolu kopyala</b> düğmesi vardır. <b>Levels klasörünü seç…</b> düğmesine basınca tarayıcının klasör penceresi açılır; "
