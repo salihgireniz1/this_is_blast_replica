@@ -98,10 +98,11 @@ queue and runs the same checks as the tests.
 **The original game was read, not copied.** The shipped APK was opened with UnityPy to
 measure what the look is made of (colour space, tints, ramp, shadow flags) and how its
 2447 levels are stored. `Docs/Tools/convert_original_level.py` maps that schema onto this
-one and proves the result under our rules with a search over the player's choices, and the
-original's own hard level 18 ships whole as `Level_Original_18.json`: 10x20, 55 shooters,
-14 hidden, won by the solver in the real game in 55 taps. No mesh, texture, sound or code
-came across. The reading, the numbers and the one cropped attempt that failed are in
+one and proves the result under our rules with a search over the player's choices. Two of
+the original's levels ship whole: level 4 (`Level_Original_04.json`, 10x12, the original's
+own colours, no renaming) and its hard level 18 (`Level_Original_18.json`, 10x20, 55
+shooters, 14 hidden). The solver won both in the real game, in 26 and 55 taps. No mesh,
+texture, sound or code came across. The reading, the numbers and the one cropped attempt that failed are in
 [`Docs/ORIGINAL_GAME_ANALYSIS.md`](Docs/ORIGINAL_GAME_ANALYSIS.md).
 
 <p align="center">
@@ -151,7 +152,7 @@ map, pooling the cubes, render scale, Optimized Frame Pacing.
 
 ```
 Assets/00_GAME/Scripts/<Layer>/    one asmdef per layer, tests in Scripts/Tests/EditMode
-Assets/00_GAME/Levels/             the JSON levels: Level_01 is the case, 02-04 stress, Level_Original_18
+Assets/00_GAME/Levels/             the JSON levels: Level_01 is the case, 02-04 stress, Level_Original_04 / _18
 Assets/00_GAME/Scenes/Game_Scene   the one scene
 level-editor/                      the HTML level editor and its node tests
 Docs/PLAN.md                       the design plan: mechanics, art and animation bibles, architecture

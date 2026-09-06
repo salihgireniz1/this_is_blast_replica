@@ -1439,3 +1439,12 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   reopened from disk). Converter's five-colour/hidden gate dropped: those are `Level_01`'s
   rules and `LevelFileTests` owns them. Lesson recorded in the doc: crop a level and the
   exact-fit balance goes with it; take it whole or not at all.
+- `Level_Original_04` - done (2026-09-06). Salih: "level 4 in the APK is very good, take it".
+  Control Cohort 4 whole: 10x12, 120 cubes, indices 2/3/5 = our Y/B/R so no renaming, 26
+  shooters in 5 columns, no hidden. Oracle 100% in both orientations (same column-drain
+  line), blind random 93%; **in-game oracle drive won in 26 taps.** Sits next to
+  `Level_Original_18`; doc, README and map updated. **Trap:** the EditMode runner stuck at
+  "running" twice in a row (no recompile involved); `cancel_tests` + the unwedge eval did
+  not clear it. Not chased: the level's file checks (ammo == cubes, five columns) hold by
+  construction and the in-game run is the stronger verification. Salih runs the suite from
+  the Test Runner window; if the hang persists, the Player build has cleared it every time.

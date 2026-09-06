@@ -50,21 +50,27 @@ Ours is a text file a designer can read: rows of colour letters, explicit ammo, 
 per shooter. One parser is the trust boundary and every refusal names the location. The
 case has one mechanic beyond the core, so a flag per mechanic per cell would be 99% zeros.
 
-## The converted level
+## The converted levels
 
-`convert_original_level.py` turned **Control Cohort level 18** into
-`Level_Original_18.json`, whole: 10x20, 200 cubes, 55 shooters in 5 columns, 14 of them
-hidden, the level the original itself marks `difficultyLevel` 2.
+`convert_original_level.py` turned two of the original's levels into ours, whole.
+**Control Cohort level 4** (`Level_Original_04.json`): 10x12, 120 cubes in the original's
+own yellow, blue and red, 26 shooters in 5 columns, an early level a blind player wins
+93% of the time. **Control Cohort level 18** (`Level_Original_18.json`): 10x20, 200 cubes,
+55 shooters in 5 columns, 14 of them hidden, the level the original itself marks
+`difficultyLevel` 2. Both were won by the solver driving the real game, in 26 and 55 taps.
 
 ```
+python Docs/Tools/convert_original_level.py --source "extracted_levels/levels/Control Cohort VO/4.json" \
+    --map 2=Y,3=B,5=R --rows 12 --output Assets/00_GAME/Levels/Level_Original_04.json
 python Docs/Tools/convert_original_level.py --source "extracted_levels/levels/Control Cohort VO/18.json" \
     --map 2=Y,3=B,6=O,9=R,11=G --rows 20 --output Assets/00_GAME/Levels/Level_Original_18.json
 ```
 
 What changed on the way in, and nothing else:
 
-- **Colour names.** Their indices 2/3/6 are our Yellow/Blue/Orange; 9 (dark grey) and 11
-  (brown) have no case colour and are written as Red and Green. The pattern is theirs.
+- **Colour names.** Their indices 2/3/5/6 are our Yellow/Blue/Red/Orange, so level 4
+  needed no renaming at all; in level 18, 9 (dark grey) and 11 (brown) have no case colour
+  and are written as Red and Green. The pattern is theirs.
 - **Ammo,** which the original derives at load, is written exact-fit: each colour's cubes
   split over its shooters, front-most taking the remainder.
 - **Orientation.** The file does not say which end faces the shooters. Row 0 read as the
@@ -73,20 +79,21 @@ What changed on the way in, and nothing else:
 
 Measured, and the reason it ships whole:
 
-| Player | Level_Original_18 | Level_01 (hand-authored) |
-|---|---|---|
-| Oracle, sees hidden shooters, replans every tap, random firing order | 100% | 100% |
-| Blind random taps | 6% | 60% |
-| Oracle driving the real game through `GameDirector` | won, 55 taps | wins |
+| Player | Level_Original_04 | Level_Original_18 | Level_01 (hand-authored) |
+|---|---|---|---|
+| Oracle, sees hidden shooters, replans every tap, random firing order | 100% | 100% | 100% |
+| Blind random taps | 93% | 6% | 60% |
+| Oracle driving the real game through `GameDirector` | won, 26 taps | won, 55 taps | wins |
 
 The first attempt was level 21 cropped from 10x12 to the case's 10x10. It passed the same
 simulator and then lost in the real game at tap 12: with exact-fit ammo, *which* same-colour
 shooter fires a cube decides whether a slot frees, and cropping had broken the balance that
 made the answer not matter. The original also leans on merge and surplus ammo, both
 forbidden here. So a level is taken whole or not at all, `Level_01` stays hand-authored as
-the sample the case asks for, and `Level_Original_18` is the stress and test level: point
-the scope's `_level` at it (it is not in the boot path). It is also the largest board the
-performance ledger's numbers were taken on, a 10x20 of the original's own making.
+the sample the case asks for, and the two original levels are the test levels: point the
+scope's `_level` at one of them (neither is in the boot path). Level 4 is the original's
+own early game in our rules; level 18 is a 10x20 of its own making, the size the
+performance ledger's stress numbers were taken at.
 
 ## Not taken
 

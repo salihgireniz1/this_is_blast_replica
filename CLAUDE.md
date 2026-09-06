@@ -125,9 +125,9 @@ editor 41/41 node tests.** What exists, by layer (details per component in the l
 **Facts that must hold when the case ships:** the scope's `_level` is `Level_01`; the
 `Dock`'s five slot markers are Salih's hand-tuned numbers, do not touch; `Level_01.json`
 is not re-saved from the level editor (it would re-flow); `Level_02`/`03`/`04` stay as
-the stress levels behind the performance ledger; `Level_Original_18` is the original's level 18 taken
-whole (10x20, 55 shooters, 14 hidden) through `convert_original_level.py`; the oracle won it in the real game.
-Not in the boot path. House rule from Salih: chain tweens with
+the stress levels behind the performance ledger; `Level_Original_04` and `Level_Original_18` are the
+original's levels 4 and 18 taken whole through `convert_original_level.py` (4: 10x12, its own colours; 18:
+10x20, 55 shooters, 14 hidden); the oracle won both in the real game. Neither is in the boot path. House rule from Salih: chain tweens with
 `.ToUniTask()` + `await` or `.Forget()`, never `Sequence`/`Append`.
 
 The portfolio phase plan (`portfolio-phases.md`) resumes after the case ships; the case
