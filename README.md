@@ -159,6 +159,7 @@ level-editor/                      the HTML level editor and its node tests
 Docs/PLAN.md                       the design plan: mechanics, art and animation bibles, architecture
 Docs/PERFORMANCE.md                the performance ledger
 Docs/ORIGINAL_GAME_ANALYSIS.md     what was measured in the original and what it decided
+Docs/This_Is_Blast_Vaka_Raporu.pdf the case report in Turkish, built by Docs/Tools/build_case_report.py
 Docs/Tools/                        level generators, the APK extraction and conversion tools
 .claude/notes/case-status-log.md   the build record, chunk by chunk
 ```
