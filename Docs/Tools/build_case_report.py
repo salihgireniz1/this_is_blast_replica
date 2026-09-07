@@ -146,7 +146,10 @@ def build():
               Spacer(1, 3 * mm),
               P("Oyun hissi (juice), orijinal APK'dan kare kare ölçülüp elle ayarlandı: shooter'ın koşusu, iniş ezilmesi ve sayaç vuruşu, "
                 "hedefe dönüş, shooter renginde izli mermi, küpün üst yüzünde sıçrama, çizilen ölüm eğrisi, kamera sarsıntısı, "
-                "iki sesli ve perde titreşimli atış sesi.")]
+                "iki sesli ve perde titreşimli atış sesi. Küpler darbeyi alır: hedef ve merminin yolda içinden geçtiği her ön küp, "
+                "temas noktası etrafında savrulup o noktadan uzağa itilir ve tasarımcının eğrisiyle yerine döner "
+                "(<font name='Mono'>FlightPath</font> temas noktasını collider olmadan bulur; <font name='Mono'>CubeView.Nudge</font> "
+                "küp başına tek yeniden kullanılan tween'dir, atış başına bellek ayırmaz).")]
 
     # 2 Architecture
     story += [P("2. Mimari", "h1"),
@@ -177,7 +180,7 @@ def build():
     # 3 Tests
     story += [P("3. Testler", "h1"),
               table([["Takım", "Sayı", "Çalıştırma"],
-                     ["Unity EditMode, assembly <font name='Mono'>Blast.Tests</font>", "92", "Test Runner penceresi"],
+                     ["Unity EditMode, assembly <font name='Mono'>Blast.Tests</font>", "109", "Test Runner penceresi"],
                      ["Level editörü, <font name='Mono'>level-editor/logic.js</font>", "41", "<font name='Mono'>node --test level-editor/logic.test.js</font>"]],
                     [W * 0.45, W * 0.1, W * 0.45]),
               Spacer(1, 2 * mm),

@@ -29,13 +29,17 @@ Play; the sample level boots directly. There is no menu.
 Juice, all measured from the original and then tuned by hand: the shooter's run, land
 squash and counter punch, the yaw toward the target, the bullet with a trail in the
 shooter's colour, the impact splash on the cube's top face, the cube's drawn death curve,
-camera shake, two-voice audio with pitch jitter.
+camera shake, two-voice audio with pitch jitter. The cubes take the hit: the target, and
+every front cube the bullet passes through on the way, swings about the point of contact
+and is pushed away from it, then settles back along a designer curve (`FlightPath` finds
+the contact without a collider; `CubeView.Nudge` is one reused tween per cube, no
+allocation per shot).
 
 ## Tests
 
 | Suite | Count | Run |
 |---|---|---|
-| Unity EditMode, assembly `Blast.Tests` | 92 | Test Runner window, or `unity cmd run_tests --mode editor --filter "Blast.Tests" --filter_type assembly --async_tests true` |
+| Unity EditMode, assembly `Blast.Tests` | 109 | Test Runner window, or `unity cmd run_tests --mode editor --filter "Blast.Tests" --filter_type assembly --async_tests true` |
 | Level editor, `level-editor/logic.js` | 41 | `node --test level-editor/logic.test.js` |
 
 Every rule of the game has a test; MonoBehaviours are tested through the Humble Object
