@@ -1525,3 +1525,15 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   and expects the rest must use a shape that ends at 0; and a nudge with a zero push has
   no lever direction, so the swing test needs a push. The torque sign was written
   backwards first (`-angle * cross.y`); the side test caught it.
+- The shove flees the hit (2026-09-07) - done, 107/107 (CubeView 10). Salih's sketch: the
+  bullet lands on a corner, the cube turns (black arrow) and is pushed from the contact
+  point out through its centre (yellow arrow) - away from the hit, not down the bullet's
+  line. `Nudge(arm, travel, push, angle, duration, shape)`: `travel` is the bullet's
+  direction and only feeds the torque; the push direction is `-arm` (a dead-centre hit has
+  no side to flee and goes the bullet's way). The director passes `aim` and `Brush.Push`
+  instead of a push vector. New test `Nudge_PushesAwayFromTheContactPoint` (angle 0, hit on
+  the right, bullet forward: the cube goes left). **Play verified:** corner clip on column
+  3's front (home -1.35, -5.78), offset peaked at (-0.234, +0.143) = away from the
+  front-right corner, yaw 20.7 peak (the default curve's auto tangents overshoot 18 by a
+  little; flatten the 0.2 key if it matters), shift 0.274 at the peak, counter-swing to
+  0.092 the other way, at rest by frame 16 of the shove. Zero errors.

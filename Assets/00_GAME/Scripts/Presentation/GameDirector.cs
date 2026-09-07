@@ -345,15 +345,13 @@ namespace Blast.Presentation
         /// <summary>Shoves every standing front cube the flight has entered so far and not brushed yet.</summary>
         /// <param name="from">Where the flight started.</param>
         /// <param name="to">Where it ends: the target cube's centre.</param>
-        /// <param name="aim">The flight's direction on the board plane: the way a brushed cube is pushed.</param>
+        /// <param name="aim">The flight's direction on the board plane: what a brushed cube's spin comes from.</param>
         /// <param name="progress">How far along the flight the bullet is, 0..1.</param>
         /// <param name="hitColumn">The target's column; its front is the cube being shot, not brushed.</param>
         /// <param name="brushed">One bit per column, set once that column's front has been shoved by this bullet.</param>
         /// <returns>The mask with this frame's brushes added.</returns>
         int BrushAlongFlight(Vector3 from, Vector3 to, Vector3 aim, float progress, int hitColumn, int brushed)
         {
-            Vector3 push = aim.normalized * _brush.Push;
-
             for (int column = 0; column < _spawner.BoardColumns; column++)
             {
                 int bit = 1 << column;
@@ -370,11 +368,12 @@ namespace Blast.Presentation
                 }
 
                 // The hit lands where the flight crossed the face; the cube swings about that
-                // point, so a corner clip spins it and a square-on pass shoves it straight.
+                // point and flees it, so a corner clip spins it away and a square-on pass
+                // shoves it straight back.
                 Vector3 contact = Vector3.Lerp(from, to, entry);
                 Vector3 arm = Vector3.ProjectOnPlane(contact - centre, Vector3.up);
 
-                front.Nudge(arm, push, _brush.Angle, _brush.Duration, _brush.Shape);
+                front.Nudge(arm, aim, _brush.Push, _brush.Angle, _brush.Duration, _brush.Shape);
                 brushed |= bit;
             }
 
@@ -553,8 +552,8 @@ namespace Blast.Presentation
             [Tooltip("Degrees a brushed cube swings about the hit at the peak, for a grazing hit; a hit nearer the centre line spins less. The original: 15-20.")]
             public float Angle;
 
-            /// <summary>How far the cube is pushed along the bullet's travel at the peak, in world units.</summary>
-            [Tooltip("World units a brushed cube is pushed along the bullet's travel at the peak. A cell is 0.95; about a tenth reads as a shove, half a cell as a hit.")]
+            /// <summary>How far the cube is pushed away from the point it was hit at the peak, in world units.</summary>
+            [Tooltip("World units a brushed cube is pushed away from the point it was hit, through its centre, at the peak. A cell is 0.95; about a tenth reads as a shove, half a cell as a hit.")]
             public float Push;
 
             /// <summary>How long one brush lasts, shove and return included.</summary>

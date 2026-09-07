@@ -90,7 +90,7 @@ level (solvable, all 5 colours, includes a hidden), WIN/LOST overlays with a res
 button that replays the same level, direct play on Editor Play, Unity 6000.0.68f1 + URP.
 Evaluation order: bug-free > juiciness > architecture > performance > git usage.
 
-**Where it stands (2026-09-07): the case is feature-complete. Unity suite 106/106, level
+**Where it stands (2026-09-07): the case is feature-complete. Unity suite 107/107, level
 editor 41/41 node tests.** What exists, by layer (details per component in the log):
 
 - **Domain** — `Cell`, `BlastColor` (byte, values pinned), `BoardModel` (nothing moves:
@@ -112,7 +112,7 @@ editor 41/41 node tests.** What exists, by layer (details per component in the l
   `ShooterView` (animator, yaw tween, outline as second material, counter punch),
   `ComponentPool<T>` + `ShotPools` (bullets as `CubeView`, splashes as `SplashView`), `ShotAudio` (two voices round-robin, pitch jitter),
   `CameraShake`, `CollapseTweens` (shape = `CubeDeath.CollapseCurve`, scale over time, default is the measured OutQuad shrink; swell/hop/rock as code were tried and removed, grep the log),
-  `FlightPath` (segment-vs-footprint: a bullet brushes the front cubes its line crosses, polled per flight frame; `CubeView.Nudge` swings them about the contact point and pushes them along the flight by `GameDirector.Brush`'s curve; slide and shove compose, the move tween drives the rest).
+  `FlightPath` (segment-vs-footprint: a bullet brushes the front cubes its line crosses, polled per flight frame; `CubeView.Nudge` swings them about the contact point and pushes them away from it by `GameDirector.Brush`'s curve; slide and shove compose, the move tween drives the rest).
 - **Diagnostics** — `PerfProbe` / `PerfSweep`, its own asmdef, dev-only, no game references.
 - **UI** — `LevelEndViewModel` (R3, `IsShown` / `Title` WIN|LOST / `Restart` command),
   `LevelEndView` (humble, fade + title pop).

@@ -4,7 +4,7 @@
 // Responsibility: wearing the material its colour resolves to (and, as a bullet, tinting its
 //   trail to match), sliding to the rest position it is told to reach when its column flows,
 //   and taking a shove when a bullet brushes past: it swings about the point it was hit and
-//   is pushed along the bullet's travel, then comes back the way a curve says.
+//   is pushed away from that point, then comes back the way a curve says.
 // NOT its responsibility: knowing its colour's meaning, its cell, where its rest is, when
 //   it dies, or which bullets brush it. The spawner places it and computes every rest; the
 //   game loop tells it to leave; the director says where the hit landed; this type never reads the domain.
@@ -55,7 +55,7 @@ namespace Blast.Presentation
         /// <summary>The nudge in progress: from the centre to where the hit landed, on the board plane.</summary>
         Vector3 _arm;
 
-        /// <summary>The nudge in progress: how far, and which way, the cube is pushed at full shove.</summary>
+        /// <summary>The nudge in progress: how far, and which way, the cube is pushed at full shove: away from the hit.</summary>
         Vector3 _push;
 
         /// <summary>The nudge in progress: the signed yaw at full shove, lever already applied.</summary>
@@ -108,25 +108,32 @@ namespace Blast.Presentation
 
         /// <summary>
         /// Shoves the cube as a bullet brushes past: it swings about the point it was hit, away
-        /// from that side, and is pushed along the bullet's travel; the shape then brings it back.
+        /// from that side, and is pushed away from that point through its centre; the shape
+        /// then brings it back.
         /// </summary>
-        /// <param name="arm">From the cube's centre to where the hit landed, on the board plane. Zero means a dead-centre hit: push, no spin.</param>
-        /// <param name="push">How far, and which way, the cube is pushed at full shove.</param>
+        /// <param name="arm">From the cube's centre to where the hit landed, on the board plane. Zero means a dead-centre hit: pushed along the bullet, no spin.</param>
+        /// <param name="travel">The bullet's direction on the board plane: what the hit's torque comes from.</param>
+        /// <param name="push">How far the cube is pushed at full shove.</param>
         /// <param name="angle">The yaw at full shove for a grazing hit, in degrees; a hit nearer the centre line spins less.</param>
         /// <param name="duration">How long the whole nudge lasts.</param>
         /// <param name="shape">The shove over the nudge: x is the fraction of duration, y the multiple of the full shove. End at 0 to leave the cube at rest.</param>
         /// <returns>The nudge, so a caller or a test can step it.</returns>
-        public Tweener Nudge(Vector3 arm, Vector3 push, float angle, float duration, AnimationCurve shape)
+        public Tweener Nudge(Vector3 arm, Vector3 travel, float push, float angle, float duration, AnimationCurve shape)
         {
+            Vector3 along = travel.sqrMagnitude > 0f ? travel.normalized : Vector3.zero;
+            Vector3 reach = arm.sqrMagnitude > 0f ? arm.normalized : Vector3.zero;
+
             _arm = arm;
-            _push = push;
             _shape = shape;
 
-            // The lever: a push past the right of the centre turns the cube to the left, the
-            // way a shoulder takes a punch. Torque is arm cross push; its y is the sine of the
-            // angle between them, so a grazing hit spins fully and a centre hit not at all.
-            Vector3 along = push.sqrMagnitude > 0f ? push.normalized : Vector3.zero;
-            Vector3 reach = arm.sqrMagnitude > 0f ? arm.normalized : Vector3.zero;
+            // The cube flees the hit: pushed from the contact point through its centre, the
+            // way a shoulder punch sends you sideways, not down the puncher's line. A
+            // dead-centre hit has no side to flee, so it goes the bullet's way.
+            _push = (reach == Vector3.zero ? along : -reach) * push;
+
+            // The lever: a hit past the right of the centre turns the cube to the left. Torque
+            // is arm cross travel; its y is the sine of the angle between them, so a grazing
+            // hit spins fully and a centre hit not at all.
             _spin = angle * Vector3.Cross(reach, along).y;
 
             SyncRest();
@@ -199,7 +206,7 @@ namespace Blast.Presentation
             // Yaw about world up: from the camera's raised view it reads as the in-screen spin
             // the original's cubes do, and it never tips a cube into the floor. Turning about
             // the hit rather than the centre moves the centre by the swing applied to the
-            // arm's negation, plus the arm back; the push is added straight on.
+            // arm's negation, plus the arm back; the push away from the hit is added on.
             Quaternion swing = Quaternion.AngleAxis(_spin * amount, Vector3.up);
             _offset = swing * -_arm + _arm + _push * amount;
 

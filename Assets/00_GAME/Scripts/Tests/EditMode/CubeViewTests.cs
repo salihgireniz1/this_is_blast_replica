@@ -3,7 +3,7 @@
 // Responsibility: proving that flying the same view twice builds no second tween (a DOTween
 //   shortcut allocates two closures per call, and five pooled bullets fly forty times a
 //   second between them), that a flight still lands exactly on its target, and that a nudge
-//   spins the cube about the point it was hit, shoves it along the push, reuses its tween,
+//   spins the cube about the point it was hit, shoves it away from that point, reuses its tween,
 //   leaves the cube upright and at rest when it ends, and never leaks into a slide.
 // NOT its responsibility: how a flight or a nudge looks, or the board slide (LevelSpawnerTests).
 
@@ -37,8 +37,11 @@ namespace Blast.Tests
         /// <summary>A hit landing half a cube to the left of the centre.</summary>
         static readonly Vector3 LeftOfCentre = new Vector3(-0.5f, 0f, 0f);
 
-        /// <summary>A push straight up the board, a tenth of a unit long.</summary>
-        static readonly Vector3 Forward = new Vector3(0f, 0f, 0.1f);
+        /// <summary>A bullet travelling straight up the board.</summary>
+        static readonly Vector3 Forward = Vector3.forward;
+
+        /// <summary>How far a full shove pushes the cube, a tenth of a unit.</summary>
+        const float Push = 0.1f;
 
         #endregion
 
@@ -104,9 +107,9 @@ namespace Blast.Tests
         [Test]
         public void ASecondNudge_DoesNotAllocate()
         {
-            _view.Nudge(RightOfCentre, Forward, 10f, 0.2f, LeanAndBack);
+            _view.Nudge(RightOfCentre, Forward, Push, 10f, 0.2f, LeanAndBack);
 
-            Assert.That(() => { _view.Nudge(LeftOfCentre, Forward, 10f, 0.2f, LeanAndBack); }, Is.Not.AllocatingGCMemory(),
+            Assert.That(() => { _view.Nudge(LeftOfCentre, Forward, Push, 10f, 0.2f, LeanAndBack); }, Is.Not.AllocatingGCMemory(),
                 "The second nudge allocated: the cube's shove tween is being rebuilt per brush.");
         }
 
@@ -117,36 +120,48 @@ namespace Blast.Tests
         [Test]
         public void Nudge_SpinsAwayFromTheSideItWasHitOn()
         {
-            _view.Nudge(RightOfCentre, Forward, 12f, 0.2f, FullLean).Goto(0.1f);
+            _view.Nudge(RightOfCentre, Forward, Push, 12f, 0.2f, FullLean).Goto(0.1f);
             float hitRight = Vector3.SignedAngle(Vector3.forward, _view.transform.forward, Vector3.up);
 
-            _view.Nudge(LeftOfCentre, Forward, 12f, 0.2f, FullLean).Goto(0.1f);
+            _view.Nudge(LeftOfCentre, Forward, Push, 12f, 0.2f, FullLean).Goto(0.1f);
             float hitLeft = Vector3.SignedAngle(Vector3.forward, _view.transform.forward, Vector3.up);
 
             Assert.That(hitRight, Is.EqualTo(-12f).Within(0.01f), "A hit on the right did not spin the cube to the left.");
             Assert.That(hitLeft, Is.EqualTo(12f).Within(0.01f), "A hit on the left did not spin the cube to the right.");
         }
 
-        /// <summary>A hit dead on the centre line has no lever: the cube is shoved, not spun.</summary>
+        /// <summary>A hit dead on the centre has no lever and no side to flee: the cube is shoved along the bullet, not spun.</summary>
         [Test]
-        public void Nudge_OnTheCentreLine_ShovesWithoutSpinning()
+        public void Nudge_OnTheCentre_ShovesAlongTheBulletWithoutSpinning()
         {
-            _view.Nudge(Vector3.zero, Forward, 12f, 0.2f, FullLean).Goto(0.1f);
+            _view.Nudge(Vector3.zero, Forward, Push, 12f, 0.2f, FullLean).Goto(0.1f);
 
             Assert.That(Quaternion.Angle(_view.transform.rotation, Quaternion.identity), Is.LessThan(0.01f), "A centre hit spun the cube.");
-            Assert.That(_view.transform.position.z, Is.EqualTo(Forward.z).Within(0.001f), "A centre hit did not shove the cube the push's length.");
+            Assert.That(_view.transform.position.z, Is.EqualTo(Push).Within(0.001f), "A centre hit did not shove the cube the push's length along the bullet.");
+        }
+
+        /// <summary>The push flees the hit: away from the contact point through the centre, whatever way the bullet was going.</summary>
+        [Test]
+        public void Nudge_PushesAwayFromTheContactPoint()
+        {
+            // No angle, so the swing adds nothing and the offset is the push alone: a hit on
+            // the right side from a bullet going forward sends the cube to the left.
+            _view.Nudge(RightOfCentre, Forward, Push, 0f, 0.2f, FullLean).Goto(0.1f);
+
+            Assert.That(Vector3.Distance(_view.transform.position, Vector3.left * Push), Is.LessThan(0.001f),
+                "The cube was not pushed away from the point it was hit.");
         }
 
         /// <summary>The cube swings about the point it was hit, so the centre moves as well as turning.</summary>
         [Test]
         public void Nudge_SwingsAboutTheContactPoint()
         {
-            // Hit on the right, pushed forward: the spin is -90 about a point half a cube to
-            // the right, which carries the centre off the line by the chord of the angle
-            // instead of leaving it put; the push then adds straight on.
-            _view.Nudge(RightOfCentre, Forward, 90f, 0.2f, FullLean).Goto(0.1f);
+            // Hit on the right by a bullet going forward: the spin is -90 about a point half
+            // a cube to the right, which carries the centre off the line by the chord of the
+            // angle instead of leaving it put; the push away from the hit then adds on.
+            _view.Nudge(RightOfCentre, Forward, Push, 90f, 0.2f, FullLean).Goto(0.1f);
 
-            Vector3 expected = Quaternion.AngleAxis(-90f, Vector3.up) * -RightOfCentre + RightOfCentre + Forward;
+            Vector3 expected = Quaternion.AngleAxis(-90f, Vector3.up) * -RightOfCentre + RightOfCentre + Vector3.left * Push;
             Assert.That(Vector3.Distance(_view.transform.position, expected), Is.LessThan(0.001f),
                 "The cube spun about its own centre instead of about the hit.");
         }
@@ -156,7 +171,7 @@ namespace Blast.Tests
         public void Nudge_EndsUprightAndAtRest()
         {
             _view.transform.position = new Vector3(2f, 0f, 3f);
-            _view.Nudge(RightOfCentre, Forward, 15f, 0.2f, LeanAndBack);
+            _view.Nudge(RightOfCentre, Forward, Push, 15f, 0.2f, LeanAndBack);
 
             DOTween.CompleteAll();
 
@@ -172,7 +187,7 @@ namespace Blast.Tests
         public void ASlideDuringANudge_StillEndsAtTheRest()
         {
             // Half-way through a shove that does come back: the cube is at its fullest shove here.
-            _view.Nudge(RightOfCentre, Forward, 15f, 0.2f, LeanAndBack).Goto(0.1f);
+            _view.Nudge(RightOfCentre, Forward, Push, 15f, 0.2f, LeanAndBack).Goto(0.1f);
             var rest = new Vector3(0f, 0f, -1f);
             _view.SlideTo(rest, 0.3f, 1.7f);
 
