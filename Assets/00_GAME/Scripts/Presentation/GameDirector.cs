@@ -297,6 +297,11 @@ namespace Blast.Presentation
                 brushed = BrushAlongFlight(muzzle, target, aim, flight.ElapsedPercentage(), hitColumn, brushed);
             }
 
+            // The flight completes between two samples, and with the slots this far below
+            // the board every neighbour is entered in the last few percent of the flight:
+            // without a sweep at the end most brushes fell into that gap.
+            BrushAlongFlight(muzzle, target, aim, 1f, hitColumn, brushed);
+
             _pools.Bullets.Return(bullet);
 
             // The impact splash sits on the cube, the muzzle one on the shooter: the
@@ -355,25 +360,27 @@ namespace Blast.Presentation
             for (int column = 0; column < _spawner.BoardColumns; column++)
             {
                 int bit = 1 << column;
-                if (column == hitColumn || (brushed & bit) != 0 || !_spawner.TryPeekFrontCube(column, out CubeView front))
+                if (column == hitColumn || (brushed & bit) != 0 || !_spawner.TryPeekFrontCube(column, out CubeView top))
                 {
                     continue;
                 }
 
-                Vector3 centre = front.transform.position;
-                float entry = FlightPath.EnterFraction(from, to, centre, _spawner.CellSize);
+                // The whole stack shares the top cube's footprint, so the entry is the stack's.
+                float entry = FlightPath.EnterFraction(from, to, top.transform.position, _spawner.CellSize);
                 if (entry < 0f || entry > progress)
                 {
                     continue;
                 }
 
-                // The hit lands where the flight crossed the face; the cube swings about that
-                // point and flees it, so a corner clip spins it away and a square-on pass
-                // shoves it straight back.
+                // The hit lands where the flight crossed the face, at the height the bullet is
+                // flying: on a layered board that picks the cube beside the bullet, not the top
+                // of the stack. The cube swings about that point and flees it, so a corner clip
+                // spins it away and a square-on pass shoves it straight back.
                 Vector3 contact = Vector3.Lerp(from, to, entry);
-                Vector3 arm = Vector3.ProjectOnPlane(contact - centre, Vector3.up);
+                CubeView hit = _spawner.FrontCubeNearest(column, contact.y);
+                Vector3 arm = Vector3.ProjectOnPlane(contact - hit.transform.position, Vector3.up);
 
-                front.Nudge(arm, aim, _brush.Push, _brush.Angle, _brush.Duration, _brush.Shape);
+                hit.Nudge(arm, aim, _brush.Push, _brush.Angle, _brush.Duration, _brush.Shape);
                 brushed |= bit;
             }
 

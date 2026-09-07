@@ -238,6 +238,43 @@ namespace Blast.Tests
             Assert.That(peekedFront, Is.SameAs(popped), "The peek and the pop disagreed on the front.");
         }
 
+        /// <summary>
+        /// On a layered board a bullet flies at its target's height, so the neighbour it
+        /// brushes is the cube of the front stack at that height, not always the top one: a
+        /// shot at the ground layer shakes the ground cube next to it.
+        /// </summary>
+        [Test]
+        public void FrontCubeNearest_PicksTheLayerAtThatHeight()
+        {
+            _spawner.Construct(
+                new BoardModel(1, 1, 3), new ShooterQueue(new Shooter[0][]), new SlotRow(1), new NoMaterials());
+
+            // Spawned top layer first: child 0 is the top cube, child 2 the ground one.
+            Transform cubes = _spawner.transform.Find("Cubes");
+            CubeView top = cubes.GetChild(0).GetComponent<CubeView>();
+            CubeView middle = cubes.GetChild(1).GetComponent<CubeView>();
+            CubeView ground = cubes.GetChild(2).GetComponent<CubeView>();
+
+            Assert.That(_spawner.FrontCubeNearest(0, ground.transform.position.y), Is.SameAs(ground), "A bullet at ground height did not find the ground cube.");
+            Assert.That(_spawner.FrontCubeNearest(0, middle.transform.position.y + 0.1f), Is.SameAs(middle), "A bullet near the middle height did not find the middle cube.");
+            Assert.That(_spawner.FrontCubeNearest(0, top.transform.position.y + 5f), Is.SameAs(top), "A bullet above the stack did not find the top cube.");
+        }
+
+        /// <summary>Once the top of the stack is gone, a bullet at its old height brushes the nearest cube still standing.</summary>
+        [Test]
+        public void FrontCubeNearest_SkipsThePoppedTop()
+        {
+            _spawner.Construct(
+                new BoardModel(1, 1, 3), new ShooterQueue(new Shooter[0][]), new SlotRow(1), new NoMaterials());
+            Transform cubes = _spawner.transform.Find("Cubes");
+            CubeView top = cubes.GetChild(0).GetComponent<CubeView>();
+            CubeView middle = cubes.GetChild(1).GetComponent<CubeView>();
+
+            _spawner.PopFrontCube(0);
+
+            Assert.That(_spawner.FrontCubeNearest(0, top.transform.position.y), Is.SameAs(middle), "The popped top cube was offered for a brush.");
+        }
+
         /// <summary>An emptied column has no front to brush; the bullet flies over bare floor there.</summary>
         [Test]
         public void TryPeekFrontCube_IsFalseOnceTheColumnIsEmpty()

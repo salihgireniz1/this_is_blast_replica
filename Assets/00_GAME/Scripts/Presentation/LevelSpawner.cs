@@ -190,6 +190,37 @@ namespace Blast.Presentation
             return cube != null;
         }
 
+        /// <summary>
+        /// The cube of a column's front stack nearest a height: on a layered board a bullet
+        /// flies at its target's height, and the neighbour it brushes is the cube beside it,
+        /// not the top of the stack. Ask only while <see cref="TryPeekFrontCube"/> says the column stands.
+        /// </summary>
+        /// <param name="column">The board column to look at.</param>
+        /// <param name="height">The bullet's world height where it crosses the stack.</param>
+        public CubeView FrontCubeNearest(int column, float height)
+        {
+            List<CubeView> views = _cubeColumns[column];
+            int front = _cubeFront[column];
+
+            // The front stack runs from the front index to the next row boundary, top layer
+            // first; what was popped above the front is gone and never offered.
+            int stackEnd = front + (_board.Layers - front % _board.Layers);
+            CubeView nearest = null;
+            float nearestGap = float.MaxValue;
+
+            for (int index = front; index < stackEnd && index < views.Count; index++)
+            {
+                float gap = Mathf.Abs(views[index].transform.position.y - height);
+                if (gap < nearestGap)
+                {
+                    nearestGap = gap;
+                    nearest = views[index];
+                }
+            }
+
+            return nearest;
+        }
+
         /// <summary>Hands out a board column's front cube view and advances the view front.</summary>
         /// <param name="column">The board column whose front cube died.</param>
         public CubeView PopFrontCube(int column)

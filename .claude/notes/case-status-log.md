@@ -1537,3 +1537,26 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   front-right corner, yaw 20.7 peak (the default curve's auto tangents overshoot 18 by a
   little; flatten the 0.2 key if it matters), shift 0.274 at the peak, counter-swing to
   0.092 the other way, at rest by frame 16 of the shove. Zero errors.
+- A brush lands on the layer the bullet flies at (2026-09-07) - done, 109/109 (LevelSpawner
+  +2). Salih on Level_03 (three layers): whichever cube of a stack the shooter hit, the
+  neighbour's TOP cube shook. Cause: `TryPeekFrontCube` hands out the top of the front
+  stack and `FlightPath` ignores height, so every brush went to the top. Fix:
+  `LevelSpawner.FrontCubeNearest(column, height)` walks the front stack (front index to
+  the next row boundary, top first) and returns the cube nearest a height; the director
+  takes the contact's y (the flight is a straight line from the muzzle to the target's
+  centre, so the bullet is at the target's height by the time it reaches a neighbour).
+  Also found while tracing: the flight loop exited on completion without a sweep at
+  progress 1, and with the slots this far below the board every neighbour is entered in
+  the last few percent, so a final `BrushAlongFlight(..., 1f, ...)` now runs after the
+  loop. **Play verified** with a flight trace (bullet spawn and landing per shot, every
+  cube's yaw per frame) and the seated shooter teleported to x=+4 so its flights cross the
+  columns between: shots at column 2's top / middle / ground brushed column 3 at y 2.25 /
+  1.35 / 0.45, then column 4's stack brushed column 5 the same way, six for six.
+  **Geometry finding, the real reason brushes are rare from a near slot:** a flight from
+  slot 0 to a settled front-row cube is steep enough to clip nothing (x at the neighbour's
+  front edge lands outside its footprint by a few hundredths); the only brushes a near slot
+  gets are on the first shot at a stack still sliding in (target further back, shallower
+  line). Far slots shooting across the board brush every column between, which is where
+  Salih saw the top-only bug. **Probe trap:** a "new lean" detector keyed on yaw crossing a
+  threshold fires twice per shove - once on the swing, once on the counter-swing eleven
+  frames later - and reads as two brushes of the same cube; pair it with the bullet trace.
