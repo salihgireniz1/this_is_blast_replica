@@ -2,10 +2,11 @@
 //   bullet a shooter fires (the same mesh at bullet size, plus a trail).
 // Layer: Presentation (humble: holds references and applies what it is told, decides nothing).
 // Responsibility: wearing the material its colour resolves to (and, as a bullet, tinting its
-//   trail to match), and sliding to the rest position it is told to reach when its column flows.
-// NOT its responsibility: knowing its colour's meaning, its cell, where its rest is, or when
-//   it dies. The spawner places it and computes every rest; the game loop tells it to leave;
-//   this type never reads the domain.
+//   trail to match), sliding to the rest position it is told to reach when its column flows,
+//   and leaning over when a bullet brushes past (a yaw punch shaped by a curve).
+// NOT its responsibility: knowing its colour's meaning, its cell, where its rest is, when
+//   it dies, or which bullets brush it. The spawner places it and computes every rest; the
+//   game loop tells it to leave; the director decides the lean's sign; this type never reads the domain.
 
 using DG.Tweening;
 using DG.Tweening.Core;
@@ -35,6 +36,20 @@ namespace Blast.Presentation
         /// mid-overshoot continues to the new rest from wherever the cube is.
         /// </summary>
         TweenerCore<Vector3, Vector3, VectorOptions> _move;
+
+        /// <summary>
+        /// The one lean tween: a 0..1 clock whose setter turns the cube about the up axis by
+        /// the current nudge's angle times its shape at that moment. Built on the first nudge,
+        /// never auto-killed, restarted by every nudge after: a bullet brushes a column's front
+        /// cube on most shots, and a DOPunchRotation per brush is segment arrays plus two closures each.
+        /// </summary>
+        TweenerCore<float, float, FloatOptions> _lean;
+
+        /// <summary>The nudge in progress: the signed yaw at full lean and the shape spending it.</summary>
+        float _leanAngle;
+
+        /// <summary>The nudge in progress: the lean over the clock, as a multiple of the angle.</summary>
+        AnimationCurve _leanShape;
 
         #endregion
 
@@ -72,6 +87,32 @@ namespace Blast.Presentation
         public Tweener FlyTo(Vector3 target, float duration) =>
             MoveTo(target, duration, Ease.Linear, 0f);
 
+        /// <summary>Leans the cube over as a bullet brushes past, then lets the shape bring it back.</summary>
+        /// <param name="signedAngle">The yaw at full lean, in degrees; the sign is the side the bullet pushes toward.</param>
+        /// <param name="duration">How long the whole nudge lasts.</param>
+        /// <param name="shape">The lean over the nudge: x is the fraction of duration, y the multiple of the angle. End at 0 to leave the cube upright.</param>
+        /// <returns>The nudge, so a caller or a test can step it.</returns>
+        public Tweener Nudge(float signedAngle, float duration, AnimationCurve shape)
+        {
+            _leanAngle = signedAngle;
+            _leanShape = shape;
+
+            if (_lean == null)
+            {
+                // The closures are allocated here, once per cube, and never again. The clock
+                // runs 0..1 linearly; the shape is the curve's job, so the ease stays out of it.
+                _lean = DOTween.To(() => 0f, ApplyLean, 1f, duration)
+                    .SetEase(Ease.Linear)
+                    .SetAutoKill(false);
+            }
+
+            // A nudge landing mid-nudge starts over from the top: the setter writes the
+            // rotation absolutely, so nothing stacks and the cube cannot drift.
+            _lean.ChangeEndValue(1f, duration, snapStartValue: true);
+            _lean.Restart();
+            return _lean;
+        }
+
         #endregion
 
         #region Private Methods
@@ -96,10 +137,20 @@ namespace Blast.Presentation
             return _move;
         }
 
-        /// <summary>Kills the reused tween with the view, since it never auto-kills.</summary>
+        /// <summary>Writes the cube's rotation for one moment of the nudge clock.</summary>
+        /// <param name="clock">How far through the nudge, 0..1.</param>
+        void ApplyLean(float clock)
+        {
+            // Yaw about world up: from the camera's raised view it reads as the in-screen spin
+            // the original's cubes do, and it never tips a cube into the floor.
+            transform.rotation = Quaternion.AngleAxis(_leanAngle * _leanShape.Evaluate(clock), Vector3.up);
+        }
+
+        /// <summary>Kills the reused tweens with the view, since they never auto-kill.</summary>
         void OnDestroy()
         {
             _move?.Kill();
+            _lean?.Kill();
         }
 
         #endregion
