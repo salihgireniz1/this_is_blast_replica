@@ -342,19 +342,17 @@ namespace Blast.Presentation
             _loop.MarkSettled(hitColumn);
         }
 
-        /// <summary>Nudges every standing front cube the flight has entered so far and not brushed yet.</summary>
+        /// <summary>Shoves every standing front cube the flight has entered so far and not brushed yet.</summary>
         /// <param name="from">Where the flight started.</param>
         /// <param name="to">Where it ends: the target cube's centre.</param>
-        /// <param name="aim">The flight's direction on the board plane; its x decides which way the cubes lean.</param>
+        /// <param name="aim">The flight's direction on the board plane: the way a brushed cube is pushed.</param>
         /// <param name="progress">How far along the flight the bullet is, 0..1.</param>
         /// <param name="hitColumn">The target's column; its front is the cube being shot, not brushed.</param>
-        /// <param name="brushed">One bit per column, set once that column's front has been nudged by this bullet.</param>
+        /// <param name="brushed">One bit per column, set once that column's front has been shoved by this bullet.</param>
         /// <returns>The mask with this frame's brushes added.</returns>
         int BrushAlongFlight(Vector3 from, Vector3 to, Vector3 aim, float progress, int hitColumn, int brushed)
         {
-            // A rightward shot spins the cube clockwise seen from above, the way the original's
-            // cubes lean into the bullet's travel; Sign(0) is +1, and a straight shot crosses nothing.
-            float signedAngle = Mathf.Sign(aim.x) * _brush.Angle;
+            Vector3 push = aim.normalized * _brush.Push;
 
             for (int column = 0; column < _spawner.BoardColumns; column++)
             {
@@ -364,13 +362,19 @@ namespace Blast.Presentation
                     continue;
                 }
 
-                float entry = FlightPath.EnterFraction(from, to, front.transform.position, _spawner.CellSize);
+                Vector3 centre = front.transform.position;
+                float entry = FlightPath.EnterFraction(from, to, centre, _spawner.CellSize);
                 if (entry < 0f || entry > progress)
                 {
                     continue;
                 }
 
-                front.Nudge(signedAngle, _brush.Duration, _brush.Shape);
+                // The hit lands where the flight crossed the face; the cube swings about that
+                // point, so a corner clip spins it and a square-on pass shoves it straight.
+                Vector3 contact = Vector3.Lerp(from, to, entry);
+                Vector3 arm = Vector3.ProjectOnPlane(contact - centre, Vector3.up);
+
+                front.Nudge(arm, push, _brush.Angle, _brush.Duration, _brush.Shape);
                 brushed |= bit;
             }
 
@@ -545,22 +549,27 @@ namespace Blast.Presentation
         [Serializable]
         public struct Brush
         {
-            /// <summary>The yaw at full lean, in degrees. The original measures 15-20 on a passing shot.</summary>
-            [Tooltip("Degrees a brushed cube turns about up at the peak of the lean. The original: 15-20. Zero switches the brush off.")]
+            /// <summary>The yaw at full shove for a grazing hit, in degrees; a hit nearer the centre line spins less. The original measures 15-20.</summary>
+            [Tooltip("Degrees a brushed cube swings about the hit at the peak, for a grazing hit; a hit nearer the centre line spins less. The original: 15-20.")]
             public float Angle;
 
-            /// <summary>How long one brush lasts, lean and return included.</summary>
+            /// <summary>How far the cube is pushed along the bullet's travel at the peak, in world units.</summary>
+            [Tooltip("World units a brushed cube is pushed along the bullet's travel at the peak. A cell is 0.95; about a tenth reads as a shove, half a cell as a hit.")]
+            public float Push;
+
+            /// <summary>How long one brush lasts, shove and return included.</summary>
             [Tooltip("Seconds one brush lasts, from the bullet crossing the face until the cube is upright again.")]
             public float Duration;
 
-            /// <summary>The lean over the brush: x is the fraction of Duration, y the multiple of Angle. Ends at 0 so the cube stands upright.</summary>
-            [Tooltip("The lean over the brush. X: 0 when the bullet crosses the face, 1 at the end. Y: multiple of Angle - peak early, cross zero, a small swing back, end at 0. Editable in Play.")]
+            /// <summary>The shove over the brush: x is the fraction of Duration, y the multiple of Angle and Push. Ends at 0 so the cube comes back to rest.</summary>
+            [Tooltip("The shove over the brush. X: 0 when the bullet crosses the face, 1 at the end. Y: multiple of Angle and Push - peak early, cross zero, a small swing back, end at 0. Editable in Play.")]
             public AnimationCurve Shape;
 
             /// <summary>The values a fresh director starts with - the original's, measured frame by frame at 25 fps.</summary>
             public static Brush Defaults => new Brush
             {
                 Angle = 18f,
+                Push = 0.12f,
                 Duration = 0.2f,
                 // Peak at 40 ms, upright by 100 ms, a small counter-swing, at rest by 200 ms.
                 Shape = new AnimationCurve(

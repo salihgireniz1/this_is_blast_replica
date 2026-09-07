@@ -1503,3 +1503,25 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   top cube leans. Note: the working tree had `Game_Scene.unity` on `Level_03` and a modified
   `Level_06.json` before this work (Salih's, uncommitted, untouched); the case's shipped
   scope still boots `Level_01` in git.
+- Brush is a shove about the hit, not a spin about the centre (2026-09-07) - done, 106/106
+  (CubeView 9). Salih on the first version: the cubes spun in place around their own centre
+  with a yoyo ease, which reads as a top, not a hit - a punch on the shoulder swings you
+  about the point it landed, pushes you back a little, and you come forward to recover.
+  `CubeView.Nudge(arm, push, angle, duration, shape)` now: `arm` = centre to the contact
+  point (the flight's entry into the footprint, from `FlightPath`), torque sign and lever
+  from `arm x push` (a grazing hit spins the full angle, a centre-line hit only pushes),
+  the centre moved by the swing about the contact plus `push`, all from one reused
+  float-clock tween. `Brush.Push` (0.12) joined the settings. **Design change:** the slide
+  and the shove compose - the move tween now drives `_rest` and both setters write
+  `_rest + _offset`, so a slide starting mid-shove never adopts the shove as its start
+  (`ASlideDuringANudge_StillEndsAtTheRest`); `SyncRest` reads the transform back before
+  either tween restarts, which is what keeps pooled bullets (moved by the pool between
+  flights) flying from where they were placed. **Play verified**, same yaw probe plus the
+  offset from the spawn position: yaw 4.6 -> 13.3 -> 12.4 -> 8.7 -> 3.1 -> 0.5 -> 2.3 ->
+  3.9 -> 3.7 -> 2.4 -> 0.9, shift 0.026 -> 0.067 -> ... -> 0.003, then the offset flips
+  sign for the counter-swing (0.024 the other way) and returns; zero errors. Peak below
+  the 18 deg setting because a corner clip's lever is under one. **Trap in the tests, twice:**
+  a constant "full lean" curve never returns to zero, so a test that completes the tweens
+  and expects the rest must use a shape that ends at 0; and a nudge with a zero push has
+  no lever direction, so the swing test needs a push. The torque sign was written
+  backwards first (`-angle * cross.y`); the side test caught it.
