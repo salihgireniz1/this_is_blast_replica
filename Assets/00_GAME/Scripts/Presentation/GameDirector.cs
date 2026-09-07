@@ -2,7 +2,8 @@
 // Layer: Presentation.
 // Responsibility: turning a tap into a TrySelect, pacing each seated shooter's TryShoot
 //   calls, and dressing every result - the run to the slot, the queue step-up, the bullet
-//   flight, the cube death and flow, the drained shooter's exit.
+//   flight and the cubes it brushes on the way, the cube death and flow, the drained
+//   shooter's exit.
 // NOT its responsibility: a single game rule. Every decision is a GameLoop call; if this
 //   file ever contains an if about colours, ammo or verdicts beyond relaying them, that
 //   logic has leaked out of the testable layer.
@@ -67,6 +68,10 @@ namespace Blast.Presentation
         /// <summary>What happens to the board when a cube is hit.</summary>
         [Tooltip("What a hit cube and its column do.")]
         [SerializeField] CubeDeath _cubeDeath = CubeDeath.Defaults;
+
+        /// <summary>What a cube does when a bullet brushes past it on the way to another.</summary>
+        [Tooltip("How a cube leans when a bullet passes through it without hitting it.")]
+        [SerializeField] Brush _brush = Brush.Defaults;
 
         /// <summary>The use case every action goes through. Handed in by Construct.</summary>
         GameLoop _loop;
@@ -277,8 +282,20 @@ namespace Blast.Presentation
             // second between them, and a DOMove per flight was two closures each. A reused
             // tween never auto-kills, and ToUniTask waits for the kill: AwaitForComplete
             // waits for the landing, which is the event.
-            await bullet.FlyTo(cube.transform.position, _firing.FlightDuration)
-                .AwaitForComplete(cancellationToken: _destroyed);
+            Vector3 target = cube.transform.position;
+            Tween flight = bullet.FlyTo(target, _firing.FlightDuration);
+
+            // The bullet brushes every standing front cube its line crosses, the frame it
+            // crosses the face: the original's cubes lean as a shot passes through them.
+            // Polled per frame rather than awaited, because the brushes need the flight's
+            // progress and an OnUpdate closure per shot would allocate; a bit per column
+            // remembers what this bullet has already brushed.
+            int brushed = 0;
+            while (flight.IsActive() && !flight.IsComplete())
+            {
+                await UniTask.Yield(PlayerLoopTiming.Update, _destroyed);
+                brushed = BrushAlongFlight(muzzle, target, aim, flight.ElapsedPercentage(), hitColumn, brushed);
+            }
 
             _pools.Bullets.Return(bullet);
 
@@ -323,6 +340,41 @@ namespace Blast.Presentation
             }
 
             _loop.MarkSettled(hitColumn);
+        }
+
+        /// <summary>Nudges every standing front cube the flight has entered so far and not brushed yet.</summary>
+        /// <param name="from">Where the flight started.</param>
+        /// <param name="to">Where it ends: the target cube's centre.</param>
+        /// <param name="aim">The flight's direction on the board plane; its x decides which way the cubes lean.</param>
+        /// <param name="progress">How far along the flight the bullet is, 0..1.</param>
+        /// <param name="hitColumn">The target's column; its front is the cube being shot, not brushed.</param>
+        /// <param name="brushed">One bit per column, set once that column's front has been nudged by this bullet.</param>
+        /// <returns>The mask with this frame's brushes added.</returns>
+        int BrushAlongFlight(Vector3 from, Vector3 to, Vector3 aim, float progress, int hitColumn, int brushed)
+        {
+            // A rightward shot spins the cube clockwise seen from above, the way the original's
+            // cubes lean into the bullet's travel; Sign(0) is +1, and a straight shot crosses nothing.
+            float signedAngle = Mathf.Sign(aim.x) * _brush.Angle;
+
+            for (int column = 0; column < _spawner.BoardColumns; column++)
+            {
+                int bit = 1 << column;
+                if (column == hitColumn || (brushed & bit) != 0 || !_spawner.TryPeekFrontCube(column, out CubeView front))
+                {
+                    continue;
+                }
+
+                float entry = FlightPath.EnterFraction(from, to, front.transform.position, _spawner.CellSize);
+                if (entry < 0f || entry > progress)
+                {
+                    continue;
+                }
+
+                front.Nudge(signedAngle, _brush.Duration, _brush.Shape);
+                brushed |= bit;
+            }
+
+            return brushed;
         }
 
         /// <summary>Runs a drained shooter off the nearer side of the screen and despawns it.</summary>
@@ -486,6 +538,33 @@ namespace Blast.Presentation
                 CollapseCurve = new AnimationCurve(new Keyframe(0f, 1f, 0f, -2f), new Keyframe(1f, 0f, 0f, 0f)),
                 FlowDuration = 0.3f,
                 SettleOvershoot = 1.7f,
+            };
+        }
+
+        /// <summary>What a cube does when a bullet passes through it on the way to another. One inspector heading.</summary>
+        [Serializable]
+        public struct Brush
+        {
+            /// <summary>The yaw at full lean, in degrees. The original measures 15-20 on a passing shot.</summary>
+            [Tooltip("Degrees a brushed cube turns about up at the peak of the lean. The original: 15-20. Zero switches the brush off.")]
+            public float Angle;
+
+            /// <summary>How long one brush lasts, lean and return included.</summary>
+            [Tooltip("Seconds one brush lasts, from the bullet crossing the face until the cube is upright again.")]
+            public float Duration;
+
+            /// <summary>The lean over the brush: x is the fraction of Duration, y the multiple of Angle. Ends at 0 so the cube stands upright.</summary>
+            [Tooltip("The lean over the brush. X: 0 when the bullet crosses the face, 1 at the end. Y: multiple of Angle - peak early, cross zero, a small swing back, end at 0. Editable in Play.")]
+            public AnimationCurve Shape;
+
+            /// <summary>The values a fresh director starts with - the original's, measured frame by frame at 25 fps.</summary>
+            public static Brush Defaults => new Brush
+            {
+                Angle = 18f,
+                Duration = 0.2f,
+                // Peak at 40 ms, upright by 100 ms, a small counter-swing, at rest by 200 ms.
+                Shape = new AnimationCurve(
+                    new Keyframe(0f, 0f), new Keyframe(0.2f, 1f), new Keyframe(0.5f, 0f), new Keyframe(0.7f, -0.3f), new Keyframe(1f, 0f)),
             };
         }
 

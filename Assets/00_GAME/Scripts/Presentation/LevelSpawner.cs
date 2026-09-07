@@ -171,6 +171,25 @@ namespace Blast.Presentation
             }
         }
 
+        /// <summary>How many board columns there are; the director sweeps them while a bullet flies.</summary>
+        public int BoardColumns => _board.Columns;
+
+        /// <summary>The board's cell size: the footprint a bullet must enter to brush a cube.</summary>
+        public float CellSize => _boardLayout.CellSize;
+
+        /// <summary>Reads a board column's front cube view without advancing the front.</summary>
+        /// <param name="column">The board column to look at.</param>
+        /// <param name="cube">The view the next pop would hand out, when the column still stands.</param>
+        /// <returns>False when the column has no cube left.</returns>
+        public bool TryPeekFrontCube(int column, out CubeView cube)
+        {
+            List<CubeView> views = _cubeColumns[column];
+            int front = _cubeFront[column];
+
+            cube = front < views.Count ? views[front] : null;
+            return cube != null;
+        }
+
         /// <summary>Hands out a board column's front cube view and advances the view front.</summary>
         /// <param name="column">The board column whose front cube died.</param>
         public CubeView PopFrontCube(int column)

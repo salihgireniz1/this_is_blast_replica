@@ -221,6 +221,36 @@ namespace Blast.Tests
         }
 
         /// <summary>
+        /// Peeking a column's front reads the same view the next pop hands out, without
+        /// advancing anything: the director asks it every frame of a flight to find the cubes
+        /// a bullet brushes, and a peek that walked the front would skip cubes on the board.
+        /// </summary>
+        [Test]
+        public void TryPeekFrontCube_ReadsTheNextPopWithoutAdvancing()
+        {
+            _spawner.Construct(
+                new BoardModel(1, 2, 1), new ShooterQueue(new Shooter[0][]), new SlotRow(1), new NoMaterials());
+
+            bool peeked = _spawner.TryPeekFrontCube(0, out CubeView peekedFront);
+            CubeView popped = _spawner.PopFrontCube(0);
+
+            Assert.That(peeked, Is.True, "A standing column reported no front.");
+            Assert.That(peekedFront, Is.SameAs(popped), "The peek and the pop disagreed on the front.");
+        }
+
+        /// <summary>An emptied column has no front to brush; the bullet flies over bare floor there.</summary>
+        [Test]
+        public void TryPeekFrontCube_IsFalseOnceTheColumnIsEmpty()
+        {
+            _spawner.Construct(
+                new BoardModel(1, 1, 1), new ShooterQueue(new Shooter[0][]), new SlotRow(1), new NoMaterials());
+
+            _spawner.PopFrontCube(0);
+
+            Assert.That(_spawner.TryPeekFrontCube(0, out _), Is.False, "An empty column still offered a front.");
+        }
+
+        /// <summary>
         /// The view handed out for a shot is the top of the stack, because that is the cube the
         /// domain removed. A ground-first registry shrinks the bottom cube and leaves the top
         /// one floating over a hole.

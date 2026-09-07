@@ -1478,3 +1478,28 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   renders file:// pages as static snapshots (no scripts), so it cannot test this editor.
   Report and README now say where the editor is, why HTML, how it opens on Windows and
   macOS, and which browsers write to the folder (Chromium ones) versus copy/paste.
+- Brushed cubes lean as a bullet passes (2026-09-07) - done, 103/103 (FlightPath 6,
+  CubeView +3, LevelSpawner +2). Salih's request from a frame-by-frame read of a This is
+  Blast capture (25 fps, 7.8-8.6 s): a bullet crossing a non-target cube on its way leans
+  it 15-20 deg into the travel direction, peak at +40 ms, upright with a small
+  counter-swing by ~160 ms; the neighbours of the hit cube take the same lean at impact.
+  Three chunks, three commits: `FlightPath.EnterFraction` (slab test of the muzzle-target
+  segment against a cube's XZ footprint, answered as a fraction of the flight);
+  `CubeView.Nudge(signedAngle, duration, shape)` (one reused float-clock tween whose setter
+  writes yaw absolutely, so overlapping brushes never stack and the cube ends upright);
+  `GameDirector.BrushAlongFlight` polled every frame of the flight (`UniTask.Yield` loop
+  replaces `AwaitForComplete` on the bullet; a bit per column remembers what this bullet
+  brushed, no closure, no array). Settings: `Brush` struct (`Angle` 18, `Duration` 0.2,
+  `Shape` curve peaking at 0.2) with `= Defaults`. Spawner gained `TryPeekFrontCube`,
+  `BoardColumns`, `CellSize`. **Play verified** with an `EditorApplication.update` probe
+  reading every board cube's yaw: one shot's brush read 7.7 -> 17.5 -> 15.5 -> 8.4 -> 0.9
+  -> 2.7 -> 5.2 -> 5.0 -> 3.1 -> 0.8 deg over eleven frames, zero errors. **Geometry
+  finding:** slots at z -10 and the board front at z -5.8 make every flight steep, so a
+  bullet clips at most the target's neighbour near the end of its flight - the original's
+  impact spread, not a long pass-through; a level with wider slot spacing would brush more.
+  Rejected: colliders/triggers per cube (a hundred rigid bodies for a jiggle),
+  `DOPunchRotation` per brush (segment arrays plus closures at ~40 brushes a second), an
+  `OnUpdate` closure per flight (allocates). Not done: on layered boards only the stack's
+  top cube leans. Note: the working tree had `Game_Scene.unity` on `Level_03` and a modified
+  `Level_06.json` before this work (Salih's, uncommitted, untouched); the case's shipped
+  scope still boots `Level_01` in git.
