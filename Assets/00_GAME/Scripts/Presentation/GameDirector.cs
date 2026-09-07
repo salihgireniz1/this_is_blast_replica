@@ -69,8 +69,8 @@ namespace Blast.Presentation
         [Tooltip("What a hit cube and its column do.")]
         [SerializeField] CubeDeath _cubeDeath = CubeDeath.Defaults;
 
-        /// <summary>What a cube does when a bullet brushes past it on the way to another.</summary>
-        [Tooltip("How a cube leans when a bullet passes through it without hitting it.")]
+        /// <summary>What a cube does when a bullet reaches it: the target at impact, and any cube brushed on the way.</summary>
+        [Tooltip("How a cube is shoved when a bullet reaches it: the target at impact, and any cube the bullet passes through on the way.")]
         [SerializeField] Brush _brush = Brush.Defaults;
 
         /// <summary>The use case every action goes through. Handed in by Construct.</summary>
@@ -304,6 +304,12 @@ namespace Blast.Presentation
 
             _pools.Bullets.Return(bullet);
 
+            // The target takes the same shove as a brushed neighbour - the bullet hits it
+            // hardest of all - and dies mid-swing: the collapse only scales, so the two
+            // stack, and Destroy kills the shove with the cube.
+            float impactEntry = Mathf.Max(FlightPath.EnterFraction(muzzle, target, target, _spawner.CellSize), 0f);
+            Shove(cube, Vector3.Lerp(muzzle, target, impactEntry), aim);
+
             // The impact splash sits on the cube, the muzzle one on the shooter: the
             // original shows both, and the pool does not care where a splash plays. Pulled
             // back along the flight line toward the face the bullet struck and lifted to the
@@ -377,14 +383,21 @@ namespace Blast.Presentation
                 // of the stack. The cube swings about that point and flees it, so a corner clip
                 // spins it away and a square-on pass shoves it straight back.
                 Vector3 contact = Vector3.Lerp(from, to, entry);
-                CubeView hit = _spawner.FrontCubeNearest(column, contact.y);
-                Vector3 arm = Vector3.ProjectOnPlane(contact - hit.transform.position, Vector3.up);
-
-                hit.Nudge(arm, aim, _brush.Push, _brush.Angle, _brush.Duration, _brush.Shape);
+                Shove(_spawner.FrontCubeNearest(column, contact.y), contact, aim);
                 brushed |= bit;
             }
 
             return brushed;
+        }
+
+        /// <summary>Shoves one cube as the bullet reaches it, with the director's brush settings.</summary>
+        /// <param name="cube">The cube the bullet reached.</param>
+        /// <param name="contact">Where the bullet crossed into its footprint.</param>
+        /// <param name="aim">The bullet's direction on the board plane.</param>
+        void Shove(CubeView cube, Vector3 contact, Vector3 aim)
+        {
+            Vector3 arm = Vector3.ProjectOnPlane(contact - cube.transform.position, Vector3.up);
+            cube.Nudge(arm, aim, _brush.Push, _brush.Angle, _brush.Duration, _brush.Shape);
         }
 
         /// <summary>Runs a drained shooter off the nearer side of the screen and despawns it.</summary>
@@ -551,7 +564,7 @@ namespace Blast.Presentation
             };
         }
 
-        /// <summary>What a cube does when a bullet passes through it on the way to another. One inspector heading.</summary>
+        /// <summary>What a cube does when a bullet reaches it: the target at impact, and any cube the bullet passes through on the way. One inspector heading.</summary>
         [Serializable]
         public struct Brush
         {

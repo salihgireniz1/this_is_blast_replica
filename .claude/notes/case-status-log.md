@@ -1560,3 +1560,19 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   Salih saw the top-only bug. **Probe trap:** a "new lean" detector keyed on yaw crossing a
   threshold fires twice per shove - once on the swing, once on the counter-swing eleven
   frames later - and reads as two brushes of the same cube; pair it with the bullet trace.
+- The target takes the shove too (2026-09-07) - done, 109/109 (no new test: director glue,
+  the nudge itself is pinned in CubeViewTests). Salih: the bullet hits the target hardest
+  of all, so it should get the same shove. `ShotVisual` now shoves the popped cube at
+  impact with the contact where the flight enters its footprint, through a new `Shove`
+  helper the brush sweep shares; the collapse only scales, so the two stack, and
+  `Destroy` kills the shove with the cube. Salih also asked whether `MuzzleReach` 1
+  makes flights cross more neighbours: no - reach moves the muzzle along the same aim
+  line, the line itself is set by slot depth against the board; a `Brush.Margin` knob
+  (footprint widened by a few tenths) was offered and declined. **Play verified**, twelve
+  shots from four seated shooters: every target shifted 0.147-0.149 during its collapse
+  (Push 0.2 in Salih's scene, the curve's sampled peak), yaw 0.0 on eleven of them and
+  11.5 on the one hit mid-slide; zero errors. **Why the target does not spin:** the
+  bullet flies to the cube's centre, so the contact on the face is exactly opposite the
+  centre from the aim and the lever `arm x travel` is zero - a straight punch pushes and
+  does not turn. Only a target still sliding (hit off-centre) spins. Left as is; a
+  deliberate off-centre impact would be the change if Salih wants the target to turn.
