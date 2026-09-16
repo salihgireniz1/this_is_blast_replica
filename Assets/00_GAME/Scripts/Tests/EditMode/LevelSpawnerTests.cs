@@ -43,6 +43,9 @@ namespace Blast.Tests
         /// <summary>The two-material colour table, built only by the tests that read what a shooter wears.</summary>
         TwoMaterials _materials;
 
+        /// <summary>The per-colour table, built only by the test that must tell one colour from another.</summary>
+        PerColourMaterials _perColour;
+
         #endregion
 
         #region Public Methods
@@ -77,6 +80,7 @@ namespace Blast.Tests
                 Object.DestroyImmediate(_materials.Colour);
                 Object.DestroyImmediate(_materials.Hidden);
             }
+            _perColour?.Destroy();
         }
 
         /// <summary>
@@ -169,6 +173,36 @@ namespace Blast.Tests
 
             Assert.IsFalse(Wears(second, _outline), "The pending arrival reveal outlined a shooter that had already left the queue.");
             Assert.IsTrue(Wears(third, _outline), "The new front did not receive the outline on arrival.");
+        }
+
+        /// <summary>
+        /// The director takes from the domain before it pops the view, so when a shooter is
+        /// tapped while still stepping up, the domain's front is already the one BEHIND it.
+        /// The arrival reveal the pop forces must still dress the stepping shooter in its own
+        /// colour and ammo, not the next shooter's: a fast second tap on one column showed a
+        /// green hidden shooter revealing blue, then firing at green cubes.
+        /// </summary>
+        [Test]
+        public void PoppingAShooterMidStep_RevealsItsOwnColour_NotTheNextShooters()
+        {
+            BuildShooterPrefab();
+            PerColourMaterials materials = BuildPerColourMaterials();
+            var queue = new ShooterQueue(new[]
+            {
+                new[] { new Shooter(BlastColor.Red, 1, false), new Shooter(BlastColor.Green, 3, true), new Shooter(BlastColor.Blue, 7, false) },
+            });
+            _spawner.Construct(new BoardModel(1, 1, 1), queue, new SlotRow(1), materials);
+            Renderer second = _spawner.transform.Find("Shooters").GetChild(1).GetComponent<Renderer>();
+
+            // The director's order, twice inside one step duration: domain first, views second.
+            queue.TakeFront(0);
+            _spawner.PopFrontShooter(0);
+            _spawner.StepQueueForward(0, duration: 1f);
+            queue.TakeFront(0);
+            _spawner.PopFrontShooter(0);
+            _spawner.StepQueueForward(0, duration: 1f);
+
+            Assert.AreEqual(materials.MaterialOf(BlastColor.Green), second.sharedMaterial, "The shooter tapped mid-step was revealed in the next shooter's colour.");
         }
 
         /// <summary>Two removals inside one flow duration shift the survivors two cells, not one.</summary>
@@ -411,6 +445,14 @@ namespace Blast.Tests
             return _materials;
         }
 
+        /// <summary>Builds a colour table with a distinct material per colour, so a wrong colour is visible to an assert.</summary>
+        PerColourMaterials BuildPerColourMaterials()
+        {
+            _perColour = new PerColourMaterials();
+
+            return _perColour;
+        }
+
         /// <summary>Whether a renderer carries a material in any of its slots.</summary>
         /// <param name="renderer">The renderer to inspect.</param>
         /// <param name="material">The material to look for.</param>
@@ -476,6 +518,40 @@ namespace Blast.Tests
 
             /// <summary>The concealment material.</summary>
             public Material HiddenMaterial => Hidden;
+        }
+
+        /// <summary>A colour table with one material per colour and one for concealment.</summary>
+        sealed class PerColourMaterials : IColorMaterials
+        {
+            /// <summary>One material per colour, indexed by the colour's byte value.</summary>
+            readonly Material[] _byColour = new Material[byte.MaxValue + 1];
+
+            /// <summary>The concealment material.</summary>
+            public Material HiddenMaterial { get; } = new Material(Shader.Find("Hidden/InternalErrorShader"));
+
+            /// <summary>The colour's own material, made on first ask.</summary>
+            /// <param name="color">The colour to dress in.</param>
+            public Material MaterialOf(BlastColor color)
+            {
+                return _byColour[(byte)color] ??= new Material(Shader.Find("Hidden/InternalErrorShader"));
+            }
+
+            /// <summary>No tint; the spawner never asks for one.</summary>
+            /// <param name="color">Ignored.</param>
+            public Color TintOf(BlastColor color) => default;
+
+            /// <summary>Destroys every material made.</summary>
+            public void Destroy()
+            {
+                Object.DestroyImmediate(HiddenMaterial);
+                foreach (Material material in _byColour)
+                {
+                    if (material != null)
+                    {
+                        Object.DestroyImmediate(material);
+                    }
+                }
+            }
         }
 
         #endregion

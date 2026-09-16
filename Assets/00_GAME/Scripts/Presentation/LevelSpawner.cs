@@ -166,7 +166,13 @@ namespace Blast.Presentation
                 // frame, the same budget SetOutlined spends.
                 if (depth == 0)
                 {
-                    step.OnComplete(() => RevealFront(column));
+                    // Read WHO arrives now, not on arrival. The domain's front is this
+                    // shooter at this moment; a second tap before the step lands takes it
+                    // too, and a read at arrival would then dress this view in the NEXT
+                    // shooter's colour and ammo (a green hidden shooter revealing blue).
+                    ShooterView arriving = views[index];
+                    Shooter shooter = _shooters.Peek(column, 0);
+                    step.OnComplete(() => Reveal(arriving, shooter));
                 }
             }
         }
@@ -277,16 +283,12 @@ namespace Blast.Presentation
 
         #region Private Methods
 
-        /// <summary>Dresses a column's front view in its colour and outlines it: it has just arrived at the selectable row.</summary>
-        /// <param name="column">The column whose front finished stepping up.</param>
-        void RevealFront(int column)
+        /// <summary>Dresses a view in its shooter's colour and ammo and outlines it: it has just arrived at the selectable row.</summary>
+        /// <param name="view">The view that finished stepping up.</param>
+        /// <param name="shooter">The shooter it stands for, read when its step began.</param>
+        void Reveal(ShooterView view, Shooter shooter)
         {
-            // The domain's front advanced when the director selected, before the step
-            // began, so depth 0 is the shooter that has now arrived at the selectable row.
-            Shooter front = _shooters.Peek(column, 0);
-            ShooterView view = _queueColumns[column][_queueFront[column]];
-
-            view.ShowRevealed(_materials.MaterialOf(front.Color), front.Ammo);
+            view.ShowRevealed(_materials.MaterialOf(shooter.Color), shooter.Ammo);
             view.SetOutlined(true);
         }
 

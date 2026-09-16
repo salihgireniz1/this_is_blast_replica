@@ -1576,3 +1576,20 @@ Moved out of `CLAUDE.md` on 2026-09-04. Every chunk built for the Apps case, in 
   centre from the aim and the lever `arm x travel` is zero - a straight punch pushes and
   does not turn. Only a target still sliding (hit off-centre) spins. Left as is; a
   deliberate off-centre impact would be the change if Salih wants the target to turn.
+- Post-delivery fix: a shooter tapped mid-step revealed the NEXT shooter's colour
+  (2026-09-16) - done, 110/110 (+1 `LevelSpawnerTests.PoppingAShooterMidStep_
+  RevealsItsOwnColour_NotTheNextShooters`). Salih found it in Play, nine days after the
+  mail: spamming a column, the hidden shooter tapped before it reached the front revealed
+  blue (the shooter behind it), then fired at green cubes (the domain was right). Shipped
+  since 8ce133a (2026-09-05). **Root cause:** `OnSelected` takes from the domain BEFORE
+  `PopFrontShooter`, and the pop force-completes the pending step so its arrival reveal
+  fires; that reveal read `_shooters.Peek(column, 0)` at arrival, by which time the domain's
+  front was already the shooter behind. Not hidden-specific: any second tap inside one
+  `StepDuration` dressed the stepping shooter in the next one's colour and ammo counter.
+  **Fix:** `StepQueueForward` reads the arriving shooter when it schedules the step (the
+  domain front IS that shooter at that moment) and the closure reveals that view with that
+  `Shooter`; `RevealFront(column)` became `Reveal(view, shooter)`. Same allocation budget:
+  one closure per selection. **Why the suite missed it:** the existing mid-step test never
+  advanced the domain queue (it called Pop/Step without `TakeFront`) and used one material
+  for every colour, so a wrong colour was invisible. The new test mirrors the director's
+  order and uses a per-colour table (`PerColourMaterials`). Play verification pending.

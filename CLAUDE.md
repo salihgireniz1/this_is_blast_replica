@@ -90,8 +90,9 @@ level (solvable, all 5 colours, includes a hidden), WIN/LOST overlays with a res
 button that replays the same level, direct play on Editor Play, Unity 6000.0.68f1 + URP.
 Evaluation order: bug-free > juiciness > architecture > performance > git usage.
 
-**Where it stands (2026-09-07): the case is feature-complete. Unity suite 109/109, level
-editor 41/41 node tests.** What exists, by layer (details per component in the log):
+**Where it stands (2026-09-16): the case is feature-complete. Unity suite 110/110, level
+editor 41/41 node tests.** A post-delivery fix (mid-step reveal wore the next shooter's colour) is in the log.
+What exists, by layer (details per component in the log):
 
 - **Domain** — `Cell`, `BlastColor` (byte, values pinned), `BoardModel` (nothing moves:
   authored array + per-column front index, top layer dies first), `Shooter` +
